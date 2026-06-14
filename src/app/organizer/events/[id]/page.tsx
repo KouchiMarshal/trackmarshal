@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
+import { formatDate } from "@/lib/formatDate";
+import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function OrganizerEventDetailsPage() {
   const params = useParams();
@@ -21,6 +23,8 @@ export default function OrganizerEventDetailsPage() {
 
 const [filter, setFilter] =
   useState("all");
+
+  const [toast, setToast] = useState<ToastData>(null);
 
   const [event, setEvent] = useState<any>(null);
   const [applications, setApplications] = useState<any[]>([]);
@@ -146,6 +150,8 @@ const filteredApplications =
   return (
     <main className="min-h-screen bg-black text-white">
 
+      <Toast toast={toast} onClose={() => setToast(null)} />
+
       <div className="flex min-h-screen">
 
         <OrganizerSidebar />
@@ -201,7 +207,7 @@ const filteredApplications =
 
               <div className="flex items-center gap-2">
                 <CalendarDays size={18} />
-                {event.event_date}
+                {formatDate(event.event_date)}
               </div>
 
               <div className="flex items-center gap-2">
@@ -426,18 +432,14 @@ const filteredApplications =
 
     if (accepted >= event.marshals_needed) {
 
-      alert(
-        "Le nombre maximum de commissaires a été atteint."
-      );
+      setToast({ message: "Le nombre maximum de commissaires a été atteint.", type: "error" });
 
       return;
     }
 
  await supabase
   .from("applications")
-  .update({
-    status: "accepted",
-  })
+  .update({ status: "accepted" })
   .eq("id", app.id);
 
 await supabase
@@ -448,6 +450,22 @@ await supabase
     type: "application_accepted",
     link: `/events/${event.slug}`,
   });
+
+const { data: { user: currentUser } } = await supabase.auth.getUser();
+if (currentUser) {
+  const { data: convData } = await supabase
+    .from("conversations")
+    .insert({ title: `${event.title} — ${app.profiles?.full_name || "Commissaire"}` })
+    .select()
+    .single();
+
+  if (convData?.id) {
+    await supabase.from("conversation_members").insert([
+      { conversation_id: convData.id, user_id: currentUser.id },
+      { conversation_id: convData.id, user_id: app.marshal_id },
+    ]);
+  }
+}
 
 loadEvent();
   }}

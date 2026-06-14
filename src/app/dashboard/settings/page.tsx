@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function SettingsPage() {
 
@@ -29,6 +30,9 @@ export default function SettingsPage() {
 
   const [notifications, setNotifications] =
     useState(true);
+
+  const [toast, setToast] =
+    useState<ToastData>(null);
 
   useEffect(() => {
 
@@ -50,6 +54,27 @@ export default function SettingsPage() {
     }
 
     setEmail(user.email || "");
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("notifications_enabled")
+      .eq("id", user.id)
+      .single();
+
+    if (profile && typeof profile.notifications_enabled === "boolean") {
+      setNotifications(profile.notifications_enabled);
+    }
+  }
+
+  async function saveNotifications(value: boolean) {
+    setNotifications(value);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase
+      .from("profiles")
+      .update({ notifications_enabled: value })
+      .eq("id", user.id);
+    setToast({ message: value ? "Notifications activées." : "Notifications désactivées.", type: "success" });
   }
 
   async function updatePassword() {
@@ -62,13 +87,11 @@ export default function SettingsPage() {
       });
 
     if (error) {
-
-      alert(error.message);
-
+      setToast({ message: error.message, type: "error" });
       return;
     }
 
-    alert("Mot de passe mis à jour");
+    setToast({ message: "Mot de passe mis à jour !", type: "success" });
 
     setPassword("");
   }
@@ -82,13 +105,13 @@ export default function SettingsPage() {
 
     if (!confirmDelete) return;
 
-    alert(
-      "La suppression automatique sera ajoutée côté admin."
-    );
+    setToast({ message: "La suppression de compte sera disponible prochainement.", type: "error" });
   }
 
   return (
     <main className="min-h-screen bg-black text-white">
+
+      <Toast toast={toast} onClose={() => setToast(null)} />
 
       <div className="flex min-h-screen">
 
@@ -124,7 +147,7 @@ export default function SettingsPage() {
 
             <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
 
-            <div className="relative z-10 mx-auto max-w-[1200px] space-y-6 p-4 sm:p-6 lg:p-10">
+            <div className="relative z-10 mx-auto max-w-[1200px] space-y-6 p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
 
@@ -255,9 +278,7 @@ export default function SettingsPage() {
 
                   <button
                     onClick={() =>
-                      setNotifications(
-                        !notifications
-                      )
+                      saveNotifications(!notifications)
                     }
                     className={`relative h-8 w-16 rounded-full transition ${
                       notifications

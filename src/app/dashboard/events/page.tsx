@@ -15,6 +15,8 @@ import {
 
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import { formatDate } from "@/lib/formatDate";
+import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function DashboardEventsPage() {
 
@@ -26,6 +28,9 @@ export default function DashboardEventsPage() {
 
   const [loading, setLoading] =
     useState(true);
+
+  const [toast, setToast] =
+    useState<ToastData>(null);
 
   useEffect(() => {
     loadData();
@@ -77,9 +82,7 @@ export default function DashboardEventsPage() {
       );
 
     if (alreadyApplied) {
-      alert(
-        "Vous avez déjà postulé."
-      );
+      setToast({ message: "Vous avez déjà postulé à cet événement.", type: "error" });
       return;
     }
 
@@ -93,16 +96,18 @@ export default function DashboardEventsPage() {
         });
 
     if (error) {
-      alert(error.message);
+      setToast({ message: error.message, type: "error" });
       return;
     }
 
-    alert("Candidature envoyée.");
+    setToast({ message: "Candidature envoyée avec succès !", type: "success" });
     loadData();
   }
 
   return (
     <main className="min-h-screen bg-black text-white">
+
+      <Toast toast={toast} onClose={() => setToast(null)} />
 
       <div className="flex min-h-screen">
 
@@ -177,10 +182,7 @@ export default function DashboardEventsPage() {
                       <div className="flex items-center gap-3">
                         <CalendarDays size={18} />
 
-                        <p>
-                          {event.event_date ||
-                            "Date non renseignée"}
-                        </p>
+                        <p>{formatDate(event.event_date)}</p>
                       </div>
 
                       <div className="flex items-center gap-3">

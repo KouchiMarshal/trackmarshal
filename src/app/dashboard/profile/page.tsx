@@ -9,11 +9,13 @@ import {
 
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function ProfilePage() {
 
@@ -22,6 +24,12 @@ export default function ProfilePage() {
 
   const [profile, setProfile] =
     useState<any>(null);
+
+  const [toast, setToast] =
+    useState<ToastData>(null);
+
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const licenseInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadProfile();
@@ -45,6 +53,31 @@ export default function ProfilePage() {
     setProfile(data);
   }
 
+  async function uploadAvatar(file: File) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}.${ext}`;
+    const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+    if (error) { setToast({ message: error.message, type: "error" }); return; }
+    const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(path);
+    await supabase.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id);
+    setProfile((p: any) => ({ ...p, avatar_url: publicUrl }));
+    setToast({ message: "Photo de profil mise à jour !", type: "success" });
+  }
+
+  async function uploadLicense(file: File) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}-license.${ext}`;
+    const { error } = await supabase.storage.from("licenses").upload(path, file, { upsert: true });
+    if (error) { setToast({ message: error.message, type: "error" }); return; }
+    const { data: { publicUrl } } = supabase.storage.from("licenses").getPublicUrl(path);
+    await supabase.from("profiles").update({ license_url: publicUrl }).eq("id", user.id);
+    setToast({ message: "Licence envoyée, en attente de vérification.", type: "success" });
+  }
+
   async function updateProfile() {
 
     setLoading(true);
@@ -62,7 +95,7 @@ export default function ProfilePage() {
 
     setLoading(false);
 
-    alert("Profil mis à jour");
+    setToast({ message: "Profil mis à jour avec succès !", type: "success" });
   }
 
   if (!profile) {
@@ -78,6 +111,8 @@ export default function ProfilePage() {
 
   return (
     <main className="min-h-screen bg-black text-white">
+
+      <Toast toast={toast} onClose={() => setToast(null)} />
 
       <div className="flex min-h-screen">
 
@@ -141,11 +176,23 @@ export default function ProfilePage() {
                       className="h-40 w-40 rounded-[32px] object-cover"
                     />
 
-                    <button className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]">
-
+                    <button
+                      onClick={() => avatarInputRef.current?.click()}
+                      className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]"
+                    >
                       <Camera size={20} />
-
                     </button>
+
+                    <input
+                      ref={avatarInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) uploadAvatar(f);
+                      }}
+                    />
 
                   </div>
 
@@ -496,13 +543,24 @@ export default function ProfilePage() {
 
                     </div>
 
-                    <button className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-6 font-bold transition hover:scale-[1.02]">
-
+                    <button
+                      onClick={() => licenseInputRef.current?.click()}
+                      className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-6 font-bold transition hover:scale-[1.02]"
+                    >
                       <Upload size={18} />
-
                       Upload
-
                     </button>
+
+                    <input
+                      ref={licenseInputRef}
+                      type="file"
+                      accept=".pdf,image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) uploadLicense(f);
+                      }}
+                    />
 
                   </div>
 

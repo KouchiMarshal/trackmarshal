@@ -5,6 +5,7 @@ import { CalendarDays, Clock3 } from "lucide-react";
 import Link from "next/link";
 
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import { formatDate } from "@/lib/formatDate";
 
 import {
   useEffect,
@@ -173,7 +174,7 @@ setProfile(profileData);
 
             <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
 
-            <div className="relative z-10 mx-auto max-w-[1600px] p-4 sm:p-6 lg:p-10">
+            <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
@@ -292,14 +293,7 @@ setProfile(profileData);
                           size={18}
                         />
 
-                        <p>
-
-                          {
-                            events[0]?.event_date ||
-                            "Date non renseignée"
-                          }
-
-                        </p>
+                        <p>{formatDate(events[0]?.event_date)}</p>
 
                       </div>
 
@@ -398,13 +392,7 @@ setProfile(profileData);
                             </h3>
 
                             <p className="mt-2 text-sm text-zinc-500">
-
-                              {
-                                application
-                                  .events
-                                  ?.event_date
-                              }
-
+                              {formatDate(application.events?.event_date)}
                             </p>
 
                           </div>

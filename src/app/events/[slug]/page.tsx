@@ -189,9 +189,11 @@ export default async function EventPage({
                 </p>
 
                 <p className="mt-6 text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
-
-                  {event.accommodation || "Non précisé"}
-
+                  {event.accommodation
+                    ? event.accommodation
+                    : event.hotel
+                    ? "Hôtel inclus"
+                    : "Non inclus"}
                 </p>
 
               </div>
@@ -203,28 +205,48 @@ export default async function EventPage({
                 </p>
 
                 <p className="mt-6 text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
-
-                  {event.meals || "Non précisé"}
-
+                  {event.meals
+                    ? event.meals
+                    : event.repas
+                    ? event.repas_type || "Repas fournis"
+                    : "Non inclus"}
                 </p>
 
               </div>
 
             </div>
 
-            <div className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-6 sm:rounded-[40px] sm:p-10">
+            {(event.schedule || event.defraiement) && (
+              <div className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-6 sm:rounded-[40px] sm:p-10">
 
-              <p className="text-xs uppercase tracking-[0.25em] text-[#FF5A1F] sm:text-sm sm:tracking-[0.3em]">
-                Planning de l'Événement
-              </p>
+                <p className="text-xs uppercase tracking-[0.25em] text-[#FF5A1F] sm:text-sm sm:tracking-[0.3em]">
+                  Planning de l'Événement
+                </p>
 
-              <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
+                <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
+                  {event.schedule || "Planning à communiquer."}
+                </div>
 
-                {event.schedule || "Aucun planning disponible."}
+                {event.defraiement && (
+                  <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <p className="text-sm font-bold text-[#FF5A1F]">Défraiement</p>
+                    <p className="mt-1 text-zinc-300">{event.defraiement_amount || "Montant à confirmer"}</p>
+                  </div>
+                )}
 
               </div>
+            )}
 
-            </div>
+            {!event.schedule && !event.defraiement && (
+              <div className="rounded-[32px] border border-white/10 bg-[#0A0A0A] p-6 sm:rounded-[40px] sm:p-10">
+                <p className="text-xs uppercase tracking-[0.25em] text-[#FF5A1F] sm:text-sm sm:tracking-[0.3em]">
+                  Planning de l'Événement
+                </p>
+                <p className="mt-6 text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
+                  Planning à communiquer.
+                </p>
+              </div>
+            )}
 
           </div>
 

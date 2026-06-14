@@ -1,134 +1,14 @@
 "use client";
 
 import Link from "next/link";
-
-import {
-  useEffect,
-  useState,
-} from "react";
-
-import { supabase } from "@/lib/supabase";
+import PublicNavbar from "@/components/layout/public-navbar";
 
 export default function HomePage() {
-
-  const [user, setUser] =
-    useState<any>(null);
-
-  useEffect(() => {
-
-    checkUser();
-
-  }, []);
-
-  async function checkUser() {
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    setUser(session?.user || null);
-  }
 
   return (
     <main className="min-h-screen overflow-hidden bg-black text-white">
 
-      <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-black/70 backdrop-blur-2xl">
-
-        <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:h-24 lg:px-8">
-
-          <Link
-            href="/"
-            className="flex items-center gap-3"
-          >
-
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FF5A1F]/10 lg:h-12 lg:w-12">
-
-              <div className="h-3 w-3 rounded-full bg-[#FF5A1F] lg:h-4 lg:w-4" />
-
-            </div>
-
-            <h1 className="text-2xl font-black lg:text-3xl">
-
-              Track
-              <span className="text-[#FF5A1F]">
-
-                Marshal
-
-              </span>
-
-            </h1>
-
-          </Link>
-
-          <nav className="hidden items-center gap-10 lg:flex">
-
-            <Link
-              href="/"
-              className="text-sm font-bold uppercase tracking-[0.15em] text-[#FF5A1F]"
-            >
-              Accueil
-            </Link>
-
-            <Link
-              href="/events"
-              className="text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:text-[#FF5A1F]"
-            >
-              Événements
-            </Link>
-
-            <Link
-              href="/about"
-              className="text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:text-[#FF5A1F]"
-            >
-              À propos
-            </Link>
-
-          </nav>
-
-          <div className="flex items-center gap-3">
-
-            {user ? (
-
-              <Link
-                href="/dashboard"
-                className="flex h-12 items-center rounded-2xl bg-[#FF5A1F] px-5 text-sm font-bold transition hover:scale-105 lg:h-14 lg:px-8 lg:text-base"
-              >
-
-                Dashboard
-
-              </Link>
-
-            ) : (
-
-              <>
-
-                <Link
-                  href="/login"
-                  className="hidden h-12 items-center rounded-2xl border border-white/10 px-6 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10 lg:flex"
-                >
-
-                  Se connecter
-
-                </Link>
-
-                <Link
-                  href="/register"
-                  className="flex h-12 items-center rounded-2xl bg-[#FF5A1F] px-5 text-sm font-bold transition hover:scale-105 lg:h-14 lg:px-8 lg:text-base"
-                >
-
-                  S'inscrire
-
-                </Link>
-
-              </>
-
-            )}
-
-          </div>
-
-        </div>
-
-      </header>
+      <PublicNavbar />
 
       <section className="relative flex min-h-screen items-center overflow-hidden pt-28 lg:pt-32">
 
@@ -192,18 +72,14 @@ export default function HomePage() {
 
               </Link>
 
-              {!user && (
+              <Link
+                href="/register"
+                className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 text-base font-black transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10 lg:h-16 lg:px-10 lg:text-lg"
+              >
 
-                <Link
-                  href="/register"
-                  className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 text-base font-black transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10 lg:h-16 lg:px-10 lg:text-lg"
-                >
+                Créer un compte
 
-                  Créer un compte
-
-                </Link>
-
-              )}
+              </Link>
 
             </div>
 

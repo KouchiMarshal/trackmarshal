@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CalendarDays, Eye, MapPin, Plus, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
+import { formatDate } from "@/lib/formatDate";
 
 export default function OrganizerEventsPage() {
   const [events, setEvents] = useState<any[]>([]);
@@ -109,7 +110,7 @@ export default function OrganizerEventsPage() {
                     <div className="mt-5 space-y-3 text-zinc-400">
                       <div className="flex items-center gap-3">
                         <CalendarDays size={16} />
-                        {event.event_date}
+                        {formatDate(event.event_date)}
                       </div>
                       <div className="flex items-center gap-3">
                         <MapPin size={16} />

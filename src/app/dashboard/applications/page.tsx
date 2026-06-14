@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import { formatDate } from "@/lib/formatDate";
 
 export default function ApplicationsPage() {
 
@@ -163,7 +164,7 @@ export default function ApplicationsPage() {
 
             <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
 
-            <div className="relative z-10 mx-auto max-w-[1600px] p-4 sm:p-6 lg:p-10">
+            <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               {loading && (
 
@@ -261,13 +262,7 @@ export default function ApplicationsPage() {
                                 size={18}
                               />
 
-                              <p>
-
-                                {
-                                  app.events?.event_date
-                                }
-
-                              </p>
+                              <p>{formatDate(app.events?.event_date)}</p>
 
                             </div>
 
@@ -303,11 +298,14 @@ export default function ApplicationsPage() {
                             {app.status ===
                               "accepted" && (
 
-                              <button className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]">
+                              <Link
+                                href={`/events/${app.events?.slug}`}
+                                className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
+                              >
 
                                 Voir briefing
 
-                              </button>
+                              </Link>
 
                             )}
 

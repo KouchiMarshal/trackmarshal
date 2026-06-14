@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
+import PublicNavbar from "@/components/layout/public-navbar";
+import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function RegisterPage() {
 
@@ -26,6 +28,9 @@ export default function RegisterPage() {
 
   const [role, setRole] =
     useState("marshal");
+
+  const [toast, setToast] =
+    useState<ToastData>(null);
 
   async function handleRegister(
     e: React.FormEvent
@@ -47,7 +52,7 @@ export default function RegisterPage() {
 
       setLoading(false);
 
-      alert(error.message);
+      setToast({ message: error.message, type: "error" });
 
       return;
     }
@@ -58,9 +63,7 @@ export default function RegisterPage() {
 
       setLoading(false);
 
-      alert(
-        "Erreur lors de la création du compte."
-      );
+      setToast({ message: "Erreur lors de la création du compte.", type: "error" });
 
       return;
     }
@@ -75,11 +78,17 @@ export default function RegisterPage() {
 
     setLoading(false);
 
-    router.push("/dashboard");
+    if (role === "organizer") {
+      router.push("/organizer/dashboard");
+    } else {
+      router.push("/dashboard");
+    }
   }
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-black text-white">
+
+      <Toast toast={toast} onClose={() => setToast(null)} />
 
       <div className="absolute inset-0">
 
@@ -97,71 +106,7 @@ export default function RegisterPage() {
 
       <div className="absolute right-0 top-0 h-[350px] w-[350px] rounded-full bg-[#FF5A1F]/10 blur-[120px] lg:h-[700px] lg:w-[700px] lg:blur-[220px]" />
 
-      <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-2xl">
-
-        <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:h-24 lg:px-8">
-
-          <Link
-            href="/"
-            className="flex items-center gap-3"
-          >
-
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FF5A1F]/10 lg:h-12 lg:w-12">
-
-              <div className="h-3 w-3 rounded-full bg-[#FF5A1F] lg:h-4 lg:w-4" />
-
-            </div>
-
-            <h1 className="text-2xl font-black lg:text-3xl">
-
-              Track
-              <span className="text-[#FF5A1F]">
-
-                Marshal
-
-              </span>
-
-            </h1>
-
-          </Link>
-
-          <nav className="hidden items-center gap-12 lg:flex">
-
-            <Link
-              href="/"
-              className="text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:text-[#FF5A1F]"
-            >
-              Accueil
-            </Link>
-
-            <Link
-              href="/events"
-              className="text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:text-[#FF5A1F]"
-            >
-              Événements
-            </Link>
-
-            <Link
-              href="/about"
-              className="text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:text-[#FF5A1F]"
-            >
-              À propos
-            </Link>
-
-          </nav>
-
-          <Link
-            href="/login"
-            className="flex h-12 items-center rounded-2xl border border-white/10 px-5 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10 lg:h-14 lg:px-8 lg:text-base"
-          >
-
-            Se connecter
-
-          </Link>
-
-        </div>
-
-      </header>
+      <PublicNavbar />
 
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-28 pb-10 sm:px-6 lg:px-8 lg:pt-32">
 

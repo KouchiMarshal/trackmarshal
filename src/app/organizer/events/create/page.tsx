@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
+import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function CreateEventPage() {
 
@@ -73,8 +74,14 @@ export default function CreateEventPage() {
   const [organizerContact, setOrganizerContact] =
     useState("");
 
+  const [schedule, setSchedule] =
+    useState("");
+
   const [loading, setLoading] =
     useState(false);
+
+  const [toast, setToast] =
+    useState<ToastData>(null);
 
   async function uploadImage() {
 
@@ -89,9 +96,7 @@ export default function CreateEventPage() {
         .upload(fileName, imageFile);
 
     if (error) {
-
-      alert(error.message);
-
+      setToast({ message: error.message, type: "error" });
       return null;
     }
 
@@ -177,14 +182,13 @@ export default function CreateEventPage() {
           hotel,
 
           organizer_contact: organizerContact,
+
+          schedule: schedule || null,
         });
 
     if (error) {
-
-      alert(error.message);
-
+      setToast({ message: error.message, type: "error" });
       setLoading(false);
-
       return;
     }
 
@@ -195,6 +199,8 @@ export default function CreateEventPage() {
 
   return (
     <main className="min-h-screen bg-black text-white">
+
+      <Toast toast={toast} onClose={() => setToast(null)} />
 
       <div className="flex min-h-screen">
 
@@ -689,6 +695,28 @@ export default function CreateEventPage() {
                     )
                   }
                   placeholder="Décrivez votre événement..."
+                  className="w-full rounded-2xl border border-white/10 bg-black/40 p-6 outline-none focus:border-[#FF5A1F]"
+                />
+
+              </div>
+
+              <div>
+
+                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
+
+                  Planning détaillé
+
+                </p>
+
+                <textarea
+                  rows={6}
+                  value={schedule}
+                  onChange={(e) =>
+                    setSchedule(
+                      e.target.value
+                    )
+                  }
+                  placeholder={"Vendredi 14h : Accueil\nVendredi 16h : Briefing\nSamedi 08h : Départ épreuve..."}
                   className="w-full rounded-2xl border border-white/10 bg-black/40 p-6 outline-none focus:border-[#FF5A1F]"
                 />
 
