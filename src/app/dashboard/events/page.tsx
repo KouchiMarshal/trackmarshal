@@ -110,10 +110,19 @@ export default function DashboardEventsPage() {
 
         <div className="flex-1">
 
+          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+            <div className="mx-auto flex h-20 max-w-[1600px] items-center px-4 sm:px-6 lg:px-10">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Commissaire</p>
+                <h1 className="mt-2 text-2xl font-black lg:text-4xl">Événements</h1>
+              </div>
+            </div>
+          </header>
+
       <div className="relative overflow-hidden">
         <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
 
-        <div className="relative z-10 mx-auto max-w-[1600px] p-4 sm:p-6 lg:p-10">
+        <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
           <div className="mb-10">
             <p className="mt-3 max-w-2xl text-lg text-zinc-400">
               Découvrez les événements ouverts

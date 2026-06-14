@@ -93,7 +93,7 @@ export default function ProfilePage() {
 
                 <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">
 
-                  Mon profil
+                  Dashboard Commissaire
 
                 </p>
 

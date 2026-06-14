@@ -141,7 +141,18 @@ export default function MessagesPage() {
 
         <DashboardSidebar />
 
-        <div className="flex flex-1 flex-col lg:flex-row">
+        <div className="flex flex-1 flex-col">
+
+          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl lg:hidden">
+            <div className="flex h-16 items-center px-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Commissaire</p>
+                <h1 className="text-xl font-black">Messages</h1>
+              </div>
+            </div>
+          </header>
+
+          <div className="flex flex-1 flex-col lg:flex-row">
 
           <div className="w-full border-b border-white/10 bg-[#050505] lg:w-[360px] lg:border-b-0 lg:border-r">
 
@@ -299,6 +310,8 @@ export default function MessagesPage() {
             )}
 
           </div>
+
+        </div>
 
         </div>
 
