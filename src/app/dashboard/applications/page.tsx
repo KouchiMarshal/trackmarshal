@@ -50,23 +50,42 @@ export default function ApplicationsPage() {
       return;
     }
 
-    const { data, error: dbError } =
+    const { data: appsData, error: dbError } =
       await supabase
         .from("applications")
-        .select(`
-          *,
-          events (*)
-        `)
+        .select("*")
         .eq("marshal_id", user.id)
-        .order("created_at", {
-          ascending: false,
-        });
+        .order("created_at", { ascending: false });
 
     if (dbError) {
       setError(dbError.message);
+      setLoading(false);
+      return;
     }
 
-    setApplications(data || []);
+    if (!appsData || appsData.length === 0) {
+      setApplications([]);
+      setLoading(false);
+      return;
+    }
+
+    const eventIds = [...new Set(appsData.map((a: any) => a.event_id))];
+
+    const { data: eventsData } =
+      await supabase
+        .from("events")
+        .select("*")
+        .in("id", eventIds);
+
+    const eventsMap: Record<string, any> = {};
+    (eventsData || []).forEach((e: any) => { eventsMap[e.id] = e; });
+
+    const merged = appsData.map((a: any) => ({
+      ...a,
+      events: eventsMap[a.event_id] || null,
+    }));
+
+    setApplications(merged);
 
     setLoading(false);
   }

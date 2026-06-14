@@ -69,32 +69,42 @@ if (
 
 setProfile(profileData);
 
-    const {
-      data: applicationsData,
-    } = await supabase
-      .from("applications")
-      .select(`
-        *,
-        events (*)
-      `)
-      .eq("marshal_id", user.id)
-      .order("created_at", {
-        ascending: false,
-      });
+    const { data: appsData } =
+      await supabase
+        .from("applications")
+        .select("*")
+        .eq("marshal_id", user.id)
+        .order("created_at", { ascending: false });
 
-    setApplications(
-      applicationsData || []
-    );
+    const applicationsData = appsData || [];
 
-    const upcomingEvents =
-      applicationsData
-        ?.filter(
-          (app: any) =>
-            app.status === "accepted"
-        )
-        .map((app: any) => app.events) || [];
+    if (applicationsData.length > 0) {
+      const eventIds = [...new Set(applicationsData.map((a: any) => a.event_id))];
+      const { data: eventsData } = await supabase
+        .from("events")
+        .select("*")
+        .in("id", eventIds);
 
-    setEvents(upcomingEvents);
+      const eventsMap: Record<string, any> = {};
+      (eventsData || []).forEach((e: any) => { eventsMap[e.id] = e; });
+
+      const merged = applicationsData.map((a: any) => ({
+        ...a,
+        events: eventsMap[a.event_id] || null,
+      }));
+
+      setApplications(merged);
+
+      const upcomingEvents = merged
+        .filter((app: any) => app.status === "accepted")
+        .map((app: any) => app.events)
+        .filter(Boolean);
+
+      setEvents(upcomingEvents);
+    } else {
+      setApplications([]);
+      setEvents([]);
+    }
 
     setLoading(false);
   }

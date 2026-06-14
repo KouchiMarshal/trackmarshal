@@ -67,20 +67,37 @@ export default function OrganizerDashboard() {
 
     if (eventIds.length > 0) {
 
-      const {
-        data: applicationsData,
-      } = await supabase
-        .from("applications")
-        .select(`
-          *,
-          events (*),
-          profiles (*)
-        `)
-        .in("event_id", eventIds);
+      const { data: appsData } =
+        await supabase
+          .from("applications")
+          .select("*")
+          .in("event_id", eventIds);
 
-      setApplications(
-        applicationsData || []
-      );
+      if (appsData && appsData.length > 0) {
+        const profileIds = [...new Set(appsData.map((a: any) => a.marshal_id))];
+
+        const { data: profilesData } =
+          await supabase
+            .from("profiles")
+            .select("*")
+            .in("id", profileIds);
+
+        const profilesMap: Record<string, any> = {};
+        (profilesData || []).forEach((p: any) => { profilesMap[p.id] = p; });
+
+        const eventsMap: Record<string, any> = {};
+        (eventsData || []).forEach((e: any) => { eventsMap[e.id] = e; });
+
+        const merged = appsData.map((a: any) => ({
+          ...a,
+          events: eventsMap[a.event_id] || null,
+          profiles: profilesMap[a.marshal_id] || null,
+        }));
+
+        setApplications(merged);
+      } else {
+        setApplications([]);
+      }
     }
   }
 

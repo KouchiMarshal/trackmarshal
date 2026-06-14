@@ -42,30 +42,32 @@ const [filter, setFilter] =
 
       setEvent(eventData ?? null);
 
-const { data: applicationsData, error } =
-  await supabase
-    .from("applications")
-    .select(`
-      *,
-      profiles:marshal_id (
-        id,
-        full_name,
-        email,
-        phone,
-        city,
-        country,
-        experience,
-        years_experience,
-        avatar_url
-      )
-    `)
-    .eq("event_id", eventId)
-    .order("created_at", {
-      ascending: false,
-    });
+      const { data: appsRaw } =
+        await supabase
+          .from("applications")
+          .select("*")
+          .eq("event_id", eventId)
+          .order("created_at", { ascending: false });
 
+      const appsData = appsRaw || [];
 
-      setApplications(applicationsData || []);
+      if (appsData.length > 0) {
+        const profileIds = [...new Set(appsData.map((a: any) => a.marshal_id))];
+        const { data: profilesData } = await supabase
+          .from("profiles")
+          .select("id, full_name, email, phone, city, country, experience, years_experience, avatar_url")
+          .in("id", profileIds);
+
+        const profilesMap: Record<string, any> = {};
+        (profilesData || []).forEach((p: any) => { profilesMap[p.id] = p; });
+
+        setApplications(appsData.map((a: any) => ({
+          ...a,
+          profiles: profilesMap[a.marshal_id] || null,
+        })));
+      } else {
+        setApplications([]);
+      }
     } catch (error) {
       console.error(error);
     }
