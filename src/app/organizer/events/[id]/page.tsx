@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 
 export default function OrganizerEventDetailsPage() {
   const params = useParams();
@@ -142,6 +143,12 @@ const filteredApplications =
 
   return (
     <main className="min-h-screen bg-black text-white">
+
+      <div className="flex min-h-screen">
+
+        <OrganizerSidebar />
+
+        <div className="flex-1 overflow-auto">
 
       <div className="relative h-[420px] overflow-hidden">
 
@@ -544,6 +551,10 @@ loadEvent();
             </div>
 
           </div>
+
+        </div>
+
+      </div>
 
         </div>
 

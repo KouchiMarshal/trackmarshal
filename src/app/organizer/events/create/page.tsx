@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
+import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 
 export default function CreateEventPage() {
 
@@ -193,11 +194,17 @@ export default function CreateEventPage() {
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-black text-white">
+    <main className="min-h-screen bg-black text-white">
 
-      <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/10 blur-[160px]" />
+      <div className="flex min-h-screen">
 
-      <div className="relative z-10 mx-auto max-w-[1200px] p-4 sm:p-6 lg:p-10">
+        <OrganizerSidebar />
+
+        <div className="flex-1 overflow-hidden">
+
+      <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/10 blur-[160px] pointer-events-none" />
+
+      <div className="relative z-10 mx-auto max-w-[1200px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
@@ -741,6 +748,10 @@ export default function CreateEventPage() {
             </div>
 
           </div>
+
+        </div>
+
+      </div>
 
         </div>
 
