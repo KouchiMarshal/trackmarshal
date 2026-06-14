@@ -85,7 +85,7 @@ setProfile(profileData);
         *,
         events (*)
       `)
-      .eq("user_id", user.id)
+      .eq("marshal_id", user.id)
       .order("created_at", {
         ascending: false,
       });
@@ -413,7 +413,7 @@ setProfile(profileData);
                         <p>
 
                           {
-                            events[0]?.date ||
+                            events[0]?.event_date ||
                             "Date non renseignée"
                           }
 
@@ -443,7 +443,7 @@ setProfile(profileData);
                     <div className="mt-8">
 
                       <Link
-                        href={`/events/${events[0]?.id}`}
+                        href={`/events/${events[0]?.slug}`}
                         className="flex h-14 w-fit items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
                       >
 
@@ -520,7 +520,7 @@ setProfile(profileData);
                               {
                                 application
                                   .events
-                                  ?.date
+                                  ?.event_date
                               }
 
                             </p>
@@ -539,9 +539,11 @@ setProfile(profileData);
                             }`}
                           >
 
-                            {
-                              application.status
-                            }
+                            {application.status === "accepted"
+                              ? "Accepté"
+                              : application.status === "rejected"
+                              ? "Refusé"
+                              : "En attente"}
 
                           </div>
 

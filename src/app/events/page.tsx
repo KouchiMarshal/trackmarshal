@@ -343,7 +343,7 @@ export default function EventsPage() {
                       <p>
 
                         {
-                          event.date ||
+                          event.event_date ||
                           "Date non renseignée"
                         }
 

@@ -2,12 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CalendarDays, MapPin, Plus, Users, Eye } from "lucide-react";
+import { CalendarDays, Home, LogOut, MapPin, Plus, Users, Eye } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
 export default function OrganizerEventsPage() {
+  const router = useRouter();
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  async function logout() {
+    await supabase.auth.signOut();
+    router.push("/");
+  }
 
   useEffect(() => {
     loadEvents();
@@ -37,6 +44,16 @@ export default function OrganizerEventsPage() {
 
   return (
     <main className="min-h-screen bg-black text-white">
+
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl lg:hidden">
+        <div className="flex h-16 items-center justify-between px-4">
+          <Link href="/" className="text-xl font-black">Track<span className="text-[#FF5A1F]">Marshal</span></Link>
+          <Link href="/organizer/events/create" className="flex items-center gap-2 rounded-xl bg-[#FF5A1F] px-4 py-2 text-sm font-bold">
+            <Plus size={16} /> Créer
+          </Link>
+        </div>
+      </header>
+
       <div className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/10 blur-[180px]" />
 
       <div className="relative z-10 mx-auto max-w-[1700px] p-6 lg:p-10">
@@ -139,6 +156,22 @@ export default function OrganizerEventsPage() {
           ))}
         </div>
       </div>
+
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/90 backdrop-blur-2xl lg:hidden">
+        <div className="grid grid-cols-3">
+          {[
+            { icon: Home, label: "Dashboard", href: "/organizer/dashboard" },
+            { icon: CalendarDays, label: "Événements", href: "/organizer/events" },
+            { icon: Plus, label: "Créer", href: "/organizer/events/create" },
+          ].map((item) => (
+            <Link href={item.href} key={item.label} className="flex flex-col items-center gap-2 py-4 text-zinc-400 transition hover:text-[#FF5A1F]">
+              <item.icon size={20} />
+              <span className="text-xs font-semibold">{item.label}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+
     </main>
   );
 }

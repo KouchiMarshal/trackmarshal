@@ -1,10 +1,14 @@
 "use client";
 
 import {
+  CalendarDays,
   Camera,
   CheckCircle2,
+  Home,
+  MessageSquare,
   Save,
   Upload,
+  User,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -164,13 +168,13 @@ export default function ProfilePage() {
 
               </p>
 
-              <div className="mt-6 flex items-center gap-3 rounded-2xl border border-green-500/20 bg-green-500/10 px-5 py-3 text-green-400">
+              <div className={`mt-6 flex items-center gap-3 rounded-2xl border px-5 py-3 ${profile.license_verified ? "border-green-500/20 bg-green-500/10 text-green-400" : "border-yellow-500/20 bg-yellow-500/10 text-yellow-400"}`}>
 
                 <CheckCircle2 size={18} />
 
                 <p className="font-semibold">
 
-                  Licence vérifiée
+                  {profile.license_verified ? "Licence vérifiée" : "Vérification en attente"}
 
                 </p>
 
@@ -538,6 +542,22 @@ export default function ProfilePage() {
 
         </div>
 
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/90 backdrop-blur-2xl lg:hidden">
+        <div className="grid grid-cols-4">
+          {[
+            { icon: Home, label: "Accueil", href: "/dashboard" },
+            { icon: CalendarDays, label: "Events", href: "/dashboard/events" },
+            { icon: MessageSquare, label: "Messages", href: "/dashboard/messages" },
+            { icon: User, label: "Profil", href: "/dashboard/profile" },
+          ].map((item) => (
+            <Link href={item.href} key={item.label} className="flex flex-col items-center gap-2 py-4 text-zinc-400 transition hover:text-[#FF5A1F]">
+              <item.icon size={20} />
+              <span className="text-xs font-semibold">{item.label}</span>
+            </Link>
+          ))}
+        </div>
       </div>
 
     </main>

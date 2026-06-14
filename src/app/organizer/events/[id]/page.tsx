@@ -63,16 +63,6 @@ const { data: applicationsData, error } =
       ascending: false,
     });
 
-console.log("APPLICATIONS:", applicationsData);
-
-applicationsData?.forEach((app) => {
-  console.log(
-    app.profiles?.full_name,
-    app.profiles
-  );
-});
-
-console.log("ERROR:", error);
 
       setApplications(applicationsData || []);
     } catch (error) {

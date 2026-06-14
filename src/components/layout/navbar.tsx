@@ -266,7 +266,7 @@ export default function Navbar() {
                 className="rounded-2xl bg-[#FF5A1F] px-6 py-3 text-sm font-black uppercase tracking-[0.2em] text-white transition hover:scale-105"
               >
 
-                Logout
+                Déconnexion
 
               </button>
 

@@ -34,8 +34,6 @@ async function handleLogin(
       password,
     });
 
-  console.log("LOGIN DATA:", data);
-  console.log("LOGIN ERROR:", error);
 
   if (error) {
     alert(error.message);
@@ -60,8 +58,6 @@ async function handleLogin(
     .eq("id", user.id)
     .single();
 
-  console.log("PROFILE:", profile);
-  console.log("PROFILE ERROR:", profileError);
 
   if (profileError) {
     alert("Impossible de charger le profil.");
