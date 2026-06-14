@@ -30,6 +30,9 @@ export default function ApplicationsPage() {
   const [loading, setLoading] =
     useState(true);
 
+  const [error, setError] =
+    useState<string | null>(null);
+
   useEffect(() => {
     loadApplications();
   }, []);
@@ -47,7 +50,7 @@ export default function ApplicationsPage() {
       return;
     }
 
-    const { data } =
+    const { data, error: dbError } =
       await supabase
         .from("applications")
         .select(`
@@ -58,6 +61,10 @@ export default function ApplicationsPage() {
         .order("created_at", {
           ascending: false,
         });
+
+    if (dbError) {
+      setError(dbError.message);
+    }
 
     setApplications(data || []);
 
@@ -149,7 +156,14 @@ export default function ApplicationsPage() {
 
               )}
 
+              {error && (
+                <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-6 text-red-400">
+                  Erreur Supabase : {error}
+                </div>
+              )}
+
               {!loading &&
+               !error &&
                applications.length === 0 && (
 
                 <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-10 text-center">
