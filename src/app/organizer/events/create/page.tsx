@@ -69,6 +69,9 @@ export default function CreateEventPage() {
   const [hotel, setHotel] =
     useState(false);
 
+  const [organizerContact, setOrganizerContact] =
+    useState("");
+
   const [loading, setLoading] =
     useState(false);
 
@@ -138,7 +141,7 @@ export default function CreateEventPage() {
 
           event_date: date,
 
-          description,
+          briefing: description,
 
           image_url:
             uploadedImage,
@@ -171,6 +174,8 @@ export default function CreateEventPage() {
             repasType || null,
 
           hotel,
+
+          organizer_contact: organizerContact,
         });
 
     if (error) {
@@ -646,7 +651,25 @@ export default function CreateEventPage() {
 
                 <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
 
-                  Description
+                  Contact organisateur
+
+                </p>
+
+                <input
+                  type="text"
+                  value={organizerContact}
+                  onChange={(e) => setOrganizerContact(e.target.value)}
+                  placeholder="email@organisation.com"
+                  className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 px-6 outline-none focus:border-[#FF5A1F]"
+                />
+
+              </div>
+
+              <div>
+
+                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
+
+                  Description / Briefing
 
                 </p>
 

@@ -437,7 +437,7 @@ await supabase
     user_id: app.marshal_id,
     title: "Votre candidature a été acceptée",
     type: "application_accepted",
-    link: `/events/${eventId}`,
+    link: `/events/${event.slug}`,
   });
 
 loadEvent();
@@ -468,7 +468,7 @@ await supabase
     user_id: app.marshal_id,
     title: "Votre candidature a été refusée",
     type: "application_rejected",
-    link: `/events/${eventId}`,
+    link: `/events/${event.slug}`,
   });
 
 loadEvent();
