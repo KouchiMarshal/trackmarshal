@@ -38,7 +38,7 @@ export default function OrganizerSidebar() {
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
               <div className="h-4 w-4 rounded-full bg-[#FF5A1F]" />
             </div>
-            <h1 className="text-3xl font-black">
+            <h1 className="text-2xl font-black">
               Track<span className="text-[#FF5A1F]">Marshal</span>
             </h1>
           </Link>
