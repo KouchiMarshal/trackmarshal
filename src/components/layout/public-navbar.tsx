@@ -18,6 +18,8 @@ export default function PublicNavbar() {
   const [user, setUser] = useState<any>(null);
   const [open, setOpen] = useState(false);
 
+  const isAdmin = user?.email === "foussardk@gmail.com";
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user || null);
@@ -56,6 +58,14 @@ export default function PublicNavbar() {
             {user ? (
               <>
                 <NotificationBell />
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="hidden h-12 items-center rounded-2xl border border-[#FF5A1F]/40 bg-[#FF5A1F]/10 px-5 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20 lg:flex"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <Link
                   href="/dashboard"
                   className="flex h-12 items-center rounded-2xl bg-[#FF5A1F] px-5 text-sm font-bold transition hover:scale-105 lg:h-14 lg:px-8 lg:text-base"
@@ -131,13 +141,24 @@ export default function PublicNavbar() {
 
             <div className="space-y-3">
               {user ? (
-                <Link
-                  href="/dashboard"
-                  onClick={() => setOpen(false)}
-                  className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] font-black"
-                >
-                  Mon Dashboard
-                </Link>
+                <>
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setOpen(false)}
+                      className="flex h-14 items-center justify-center rounded-2xl border border-[#FF5A1F]/40 bg-[#FF5A1F]/10 font-black text-[#FF5A1F]"
+                    >
+                      Admin
+                    </Link>
+                  )}
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setOpen(false)}
+                    className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] font-black"
+                  >
+                    Mon Dashboard
+                  </Link>
+                </>
               ) : (
                 <>
                   <Link
