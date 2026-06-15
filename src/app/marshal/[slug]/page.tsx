@@ -18,11 +18,20 @@ export default async function MarshalPage({
 
   const { slug } = await params;
 
-  const { data: profile } = await supabase
+  let { data: profile } = await supabase
     .from("profiles")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
+
+  if (!profile) {
+    const { data: byId } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", slug)
+      .maybeSingle();
+    profile = byId;
+  }
 
   const { data: reviews } = await supabase
     .from("reviews")

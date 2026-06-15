@@ -108,7 +108,7 @@ export default function AnnuaireCommissairesPage() {
           {filtered.map((profile) => (
             <Link
               key={profile.id}
-              href={`/marshal/${profile.slug}`}
+              href={`/marshal/${profile.slug || profile.id}`}
               className="group overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.02] transition hover:border-[#FF5A1F]/30 hover:bg-white/[0.04]"
             >
               <div className="relative h-40 bg-gradient-to-br from-[#FF5A1F]/10 to-zinc-900">
