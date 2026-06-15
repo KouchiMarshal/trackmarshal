@@ -114,7 +114,7 @@ export default function ApplicationsPage() {
       `DTSTART:${fmt(start)}`, `DTEND:${fmt(end)}`,
       `SUMMARY:${ev.title} — Commissaire TrackMarshal`,
       `LOCATION:${ev.location}${ev.country ? ", " + ev.country : ""}`,
-      `URL:https://www.trackmarshall.app/events/${ev.slug}`,
+      `URL:https://www.trackmarshal.app/events/${ev.slug}`,
       "END:VEVENT", "END:VCALENDAR",
     ].join("\r\n");
     const blob = new Blob([ics], { type: "text/calendar" });
@@ -128,7 +128,7 @@ export default function ApplicationsPage() {
     const start = new Date(ev.event_date);
     const end = new Date(start.getTime() + 9 * 60 * 60 * 1000);
     const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title + " — Commissaire")}&dates=${fmt(start)}/${fmt(end)}&location=${encodeURIComponent(ev.location)}&details=${encodeURIComponent("TrackMarshal\nhttps://www.trackmarshall.app/events/" + ev.slug)}`;
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title + " — Commissaire")}&dates=${fmt(start)}/${fmt(end)}&location=${encodeURIComponent(ev.location)}&details=${encodeURIComponent("TrackMarshal\nhttps://www.trackmarshal.app/events/" + ev.slug)}`;
   }
 
   function escapeHtml(str: string | null | undefined): string {

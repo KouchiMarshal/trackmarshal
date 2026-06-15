@@ -15,7 +15,7 @@ export default function MentionsLegalesPage() {
 
           <div>
             <h2 className="text-xl font-black text-white mb-4">1. Éditeur du site</h2>
-            <p>Le site <strong>TrackMarshal</strong> (accessible à l'adresse <strong>www.trackmarshall.app</strong>) est édité par :</p>
+            <p>Le site <strong>TrackMarshal</strong> (accessible à l'adresse <strong>www.trackmarshal.app</strong>) est édité par :</p>
             <ul className="mt-3 space-y-1 text-zinc-400">
               <li><strong className="text-white">Nom :</strong> Kevin Foussard</li>
               <li><strong className="text-white">Statut :</strong> Particulier</li>

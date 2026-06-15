@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
                     <p style="margin:8px 0 0;color:#aaa;">📅 ${eventDate}</p>
                     <p style="margin:4px 0 0;color:#aaa;">📍 ${event.location}${event.country ? ", " + event.country : ""}</p>
                   </div>
-                  <a href="https://www.trackmarshall.app/events/${event.slug}" style="display:inline-block;background:#FF5A1F;color:#fff;padding:14px 28px;border-radius:12px;font-weight:bold;text-decoration:none;margin-top:8px;">
+                  <a href="https://www.trackmarshal.app/events/${event.slug}" style="display:inline-block;background:#FF5A1F;color:#fff;padding:14px 28px;border-radius:12px;font-weight:bold;text-decoration:none;margin-top:8px;">
                     Voir l'événement
                   </a>
                 </div>

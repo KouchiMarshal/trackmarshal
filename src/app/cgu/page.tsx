@@ -17,7 +17,7 @@ export default function CguPage() {
             <h2 className="text-xl font-black text-white mb-4">1. Objet</h2>
             <p>
               Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme
-              <strong> TrackMarshal</strong> (www.trackmarshall.app), éditée par Kevin Foussard.
+              <strong> TrackMarshal</strong> (www.trackmarshal.app), éditée par Kevin Foussard.
               TrackMarshal est une plateforme de mise en relation entre commissaires de piste motorsport et
               organisateurs d'événements sportifs.
             </p>

@@ -16,7 +16,7 @@ export default function ConfidentialitePage() {
           <div>
             <h2 className="text-xl font-black text-white mb-4">1. Qui sommes-nous ?</h2>
             <p>
-              TrackMarshal (<strong>www.trackmarshall.app</strong>) est une plateforme qui connecte les commissaires
+              TrackMarshal (<strong>www.trackmarshal.app</strong>) est une plateforme qui connecte les commissaires
               de piste motorsport avec les organisateurs d'événements. Le responsable du traitement des données est
               <strong> Kevin Foussard</strong>, domiciliée à Alençon, France.
             </p>
