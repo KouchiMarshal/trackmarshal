@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = "TrackMarshal <noreply@trackmarshal.app>";
+// Use RESEND_FROM_EMAIL env var, or fall back to Resend's test address (sends only to your own account email)
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 
 type EmailType =
   | "application_received"
