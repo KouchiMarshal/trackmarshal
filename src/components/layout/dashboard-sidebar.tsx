@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import NotificationBell from "@/components/notifications/notification-bell";
 
 const navItems = [
   { icon: Home, label: "Dashboard", href: "/dashboard" },
@@ -37,14 +38,17 @@ export default function DashboardSidebar() {
       {/* Sidebar desktop */}
       <aside className="hidden h-screen w-[280px] shrink-0 sticky top-0 border-r border-white/10 bg-[#050505] lg:flex lg:flex-col overflow-y-auto">
         <div className="border-b border-white/10 p-8">
-          <Link href="/" className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
-              <div className="h-4 w-4 rounded-full bg-[#FF5A1F]" />
-            </div>
-            <h1 className="text-2xl font-black">
-              Track<span className="text-[#FF5A1F]">Marshal</span>
-            </h1>
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
+                <div className="h-4 w-4 rounded-full bg-[#FF5A1F]" />
+              </div>
+              <h1 className="text-2xl font-black">
+                Track<span className="text-[#FF5A1F]">Marshal</span>
+              </h1>
+            </Link>
+            <NotificationBell />
+          </div>
         </div>
 
         <div className="flex-1 p-6">
