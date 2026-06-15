@@ -7,6 +7,7 @@ import {
   ArrowLeft,
   CalendarDays,
   MapPin,
+  Pencil,
   Users,
   Trash2,
 } from "lucide-react";
@@ -183,13 +184,23 @@ const filteredApplications =
               Retour
             </Link>
 
-            <button
-              onClick={deleteEvent}
-              className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
-            >
-              <Trash2 size={18} />
-              Supprimer
-            </button>
+            <div className="flex items-center gap-3">
+              <Link
+                href={`/organizer/events/${eventId}/edit`}
+                className="flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 font-bold backdrop-blur-xl transition hover:bg-white/20"
+              >
+                <Pencil size={18} />
+                Modifier
+              </Link>
+
+              <button
+                onClick={deleteEvent}
+                className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+              >
+                <Trash2 size={18} />
+                Supprimer
+              </button>
+            </div>
 
           </div>
 
