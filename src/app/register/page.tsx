@@ -301,8 +301,8 @@ export default function RegisterPage() {
                       >
                         <option value="">Sélectionner un type</option>
                         <option value="ENCOC - Commissaire C">ENCOC - Commissaire C</option>
-                        <option value="EICOB - Commissaire B">EICOB - Commissaire B</option>
-                        <option value="EICOACPC - Commissaire">EICOACPC - Commissaire</option>
+                        <option value="EICOB - Commissaire international B">EICOB - Commissaire international B</option>
+                        <option value="EICOACPC - Chef de poste">EICOACPC - Chef de poste</option>
                       </select>
                     </div>
 
