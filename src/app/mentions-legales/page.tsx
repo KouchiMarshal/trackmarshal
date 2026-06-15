@@ -21,8 +21,8 @@ export default function MentionsLegalesPage() {
               <li><strong className="text-white">Statut :</strong> Particulier</li>
               <li><strong className="text-white">Ville :</strong> Alençon, France</li>
               <li><strong className="text-white">Email :</strong>{" "}
-                <a href="mailto:contact@trackmarshall.app" className="text-[#FF5A1F] hover:underline">
-                  contact@trackmarshall.app
+                <a href="mailto:contact.trackmarshal@gmail.com" className="text-[#FF5A1F] hover:underline">
+                  contact.trackmarshal@gmail.com
                 </a>
               </li>
             </ul>
@@ -76,8 +76,8 @@ export default function MentionsLegalesPage() {
             <h2 className="text-xl font-black text-white mb-4">7. Contact</h2>
             <p>
               Pour toute question relative aux présentes mentions légales, vous pouvez nous contacter à :{" "}
-              <a href="mailto:contact@trackmarshall.app" className="text-[#FF5A1F] hover:underline">
-                contact@trackmarshall.app
+              <a href="mailto:contact.trackmarshal@gmail.com" className="text-[#FF5A1F] hover:underline">
+                contact.trackmarshal@gmail.com
               </a>
             </p>
           </div>

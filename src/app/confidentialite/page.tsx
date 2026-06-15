@@ -20,7 +20,7 @@ export default function ConfidentialitePage() {
               de piste motorsport avec les organisateurs d'événements. Le responsable du traitement des données est
               <strong> Kevin Foussard</strong>, domiciliée à Alençon, France.
             </p>
-            <p className="mt-3">Contact : <a href="mailto:contact@trackmarshall.app" className="text-[#FF5A1F] hover:underline">contact@trackmarshall.app</a></p>
+            <p className="mt-3">Contact : <a href="mailto:contact.trackmarshal@gmail.com" className="text-[#FF5A1F] hover:underline">contact.trackmarshal@gmail.com</a></p>
           </div>
 
           <div>
@@ -94,7 +94,7 @@ export default function ConfidentialitePage() {
             </ul>
             <p className="mt-4">
               Pour exercer ces droits, contactez-nous à{" "}
-              <a href="mailto:contact@trackmarshall.app" className="text-[#FF5A1F] hover:underline">contact@trackmarshall.app</a>.
+              <a href="mailto:contact.trackmarshal@gmail.com" className="text-[#FF5A1F] hover:underline">contact.trackmarshal@gmail.com</a>.
               Nous répondrons dans un délai de 30 jours.
             </p>
             <p className="mt-3">

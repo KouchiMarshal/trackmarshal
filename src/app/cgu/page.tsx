@@ -108,8 +108,8 @@ export default function CguPage() {
             <h2 className="text-xl font-black text-white mb-4">7. Compte et résiliation</h2>
             <p>
               L'utilisateur peut à tout moment demander la suppression de son compte en contactant{" "}
-              <a href="mailto:contact@trackmarshall.app" className="text-[#FF5A1F] hover:underline">
-                contact@trackmarshall.app
+              <a href="mailto:contact.trackmarshal@gmail.com" className="text-[#FF5A1F] hover:underline">
+                contact.trackmarshal@gmail.com
               </a>.
               Les données associées seront supprimées conformément à notre{" "}
               <a href="/confidentialite" className="text-[#FF5A1F] hover:underline">Politique de confidentialité</a>.
@@ -151,8 +151,8 @@ export default function CguPage() {
             <h2 className="text-xl font-black text-white mb-4">11. Contact</h2>
             <p>
               Pour toute question relative aux présentes CGU :{" "}
-              <a href="mailto:contact@trackmarshall.app" className="text-[#FF5A1F] hover:underline">
-                contact@trackmarshall.app
+              <a href="mailto:contact.trackmarshal@gmail.com" className="text-[#FF5A1F] hover:underline">
+                contact.trackmarshal@gmail.com
               </a>
             </p>
           </div>
