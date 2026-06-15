@@ -128,10 +128,10 @@ export default async function MarshalPage({
 
                       </div>
 
-                      {profile.license_file && (
+                      {profile.license_url && (
 
                         <a
-                          href={profile.license_file}
+                          href={profile.license_url}
                           target="_blank"
                           className="mt-5 inline-flex rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10"
                         >

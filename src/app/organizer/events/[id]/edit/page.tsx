@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function EditEventPage() {
@@ -153,6 +154,10 @@ export default function EditEventPage() {
         <OrganizerSidebar />
 
         <div className="flex-1 overflow-hidden">
+
+          <header className="sticky top-0 z-40 flex h-16 items-center justify-end border-b border-white/10 bg-black/70 px-6 backdrop-blur-2xl">
+            <NotificationBell />
+          </header>
 
           <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/10 blur-[160px] pointer-events-none" />
 

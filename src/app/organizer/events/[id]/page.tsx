@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
@@ -194,6 +195,7 @@ const filteredApplications =
             </Link>
 
             <div className="flex items-center gap-3">
+              <NotificationBell />
               <Link
                 href={`/organizer/events/${eventId}/edit`}
                 className="flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 font-bold backdrop-blur-xl transition hover:bg-white/20"
@@ -548,7 +550,7 @@ loadEvent();
               </h3>
 
               <p className="mt-4 text-zinc-300">
-                {event.description}
+                {event.briefing || "Aucune description disponible."}
               </p>
 
             </div>

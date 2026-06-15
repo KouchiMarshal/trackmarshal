@@ -121,7 +121,7 @@ export default function MessagesPage() {
     )
       return;
 
-    await supabase
+    const { error } = await supabase
       .from("messages")
       .insert({
         conversation_id:
@@ -129,6 +129,8 @@ export default function MessagesPage() {
         sender_id: user.id,
         content: message,
       });
+
+    if (error) return;
 
     setMessage("");
 
