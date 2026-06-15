@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Link from "next/link";
 
@@ -14,6 +14,12 @@ import { Toast, type ToastData } from "@/components/ui/toast";
 export default function RegisterPage() {
 
   const router = useRouter();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) router.replace("/dashboard");
+    });
+  }, [router]);
 
   const [loading, setLoading] =
     useState(false);
