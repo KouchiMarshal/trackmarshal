@@ -550,7 +550,7 @@ loadEvent();
               </h3>
 
               <p className="mt-4 text-zinc-300">
-                {event.briefing || "Aucune description disponible."}
+                {event.briefing || event.description || "Aucune description disponible."}
               </p>
 
             </div>

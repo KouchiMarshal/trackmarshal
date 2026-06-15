@@ -189,7 +189,7 @@ export default async function EventPage({
                 </p>
 
                 <p className="mt-6 text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
-                  {event.hotel ? "Hôtel inclus" : "Non inclus"}
+                  {event.accommodation || (event.hotel ? "Hôtel inclus" : "Non inclus")}
                 </p>
 
               </div>
@@ -201,7 +201,7 @@ export default async function EventPage({
                 </p>
 
                 <p className="mt-6 text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
-                  {event.repas ? event.repas_type || "Repas fournis" : "Non inclus"}
+                  {event.meals || (event.repas ? event.repas_type || "Repas fournis" : "Non inclus")}
                 </p>
 
               </div>
