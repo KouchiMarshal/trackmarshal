@@ -240,16 +240,20 @@ export default function OrganizerApplicationsPage() {
                         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
 
                           <div className="flex gap-4">
-                            <img
-                              src={
-                                app.profiles?.avatar_url ||
-                                `https://ui-avatars.com/api/?name=${encodeURIComponent(app.profiles?.full_name || "Marshal")}&background=FF5A1F&color=fff`
-                              }
-                              alt=""
-                              className="h-16 w-16 rounded-2xl object-cover"
-                            />
+                            <Link href={`/organizer/commissaires/${app.marshal_id}`}>
+                              <img
+                                src={
+                                  app.profiles?.avatar_url ||
+                                  `https://ui-avatars.com/api/?name=${encodeURIComponent(app.profiles?.full_name || "Marshal")}&background=FF5A1F&color=fff`
+                                }
+                                alt=""
+                                className="h-16 w-16 rounded-2xl object-cover transition hover:opacity-80"
+                              />
+                            </Link>
                             <div>
-                              <h3 className="text-2xl font-black">{app.profiles?.full_name}</h3>
+                              <Link href={`/organizer/commissaires/${app.marshal_id}`} className="transition hover:text-[#FF5A1F]">
+                                <h3 className="text-2xl font-black">{app.profiles?.full_name}</h3>
+                              </Link>
                               <p className="mt-1 text-sm text-zinc-400">
                                 📍 {app.profiles?.city || "Ville inconnue"}{app.profiles?.country ? `, ${app.profiles.country}` : ""}
                               </p>
@@ -273,7 +277,13 @@ export default function OrganizerApplicationsPage() {
                               {app.status === "accepted" ? "Accepté" : app.status === "rejected" ? "Refusé" : "En attente"}
                             </span>
 
-                            <div className="flex gap-3">
+                            <div className="flex flex-wrap gap-3">
+                              <Link
+                                href={`/organizer/commissaires/${app.marshal_id}`}
+                                className="rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                              >
+                                Voir profil
+                              </Link>
                               <button
                                 disabled={app.status === "accepted"}
                                 onClick={() => updateStatus(app.id, "accepted", app.marshal_id, app.events?.slug, app.events?.title, app.profiles?.full_name)}

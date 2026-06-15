@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { supabase } from "@/lib/supabase";
 
-import Navbar from "@/components/layout/navbar";
+import PublicNavbar from "@/components/layout/public-navbar";
 
 type MarshalPageProps = {
   params: Promise<{
@@ -36,7 +36,7 @@ export default async function MarshalPage({
   return (
     <main className="min-h-screen overflow-hidden bg-[#050505] text-white">
 
-      <Navbar />
+      <PublicNavbar />
 
       <section className="relative overflow-hidden border-b border-white/10 pt-40">
 

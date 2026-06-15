@@ -376,22 +376,26 @@ const filteredApplications =
 
     <div className="flex gap-4">
 
-      <img
-        src={
-          app.profiles?.avatar_url ||
-          `https://ui-avatars.com/api/?name=${encodeURIComponent(
-            app.profiles?.full_name || "Marshal"
-          )}`
-        }
-        alt=""
-        className="h-16 w-16 rounded-full"
-      />
+      <Link href={`/organizer/commissaires/${app.marshal_id}`}>
+        <img
+          src={
+            app.profiles?.avatar_url ||
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              app.profiles?.full_name || "Marshal"
+            )}`
+          }
+          alt=""
+          className="h-16 w-16 rounded-full transition hover:opacity-80"
+        />
+      </Link>
 
       <div>
 
-        <h3 className="text-2xl font-black">
-          {app.profiles?.full_name}
-        </h3>
+        <Link href={`/organizer/commissaires/${app.marshal_id}`} className="transition hover:text-[#FF5A1F]">
+          <h3 className="text-2xl font-black">
+            {app.profiles?.full_name}
+          </h3>
+        </Link>
 
         <p className="mt-2 text-zinc-400">
           📍 {app.profiles?.city || "Ville inconnue"}
@@ -446,8 +450,16 @@ const filteredApplications =
 
     </div>
 
-    <div className="flex gap-3">
+    <div className="flex flex-col gap-3">
 
+  <Link
+    href={`/organizer/commissaires/${app.marshal_id}`}
+    className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2 text-center text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+  >
+    Voir profil
+  </Link>
+
+  <div className="flex gap-3">
   <button
   disabled={app.status === "accepted"}
   onClick={async () => {
