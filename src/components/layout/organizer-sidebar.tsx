@@ -39,9 +39,7 @@ export default function OrganizerSidebar() {
       <aside className="hidden h-screen w-[280px] shrink-0 sticky top-0 border-r border-white/10 bg-[#050505] lg:flex lg:flex-col overflow-y-auto">
         <div className="border-b border-white/10 p-8">
           <Link href="/" className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
-              <div className="h-4 w-4 rounded-full bg-[#FF5A1F]" />
-            </div>
+            <img src="/logo.png" alt="TrackMarshal" className="h-12 w-12 rounded-full object-cover" />
             <h1 className="text-xl font-black">
               Track<span className="text-[#FF5A1F]">Marshal</span>
             </h1>

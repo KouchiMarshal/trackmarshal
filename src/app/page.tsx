@@ -31,11 +31,16 @@ export default function HomePage() {
 
           <div className="max-w-5xl">
 
-            <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">
-
-              Plateforme Motorsport Premium
-
-            </p>
+            <div className="flex items-center gap-5">
+              <img
+                src="/logo.png"
+                alt="TrackMarshal"
+                className="h-20 w-20 rounded-full object-cover shadow-xl shadow-[#FF5A1F]/30 ring-2 ring-[#FF5A1F]/40 lg:h-28 lg:w-28"
+              />
+              <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">
+                Plateforme Motorsport Premium
+              </p>
+            </div>
 
             <h1 className="mt-6 text-5xl font-black uppercase leading-[0.92] tracking-[-0.05em] sm:text-6xl lg:text-[9rem]">
 

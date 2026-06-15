@@ -32,9 +32,7 @@ export default function PublicNavbar() {
         <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:h-24 lg:px-8">
 
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FF5A1F]/10 lg:h-12 lg:w-12">
-              <div className="h-3 w-3 rounded-full bg-[#FF5A1F] lg:h-4 lg:w-4" />
-            </div>
+            <img src="/logo.png" alt="TrackMarshal" className="h-10 w-10 rounded-full object-cover lg:h-12 lg:w-12" />
             <h1 className="text-2xl font-black lg:text-3xl">
               Track<span className="text-[#FF5A1F]">Marshal</span>
             </h1>
@@ -106,9 +104,7 @@ export default function PublicNavbar() {
         <div className="fixed inset-0 z-[60] flex flex-col bg-black lg:hidden">
           <div className="flex h-20 items-center justify-between px-4">
             <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
-                <div className="h-3 w-3 rounded-full bg-[#FF5A1F]" />
-              </div>
+              <img src="/logo.png" alt="TrackMarshal" className="h-10 w-10 rounded-full object-cover" />
               <h1 className="text-2xl font-black">
                 Track<span className="text-[#FF5A1F]">Marshal</span>
               </h1>
