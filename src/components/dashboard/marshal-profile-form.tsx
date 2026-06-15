@@ -18,6 +18,8 @@ export default function MarshalProfileForm() {
   const [uploadingLicense, setUploadingLicense] =
     useState(false);
 
+  const [available, setAvailable] = useState(true);
+
   const [formData, setFormData] =
     useState({
       full_name: "",
@@ -55,7 +57,7 @@ export default function MarshalProfileForm() {
       .single();
 
     if (data) {
-
+      setAvailable(data.available !== false);
       setFormData({
         full_name:
           data.full_name || "",
@@ -226,6 +228,7 @@ export default function MarshalProfileForm() {
             formData.license_number,
           license_url:
             formData.license_url,
+          available,
         })
         .eq("id", user.id);
 
@@ -693,6 +696,37 @@ export default function MarshalProfileForm() {
 
           </div>
 
+        </div>
+
+        <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+          <p className="text-sm uppercase tracking-[0.3em] text-zinc-400">Statut de disponibilité</p>
+          <p className="mt-2 text-xs text-zinc-600">Visible sur votre profil public. Les organisateurs filtrent par disponibilité.</p>
+          <div className="mt-5 flex items-center gap-5">
+            <button
+              type="button"
+              onClick={() => setAvailable(true)}
+              className={`flex h-14 flex-1 items-center justify-center gap-3 rounded-2xl font-bold transition ${
+                available
+                  ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                  : "border border-white/10 text-zinc-500 hover:text-white"
+              }`}
+            >
+              <span className={`h-3 w-3 rounded-full ${available ? "bg-green-400" : "bg-zinc-700"}`} />
+              Disponible
+            </button>
+            <button
+              type="button"
+              onClick={() => setAvailable(false)}
+              className={`flex h-14 flex-1 items-center justify-center gap-3 rounded-2xl font-bold transition ${
+                !available
+                  ? "bg-red-500/20 text-red-400 border border-red-500/30"
+                  : "border border-white/10 text-zinc-500 hover:text-white"
+              }`}
+            >
+              <span className={`h-3 w-3 rounded-full ${!available ? "bg-red-400" : "bg-zinc-700"}`} />
+              Indisponible
+            </button>
+          </div>
         </div>
 
         <button

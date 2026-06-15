@@ -197,7 +197,7 @@ export default async function MarshalPage({
 
                 </div>
 
-                <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+                <div className={`rounded-[32px] border p-8 backdrop-blur-xl ${profile.available !== false ? "border-green-500/20 bg-green-500/5" : "border-red-500/20 bg-red-500/5"}`}>
 
                   <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
 
@@ -205,11 +205,12 @@ export default async function MarshalPage({
 
                   </p>
 
-                  <h3 className="mt-4 text-3xl font-black text-[#FF5A1F]">
-
-                    Disponible
-
-                  </h3>
+                  <div className="mt-3 flex items-center gap-3">
+                    <span className={`h-3 w-3 rounded-full ${profile.available !== false ? "bg-green-400" : "bg-red-400"}`} />
+                    <h3 className={`text-2xl font-black ${profile.available !== false ? "text-green-400" : "text-red-400"}`}>
+                      {profile.available !== false ? "Disponible" : "Indisponible"}
+                    </h3>
+                  </div>
 
                 </div>
 

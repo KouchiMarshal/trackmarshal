@@ -155,6 +155,20 @@ export default function OrganizerDashboard() {
 
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 sm:p-6 lg:p-10">
 
+              {/* Banner vérification en attente */}
+              {profile && !profile.organizer_verified && (
+                <div className="mb-6 flex items-start gap-4 rounded-[24px] border border-yellow-500/30 bg-yellow-500/10 p-5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-yellow-500/20 text-lg">⏳</div>
+                  <div>
+                    <p className="font-black text-yellow-400">Compte en attente de vérification</p>
+                    <p className="mt-1 text-sm text-zinc-400">
+                      Notre équipe vérifie votre compte organisateur. Vous pourrez publier des événements dès validation.
+                      La vérification prend généralement moins de 24h.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
                 <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">

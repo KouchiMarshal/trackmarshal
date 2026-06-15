@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, MapPin, Search, Users } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, LayoutGrid, MapPin, Search, Users } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
@@ -8,6 +8,7 @@ import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
+import { SkeletonEventCard } from "@/components/ui/skeleton";
 
 const DISCIPLINES = ["Rallye", "Circuit", "Karting", "Drift"];
 
@@ -20,6 +21,8 @@ export default function DashboardEventsPage() {
   const [search, setSearch] = useState("");
   const [discipline, setDiscipline] = useState("");
   const [dateFilter, setDateFilter] = useState("all");
+  const [viewMode, setViewMode] = useState<"grid" | "calendar">("grid");
+  const [calendarDate, setCalendarDate] = useState(new Date());
 
   useEffect(() => {
     loadData();
@@ -114,21 +117,39 @@ export default function DashboardEventsPage() {
 
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
-              {/* Barre de recherche */}
-              <div className="mb-6 flex h-14 items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.04] px-5 backdrop-blur-xl">
-                <Search size={20} className="shrink-0 text-[#FF5A1F]" />
-                <input
-                  type="text"
-                  placeholder="Rechercher par nom, ville, pays..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-transparent text-white outline-none placeholder:text-zinc-500"
-                />
-                {search && (
-                  <button onClick={() => setSearch("")} className="shrink-0 text-xs text-zinc-500 hover:text-white">
-                    Effacer
+              {/* Barre de recherche + toggle vue */}
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex h-14 flex-1 items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.04] px-5 backdrop-blur-xl">
+                  <Search size={20} className="shrink-0 text-[#FF5A1F]" />
+                  <input
+                    type="text"
+                    placeholder="Rechercher par nom, ville, pays..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full bg-transparent text-white outline-none placeholder:text-zinc-500"
+                  />
+                  {search && (
+                    <button onClick={() => setSearch("")} className="shrink-0 text-xs text-zinc-500 hover:text-white">
+                      Effacer
+                    </button>
+                  )}
+                </div>
+                <div className="flex h-14 shrink-0 items-center gap-1 rounded-[20px] border border-white/10 bg-white/[0.04] p-1.5">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${viewMode === "grid" ? "bg-[#FF5A1F] text-white" : "text-zinc-500 hover:text-white"}`}
+                    title="Vue grille"
+                  >
+                    <LayoutGrid size={18} />
                   </button>
-                )}
+                  <button
+                    onClick={() => setViewMode("calendar")}
+                    className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${viewMode === "calendar" ? "bg-[#FF5A1F] text-white" : "text-zinc-500 hover:text-white"}`}
+                    title="Vue calendrier"
+                  >
+                    <CalendarDays size={18} />
+                  </button>
+                </div>
               </div>
 
               {/* Filtres discipline */}
@@ -177,9 +198,86 @@ export default function DashboardEventsPage() {
                 ))}
               </div>
 
-              {/* Résultats */}
-              {loading ? (
-                <div className="py-20 text-center text-zinc-500">Chargement...</div>
+              {/* Vue Calendrier */}
+              {viewMode === "calendar" && !loading && (
+                <div className="mb-8 rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                  <div className="mb-6 flex items-center justify-between">
+                    <button
+                      onClick={() => setCalendarDate((d) => { const n = new Date(d); n.setMonth(n.getMonth() - 1); return n; })}
+                      className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 transition hover:bg-white/10"
+                    >
+                      <ChevronLeft size={18} />
+                    </button>
+                    <h3 className="text-xl font-black capitalize">
+                      {calendarDate.toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
+                    </h3>
+                    <button
+                      onClick={() => setCalendarDate((d) => { const n = new Date(d); n.setMonth(n.getMonth() + 1); return n; })}
+                      className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 transition hover:bg-white/10"
+                    >
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-7 gap-1 text-center">
+                    {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map((d) => (
+                      <div key={d} className="py-2 text-xs font-bold uppercase tracking-[0.1em] text-zinc-600">{d}</div>
+                    ))}
+                    {(() => {
+                      const year = calendarDate.getFullYear();
+                      const month = calendarDate.getMonth();
+                      const firstDay = new Date(year, month, 1).getDay();
+                      const offset = firstDay === 0 ? 6 : firstDay - 1;
+                      const daysInMonth = new Date(year, month + 1, 0).getDate();
+                      const cells: JSX.Element[] = [];
+                      for (let i = 0; i < offset; i++) cells.push(<div key={`e${i}`} />);
+                      for (let day = 1; day <= daysInMonth; day++) {
+                        const date = new Date(year, month, day);
+                        const eventsOnDay = events.filter((ev) => {
+                          const d = new Date(ev.event_date);
+                          return d.getFullYear() === year && d.getMonth() === month && d.getDate() === day;
+                        });
+                        const hasApp = eventsOnDay.some((ev) => applications.find((a) => a.event_id === ev.id));
+                        const isToday = date.toDateString() === new Date().toDateString();
+                        cells.push(
+                          <div key={day} className={`relative min-h-[52px] rounded-xl p-1.5 transition ${isToday ? "border border-[#FF5A1F]/40 bg-[#FF5A1F]/5" : "hover:bg-white/5"}`}>
+                            <p className={`text-xs font-bold ${isToday ? "text-[#FF5A1F]" : "text-zinc-400"}`}>{day}</p>
+                            {eventsOnDay.map((ev) => {
+                              const app = applications.find((a) => a.event_id === ev.id);
+                              return (
+                                <Link
+                                  key={ev.id}
+                                  href={`/events/${ev.slug}`}
+                                  className={`mt-0.5 block truncate rounded px-1 py-0.5 text-[10px] font-bold leading-tight ${
+                                    app?.status === "accepted" ? "bg-green-500/30 text-green-300" :
+                                    app?.status === "rejected" ? "bg-red-500/20 text-red-400" :
+                                    app ? "bg-yellow-500/20 text-yellow-300" :
+                                    "bg-[#FF5A1F]/20 text-[#FF5A1F]"
+                                  }`}
+                                  title={ev.title}
+                                >
+                                  {ev.title}
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        );
+                      }
+                      return cells;
+                    })()}
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-4 text-xs text-zinc-500">
+                    <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-[#FF5A1F]/40" /> Événement disponible</span>
+                    <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-yellow-500/30" /> En attente</span>
+                    <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-green-500/30" /> Accepté</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Résultats — vue grille */}
+              {viewMode === "grid" && (loading ? (
+                <div className="grid gap-6 xl:grid-cols-2">
+                  {[1, 2, 3, 4].map((i) => <SkeletonEventCard key={i} />)}
+                </div>
               ) : filtered.length === 0 ? (
                 <div className="rounded-[32px] border border-dashed border-white/10 p-16 text-center">
                   <h2 className="text-3xl font-black">Aucun événement trouvé</h2>
@@ -270,7 +368,7 @@ export default function DashboardEventsPage() {
                     );
                   })}
                 </div>
-              )}
+              ))}
 
             </div>
           </div>

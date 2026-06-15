@@ -18,6 +18,8 @@ import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
+import { ConfirmModal } from "@/components/ui/confirm-modal";
+import { sendEmail } from "@/lib/sendEmail";
 
 export default function OrganizerEventDetailsPage() {
   const params = useParams();
@@ -33,6 +35,7 @@ const [filter, setFilter] =
   const [event, setEvent] = useState<any>(null);
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
     if (!eventId) return;
@@ -93,17 +96,7 @@ const [filter, setFilter] =
   }
 
   async function deleteEvent() {
-    const confirmDelete = confirm(
-      "Supprimer définitivement cet événement ?"
-    );
-
-    if (!confirmDelete) return;
-
-    await supabase
-      .from("events")
-      .delete()
-      .eq("id", eventId);
-
+    await supabase.from("events").delete().eq("id", eventId);
     router.push("/organizer/events");
   }
 
@@ -246,6 +239,15 @@ const filteredApplications =
     <main className="min-h-screen bg-black text-white">
 
       <Toast toast={toast} onClose={() => setToast(null)} />
+      <ConfirmModal
+        open={confirmDelete}
+        title="Supprimer l'événement"
+        message={`Êtes-vous sûr de vouloir supprimer "${event?.title}" ? Cette action est irréversible et supprimera toutes les candidatures associées.`}
+        confirmText="Supprimer définitivement"
+        danger
+        onConfirm={() => { setConfirmDelete(false); deleteEvent(); }}
+        onCancel={() => setConfirmDelete(false)}
+      />
 
       <div className="flex min-h-screen">
 
@@ -289,7 +291,7 @@ const filteredApplications =
               </Link>
 
               <button
-                onClick={deleteEvent}
+                onClick={() => setConfirmDelete(true)}
                 className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
               >
                 <Trash2 size={18} />
@@ -385,7 +387,13 @@ const filteredApplications =
               </div>
 
               {accepted > 0 && (
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link
+                    href={`/organizer/events/${eventId}/reviews`}
+                    className="flex items-center gap-2 rounded-2xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-5 py-3 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20"
+                  >
+                    ⭐ Évaluer
+                  </Link>
                   <button
                     onClick={exportCSV}
                     className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
@@ -589,6 +597,14 @@ await supabase
     link: `/events/${event.slug}`,
   });
 
+if (app.profiles?.email) {
+  sendEmail(app.profiles.email, "application_accepted", {
+    eventTitle: event.title,
+    eventDate: formatDate(event.event_date),
+    eventLocation: event.location,
+  });
+}
+
 const { data: { user: currentUser } } = await supabase.auth.getUser();
 if (currentUser) {
   const { data: convData, error: convError } = await supabase
@@ -639,6 +655,12 @@ await supabase
     type: "application_rejected",
     link: `/events/${event.slug}`,
   });
+
+if (app.profiles?.email) {
+  sendEmail(app.profiles.email, "application_rejected", {
+    eventTitle: event.title,
+  });
+}
 
 loadEvent();
   }}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, CheckCircle2, Clock3, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clock3, Mail, MapPin, Phone, Star } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -12,6 +12,7 @@ export default function CommissaireProfilePage() {
   const params = useParams();
   const marshalId = params?.id as string;
   const [profile, setProfile] = useState<any>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,6 +27,14 @@ export default function CommissaireProfilePage() {
       .eq("id", marshalId)
       .single();
     setProfile(data);
+
+    const { data: reviewsData } = await supabase
+      .from("reviews")
+      .select("*")
+      .eq("marshal_id", marshalId)
+      .order("created_at", { ascending: false });
+    setReviews(reviewsData || []);
+
     setLoading(false);
   }
 
@@ -236,6 +245,48 @@ export default function CommissaireProfilePage() {
                       </div>
                     </div>
                   )}
+
+                  {/* Avis organisateurs — visible uniquement par les organisateurs */}
+                  <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Avis organisateurs</p>
+                      {reviews.length > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span className="flex items-center gap-1 text-sm font-black text-[#FF5A1F]">
+                            <Star size={14} className="fill-[#FF5A1F]" />
+                            {(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)}
+                          </span>
+                          <span className="text-xs text-zinc-500">({reviews.length} avis)</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {reviews.length === 0 ? (
+                      <p className="mt-4 text-sm text-zinc-500">Aucun avis pour ce commissaire.</p>
+                    ) : (
+                      <div className="mt-5 space-y-4">
+                        {reviews.map((r) => (
+                          <div key={r.id} className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                            <div className="flex items-center gap-1">
+                              {[1,2,3,4,5].map((s) => (
+                                <Star
+                                  key={s}
+                                  size={14}
+                                  className={s <= r.rating ? "fill-[#FF5A1F] text-[#FF5A1F]" : "text-zinc-700"}
+                                />
+                              ))}
+                              <span className="ml-2 text-xs text-zinc-500">
+                                {new Date(r.created_at).toLocaleDateString("fr-FR")}
+                              </span>
+                            </div>
+                            {r.comment && (
+                              <p className="mt-2 text-sm leading-relaxed text-zinc-300">{r.comment}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
                 </div>
 

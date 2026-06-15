@@ -39,14 +39,21 @@ export default function DashboardSidebar() {
       if (user?.email !== "foussardk@gmail.com") return;
       setIsAdmin(true);
 
-      const { count } = await supabase
-        .from("profiles")
-        .select("id", { count: "exact", head: true })
-        .eq("role", "marshal")
-        .not("license_url", "is", null)
-        .eq("license_verified", false);
+      const [{ count: licenseCount }, { count: orgCount }] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("id", { count: "exact", head: true })
+          .eq("role", "marshal")
+          .not("license_url", "is", null)
+          .eq("license_verified", false),
+        supabase
+          .from("profiles")
+          .select("id", { count: "exact", head: true })
+          .eq("role", "organizer")
+          .eq("organizer_verified", false),
+      ]);
 
-      setPendingLicenses(count || 0);
+      setPendingLicenses((licenseCount || 0) + (orgCount || 0));
     }
     checkAdmin();
   }, []);

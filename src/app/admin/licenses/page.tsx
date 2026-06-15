@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { CheckCircle2, Clock3, ExternalLink, XCircle } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
+import { sendEmail } from "@/lib/sendEmail";
 
 export default function AdminLicensesPage() {
   const [commissaires, setCommissaires] = useState<any[]>([]);
@@ -36,6 +37,13 @@ export default function AdminLicensesPage() {
       type: verified ? "license_verified" : "license_rejected",
       link: "/dashboard/profile",
     });
+
+    const commissaire = commissaires.find((c) => c.id === id);
+    if (commissaire?.email) {
+      sendEmail(commissaire.email, verified ? "license_validated" : "license_rejected", {
+        licenseType: commissaire.license_type,
+      });
+    }
 
     setToast({
       message: verified ? "Licence validée." : "Licence rejetée.",

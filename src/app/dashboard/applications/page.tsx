@@ -21,6 +21,7 @@ import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
+import { SkeletonApplicationCard } from "@/components/ui/skeleton";
 
 export default function ApplicationsPage() {
 
@@ -93,6 +94,45 @@ export default function ApplicationsPage() {
     setApplications(merged);
 
     setLoading(false);
+  }
+
+  function printBriefing(app: any) {
+    const ev = app.events;
+    if (!ev) return;
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.write(`<!DOCTYPE html><html lang="fr"><head>
+      <meta charset="UTF-8" /><title>Briefing — ${ev.title}</title>
+      <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; color: #111; }
+        h1 { color: #FF5A1F; border-bottom: 2px solid #FF5A1F; padding-bottom: 10px; }
+        .label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #888; margin-top: 18px; }
+        .value { font-size: 15px; margin-top: 4px; }
+        .badge { display: inline-block; background: #FF5A1F; color: white; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 8px; }
+        .section { margin-top: 28px; border: 1px solid #eee; border-radius: 8px; padding: 18px; }
+        @media print { body { margin: 20px; } button { display: none; } }
+      </style>
+    </head><body>
+      <h1>🏁 Briefing Commissaire — ${ev.title}</h1>
+      <div class="badge">CANDIDATURE ACCEPTÉE</div>
+      <div class="section">
+        <div class="label">Date de l'événement</div>
+        <div class="value">${new Date(ev.event_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</div>
+        <div class="label">Lieu</div>
+        <div class="value">${ev.location || "—"}${ev.country ? ", " + ev.country : ""}</div>
+        ${ev.discipline ? `<div class="label">Discipline</div><div class="value">${ev.discipline}</div>` : ""}
+      </div>
+      ${ev.description ? `<div class="section"><div class="label">Description</div><div class="value">${ev.description}</div></div>` : ""}
+      ${ev.accommodation !== null ? `<div class="section"><div class="label">Hébergement</div><div class="value">${ev.accommodation ? "✅ Inclus" : "❌ Non inclus"}</div></div>` : ""}
+      ${ev.meals !== null ? `<div class="section"><div class="label">Repas</div><div class="value">${ev.meals ? "✅ Inclus" : "❌ Non inclus"}</div></div>` : ""}
+      ${ev.travel_reimbursement !== null ? `<div class="section"><div class="label">Défraiement</div><div class="value">${ev.travel_reimbursement ? "✅ Inclus" : "❌ Non inclus"}</div></div>` : ""}
+      <div class="section" style="background:#fff8f5;border-color:#FF5A1F22">
+        <div class="label">Document généré le</div>
+        <div class="value">${new Date().toLocaleDateString("fr-FR")} — TrackMarshal.app</div>
+      </div>
+      <script>window.onload = () => window.print();</script>
+    </body></html>`);
+    w.document.close();
   }
 
   async function cancelApplication(appId: string, status: string) {
@@ -198,13 +238,9 @@ export default function ApplicationsPage() {
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               {loading && (
-
-                <div className="py-20 text-center text-zinc-500">
-
-                  Chargement...
-
+                <div className="space-y-6">
+                  {[1, 2, 3].map((i) => <SkeletonApplicationCard key={i} />)}
                 </div>
-
               )}
 
               {error && (
@@ -325,12 +361,21 @@ export default function ApplicationsPage() {
                             </Link>
 
                             {app.status === "accepted" && (
-                              <Link
-                                href={`/events/${app.events?.slug}`}
-                                className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
-                              >
-                                Voir briefing
-                              </Link>
+                              <>
+                                <Link
+                                  href={`/events/${app.events?.slug}`}
+                                  className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
+                                >
+                                  Voir briefing
+                                </Link>
+                                <button
+                                  onClick={() => printBriefing(app)}
+                                  className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 font-bold transition hover:border-[#FF5A1F]/40"
+                                  title="Télécharger le briefing PDF"
+                                >
+                                  📄 PDF
+                                </button>
+                              </>
                             )}
 
                             {app.status !== "rejected" && (

@@ -17,6 +17,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
 import { formatDate } from "@/lib/formatDate";
+import { SkeletonEventCard } from "@/components/ui/skeleton";
 
 export default function EventsPage() {
 
@@ -171,13 +172,9 @@ export default function EventsPage() {
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
 
           {loading && (
-
-            <div className="py-20 text-center text-zinc-500">
-
-              Chargement...
-
+            <div className="grid gap-6 xl:grid-cols-2">
+              {[1, 2, 3, 4].map((i) => <SkeletonEventCard key={i} />)}
             </div>
-
           )}
 
           <div className="grid gap-6 xl:grid-cols-2">

@@ -35,8 +35,30 @@ export default function RegisterPage() {
   const [licenseNumber, setLicenseNumber] =
     useState("");
 
+  const [organizerOrgName, setOrganizerOrgName] =
+    useState("");
+
+  const [organizerDocUrl, setOrganizerDocUrl] =
+    useState("");
+
+  const [uploadingDoc, setUploadingDoc] =
+    useState(false);
+
   const [toast, setToast] =
     useState<ToastData>(null);
+
+  async function uploadOrganizerDoc(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingDoc(true);
+    const ext = file.name.split(".").pop();
+    const fileName = `org_${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("licenses").upload(fileName, file);
+    if (error) { setToast({ message: error.message, type: "error" }); setUploadingDoc(false); return; }
+    const { data } = supabase.storage.from("licenses").getPublicUrl(fileName);
+    setOrganizerDocUrl(data.publicUrl);
+    setUploadingDoc(false);
+  }
 
   async function handleRegister(
     e: React.FormEvent
@@ -51,6 +73,16 @@ export default function RegisterPage() {
 
     if (role === "marshal" && !licenseNumber.trim()) {
       setToast({ message: "Veuillez renseigner votre numéro de licence.", type: "error" });
+      return;
+    }
+
+    if (role === "organizer" && !organizerOrgName.trim()) {
+      setToast({ message: "Veuillez renseigner le nom de votre ASA / ASK.", type: "error" });
+      return;
+    }
+
+    if (role === "organizer" && !organizerDocUrl) {
+      setToast({ message: "Veuillez uploader un justificatif (document ASA / ASK).", type: "error" });
       return;
     }
 
@@ -93,6 +125,12 @@ export default function RegisterPage() {
     if (role === "marshal") {
       profileData.license_type = licenseType;
       profileData.license_number = licenseNumber.trim();
+    }
+
+    if (role === "organizer") {
+      profileData.organization_name = organizerOrgName.trim();
+      profileData.organizer_doc_url = organizerDocUrl;
+      profileData.organizer_verified = false;
     }
 
     await supabase
@@ -318,6 +356,48 @@ export default function RegisterPage() {
                         placeholder="ex : 2024-FFSA-00123"
                         className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                       />
+                    </div>
+                  </>
+                )}
+
+                {role === "organizer" && (
+                  <>
+                    <div className="rounded-2xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-4">
+                      <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#FF5A1F]">Vérification organisateur</p>
+                      <p className="mt-1.5 text-xs text-zinc-400">
+                        Pour publier des événements, nous devons vérifier que vous représentez bien une ASA ou ASK agréée.
+                        Votre compte sera validé par notre équipe sous 24h.
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                        Nom de votre ASA / ASK <span className="text-[#FF5A1F]">*</span>
+                      </p>
+                      <input
+                        type="text"
+                        required
+                        value={organizerOrgName}
+                        onChange={(e) => setOrganizerOrgName(e.target.value)}
+                        placeholder="ex : ASA du Val de Loire"
+                        className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                      />
+                    </div>
+
+                    <div>
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                        Justificatif officiel (agrément ASA/ASK) <span className="text-[#FF5A1F]">*</span>
+                      </p>
+                      <p className="mb-3 text-xs text-zinc-500">PDF, image — lettre d'agrément, statuts, ou carte de membre officielle.</p>
+                      <input
+                        type="file"
+                        accept=".pdf,image/*"
+                        onChange={uploadOrganizerDoc}
+                        required
+                        className="block w-full text-sm text-zinc-400 file:mr-4 file:rounded-xl file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-bold file:text-white"
+                      />
+                      {uploadingDoc && <p className="mt-2 text-xs text-[#FF5A1F]">Upload en cours...</p>}
+                      {organizerDocUrl && <p className="mt-2 text-xs text-green-400">✔ Document uploadé avec succès</p>}
                     </div>
                   </>
                 )}

@@ -178,78 +178,48 @@ setProfile(profileData);
 
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {(() => {
+                const accepted = applications.filter((a: any) => a.status === "accepted").length;
+                const pending = applications.filter((a: any) => a.status === "pending").length;
+                const acceptRate = applications.length > 0 ? Math.round((accepted / applications.length) * 100) : 0;
+                return (
+                  <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-                <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Candidatures</p>
+                      <h2 className="mt-6 text-5xl font-black">{applications.length}</h2>
+                      <p className="mt-2 text-xs text-zinc-600">{accepted} acceptées · {pending} en attente</p>
+                    </div>
 
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Taux d'acceptation</p>
+                      <h2 className={`mt-6 text-5xl font-black ${acceptRate >= 50 ? "text-green-400" : acceptRate > 0 ? "text-yellow-400" : ""}`}>
+                        {acceptRate}%
+                      </h2>
+                      <p className="mt-2 text-xs text-zinc-600">{accepted} sur {applications.length}</p>
+                    </div>
 
-                    Candidatures
+                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Licence</p>
+                      <h2 className={`mt-6 text-3xl font-black ${profile?.license_verified ? "text-green-400" : "text-yellow-400"}`}>
+                        {profile?.license_verified ? "Vérifiée ✔" : "En attente"}
+                      </h2>
+                      {profile?.license_type && <p className="mt-2 text-xs text-zinc-600">{profile.license_type}</p>}
+                    </div>
 
-                  </p>
+                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Événements à venir</p>
+                      <h2 className="mt-6 text-5xl font-black text-[#FF5A1F]">{events.length}</h2>
+                      {profile?.available !== false ? (
+                        <p className="mt-2 flex items-center gap-1.5 text-xs text-green-400"><span className="h-2 w-2 rounded-full bg-green-400" />Disponible</p>
+                      ) : (
+                        <p className="mt-2 flex items-center gap-1.5 text-xs text-red-400"><span className="h-2 w-2 rounded-full bg-red-400" />Indisponible</p>
+                      )}
+                    </div>
 
-                  <h2 className="mt-6 text-5xl font-black">
-
-                    {applications.length}
-
-                  </h2>
-
-                </div>
-
-                <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
-
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-
-                    Événements à venir
-
-                  </p>
-
-                  <h2 className="mt-6 text-5xl font-black">
-
-                    {events.length}
-
-                  </h2>
-
-                </div>
-
-                <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
-
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-
-                    Licence
-
-                  </p>
-
-                  <h2 className="mt-6 text-3xl font-black text-green-400">
-
-                    {profile?.license_verified
-                      ? "Vérifiée"
-                      : "En attente"}
-
-                  </h2>
-
-                </div>
-
-                <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
-
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-
-                    Expérience
-
-                  </p>
-
-                  <h2 className="mt-6 text-3xl font-black text-[#FF5A1F]">
-
-                    {
-                      profile?.experience ||
-                      "N/A"
-                    }
-
-                  </h2>
-
-                </div>
-
-              </div>
+                  </div>
+                );
+              })()}
 
               {events.length > 0 && (
 
