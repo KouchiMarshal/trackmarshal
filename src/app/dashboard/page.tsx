@@ -5,6 +5,7 @@ import { CalendarDays, MapPin } from "lucide-react";
 import Link from "next/link";
 
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 
 import {
@@ -157,14 +158,15 @@ setProfile(profileData);
 
               </div>
 
-              <Link
-                href="/dashboard/profile"
-                className="hidden h-14 items-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-105 lg:flex"
-              >
-
-                Modifier mon profil
-
-              </Link>
+              <div className="flex items-center gap-3">
+                <NotificationBell />
+                <Link
+                  href="/dashboard/profile"
+                  className="hidden h-14 items-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-105 lg:flex"
+                >
+                  Modifier mon profil
+                </Link>
+              </div>
 
             </div>
 

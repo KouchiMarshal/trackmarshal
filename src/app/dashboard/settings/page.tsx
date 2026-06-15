@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function SettingsPage() {
@@ -121,7 +122,7 @@ export default function SettingsPage() {
 
           <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
 
-            <div className="mx-auto flex h-20 max-w-[1600px] items-center px-4 sm:px-6 lg:px-10">
+            <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
 
               <div>
 
@@ -138,6 +139,8 @@ export default function SettingsPage() {
                 </h1>
 
               </div>
+
+              <NotificationBell />
 
             </div>
 

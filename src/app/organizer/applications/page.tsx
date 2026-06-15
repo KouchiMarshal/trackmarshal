@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
@@ -148,6 +149,7 @@ export default function OrganizerApplicationsPage() {
                 </h1>
               </div>
               <div className="flex items-center gap-3">
+                <NotificationBell />
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-center">
                   <p className="text-xs text-zinc-500">Total</p>
                   <p className="text-2xl font-black">{counts.all}</p>

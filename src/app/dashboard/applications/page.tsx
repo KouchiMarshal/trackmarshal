@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 
 export default function ApplicationsPage() {
@@ -183,6 +184,8 @@ export default function ApplicationsPage() {
                 </h1>
 
               </div>
+
+              <NotificationBell />
 
             </div>
 

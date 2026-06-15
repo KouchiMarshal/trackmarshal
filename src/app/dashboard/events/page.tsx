@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
@@ -99,11 +100,12 @@ export default function DashboardEventsPage() {
         <div className="flex-1">
 
           <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
-            <div className="mx-auto flex h-20 max-w-[1600px] items-center px-4 sm:px-6 lg:px-10">
+            <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Commissaire</p>
                 <h1 className="mt-2 text-2xl font-black lg:text-4xl">Événements</h1>
               </div>
+              <NotificationBell />
             </div>
           </header>
 

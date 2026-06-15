@@ -11,6 +11,7 @@ import {
 
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 
 export default function MessagesPage() {
 
@@ -143,12 +144,13 @@ export default function MessagesPage() {
 
         <div className="flex flex-1 flex-col">
 
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl lg:hidden">
-            <div className="flex h-16 items-center px-4">
+          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+            <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-10">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Commissaire</p>
-                <h1 className="text-xl font-black">Messages</h1>
+                <h1 className="text-xl font-black lg:text-2xl">Messages</h1>
               </div>
+              <NotificationBell />
             </div>
           </header>
 

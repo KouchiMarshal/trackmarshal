@@ -14,6 +14,7 @@ import {
 
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 
 export default function OrganizerDashboard() {
 
@@ -133,16 +134,16 @@ export default function OrganizerDashboard() {
 
               </div>
 
-              <Link
-                href="/organizer/events/create"
-                className="hidden h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-105 lg:flex"
-              >
-
-                <Plus size={20} />
-
-                Créer un événement
-
-              </Link>
+              <div className="flex items-center gap-3">
+                <NotificationBell />
+                <Link
+                  href="/organizer/events/create"
+                  className="hidden h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-105 lg:flex"
+                >
+                  <Plus size={20} />
+                  Créer un événement
+                </Link>
+              </div>
 
             </div>
 

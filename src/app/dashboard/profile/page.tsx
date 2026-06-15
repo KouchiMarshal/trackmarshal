@@ -15,6 +15,7 @@ import {
 
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function ProfilePage() {
@@ -140,19 +141,17 @@ export default function ProfilePage() {
 
               </div>
 
-              <button
-                onClick={updateProfile}
-                disabled={loading}
-                className="flex h-12 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-6 font-bold transition hover:scale-[1.02]"
-              >
-
-                <Save size={18} />
-
-                {loading
-                  ? "Sauvegarde..."
-                  : "Sauvegarder"}
-
-              </button>
+              <div className="flex items-center gap-3">
+                <NotificationBell />
+                <button
+                  onClick={updateProfile}
+                  disabled={loading}
+                  className="flex h-12 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-6 font-bold transition hover:scale-[1.02]"
+                >
+                  <Save size={18} />
+                  {loading ? "Sauvegarde..." : "Sauvegarder"}
+                </button>
+              </div>
 
             </div>
 

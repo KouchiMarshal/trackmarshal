@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CalendarDays, Eye, MapPin, Plus, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
+import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 
 export default function OrganizerEventsPage() {
@@ -54,14 +55,17 @@ export default function OrganizerEventsPage() {
                   Mes événements
                 </h1>
               </div>
-              <Link
-                href="/organizer/events/create"
-                className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.02]"
-              >
-                <Plus size={20} />
-                <span className="hidden sm:inline">Créer un événement</span>
-                <span className="sm:hidden">Créer</span>
-              </Link>
+              <div className="flex items-center gap-3">
+                <NotificationBell />
+                <Link
+                  href="/organizer/events/create"
+                  className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.02]"
+                >
+                  <Plus size={20} />
+                  <span className="hidden sm:inline">Créer un événement</span>
+                  <span className="sm:hidden">Créer</span>
+                </Link>
+              </div>
             </div>
           </header>
 
