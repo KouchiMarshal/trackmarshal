@@ -3,10 +3,10 @@
 import { Send, MessageSquare } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import DashboardSidebar from "@/components/layout/dashboard-sidebar";
+import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
 
-export default function MessagesPage() {
+export default function OrganizerMessagesPage() {
   const [user, setUser] = useState<any>(null);
   const [conversations, setConversations] = useState<any[]>([]);
   const [selectedConv, setSelectedConv] = useState<any>(null);
@@ -26,7 +26,7 @@ export default function MessagesPage() {
     loadConversations();
 
     const channel = supabase
-      .channel(`conv-list-${user.id}`)
+      .channel(`org-conv-list-${user.id}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "conversation_members", filter: `user_id=eq.${user.id}` }, () => {
         loadConversations();
       })
@@ -40,7 +40,7 @@ export default function MessagesPage() {
     loadMessages(selectedConv.id);
 
     const channel = supabase
-      .channel(`messages-${selectedConv.id}`)
+      .channel(`org-messages-${selectedConv.id}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${selectedConv.id}` }, () => {
         loadMessages(selectedConv.id);
       })
@@ -61,7 +61,6 @@ export default function MessagesPage() {
   async function loadConversations() {
     if (!user) return;
 
-    // Manual join: conversation_members → conversations (no FK)
     const { data: members } = await supabase
       .from("conversation_members")
       .select("conversation_id")
@@ -91,7 +90,6 @@ export default function MessagesPage() {
 
     if (!msgs || msgs.length === 0) { setMessages([]); return; }
 
-    // Manual join: fetch sender profiles
     const senderIds = [...new Set(msgs.map((m: any) => m.sender_id))];
     const { data: profiles } = await supabase
       .from("profiles")
@@ -123,13 +121,11 @@ export default function MessagesPage() {
     setMobileView("chat");
   }
 
-  const noConversations = conversations.length === 0;
-
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="flex min-h-screen">
 
-        <DashboardSidebar />
+        <OrganizerSidebar />
 
         <div className="flex flex-1 flex-col overflow-hidden">
 
@@ -146,7 +142,7 @@ export default function MessagesPage() {
                   </button>
                 )}
                 <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Commissaire</p>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Organisateur</p>
                   <h1 className="text-xl font-black lg:text-2xl">
                     {mobileView === "chat" && selectedConv ? selectedConv.title : "Messages"}
                   </h1>
@@ -167,11 +163,11 @@ export default function MessagesPage() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-3">
-                {noConversations ? (
+                {conversations.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-16 text-center">
                     <MessageSquare size={40} className="text-zinc-700" />
                     <p className="mt-4 text-sm font-semibold text-zinc-500">Aucune conversation</p>
-                    <p className="mt-2 text-xs text-zinc-600">Les conversations s'ouvrent quand un organisateur accepte ta candidature.</p>
+                    <p className="mt-2 text-xs text-zinc-600">Les conversations s'ouvrent automatiquement quand vous acceptez une candidature.</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -204,16 +200,14 @@ export default function MessagesPage() {
                 </div>
               ) : (
                 <>
-                  {/* Titre conversation (desktop) */}
                   <div className="hidden border-b border-white/10 px-6 py-4 lg:block">
                     <p className="font-black">{selectedConv.title}</p>
                   </div>
 
-                  {/* Messages */}
                   <div className="flex-1 overflow-y-auto p-4 lg:p-6">
                     {messages.length === 0 ? (
                       <div className="flex h-full items-center justify-center">
-                        <p className="text-sm text-zinc-600">Aucun message. Sois le premier à écrire !</p>
+                        <p className="text-sm text-zinc-600">Aucun message. Commencez la conversation !</p>
                       </div>
                     ) : (
                       <div className="space-y-3">
@@ -245,7 +239,6 @@ export default function MessagesPage() {
                     )}
                   </div>
 
-                  {/* Input */}
                   <div className="border-t border-white/10 p-4">
                     <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2">
                       <input

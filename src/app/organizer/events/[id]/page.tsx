@@ -6,6 +6,8 @@ import Link from "next/link";
 import {
   ArrowLeft,
   CalendarDays,
+  FileSpreadsheet,
+  FileText,
   MapPin,
   Pencil,
   Users,
@@ -70,7 +72,7 @@ const [filter, setFilter] =
         const profileIds = [...new Set(appsData.map((a: any) => a.marshal_id))];
         const { data: profilesData } = await supabase
           .from("profiles")
-          .select("id, full_name, email, phone, city, country, experience, years_experience, avatar_url")
+          .select("id, full_name, email, phone, city, country, experience, years_experience, avatar_url, license_type, license_url, license_verified, languages, specialties, disciplines")
           .in("id", profileIds);
 
         const profilesMap: Record<string, any> = {};
@@ -157,6 +159,87 @@ const filteredApplications =
 
     return app.status === filter;
   });
+
+  function escapeCSV(val: any): string {
+    if (val === null || val === undefined) return "";
+    const str = String(val).replace(/"/g, '""');
+    return str.includes(",") || str.includes("\n") || str.includes('"') ? `"${str}"` : str;
+  }
+
+  function exportCSV() {
+    const accepted = applications.filter((a) => a.status === "accepted");
+    const headers = ["Nom", "Email", "Téléphone", "Ville", "Pays", "Années d'expérience", "Type licence", "Licence vérifiée", "URL licence", "Langues", "Spécialités", "Disciplines", "Expérience"];
+    const rows = accepted.map((app) => {
+      const p = app.profiles || {};
+      return [
+        p.full_name, p.email, p.phone, p.city, p.country,
+        p.years_experience, p.license_type,
+        p.license_verified ? "Oui" : "Non",
+        p.license_url, p.languages, p.specialties, p.disciplines,
+        p.experience,
+      ].map(escapeCSV);
+    });
+
+    const csvContent = "﻿" + [headers, ...rows].map((r) => r.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${event.title.replace(/[^a-z0-9]/gi, "_")}_commissaires.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportPDF() {
+    const accepted = applications.filter((a) => a.status === "accepted");
+    const rows = accepted.map((app) => {
+      const p = app.profiles || {};
+      return `
+        <tr>
+          <td>${p.full_name || "—"}</td>
+          <td>${p.email || "—"}</td>
+          <td>${p.phone || "—"}</td>
+          <td>${p.city || ""}${p.country ? `, ${p.country}` : ""}</td>
+          <td>${p.years_experience || "—"}</td>
+          <td>${p.license_type || "—"}</td>
+          <td>${p.license_verified ? "✔ Vérifiée" : "En attente"}</td>
+          <td>${p.languages || "—"}</td>
+          <td>${p.specialties || "—"}</td>
+        </tr>
+      `;
+    }).join("");
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
+      <title>Commissaires acceptés — ${event.title}</title>
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 11px; color: #111; margin: 20px; }
+        h1 { font-size: 18px; margin-bottom: 4px; }
+        p { color: #555; margin-bottom: 16px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #FF5A1F; color: #fff; padding: 8px 6px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+        td { padding: 7px 6px; border-bottom: 1px solid #eee; vertical-align: top; }
+        tr:nth-child(even) td { background: #fafafa; }
+      </style>
+    </head><body>
+      <h1>${event.title}</h1>
+      <p>Commissaires acceptés — exporté le ${new Date().toLocaleDateString("fr-FR")}</p>
+      <table>
+        <thead><tr>
+          <th>Nom</th><th>Email</th><th>Téléphone</th><th>Localisation</th>
+          <th>Exp.</th><th>Licence</th><th>Vérifiée</th><th>Langues</th><th>Spécialités</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </body></html>`;
+
+    const win = window.open("", "_blank");
+    if (win) {
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      setTimeout(() => { win.print(); }, 300);
+    }
+  }
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -291,13 +374,33 @@ const filteredApplications =
 
           <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-4">
 
-              <Users />
+              <div className="flex items-center gap-3">
+                <Users />
+                <h2 className="text-3xl font-black">
+                  Candidatures
+                </h2>
+              </div>
 
-              <h2 className="text-3xl font-black">
-                Candidatures
-              </h2>
+              {accepted > 0 && (
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={exportCSV}
+                    className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                  >
+                    <FileSpreadsheet size={16} />
+                    Excel / CSV
+                  </button>
+                  <button
+                    onClick={exportPDF}
+                    className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                  >
+                    <FileText size={16} />
+                    Imprimer / PDF
+                  </button>
+                </div>
+              )}
 
             </div>
 

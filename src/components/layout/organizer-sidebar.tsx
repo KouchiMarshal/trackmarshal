@@ -5,6 +5,7 @@ import {
   FileBadge2,
   Home,
   LogOut,
+  MessageSquare,
   Plus,
   Settings,
 } from "lucide-react";
@@ -17,6 +18,7 @@ const navItems = [
   { icon: Home, label: "Dashboard", href: "/organizer/dashboard" },
   { icon: CalendarDays, label: "Mes événements", href: "/organizer/events" },
   { icon: FileBadge2, label: "Candidatures", href: "/organizer/applications" },
+  { icon: MessageSquare, label: "Messages", href: "/organizer/messages" },
   { icon: Settings, label: "Paramètres", href: "/organizer/settings" },
 ];
 
@@ -82,8 +84,8 @@ export default function OrganizerSidebar() {
         <div className="grid grid-cols-4">
           {[
             { icon: Home, label: "Dashboard", href: "/organizer/dashboard" },
-            { icon: CalendarDays, label: "Événements", href: "/organizer/events" },
             { icon: FileBadge2, label: "Candidatures", href: "/organizer/applications" },
+            { icon: MessageSquare, label: "Messages", href: "/organizer/messages" },
             { icon: Plus, label: "Créer", href: "/organizer/events/create" },
           ].map((item) => (
             <Link
