@@ -7,152 +7,151 @@ type ApplyButtonProps = {
   eventId: string;
 };
 
-export default function ApplyButton({
-  eventId,
-}: ApplyButtonProps) {
-  const [loading, setLoading] =
-    useState(false);
-
-  const [success, setSuccess] =
-    useState(false);
-
-  const [alreadyApplied, setAlreadyApplied] =
-    useState(false);
-
-  const [profile, setProfile] =
-    useState<any>(null);
+export default function ApplyButton({ eventId }: ApplyButtonProps) {
+  const [loading, setLoading] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
+  const [applicationId, setApplicationId] = useState<string | null>(null);
+  const [applicationStatus, setApplicationStatus] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
   useEffect(() => {
     checkApplication();
   }, []);
 
   async function checkApplication() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data: profileData } =
-      await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("id, role")
+      .eq("id", user.id)
+      .single();
 
     setProfile(profileData);
 
-    const { data } =
-      await supabase
-        .from("applications")
-        .select("id")
-        .eq("event_id", eventId)
-        .eq("marshal_id", user.id)
-        .maybeSingle();
+    const { data } = await supabase
+      .from("applications")
+      .select("id, status")
+      .eq("event_id", eventId)
+      .eq("marshal_id", user.id)
+      .maybeSingle();
 
     if (data) {
-      setAlreadyApplied(true);
-      setSuccess(true);
+      setApplicationId(data.id);
+      setApplicationStatus(data.status);
     }
   }
 
   async function handleApply() {
     setLoading(true);
+    setMessage(null);
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      alert("Vous devez être connecté.");
+      setMessage({ text: "Vous devez être connecté pour postuler.", type: "error" });
       setLoading(false);
       return;
     }
 
-    const { data: profileData } =
-      await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-    if (profileData?.role !== "marshal") {
-      alert(
-        "Seuls les commissaires peuvent postuler."
-      );
-      setLoading(false);
-      return;
-    }
-
-    const { data: existing } =
-      await supabase
-        .from("applications")
-        .select("id")
-        .eq("event_id", eventId)
-        .eq("marshal_id", user.id)
-        .maybeSingle();
-
-    if (existing) {
-      alert(
-        "Vous avez déjà postulé à cet événement."
-      );
-      setAlreadyApplied(true);
-      setSuccess(true);
-      setLoading(false);
-      return;
-    }
-
-    const { error } =
-      await supabase
-        .from("applications")
-        .insert({
-          event_id: eventId,
-          marshal_id: user.id,
-          status: "pending",
-        });
+    const { error, data } = await supabase
+      .from("applications")
+      .insert({ event_id: eventId, marshal_id: user.id, status: "pending" })
+      .select("id, status")
+      .single();
 
     if (error) {
-      console.error(error);
-      alert(error.message);
+      setMessage({ text: "Une erreur est survenue. Réessayez.", type: "error" });
       setLoading(false);
       return;
     }
 
-    setSuccess(true);
-    setAlreadyApplied(true);
+    setApplicationId(data.id);
+    setApplicationStatus(data.status);
+    setMessage({ text: "Votre candidature a bien été envoyée !", type: "success" });
     setLoading(false);
-
-    alert(
-      "Votre candidature a bien été envoyée."
-    );
   }
 
-  if (
-    profile &&
-    profile.role === "organizer"
-  ) {
-    return null;
+  async function handleCancel() {
+    if (applicationStatus === "accepted") {
+      const confirmed = confirm(
+        "Votre candidature a été acceptée. Êtes-vous sûr de vouloir l'annuler ?"
+      );
+      if (!confirmed) return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    await supabase
+      .from("applications")
+      .delete()
+      .eq("id", applicationId);
+
+    setApplicationId(null);
+    setApplicationStatus(null);
+    setMessage({ text: "Candidature annulée.", type: "success" });
+    setLoading(false);
   }
+
+  if (profile?.role === "organizer") return null;
 
   return (
-    <button
-      onClick={handleApply}
-      disabled={
-        loading ||
-        success ||
-        alreadyApplied
-      }
-      className={`mt-10 h-16 w-full rounded-2xl text-lg font-bold text-white transition duration-300 ${
-        success
-          ? "bg-green-600"
-          : "bg-[#FF5A1F] hover:scale-[1.02] hover:opacity-90"
-      }`}
-    >
-      {loading
-        ? "Envoi..."
-        : success
-        ? "✓ Candidature envoyée"
-        : "Postuler comme commissaire"}
-    </button>
+    <div className="mt-10 space-y-4">
+
+      {message && (
+        <div
+          className={`rounded-2xl px-5 py-4 text-sm font-semibold ${
+            message.type === "success"
+              ? "bg-green-500/15 text-green-400"
+              : "bg-red-500/15 text-red-400"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
+
+      {!applicationId ? (
+        <button
+          onClick={handleApply}
+          disabled={loading}
+          className="h-16 w-full rounded-2xl bg-[#FF5A1F] text-lg font-bold text-white transition hover:scale-[1.02] hover:opacity-90 disabled:opacity-60"
+        >
+          {loading ? "Envoi en cours..." : "Postuler comme commissaire"}
+        </button>
+      ) : (
+        <div className="space-y-3">
+          <div
+            className={`flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-bold ${
+              applicationStatus === "accepted"
+                ? "bg-green-500/15 text-green-400"
+                : applicationStatus === "rejected"
+                ? "bg-red-500/15 text-red-400"
+                : "bg-yellow-500/15 text-yellow-400"
+            }`}
+          >
+            <span>
+              {applicationStatus === "accepted"
+                ? "✓ Candidature acceptée"
+                : applicationStatus === "rejected"
+                ? "✗ Candidature refusée"
+                : "⏳ Candidature en attente de réponse"}
+            </span>
+          </div>
+
+          {applicationStatus !== "rejected" && (
+            <button
+              onClick={handleCancel}
+              disabled={loading}
+              className="h-14 w-full rounded-2xl border border-red-500/30 bg-red-500/10 text-sm font-bold text-red-400 transition hover:bg-red-500/20 disabled:opacity-60"
+            >
+              {loading ? "Annulation..." : "Annuler ma candidature"}
+            </button>
+          )}
+        </div>
+      )}
+
+    </div>
   );
 }

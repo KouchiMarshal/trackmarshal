@@ -34,6 +34,9 @@ export default function ApplicationsPage() {
   const [error, setError] =
     useState<string | null>(null);
 
+  const [cancelling, setCancelling] =
+    useState<string | null>(null);
+
   useEffect(() => {
     loadApplications();
   }, []);
@@ -89,6 +92,25 @@ export default function ApplicationsPage() {
     setApplications(merged);
 
     setLoading(false);
+  }
+
+  async function cancelApplication(appId: string, status: string) {
+    if (status === "accepted") {
+      const confirmed = confirm(
+        "Votre candidature a été acceptée. Êtes-vous sûr de vouloir l'annuler ?"
+      );
+      if (!confirmed) return;
+    }
+
+    setCancelling(appId);
+
+    await supabase
+      .from("applications")
+      .delete()
+      .eq("id", appId);
+
+    setApplications((prev) => prev.filter((a) => a.id !== appId));
+    setCancelling(null);
   }
 
   function getStatus(status: string) {
@@ -290,23 +312,26 @@ export default function ApplicationsPage() {
                               href={`/events/${app.events?.slug}`}
                               className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 font-bold transition hover:border-[#FF5A1F]/40"
                             >
-
                               Voir l’événement
-
                             </Link>
 
-                            {app.status ===
-                              "accepted" && (
-
+                            {app.status === "accepted" && (
                               <Link
                                 href={`/events/${app.events?.slug}`}
                                 className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
                               >
-
                                 Voir briefing
-
                               </Link>
+                            )}
 
+                            {app.status !== "rejected" && (
+                              <button
+                                onClick={() => cancelApplication(app.id, app.status)}
+                                disabled={cancelling === app.id}
+                                className="flex h-14 items-center justify-center rounded-2xl border border-red-500/30 bg-red-500/10 px-8 font-bold text-red-400 transition hover:bg-red-500/20 disabled:opacity-60"
+                              >
+                                {cancelling === app.id ? "Annulation..." : "Annuler"}
+                              </button>
                             )}
 
                           </div>
