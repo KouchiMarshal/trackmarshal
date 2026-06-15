@@ -354,13 +354,13 @@ export default function ApplicationsPanel() {
 
                       {application
                         .marshalProfile
-                        ?.license_file && (
+                        ?.license_url && (
 
                         <a
                           href={
                             application
                               .marshalProfile
-                              ?.license_file
+                              ?.license_url
                           }
                           target="_blank"
                           className="mt-5 inline-flex rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10"
@@ -412,7 +412,7 @@ export default function ApplicationsPanel() {
                   verifyProfileId
               )
               ?.marshalProfile
-              ?.license_file && (
+              ?.license_url && (
 
               <div className="mt-8 overflow-hidden rounded-[32px] border border-white/10 bg-black/30">
 
@@ -425,7 +425,7 @@ export default function ApplicationsPanel() {
                           app.marshalProfile.id ===
                           verifyProfileId
                       )?.marshalProfile
-                        ?.license_file
+                        ?.license_url
                     }
                     alt="Licence"
                     className="max-h-[500px] w-full rounded-2xl object-contain"

@@ -32,7 +32,7 @@ export default function MarshalProfileForm() {
       languages: "",
       avatar_url: "",
       license_type: "",
-      license_file: "",
+      license_url: "",
     });
 
   useEffect(() => {
@@ -69,8 +69,7 @@ export default function MarshalProfileForm() {
         disciplines:
           data.disciplines || "",
         specialties:
-          data.specialties?.join(", ") ||
-          "",
+          data.specialties || "",
         experience:
           data.experience || "",
         years_experience:
@@ -81,8 +80,8 @@ export default function MarshalProfileForm() {
           data.avatar_url || "",
         license_type:
           data.license_type || "",
-        license_file:
-          data.license_file || "",
+        license_url:
+          data.license_url || "",
       });
 
     }
@@ -171,7 +170,7 @@ export default function MarshalProfileForm() {
 
     setFormData((prev) => ({
       ...prev,
-      license_file:
+      license_url:
         data.publicUrl,
     }));
 
@@ -192,11 +191,6 @@ export default function MarshalProfileForm() {
 
     if (!user) return;
 
-    const specialtiesArray =
-      formData.specialties
-        .split(",")
-        .map((s) => s.trim());
-
     const { error } =
       await supabase
         .from("profiles")
@@ -214,7 +208,7 @@ export default function MarshalProfileForm() {
           disciplines:
             formData.disciplines,
           specialties:
-            specialtiesArray,
+            formData.specialties,
           experience:
             formData.experience,
           years_experience:
@@ -225,8 +219,8 @@ export default function MarshalProfileForm() {
             formData.avatar_url,
           license_type:
             formData.license_type,
-          license_file:
-            formData.license_file,
+          license_url:
+            formData.license_url,
         })
         .eq("id", user.id);
 
@@ -679,11 +673,11 @@ export default function MarshalProfileForm() {
 
               )}
 
-              {formData.license_file && (
+              {formData.license_url && (
 
                 <a
                   href={
-                    formData.license_file
+                    formData.license_url
                   }
                   target="_blank"
                   className="mt-5 inline-block text-sm font-bold text-[#FF5A1F]"
