@@ -17,7 +17,7 @@ const navItems = [
   { icon: Home, label: "Dashboard", href: "/organizer/dashboard" },
   { icon: CalendarDays, label: "Mes événements", href: "/organizer/events" },
   { icon: FileBadge2, label: "Candidatures", href: "/organizer/applications" },
-  { icon: Settings, label: "Paramètres", href: "/dashboard/settings" },
+  { icon: Settings, label: "Paramètres", href: "/organizer/settings" },
 ];
 
 export default function OrganizerSidebar() {
