@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
@@ -265,6 +265,10 @@ export default async function EventPage({
 
           <div>
 
+            <div className="mb-3 flex justify-end">
+              <ShareButton title={event.title} slug={event.slug} />
+            </div>
+
             <div className="top-10 overflow-hidden rounded-[32px] border border-white/10 bg-[#0A0A0A] lg:sticky lg:rounded-[40px]">
 
               <div className="border-b border-white/10 p-6 sm:p-8">
@@ -295,10 +299,6 @@ export default async function EventPage({
                     className="h-2 rounded-full bg-[#FF5A1F] transition-all"
                     style={{ width: `${Math.min(100, Math.round(((acceptedCount || 0) / (event.marshals_needed || 1)) * 100))}%` }}
                   />
-                </div>
-
-                <div className="mt-6 flex gap-3">
-                  <ShareButton title={event.title} slug={event.slug} />
                 </div>
 
                 <div className="mt-8">
