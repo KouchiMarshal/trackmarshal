@@ -43,50 +43,52 @@ const roles = [
 const steps = [
   {
     num: "01",
-    title: "Se renseigner sur les licences",
-    desc: "La FFSA (Fédération Française du Sport Automobile) délivre les licences officielles. Il existe différents niveaux selon votre expérience et la discipline souhaitée (rallye, circuit, karting…).",
+    title: "Créer un compte e-licence FFSA",
+    desc: "Rendez-vous sur la plateforme officielle FFSA pour créer votre compte. C'est l'étape de départ obligatoire pour accéder à la formation en ligne.",
+    link: { href: "https://licence.ffsa.org/", label: "Accéder à la plateforme FFSA" },
   },
   {
     num: "02",
-    title: "Se former",
-    desc: "Des stages de formation sont organisés par les clubs affiliés FFSA dans toute la France. Pas d'expérience requise pour débuter — les organisateurs recherchent avant tout des personnes motivées et sérieuses.",
+    title: "Suivre la formation e-learning",
+    desc: "La FFSA propose une formation certifiante 100 % en ligne : code des drapeaux, règles de sécurité, droits et devoirs du commissaire, procédures radio. Un quiz final valide vos connaissances. Aucune expérience préalable requise.",
+    link: { href: "https://licence.ffsa.org/", label: "Faire la formation en ligne" },
   },
   {
     num: "03",
-    title: "Prendre sa licence",
-    desc: "Adhérez à un club affilié à la FFSA et demandez votre licence de commissaire. Elle est renouvelable chaque année et couvre votre assurance lors des épreuves officielles.",
+    title: "Réaliser un stage pratique",
+    desc: "Après la formation théorique, vous participez à un stage terrain organisé par un club affilié FFSA. Maniement des drapeaux, extincteurs, radio… La pratique complète la théorie.",
   },
   {
     num: "04",
-    title: "Créer votre profil TrackMarshal",
-    desc: "Inscrivez-vous sur TrackMarshal, complétez votre profil avec votre licence, vos disciplines et votre expérience. Les organisateurs pourront vous trouver et vous contacter directement.",
+    title: "Obtenir votre licence Commissaire C",
+    desc: "Avec la formation validée et le stage réalisé, vous obtenez votre première licence officielle FFSA Commissaire C. Elle vous assure sur toutes les épreuves et est renouvelable chaque année. Âge minimum : 16 ans.",
   },
   {
     num: "05",
-    title: "Postuler aux événements",
-    desc: "Parcourez les événements publiés sur la plateforme, postulez en un clic. Vous serez notifié de l'acceptation de votre candidature et recevrez un briefing complet.",
+    title: "Créer votre profil TrackMarshal",
+    desc: "Inscrivez-vous sur TrackMarshal, ajoutez votre licence, vos disciplines et vos disponibilités. Les organisateurs vous trouvent et vous contactent directement pour leurs événements.",
   },
 ];
 
 const licenses = [
   {
-    name: "Licence Nationale",
-    org: "FFSA",
-    desc: "Pour participer aux épreuves du calendrier national. Nécessite une formation validée.",
-    color: "border-[#FF5A1F]/30 bg-[#FF5A1F]/5",
-    badge: "text-[#FF5A1F]",
-  },
-  {
-    name: "Licence Régionale",
-    org: "FFSA",
-    desc: "Pour les épreuves régionales et départementales. Idéale pour commencer.",
+    grade: "C",
+    subtitle: "Débutant — dès 16 ans",
+    desc: "Premier niveau pour se lancer. Permet d'officier sur toutes les épreuves auto, circuit et karting en France. S'obtient après la formation e-learning FFSA et un stage pratique. Les mineurs doivent être accompagnés au poste.",
     color: "border-white/10 bg-white/[0.03]",
     badge: "text-zinc-300",
   },
   {
-    name: "Licence UFOLEP",
-    org: "UFOLEP",
-    desc: "Alternative à la FFSA pour certaines disciplines. Reconnue dans de nombreuses épreuves.",
+    grade: "B",
+    subtitle: "Confirmé — dès 18 ans",
+    desc: "Après plusieurs saisons en grade C. Donne accès aux épreuves nationales et permet d'occuper des postes à responsabilité comme chef de poste adjoint.",
+    color: "border-[#FF5A1F]/30 bg-[#FF5A1F]/5",
+    badge: "text-[#FF5A1F]",
+  },
+  {
+    grade: "A",
+    subtitle: "Expert — Chef de Poste",
+    desc: "Le niveau le plus élevé. Réservé aux commissaires les plus expérimentés. Permet de diriger un poste de commissaires et d'officier sur les plus grandes épreuves nationales et internationales.",
     color: "border-white/10 bg-white/[0.03]",
     badge: "text-zinc-300",
   },
@@ -94,24 +96,24 @@ const licenses = [
 
 const faqs = [
   {
+    q: "Quel est l'âge minimum pour devenir commissaire FFSA ?",
+    a: "16 ans. Les mineurs peuvent obtenir la licence Commissaire C avec une autorisation parentale, mais ils ne peuvent pas officier seuls à un poste — ils doivent être accompagnés d'un commissaire expérimenté.",
+  },
+  {
     q: "Faut-il avoir de l'expérience en motorsport pour commencer ?",
-    a: "Non. Beaucoup de commissaires débutent sans aucune expérience de la compétition. La motivation, la rigueur et la disponibilité sont les qualités les plus recherchées.",
+    a: "Non. La formation e-learning FFSA est accessible à tous, sans prérequis. La motivation, la rigueur et la disponibilité sont les qualités les plus recherchées par les organisateurs.",
+  },
+  {
+    q: "La formation e-learning est-elle vraiment obligatoire ?",
+    a: "Oui, c'est la porte d'entrée officielle depuis que la FFSA a mis en place sa plateforme en ligne (licence.ffsa.org). Elle est suivie d'un stage pratique auprès d'un club affilié avant d'obtenir la licence C.",
   },
   {
     q: "Est-ce que c'est bénévole ou rémunéré ?",
     a: "La plupart des missions sont bénévoles, mais de nombreux organisateurs proposent des avantages : hébergement, repas, défraiement, pass accompagnants. TrackMarshal vous permet de voir ces conditions avant de postuler.",
   },
   {
-    q: "Combien coûte une licence FFSA ?",
-    a: "Une licence de commissaire FFSA coûte environ 40 à 80 € par an selon le niveau. Elle inclut une assurance pour toutes les épreuves auxquelles vous participez.",
-  },
-  {
-    q: "Peut-on être commissaire sans appartenir à un club ?",
-    a: "Il est nécessaire d'adhérer à un club affilié FFSA pour obtenir une licence officielle. L'adhésion est généralement peu coûteuse et vous donne accès à un réseau local d'organisateurs.",
-  },
-  {
-    q: "Quelles disciplines sont disponibles sur TrackMarshal ?",
-    a: "Rallye, circuit, karting, drift — et bientôt d'autres disciplines. Les besoins varient selon les organisateurs : certains cherchent des commissaires polyvalents, d'autres des spécialistes.",
+    q: "Combien coûte une licence FFSA Commissaire ?",
+    a: "Une licence de commissaire FFSA coûte environ 40 à 80 € par an selon le grade. Elle inclut une assurance pour toutes les épreuves officielles auxquelles vous participez.",
   },
 ];
 
@@ -195,7 +197,7 @@ export default function DevenirCommissairePage() {
                 ou simple curieux souhaitant vivre les courses de l'intérieur.
               </p>
               <div className="mt-8 space-y-3">
-                {["Aucun permis de conduire requis", "Accessible dès 18 ans", "Formation assurée par les clubs affiliés", "Couverture assurance incluse avec la licence"].map((item) => (
+                {["Aucun permis de conduire requis", "Accessible dès 16 ans", "Formation e-learning + stage pratique FFSA", "Couverture assurance incluse avec la licence"].map((item) => (
                   <div key={item} className="flex items-center gap-3 text-zinc-300">
                     <CheckCircle2 size={18} className="shrink-0 text-[#FF5A1F]" />
                     {item}
@@ -233,20 +235,26 @@ export default function DevenirCommissairePage() {
 
           <div className="grid gap-6 lg:grid-cols-3">
             {licenses.map((lic) => (
-              <div key={lic.name} className={`rounded-[32px] border p-8 ${lic.color}`}>
-                <span className={`text-xs font-black uppercase tracking-[0.2em] ${lic.badge}`}>{lic.org}</span>
-                <h3 className="mt-4 text-2xl font-black">{lic.name}</h3>
+              <div key={lic.grade} className={`rounded-[32px] border p-8 ${lic.color}`}>
+                <span className={`text-xs font-black uppercase tracking-[0.2em] ${lic.badge}`}>FFSA</span>
+                <div className="mt-4 flex items-baseline gap-3">
+                  <span className={`text-5xl font-black ${lic.badge}`}>{lic.grade}</span>
+                  <h3 className="text-xl font-black text-white">{lic.subtitle}</h3>
+                </div>
                 <p className="mt-4 text-zinc-400 leading-relaxed">{lic.desc}</p>
               </div>
             ))}
           </div>
 
-          <p className="mt-8 text-center text-sm text-zinc-500">
-            Pour plus d'informations sur les licences FFSA :{" "}
-            <a href="https://www.ffsa.fr" target="_blank" rel="noopener noreferrer" className="text-[#FF5A1F] hover:underline">
-              ffsa.fr
-            </a>
-          </p>
+          <div className="mt-10 rounded-[24px] border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-6 text-center">
+            <p className="text-sm text-zinc-300">
+              La formation e-learning officielle FFSA est disponible sur{" "}
+              <a href="https://licence.ffsa.org/" target="_blank" rel="noopener noreferrer" className="font-bold text-[#FF5A1F] hover:underline">
+                licence.ffsa.org
+              </a>
+              {" "}— plateforme officielle pour créer votre compte et suivre la formation certifiante.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -267,7 +275,17 @@ export default function DevenirCommissairePage() {
                 <div>
                   <h3 className="text-xl font-black lg:text-2xl">{step.title}</h3>
                   <p className="mt-3 text-zinc-400 leading-relaxed">{step.desc}</p>
-                  {i === 3 && (
+                  {"link" in step && step.link && (
+                    <a
+                      href={step.link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-5 inline-flex items-center gap-2 rounded-2xl border border-[#FF5A1F]/40 bg-[#FF5A1F]/10 px-6 py-3 text-sm font-black text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20"
+                    >
+                      {step.link.label} <ChevronRight size={16} />
+                    </a>
+                  )}
+                  {i === 4 && (
                     <Link
                       href="/register"
                       className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-[#FF5A1F] px-6 py-3 text-sm font-black transition hover:scale-[1.01]"
