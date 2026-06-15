@@ -186,7 +186,6 @@ export default function OrganizerEventsPage() {
                   </div>
                 </div>
               ))}
-              ))}
             </div>
 
           </div>
