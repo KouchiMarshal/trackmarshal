@@ -32,9 +32,18 @@ const [filter, setFilter] =
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (eventId) {
-      loadEvent();
-    }
+    if (!eventId) return;
+
+    loadEvent();
+
+    const channel = supabase
+      .channel(`organizer-event-${eventId}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "applications", filter: `event_id=eq.${eventId}` }, () => {
+        loadEvent();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [eventId]);
 
   async function loadEvent() {

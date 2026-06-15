@@ -16,6 +16,15 @@ export default function OrganizerApplicationsPage() {
 
   useEffect(() => {
     loadApplications();
+
+    const channel = supabase
+      .channel("organizer-applications-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "applications" }, () => {
+        loadApplications();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   async function loadApplications() {
