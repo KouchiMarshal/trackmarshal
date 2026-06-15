@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
+import InviteButton from "@/components/events/invite-button";
 
 type MarshalPageProps = {
   params: Promise<{
@@ -165,6 +166,10 @@ export default async function MarshalPage({
                     Contacter
 
                   </a>
+
+                  <div className="mt-3">
+                    <InviteButton marshalId={profile.id} marshalName={profile.full_name} />
+                  </div>
 
                 </div>
 

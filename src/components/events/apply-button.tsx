@@ -5,9 +5,10 @@ import { supabase } from "@/lib/supabase";
 
 type ApplyButtonProps = {
   eventId: string;
+  isFull?: boolean;
 };
 
-export default function ApplyButton({ eventId }: ApplyButtonProps) {
+export default function ApplyButton({ eventId, isFull = false }: ApplyButtonProps) {
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [applicationId, setApplicationId] = useState<string | null>(null);
@@ -57,7 +58,7 @@ export default function ApplyButton({ eventId }: ApplyButtonProps) {
 
     const { error, data } = await supabase
       .from("applications")
-      .insert({ event_id: eventId, marshal_id: user.id, status: "pending" })
+      .insert({ event_id: eventId, marshal_id: user.id, status: isFull ? "waitlisted" : "pending" })
       .select("id, status")
       .single();
 
@@ -69,7 +70,7 @@ export default function ApplyButton({ eventId }: ApplyButtonProps) {
 
     setApplicationId(data.id);
     setApplicationStatus(data.status);
-    setMessage({ text: "Votre candidature a bien été envoyée !", type: "success" });
+    setMessage({ text: isFull ? "Vous êtes sur la liste d'attente !" : "Votre candidature a bien été envoyée !", type: "success" });
     setLoading(false);
   }
 
@@ -122,9 +123,11 @@ export default function ApplyButton({ eventId }: ApplyButtonProps) {
         <button
           onClick={handleApply}
           disabled={loading}
-          className="h-16 w-full rounded-2xl bg-[#FF5A1F] text-lg font-bold text-white transition hover:scale-[1.02] hover:opacity-90 disabled:opacity-60"
+          className={`h-16 w-full rounded-2xl text-lg font-bold text-white transition hover:scale-[1.02] hover:opacity-90 disabled:opacity-60 ${
+            isFull ? "bg-blue-600" : "bg-[#FF5A1F]"
+          }`}
         >
-          {loading ? "Envoi en cours..." : "Postuler comme commissaire"}
+          {loading ? "Envoi en cours..." : isFull ? "Rejoindre la liste d'attente" : "Postuler comme commissaire"}
         </button>
       ) : (
         <div className="space-y-3">
@@ -134,6 +137,8 @@ export default function ApplyButton({ eventId }: ApplyButtonProps) {
                 ? "bg-green-500/15 text-green-400"
                 : applicationStatus === "rejected"
                 ? "bg-red-500/15 text-red-400"
+                : applicationStatus === "waitlisted"
+                ? "bg-blue-500/15 text-blue-400"
                 : "bg-yellow-500/15 text-yellow-400"
             }`}
           >
@@ -142,6 +147,8 @@ export default function ApplyButton({ eventId }: ApplyButtonProps) {
                 ? "✓ Candidature acceptée"
                 : applicationStatus === "rejected"
                 ? "✗ Candidature refusée"
+                : applicationStatus === "waitlisted"
+                ? "⏳ Vous êtes sur la liste d'attente"
                 : "⏳ Candidature en attente de réponse"}
             </span>
           </div>

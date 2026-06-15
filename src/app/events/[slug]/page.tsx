@@ -5,6 +5,8 @@ import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 import ApplyButton from "@/components/events/apply-button";
+import ShareButton from "@/components/events/share-button";
+import InviteButton from "@/components/events/invite-button";
 
 type EventPageProps = {
   params: Promise<{
@@ -23,6 +25,14 @@ export default async function EventPage({
     .select("*")
     .eq("slug", slug)
     .single();
+
+  const { count: acceptedCount } = await supabase
+    .from("applications")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", event?.id)
+    .eq("status", "accepted");
+
+  const isFull = event ? (acceptedCount || 0) >= (event.marshals_needed || 0) : false;
 
   if (!event) {
     return (
@@ -275,9 +285,24 @@ export default async function EventPage({
 
                 </p>
 
-                <div className="mt-8">
+                <div className="mt-4 flex items-center justify-between text-sm text-zinc-500">
+                  <span>{acceptedCount || 0} / {event.marshals_needed} commissaires</span>
+                  {isFull && <span className="font-bold text-blue-400">Complet — liste d'attente ouverte</span>}
+                </div>
 
-                  <ApplyButton eventId={event.id} />
+                <div className="mt-4 h-2 w-full rounded-full bg-white/10">
+                  <div
+                    className="h-2 rounded-full bg-[#FF5A1F] transition-all"
+                    style={{ width: `${Math.min(100, Math.round(((acceptedCount || 0) / (event.marshals_needed || 1)) * 100))}%` }}
+                  />
+                </div>
+
+                <div className="mt-6 flex gap-3">
+                  <ShareButton title={event.title} slug={event.slug} />
+                </div>
+
+                <div className="mt-8">
+                  <ApplyButton eventId={event.id} isFull={isFull} />
                 </div>
 
               </div>

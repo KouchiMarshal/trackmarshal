@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Plus,
   Settings,
+  Users,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -19,6 +20,7 @@ const navItems = [
   { icon: Home, label: "Dashboard", href: "/organizer/dashboard" },
   { icon: CalendarDays, label: "Mes événements", href: "/organizer/events" },
   { icon: FileBadge2, label: "Candidatures", href: "/organizer/applications" },
+  { icon: Users, label: "Annuaire commissaires", href: "/commissaires" },
   { icon: MessageSquare, label: "Messages", href: "/organizer/messages" },
   { icon: Settings, label: "Paramètres", href: "/organizer/settings" },
 ];

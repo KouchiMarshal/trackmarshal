@@ -6,6 +6,8 @@ import {
   Clock3,
   MapPin,
   XCircle,
+  CalendarPlus,
+  Hourglass,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -99,6 +101,34 @@ export default function ApplicationsPage() {
     setApplications(merged);
 
     setLoading(false);
+  }
+
+  function downloadICS(ev: any) {
+    if (!ev) return;
+    const start = new Date(ev.event_date);
+    const end = new Date(start.getTime() + 9 * 60 * 60 * 1000);
+    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    const ics = [
+      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//TrackMarshal//FR",
+      "BEGIN:VEVENT",
+      `DTSTART:${fmt(start)}`, `DTEND:${fmt(end)}`,
+      `SUMMARY:${ev.title} — Commissaire TrackMarshal`,
+      `LOCATION:${ev.location}${ev.country ? ", " + ev.country : ""}`,
+      `URL:https://www.trackmarshall.app/events/${ev.slug}`,
+      "END:VEVENT", "END:VCALENDAR",
+    ].join("\r\n");
+    const blob = new Blob([ics], { type: "text/calendar" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `trackmarshal-${ev.slug}.ics`; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function googleCalUrl(ev: any) {
+    const start = new Date(ev.event_date);
+    const end = new Date(start.getTime() + 9 * 60 * 60 * 1000);
+    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title + " — Commissaire")}&dates=${fmt(start)}/${fmt(end)}&location=${encodeURIComponent(ev.location)}&details=${encodeURIComponent("TrackMarshal\nhttps://www.trackmarshall.app/events/" + ev.slug)}`;
   }
 
   function escapeHtml(str: string | null | undefined): string {
@@ -200,15 +230,11 @@ export default function ApplicationsPage() {
             XCircle,
         };
 
+      case "waitlisted":
+        return { color: "bg-blue-500/20 text-blue-400", text: "Liste d'attente", icon: Hourglass };
+
       default:
-        return {
-          color:
-            "bg-yellow-500/20 text-yellow-400",
-          text:
-            "En attente",
-          icon:
-            Clock3,
-        };
+        return { color: "bg-yellow-500/20 text-yellow-400", text: "En attente", icon: Clock3 };
     }
   }
 
@@ -391,6 +417,26 @@ export default function ApplicationsPage() {
                                 >
                                   📄 PDF
                                 </button>
+                                <button
+                                  onClick={() => downloadICS(app.events)}
+                                  className="flex h-14 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 font-bold transition hover:border-[#FF5A1F]/40"
+                                  title="Ajouter à mon agenda"
+                                >
+                                  <CalendarPlus size={18} />
+                                  Agenda
+                                </button>
+                                {app.events && (
+                                  <a
+                                    href={googleCalUrl(app.events)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex h-14 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 font-bold transition hover:border-[#FF5A1F]/40"
+                                    title="Ajouter à Google Calendar"
+                                  >
+                                    <img src="https://calendar.google.com/googlecalendar/images/favicon_v2018_96.png" alt="Google" className="h-4 w-4" />
+                                    Google
+                                  </a>
+                                )}
                               </>
                             )}
 
