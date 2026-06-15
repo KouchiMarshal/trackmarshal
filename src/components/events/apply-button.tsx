@@ -84,10 +84,16 @@ export default function ApplyButton({ eventId }: ApplyButtonProps) {
     setLoading(true);
     setMessage(null);
 
-    await supabase
+    const { error } = await supabase
       .from("applications")
       .delete()
       .eq("id", applicationId);
+
+    if (error) {
+      setMessage({ text: `Erreur : ${error.message}`, type: "error" });
+      setLoading(false);
+      return;
+    }
 
     setApplicationId(null);
     setApplicationStatus(null);

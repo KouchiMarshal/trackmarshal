@@ -104,10 +104,16 @@ export default function ApplicationsPage() {
 
     setCancelling(appId);
 
-    await supabase
+    const { error } = await supabase
       .from("applications")
       .delete()
       .eq("id", appId);
+
+    if (error) {
+      alert(`Erreur : ${error.message}`);
+      setCancelling(null);
+      return;
+    }
 
     setApplications((prev) => prev.filter((a) => a.id !== appId));
     setCancelling(null);
