@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 
@@ -11,6 +12,30 @@ type MarshalPageProps = {
     slug: string;
   }>;
 };
+
+export async function generateMetadata({ params }: MarshalPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  let { data: profile } = await supabase.from("profiles").select("full_name, city, country, disciplines, avatar_url").eq("slug", slug).maybeSingle();
+  if (!profile) {
+    const { data: byId } = await supabase.from("profiles").select("full_name, city, country, disciplines, avatar_url").eq("id", slug).maybeSingle();
+    profile = byId;
+  }
+  if (!profile) return { title: "Commissaire introuvable" };
+  const name = profile.full_name || "Commissaire";
+  const location = [profile.city, profile.country].filter(Boolean).join(", ");
+  const description = `Profil de ${name}${location ? ` — ${location}` : ""}${profile.disciplines ? ` · ${profile.disciplines}` : ""}. Commissaire de piste FFSA sur TrackMarshal.`;
+  return {
+    title: name,
+    description,
+    openGraph: {
+      title: `${name} — Commissaire de piste | TrackMarshal`,
+      description,
+      url: `https://www.trackmarshal.app/marshal/${slug}`,
+      images: profile.avatar_url ? [{ url: profile.avatar_url, width: 400, height: 400, alt: name }] : [],
+    },
+    alternates: { canonical: `/marshal/${slug}` },
+  };
+}
 
 export default async function MarshalPage({
   params,

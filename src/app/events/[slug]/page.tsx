@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 
@@ -13,6 +14,27 @@ type EventPageProps = {
     slug: string;
   }>;
 };
+
+export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const { data: event } = await supabase.from("events").select("title, briefing, location, country, discipline, image_url").eq("slug", slug).single();
+  if (!event) return { title: "Événement introuvable" };
+  const title = event.title;
+  const description = event.briefing
+    ? event.briefing.slice(0, 155)
+    : `Événement ${event.discipline || "motorsport"} à ${event.location}${event.country ? `, ${event.country}` : ""} — Postulez comme commissaire de piste.`;
+  return {
+    title,
+    description,
+    openGraph: {
+      title: `${title} | TrackMarshal`,
+      description,
+      url: `https://www.trackmarshal.app/events/${slug}`,
+      images: event.image_url ? [{ url: event.image_url, width: 1200, height: 630, alt: title }] : [],
+    },
+    alternates: { canonical: `/events/${slug}` },
+  };
+}
 
 export default async function EventPage({
   params,
