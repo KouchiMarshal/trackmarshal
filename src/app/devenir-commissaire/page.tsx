@@ -81,7 +81,7 @@ const licenses = [
   {
     grade: "B",
     subtitle: "Confirmé — dès 18 ans",
-    desc: "Après plusieurs saisons en grade C. Donne accès aux épreuves nationales et permet d'occuper des postes à responsabilité comme chef de poste adjoint.",
+    desc: "Après plusieurs saisons en grade C. Donne accès aux épreuves nationales et permet d'officier à l'étranger. Ouvre aussi les postes à responsabilité comme chef de poste adjoint.",
     color: "border-[#FF5A1F]/30 bg-[#FF5A1F]/5",
     badge: "text-[#FF5A1F]",
   },
