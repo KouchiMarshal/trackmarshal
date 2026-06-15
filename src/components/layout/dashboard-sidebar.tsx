@@ -24,6 +24,13 @@ const navItems = [
   { icon: Settings, label: "Paramètres", href: "/dashboard/settings" },
 ];
 
+const mobileNavItems = [
+  { icon: Home, label: "Accueil", href: "/dashboard" },
+  { icon: CalendarDays, label: "Events", href: "/dashboard/events" },
+  { icon: MessageSquare, label: "Messages", href: "/dashboard/messages" },
+  { icon: User, label: "Profil", href: "/dashboard/profile" },
+];
+
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -37,13 +44,13 @@ export default function DashboardSidebar() {
     <>
       {/* Sidebar desktop */}
       <aside className="hidden h-screen w-[280px] shrink-0 sticky top-0 border-r border-white/10 bg-[#050505] lg:flex lg:flex-col overflow-y-auto">
-        <div className="border-b border-white/10 p-8">
+        <div className="border-b border-white/10 p-6">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
-                <div className="h-4 w-4 rounded-full bg-[#FF5A1F]" />
+            <Link href="/" className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
+                <div className="h-3 w-3 rounded-full bg-[#FF5A1F]" />
               </div>
-              <h1 className="text-2xl font-black">
+              <h1 className="text-xl font-black">
                 Track<span className="text-[#FF5A1F]">Marshal</span>
               </h1>
             </Link>
@@ -84,15 +91,10 @@ export default function DashboardSidebar() {
         </div>
       </aside>
 
-      {/* Bottom nav mobile */}
+      {/* Bottom nav mobile — 4 liens + cloche */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/90 backdrop-blur-2xl lg:hidden">
-        <div className="grid grid-cols-4">
-          {[
-            { icon: Home, label: "Accueil", href: "/dashboard" },
-            { icon: CalendarDays, label: "Events", href: "/dashboard/events" },
-            { icon: MessageSquare, label: "Messages", href: "/dashboard/messages" },
-            { icon: User, label: "Profil", href: "/dashboard/profile" },
-          ].map((item) => (
+        <div className="grid grid-cols-5 items-center">
+          {mobileNavItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -104,6 +106,10 @@ export default function DashboardSidebar() {
               <span className="text-xs font-semibold">{item.label}</span>
             </Link>
           ))}
+          {/* Cloche dans la bottom nav */}
+          <div className="flex flex-col items-center gap-2 py-4">
+            <NotificationBell />
+          </div>
         </div>
       </div>
     </>
