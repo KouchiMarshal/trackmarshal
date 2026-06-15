@@ -36,7 +36,7 @@ export default function DashboardSidebar() {
   useEffect(() => {
     async function checkAdmin() {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user?.email !== "foussardk@gmail.com") return;
+      if (user?.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) return;
       setIsAdmin(true);
 
       const [{ count: licenseCount }, { count: orgCount }] = await Promise.all([

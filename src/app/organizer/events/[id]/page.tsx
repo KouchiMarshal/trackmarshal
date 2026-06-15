@@ -54,10 +54,14 @@ const [filter, setFilter] =
 
   async function loadEvent() {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push("/login"); setLoading(false); return; }
+
       const { data: eventData } = await supabase
         .from("events")
         .select("*")
         .eq("id", eventId)
+        .eq("organizer_id", user.id)
         .maybeSingle();
 
       setEvent(eventData ?? null);
@@ -96,7 +100,9 @@ const [filter, setFilter] =
   }
 
   async function deleteEvent() {
-    await supabase.from("events").delete().eq("id", eventId);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("events").delete().eq("id", eventId).eq("organizer_id", user.id);
     router.push("/organizer/events");
   }
 
@@ -153,6 +159,16 @@ const filteredApplications =
     return app.status === filter;
   });
 
+  function escapeHtml(val: string | null | undefined): string {
+    if (!val) return "—";
+    return String(val)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   function escapeCSV(val: any): string {
     if (val === null || val === undefined) return "";
     const str = String(val).replace(/"/g, '""');
@@ -189,16 +205,16 @@ const filteredApplications =
       const p = app.profiles || {};
       return `
         <tr>
-          <td>${p.full_name || "—"}</td>
-          <td>${p.email || "—"}</td>
-          <td>${p.phone || "—"}</td>
-          <td>${p.city || ""}${p.country ? `, ${p.country}` : ""}</td>
-          <td>${p.years_experience || "—"}</td>
-          <td>${p.license_type || "—"}</td>
-          <td>${p.license_number || "—"}</td>
+          <td>${escapeHtml(p.full_name)}</td>
+          <td>${escapeHtml(p.email)}</td>
+          <td>${escapeHtml(p.phone)}</td>
+          <td>${escapeHtml(p.city)}${p.country ? `, ${escapeHtml(p.country)}` : ""}</td>
+          <td>${escapeHtml(p.years_experience)}</td>
+          <td>${escapeHtml(p.license_type)}</td>
+          <td>${escapeHtml(p.license_number)}</td>
           <td>${p.license_verified ? "✔ Vérifiée" : "En attente"}</td>
-          <td>${p.languages || "—"}</td>
-          <td>${p.specialties || "—"}</td>
+          <td>${escapeHtml(p.languages)}</td>
+          <td>${escapeHtml(p.specialties)}</td>
         </tr>
       `;
     }).join("");
@@ -215,7 +231,7 @@ const filteredApplications =
         tr:nth-child(even) td { background: #fafafa; }
       </style>
     </head><body>
-      <h1>${event.title}</h1>
+      <h1>${escapeHtml(event.title)}</h1>
       <p>Commissaires acceptés — exporté le ${new Date().toLocaleDateString("fr-FR")}</p>
       <table>
         <thead><tr>

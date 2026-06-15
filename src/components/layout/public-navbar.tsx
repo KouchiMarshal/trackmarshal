@@ -18,7 +18,7 @@ export default function PublicNavbar() {
   const [user, setUser] = useState<any>(null);
   const [open, setOpen] = useState(false);
 
-  const isAdmin = user?.email === "foussardk@gmail.com";
+  const isAdmin = user?.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {

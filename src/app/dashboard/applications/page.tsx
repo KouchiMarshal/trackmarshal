@@ -39,6 +39,9 @@ export default function ApplicationsPage() {
   const [cancelling, setCancelling] =
     useState<string | null>(null);
 
+  const [userId, setUserId] =
+    useState("");
+
   useEffect(() => {
     loadApplications();
   }, []);
@@ -55,6 +58,8 @@ export default function ApplicationsPage() {
 
       return;
     }
+
+    setUserId(user.id);
 
     const { data: appsData, error: dbError } =
       await supabase
@@ -96,13 +101,23 @@ export default function ApplicationsPage() {
     setLoading(false);
   }
 
+  function escapeHtml(str: string | null | undefined): string {
+    if (!str) return "—";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   function printBriefing(app: any) {
     const ev = app.events;
     if (!ev) return;
     const w = window.open("", "_blank");
     if (!w) return;
     w.document.write(`<!DOCTYPE html><html lang="fr"><head>
-      <meta charset="UTF-8" /><title>Briefing — ${ev.title}</title>
+      <meta charset="UTF-8" /><title>Briefing — ${escapeHtml(ev.title)}</title>
       <style>
         body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; color: #111; }
         h1 { color: #FF5A1F; border-bottom: 2px solid #FF5A1F; padding-bottom: 10px; }
@@ -113,16 +128,16 @@ export default function ApplicationsPage() {
         @media print { body { margin: 20px; } button { display: none; } }
       </style>
     </head><body>
-      <h1>🏁 Briefing Commissaire — ${ev.title}</h1>
+      <h1>🏁 Briefing Commissaire — ${escapeHtml(ev.title)}</h1>
       <div class="badge">CANDIDATURE ACCEPTÉE</div>
       <div class="section">
         <div class="label">Date de l'événement</div>
         <div class="value">${new Date(ev.event_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</div>
         <div class="label">Lieu</div>
-        <div class="value">${ev.location || "—"}${ev.country ? ", " + ev.country : ""}</div>
-        ${ev.discipline ? `<div class="label">Discipline</div><div class="value">${ev.discipline}</div>` : ""}
+        <div class="value">${escapeHtml(ev.location)}${ev.country ? ", " + escapeHtml(ev.country) : ""}</div>
+        ${ev.discipline ? `<div class="label">Discipline</div><div class="value">${escapeHtml(ev.discipline)}</div>` : ""}
       </div>
-      ${ev.description ? `<div class="section"><div class="label">Description</div><div class="value">${ev.description}</div></div>` : ""}
+      ${ev.description ? `<div class="section"><div class="label">Description</div><div class="value">${escapeHtml(ev.description)}</div></div>` : ""}
       ${ev.accommodation !== null ? `<div class="section"><div class="label">Hébergement</div><div class="value">${ev.accommodation ? "✅ Inclus" : "❌ Non inclus"}</div></div>` : ""}
       ${ev.meals !== null ? `<div class="section"><div class="label">Repas</div><div class="value">${ev.meals ? "✅ Inclus" : "❌ Non inclus"}</div></div>` : ""}
       ${ev.travel_reimbursement !== null ? `<div class="section"><div class="label">Défraiement</div><div class="value">${ev.travel_reimbursement ? "✅ Inclus" : "❌ Non inclus"}</div></div>` : ""}
@@ -148,7 +163,8 @@ export default function ApplicationsPage() {
     const { error } = await supabase
       .from("applications")
       .delete()
-      .eq("id", appId);
+      .eq("id", appId)
+      .eq("marshal_id", userId);
 
     if (error) {
       alert(`Erreur : ${error.message}`);

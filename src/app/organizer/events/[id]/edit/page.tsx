@@ -24,6 +24,7 @@ export default function EditEventPage() {
 
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
+  const [userId, setUserId] = useState("");
   const [toast, setToast] = useState<ToastData>(null);
 
   const [title, setTitle] = useState("");
@@ -51,10 +52,15 @@ export default function EditEventPage() {
   }, [eventId]);
 
   async function loadEvent() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { router.push("/login"); return; }
+    setUserId(user.id);
+
     const { data } = await supabase
       .from("events")
       .select("*")
       .eq("id", eventId)
+      .eq("organizer_id", user.id)
       .maybeSingle();
 
     if (!data) {
@@ -123,7 +129,8 @@ export default function EditEventPage() {
         organizer_contact: organizerContact,
         schedule: schedule || null,
       })
-      .eq("id", eventId);
+      .eq("id", eventId)
+      .eq("organizer_id", userId);
 
     setLoading(false);
 

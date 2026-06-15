@@ -1,17 +1,32 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  // Admin-only endpoint
+  const authHeader = req.headers.get("Authorization");
+  const token = authHeader?.replace("Bearer ", "");
+
+  if (!token) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
+  const supabaseServer = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
+  const { data: { user } } = await supabaseServer.auth.getUser(token);
+  if (!user || user.email !== process.env.ADMIN_EMAIL) {
+    return NextResponse.json({ ok: false, error: "Admin only" }, { status: 403 });
+  }
+
   const RESEND_API_KEY = process.env.RESEND_API_KEY;
-
   if (!RESEND_API_KEY) {
-    return NextResponse.json({
-      ok: false,
-      error: "RESEND_API_KEY manquant dans .env.local",
-    });
+    return NextResponse.json({ ok: false, error: "RESEND_API_KEY manquant dans les variables d'environnement" });
   }
 
   const FROM = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-  const TO = process.env.RESEND_TEST_TO || "foussardk@gmail.com";
+  const TO = process.env.RESEND_TEST_TO || process.env.ADMIN_EMAIL || "";
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -39,12 +54,5 @@ export async function GET() {
   });
 
   const result = await res.json();
-
-  return NextResponse.json({
-    ok: res.ok,
-    status: res.status,
-    from: FROM,
-    to: TO,
-    resend_response: result,
-  });
+  return NextResponse.json({ ok: res.ok, status: res.status, from: FROM, to: TO, resend_response: result });
 }

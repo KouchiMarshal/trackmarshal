@@ -119,6 +119,23 @@ function buildEmail(type: EmailType, data: Record<string, any>): { subject: stri
 }
 
 export async function POST(req: NextRequest) {
+  // Verify caller is an authenticated Supabase user
+  const authHeader = req.headers.get("Authorization");
+  const token = authHeader?.replace("Bearer ", "");
+  if (!token) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { createClient } = await import("@supabase/supabase-js");
+  const supabaseServer = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token);
+  if (authError || !user) {
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  }
+
   if (!RESEND_API_KEY) {
     return NextResponse.json({ ok: false, error: "RESEND_API_KEY not set" }, { status: 200 });
   }
