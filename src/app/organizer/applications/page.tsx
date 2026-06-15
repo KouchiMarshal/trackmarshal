@@ -95,17 +95,23 @@ export default function OrganizerApplicationsPage() {
     if (status === "accepted") {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (currentUser) {
-        const { data: convData } = await supabase
+        const { data: convData, error: convError } = await supabase
           .from("conversations")
           .insert({ title: `${eventTitle} — ${marshalName}` })
           .select()
           .single();
 
+        if (convError) {
+          console.error("Erreur création conversation:", convError);
+          setToast({ message: `Candidature acceptée mais erreur messagerie: ${convError.message}`, type: "error" });
+          return;
+        }
         if (convData?.id) {
-          await supabase.from("conversation_members").insert([
+          const { error: membersError } = await supabase.from("conversation_members").insert([
             { conversation_id: convData.id, user_id: currentUser.id },
             { conversation_id: convData.id, user_id: marshalId },
           ]);
+          if (membersError) console.error("Erreur membres conversation:", membersError);
         }
       }
     }
