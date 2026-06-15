@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { useUnreadMessages } from "@/hooks/useUnreadMessages";
 
 const navItems = [
   { icon: Home, label: "Dashboard", href: "/organizer/dashboard" },
@@ -25,6 +26,7 @@ const navItems = [
 export default function OrganizerSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const unread = useUnreadMessages();
 
   async function logout() {
     await supabase.auth.signOut();
@@ -50,6 +52,7 @@ export default function OrganizerSidebar() {
           <nav className="space-y-3">
             {navItems.map((item) => {
               const active = pathname === item.href;
+              const isMessages = item.href === "/organizer/messages";
               return (
                 <Link
                   key={item.href}
@@ -60,8 +63,20 @@ export default function OrganizerSidebar() {
                       : "text-zinc-400 hover:bg-white/5 hover:text-white"
                   }`}
                 >
-                  <item.icon size={20} />
+                  <div className="relative">
+                    <item.icon size={20} />
+                    {isMessages && unread > 0 && (
+                      <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#FF5A1F] text-[9px] font-black text-white">
+                        {unread > 9 ? "9+" : unread}
+                      </span>
+                    )}
+                  </div>
                   <span className="font-semibold">{item.label}</span>
+                  {isMessages && unread > 0 && !active && (
+                    <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-[#FF5A1F] px-1.5 text-[10px] font-black text-white">
+                      {unread > 9 ? "9+" : unread}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -87,18 +102,28 @@ export default function OrganizerSidebar() {
             { icon: FileBadge2, label: "Candidatures", href: "/organizer/applications" },
             { icon: MessageSquare, label: "Messages", href: "/organizer/messages" },
             { icon: Plus, label: "Créer", href: "/organizer/events/create" },
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex flex-col items-center gap-2 py-4 transition ${
-                pathname === item.href ? "text-[#FF5A1F]" : "text-zinc-400 hover:text-[#FF5A1F]"
-              }`}
-            >
-              <item.icon size={20} />
-              <span className="text-xs font-semibold">{item.label}</span>
-            </Link>
-          ))}
+          ].map((item) => {
+            const isMessages = item.href === "/organizer/messages";
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center gap-2 py-4 transition ${
+                  pathname === item.href ? "text-[#FF5A1F]" : "text-zinc-400 hover:text-[#FF5A1F]"
+                }`}
+              >
+                <div className="relative">
+                  <item.icon size={20} />
+                  {isMessages && unread > 0 && (
+                    <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#FF5A1F] text-[9px] font-black text-white">
+                      {unread > 9 ? "9+" : unread}
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs font-semibold">{item.label}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </>

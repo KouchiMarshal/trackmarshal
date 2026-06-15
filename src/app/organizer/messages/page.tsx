@@ -9,6 +9,7 @@ import NotificationBell from "@/components/notifications/notification-bell";
 export default function OrganizerMessagesPage() {
   const [user, setUser] = useState<any>(null);
   const [conversations, setConversations] = useState<any[]>([]);
+  const [unreadMap, setUnreadMap] = useState<Record<string, number>>({});
   const [selectedConv, setSelectedConv] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [profilesMap, setProfilesMap] = useState<Record<string, any>>({});
@@ -17,9 +18,7 @@ export default function OrganizerMessagesPage() {
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    initUser();
-  }, []);
+  useEffect(() => { initUser(); }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -38,11 +37,13 @@ export default function OrganizerMessagesPage() {
   useEffect(() => {
     if (!selectedConv) return;
     loadMessages(selectedConv.id);
+    markAsRead(selectedConv.id);
 
     const channel = supabase
       .channel(`org-messages-${selectedConv.id}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${selectedConv.id}` }, () => {
         loadMessages(selectedConv.id);
+        markAsRead(selectedConv.id);
       })
       .subscribe();
 
@@ -58,15 +59,27 @@ export default function OrganizerMessagesPage() {
     setUser(user);
   }
 
+  async function markAsRead(convId: string) {
+    if (!user) return;
+    await supabase
+      .from("conversation_members")
+      .update({ last_read_at: new Date().toISOString() })
+      .eq("conversation_id", convId)
+      .eq("user_id", user.id);
+
+    setUnreadMap((prev) => ({ ...prev, [convId]: 0 }));
+  }
+
   async function loadConversations() {
     if (!user) return;
 
     const { data: members } = await supabase
       .from("conversation_members")
-      .select("conversation_id")
+      .select("conversation_id, last_read_at")
       .eq("user_id", user.id);
 
-    const convIds = (members || []).map((m: any) => m.conversation_id).filter(Boolean);
+    const membersArr = members || [];
+    const convIds = membersArr.map((m: any) => m.conversation_id).filter(Boolean);
     if (convIds.length === 0) { setConversations([]); return; }
 
     const { data: convs } = await supabase
@@ -76,6 +89,20 @@ export default function OrganizerMessagesPage() {
       .order("created_at", { ascending: false });
 
     setConversations(convs || []);
+
+    const newUnreadMap: Record<string, number> = {};
+    await Promise.all(membersArr.map(async (m: any) => {
+      let q = supabase
+        .from("messages")
+        .select("id", { count: "exact", head: true })
+        .eq("conversation_id", m.conversation_id)
+        .neq("sender_id", user.id);
+      if (m.last_read_at) q = q.gt("created_at", m.last_read_at);
+      const { count } = await q;
+      newUnreadMap[m.conversation_id] = count || 0;
+    }));
+    setUnreadMap(newUnreadMap);
+
     if (convs && convs.length > 0 && !selectedConv) {
       setSelectedConv(convs[0]);
     }
@@ -126,6 +153,8 @@ export default function OrganizerMessagesPage() {
     setMobileView("chat");
   }
 
+  const totalUnread = Object.values(unreadMap).reduce((a, b) => a + b, 0);
+
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="flex min-h-screen">
@@ -134,7 +163,6 @@ export default function OrganizerMessagesPage() {
 
         <div className="flex flex-1 flex-col overflow-hidden">
 
-          {/* Header */}
           <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
             <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-10">
               <div className="flex items-center gap-3">
@@ -148,8 +176,13 @@ export default function OrganizerMessagesPage() {
                 )}
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Organisateur</p>
-                  <h1 className="text-xl font-black lg:text-2xl">
+                  <h1 className="flex items-center gap-3 text-xl font-black lg:text-2xl">
                     {mobileView === "chat" && selectedConv ? selectedConv.title : "Messages"}
+                    {totalUnread > 0 && mobileView !== "chat" && (
+                      <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#FF5A1F] px-1.5 text-xs font-black">
+                        {totalUnread > 9 ? "9+" : totalUnread}
+                      </span>
+                    )}
                   </h1>
                 </div>
               </div>
@@ -157,10 +190,8 @@ export default function OrganizerMessagesPage() {
             </div>
           </header>
 
-          {/* Body */}
           <div className="flex flex-1 overflow-hidden">
 
-            {/* Liste conversations */}
             <div className={`flex flex-col border-white/10 bg-[#050505] lg:w-[320px] lg:border-r ${mobileView === "chat" ? "hidden lg:flex" : "flex w-full"}`}>
 
               <div className="border-b border-white/10 p-5">
@@ -176,26 +207,43 @@ export default function OrganizerMessagesPage() {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {conversations.map((conv) => (
-                      <button
-                        key={conv.id}
-                        onClick={() => selectConversation(conv)}
-                        className={`w-full rounded-2xl border p-4 text-left transition ${
-                          selectedConv?.id === conv.id
-                            ? "border-[#FF5A1F] bg-[#FF5A1F]/10"
-                            : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05]"
-                        }`}
-                      >
-                        <p className="font-bold leading-tight">{conv.title || "Conversation"}</p>
-                        <p className="mt-1 text-xs text-zinc-500">Tap pour ouvrir</p>
-                      </button>
-                    ))}
+                    {conversations.map((conv) => {
+                      const convUnread = unreadMap[conv.id] || 0;
+                      return (
+                        <button
+                          key={conv.id}
+                          onClick={() => selectConversation(conv)}
+                          className={`w-full rounded-2xl border p-4 text-left transition ${
+                            selectedConv?.id === conv.id
+                              ? "border-[#FF5A1F] bg-[#FF5A1F]/10"
+                              : convUnread > 0
+                              ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5"
+                              : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05]"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <p className={`font-bold leading-tight ${convUnread > 0 ? "text-white" : "text-zinc-200"}`}>
+                              {conv.title || "Conversation"}
+                            </p>
+                            {convUnread > 0 && (
+                              <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#FF5A1F] px-1 text-[10px] font-black text-white">
+                                {convUnread > 9 ? "9+" : convUnread}
+                              </span>
+                            )}
+                          </div>
+                          {convUnread > 0 ? (
+                            <p className="mt-1 text-xs font-semibold text-[#FF5A1F]">{convUnread} nouveau{convUnread > 1 ? "x" : ""} message{convUnread > 1 ? "s" : ""}</p>
+                          ) : (
+                            <p className="mt-1 text-xs text-zinc-500">Tap pour ouvrir</p>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Zone messages */}
             <div className={`flex flex-1 flex-col overflow-hidden lg:flex ${mobileView === "list" ? "hidden" : "flex"}`}>
 
               {!selectedConv ? (
