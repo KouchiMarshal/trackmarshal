@@ -102,7 +102,7 @@ export default function OrganizerSidebar() {
           ))}
           {/* Cloche dans la bottom nav */}
           <div className="flex flex-col items-center gap-2 py-4">
-            <NotificationBell />
+            <NotificationBell dropdownUp />
           </div>
         </div>
       </div>

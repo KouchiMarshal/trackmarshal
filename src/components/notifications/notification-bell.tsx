@@ -2,10 +2,15 @@
 
 import { Bell } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-export default function NotificationBell() {
+type Props = {
+  dropdownUp?: boolean;
+};
+
+export default function NotificationBell({ dropdownUp = false }: Props) {
+  const id = useId();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -13,8 +18,9 @@ export default function NotificationBell() {
   useEffect(() => {
     loadNotifications();
 
+    const channelName = `notif-bell-${id.replace(/:/g, "")}`;
     const channel = supabase
-      .channel("notif-bell")
+      .channel(channelName)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications" }, () => {
         loadNotifications();
       })
@@ -75,7 +81,9 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-14 z-50 w-[360px] overflow-hidden rounded-[28px] border border-white/10 bg-[#0A0A0A] shadow-2xl">
+        <div className={`absolute right-0 z-50 w-[340px] overflow-hidden rounded-[28px] border border-white/10 bg-[#0A0A0A] shadow-2xl ${
+          dropdownUp ? "bottom-14" : "top-14"
+        }`}>
 
           <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
             <div>
