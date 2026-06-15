@@ -111,6 +111,23 @@ export default function CreateEventPage() {
 
   async function createEvent() {
 
+    if (!title.trim()) {
+      setToast({ message: "Le nom de l'événement est obligatoire.", type: "error" });
+      return;
+    }
+    if (!date) {
+      setToast({ message: "La date est obligatoire.", type: "error" });
+      return;
+    }
+    if (!location.trim()) {
+      setToast({ message: "Le lieu est obligatoire.", type: "error" });
+      return;
+    }
+    if (!discipline) {
+      setToast({ message: "La discipline est obligatoire.", type: "error" });
+      return;
+    }
+
     setLoading(true);
 
     const {
@@ -127,14 +144,15 @@ export default function CreateEventPage() {
     const uploadedImage =
       await uploadImage();
 
-    const slug =
+    const baseSlug =
       title
         .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
         .replaceAll(" ", "-")
-        .replace(
-          /[^a-z0-9-]/g,
-          ""
-        );
+        .replace(/[^a-z0-9-]/g, "");
+
+    const slug = `${baseSlug}-${Date.now()}`;
 
     const { error } =
       await supabase
@@ -444,29 +462,19 @@ export default function CreateEventPage() {
 
               <div className="grid gap-5">
 
-                <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                <div className={`rounded-2xl border p-5 transition ${passAccompagnant ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-white/10 bg-black/30"}`}>
 
                   <div className="flex items-center justify-between">
 
-                    <span className="font-semibold">
-
-                      Pass accompagnant
-
-                    </span>
+                    <span className="font-semibold">🎟️ Pass accompagnant</span>
 
                     <button
                       type="button"
-                      onClick={() =>
-                        setPassAccompagnant(
-                          !passAccompagnant
-                        )
-                      }
-                      className={`h-6 w-6 rounded-full ${
-                        passAccompagnant
-                          ? "bg-[#FF5A1F]"
-                          : "bg-zinc-700"
-                      }`}
-                    />
+                      onClick={() => setPassAccompagnant(!passAccompagnant)}
+                      className={`relative h-7 w-12 rounded-full transition-colors ${passAccompagnant ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                    >
+                      <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${passAccompagnant ? "translate-x-6" : "translate-x-1"}`} />
+                    </button>
 
                   </div>
 
@@ -474,13 +482,9 @@ export default function CreateEventPage() {
 
                     <input
                       type="number"
-                      placeholder="Nombre de pass"
+                      placeholder="Nombre de pass accompagnant"
                       value={passCount}
-                      onChange={(e) =>
-                        setPassCount(
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => setPassCount(e.target.value)}
                       className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
                     />
 
@@ -488,29 +492,19 @@ export default function CreateEventPage() {
 
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                <div className={`rounded-2xl border p-5 transition ${defraiement ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-white/10 bg-black/30"}`}>
 
                   <div className="flex items-center justify-between">
 
-                    <span className="font-semibold">
-
-                      Défraiement
-
-                    </span>
+                    <span className="font-semibold">💰 Défraiement</span>
 
                     <button
                       type="button"
-                      onClick={() =>
-                        setDefraiement(
-                          !defraiement
-                        )
-                      }
-                      className={`h-6 w-6 rounded-full ${
-                        defraiement
-                          ? "bg-[#FF5A1F]"
-                          : "bg-zinc-700"
-                      }`}
-                    />
+                      onClick={() => setDefraiement(!defraiement)}
+                      className={`relative h-7 w-12 rounded-full transition-colors ${defraiement ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                    >
+                      <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${defraiement ? "translate-x-6" : "translate-x-1"}`} />
+                    </button>
 
                   </div>
 
@@ -518,15 +512,9 @@ export default function CreateEventPage() {
 
                     <input
                       type="text"
-                      placeholder="Montant ou détails"
-                      value={
-                        defraiementAmount
-                      }
-                      onChange={(e) =>
-                        setDefraiementAmount(
-                          e.target.value
-                        )
-                      }
+                      placeholder="Montant en € ou description (ex: 50€)"
+                      value={defraiementAmount}
+                      onChange={(e) => setDefraiementAmount(e.target.value)}
                       className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
                     />
 
@@ -534,27 +522,19 @@ export default function CreateEventPage() {
 
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                <div className={`rounded-2xl border p-5 transition ${repas ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-white/10 bg-black/30"}`}>
 
                   <div className="flex items-center justify-between">
 
-                    <span className="font-semibold">
-
-                      Repas fournis
-
-                    </span>
+                    <span className="font-semibold">🍽️ Repas fournis</span>
 
                     <button
                       type="button"
-                      onClick={() =>
-                        setRepas(!repas)
-                      }
-                      className={`h-6 w-6 rounded-full ${
-                        repas
-                          ? "bg-[#FF5A1F]"
-                          : "bg-zinc-700"
-                      }`}
-                    />
+                      onClick={() => setRepas(!repas)}
+                      className={`relative h-7 w-12 rounded-full transition-colors ${repas ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                    >
+                      <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${repas ? "translate-x-6" : "translate-x-1"}`} />
+                    </button>
 
                   </div>
 
@@ -562,29 +542,14 @@ export default function CreateEventPage() {
 
                     <select
                       value={repasType}
-                      onChange={(e) =>
-                        setRepasType(
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => setRepasType(e.target.value)}
                       className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
                     >
 
-                      <option value="">
-                        Choisir
-                      </option>
-
-                      <option value="Midi">
-                        Midi
-                      </option>
-
-                      <option value="Soir">
-                        Soir
-                      </option>
-
-                      <option value="Midi + Soir">
-                        Midi + Soir
-                      </option>
+                      <option value="">Choisir</option>
+                      <option value="Midi">Midi</option>
+                      <option value="Soir">Soir</option>
+                      <option value="Midi + Soir">Midi + Soir</option>
 
                     </select>
 
@@ -592,27 +557,19 @@ export default function CreateEventPage() {
 
                 </div>
 
-                <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                <div className={`rounded-2xl border p-5 transition ${hotel ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-white/10 bg-black/30"}`}>
 
                   <div className="flex items-center justify-between">
 
-                    <span className="font-semibold">
-
-                      Hôtel inclus
-
-                    </span>
+                    <span className="font-semibold">🏨 Hôtel inclus</span>
 
                     <button
                       type="button"
-                      onClick={() =>
-                        setHotel(!hotel)
-                      }
-                      className={`h-6 w-6 rounded-full ${
-                        hotel
-                          ? "bg-[#FF5A1F]"
-                          : "bg-zinc-700"
-                      }`}
-                    />
+                      onClick={() => setHotel(!hotel)}
+                      className={`relative h-7 w-12 rounded-full transition-colors ${hotel ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                    >
+                      <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${hotel ? "translate-x-6" : "translate-x-1"}`} />
+                    </button>
 
                   </div>
 

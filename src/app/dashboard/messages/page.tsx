@@ -189,7 +189,8 @@ export default function MessagesPage() {
                     <p className="text-lg font-bold">
 
                       {
-                        conversation.event_title
+                        conversation.title ||
+                        "Conversation"
                       }
 
                     </p>
@@ -217,7 +218,7 @@ export default function MessagesPage() {
 
                 {
                   selectedConversation
-                    ?.event_title ||
+                    ?.title ||
                   "Messages"
                 }
 

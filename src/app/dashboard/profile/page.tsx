@@ -420,6 +420,7 @@ export default function ProfilePage() {
                               e.target.value,
                           })
                         }
+                        placeholder="Ex: 5 ans de commissariat en rallye régional"
                         className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
                       />
 
@@ -444,6 +445,7 @@ export default function ProfilePage() {
                               e.target.value,
                           })
                         }
+                        placeholder="Ex: Rallye, Circuit, Karting"
                         className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
                       />
 
@@ -468,6 +470,7 @@ export default function ProfilePage() {
                               e.target.value,
                           })
                         }
+                        placeholder="Ex: Directeur de course, Juge de faits"
                         className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
                       />
 
@@ -492,6 +495,7 @@ export default function ProfilePage() {
                               e.target.value,
                           })
                         }
+                        placeholder="Ex: Français, Anglais"
                         className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
                       />
 

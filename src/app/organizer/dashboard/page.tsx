@@ -385,9 +385,11 @@ export default function OrganizerDashboard() {
                               }`}
                             >
 
-                              {
-                                app.status
-                              }
+                              {app.status === "accepted"
+                                ? "Accepté"
+                                : app.status === "rejected"
+                                ? "Refusé"
+                                : "En attente"}
 
                             </div>
 

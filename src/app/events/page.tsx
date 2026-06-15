@@ -29,6 +29,9 @@ export default function EventsPage() {
   const [search, setSearch] =
     useState("");
 
+  const [disciplineFilter, setDisciplineFilter] =
+    useState("");
+
   const [loading, setLoading] =
     useState(true);
 
@@ -38,23 +41,18 @@ export default function EventsPage() {
 
   useEffect(() => {
 
-    const filtered = events.filter(
-      (event) =>
-        event.title
-          ?.toLowerCase()
-          .includes(
-            search.toLowerCase()
-          ) ||
-        event.location
-          ?.toLowerCase()
-          .includes(
-            search.toLowerCase()
-          )
-    );
+    const filtered = events.filter((event) => {
+      const matchSearch =
+        event.title?.toLowerCase().includes(search.toLowerCase()) ||
+        event.location?.toLowerCase().includes(search.toLowerCase());
+      const matchDiscipline =
+        !disciplineFilter || event.discipline === disciplineFilter;
+      return matchSearch && matchDiscipline;
+    });
 
     setFilteredEvents(filtered);
 
-  }, [search, events]);
+  }, [search, disciplineFilter, events]);
 
   async function loadEvents() {
 
@@ -62,8 +60,8 @@ export default function EventsPage() {
       await supabase
         .from("events")
         .select("*")
-        .order("created_at", {
-          ascending: false,
+        .order("event_date", {
+          ascending: true,
         });
 
     setEvents(data || []);
@@ -141,6 +139,24 @@ export default function EventsPage() {
                 }
                 className="w-full bg-transparent text-white outline-none placeholder:text-zinc-500"
               />
+
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+
+              {["", "Rallye", "Circuit", "Karting", "Drift"].map((disc) => (
+                <button
+                  key={disc}
+                  onClick={() => setDisciplineFilter(disc)}
+                  className={`rounded-full px-5 py-2 text-sm font-bold uppercase tracking-[0.15em] transition ${
+                    disciplineFilter === disc
+                      ? "bg-[#FF5A1F] text-white"
+                      : "border border-white/10 bg-white/[0.04] text-zinc-400 hover:border-[#FF5A1F]/40 hover:text-white"
+                  }`}
+                >
+                  {disc || "Tous"}
+                </button>
+              ))}
 
             </div>
 

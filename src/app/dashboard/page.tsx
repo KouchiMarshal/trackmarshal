@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDays, Clock3 } from "lucide-react";
+import { CalendarDays, MapPin } from "lucide-react";
 
 import Link from "next/link";
 
@@ -299,7 +299,7 @@ setProfile(profileData);
 
                       <div className="flex items-center gap-3">
 
-                        <Clock3
+                        <MapPin
                           size={18}
                         />
 
@@ -381,15 +381,18 @@ setProfile(profileData);
 
                           <div>
 
-                            <h3 className="text-lg font-bold">
-
-                              {
-                                application
-                                  .events
-                                  ?.title
-                              }
-
-                            </h3>
+                            {application.events?.slug ? (
+                              <Link
+                                href={`/events/${application.events.slug}`}
+                                className="text-lg font-bold transition hover:text-[#FF5A1F]"
+                              >
+                                {application.events?.title}
+                              </Link>
+                            ) : (
+                              <h3 className="text-lg font-bold">
+                                {application.events?.title}
+                              </h3>
+                            )}
 
                             <p className="mt-2 text-sm text-zinc-500">
                               {formatDate(application.events?.event_date)}
