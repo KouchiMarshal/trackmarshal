@@ -3,6 +3,7 @@
 import {
   CalendarDays,
   FileBadge2,
+  Heart,
   Home,
   LogOut,
   MessageSquare,
@@ -21,6 +22,7 @@ const navItems = [
   { icon: Home, label: "Dashboard", href: "/dashboard" },
   { icon: CalendarDays, label: "Événements", href: "/dashboard/events" },
   { icon: FileBadge2, label: "Mes candidatures", href: "/dashboard/applications" },
+  { icon: Heart, label: "Favoris", href: "/dashboard/favorites" },
   { icon: MessageSquare, label: "Messages", href: "/dashboard/messages" },
   { icon: User, label: "Mon profil", href: "/dashboard/profile" },
   { icon: Settings, label: "Paramètres", href: "/dashboard/settings" },

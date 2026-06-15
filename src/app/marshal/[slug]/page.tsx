@@ -22,6 +22,16 @@ export default async function MarshalPage({
     .eq("slug", slug)
     .single();
 
+  const { data: reviews } = await supabase
+    .from("reviews")
+    .select("rating, comment, created_at, event_id")
+    .eq("marshal_id", profile?.id)
+    .order("created_at", { ascending: false });
+
+  const avgRating = reviews && reviews.length > 0
+    ? Math.round((reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length) * 10) / 10
+    : null;
+
   if (!profile) {
 
     return (
@@ -181,6 +191,19 @@ export default async function MarshalPage({
 
                 </div>
 
+                {avgRating !== null && (
+                  <div className="rounded-[32px] border border-yellow-500/20 bg-yellow-500/5 p-8 backdrop-blur-xl">
+                    <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">Note moyenne</p>
+                    <h3 className="mt-4 text-5xl font-black text-yellow-400">{avgRating}/5</h3>
+                    <div className="mt-2 flex gap-1">
+                      {[1,2,3,4,5].map((i) => (
+                        <span key={i} className={`text-xl ${i <= Math.round(avgRating) ? "text-yellow-400" : "text-zinc-700"}`}>★</span>
+                      ))}
+                    </div>
+                    <p className="mt-2 text-xs text-zinc-500">{reviews?.length} évaluation(s)</p>
+                  </div>
+                )}
+
                 <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
 
                   <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
@@ -300,6 +323,27 @@ export default async function MarshalPage({
                 </p>
 
               </div>
+
+              {reviews && reviews.length > 0 && (
+                <div className="mt-10 rounded-[40px] border border-white/10 bg-[#0A0A0A] p-10">
+                  <p className="text-sm uppercase tracking-[0.3em] text-[#FF5A1F]">Évaluations organisateurs</p>
+                  <div className="mt-6 space-y-5">
+                    {reviews.filter((r) => r.comment).map((r, i) => (
+                      <div key={i} className="rounded-[24px] border border-white/10 bg-white/[0.02] p-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          {[1,2,3,4,5].map((s) => (
+                            <span key={s} className={`text-lg ${s <= (r.rating || 0) ? "text-yellow-400" : "text-zinc-700"}`}>★</span>
+                          ))}
+                          <span className="text-xs text-zinc-500 ml-2">
+                            {new Date(r.created_at).toLocaleDateString("fr-FR")}
+                          </span>
+                        </div>
+                        <p className="text-zinc-300 leading-relaxed">"{r.comment}"</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
             </div>
 

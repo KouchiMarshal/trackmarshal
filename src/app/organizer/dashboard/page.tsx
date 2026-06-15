@@ -247,6 +247,51 @@ export default function OrganizerDashboard() {
 
               </div>
 
+              {/* Analytics */}
+              {events.length > 0 && (() => {
+                const totalNeeded = events.reduce((s, e) => s + (e.marshals_needed || 0), 0);
+                const totalAccepted = applications.filter((a) => a.status === "accepted").length;
+                const fillRate = totalNeeded > 0 ? Math.round((totalAccepted / totalNeeded) * 100) : 0;
+                const conversionRate = applications.length > 0 ? Math.round((totalAccepted / applications.length) * 100) : 0;
+                const byEvent = events.map((e) => ({
+                  title: e.title,
+                  count: applications.filter((a) => a.event_id === e.id).length,
+                })).sort((a, b) => b.count - a.count).slice(0, 3);
+
+                return (
+                  <div className="mt-6 rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Analytics</p>
+                    <h2 className="mt-2 text-2xl font-black">Performance</h2>
+
+                    <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                      <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                        <p className="text-xs text-zinc-500 uppercase tracking-wider">Taux de remplissage</p>
+                        <p className="mt-3 text-4xl font-black text-[#FF5A1F]">{fillRate}%</p>
+                        <div className="mt-3 h-2 rounded-full bg-white/10">
+                          <div className="h-2 rounded-full bg-[#FF5A1F] transition-all" style={{ width: `${fillRate}%` }} />
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                        <p className="text-xs text-zinc-500 uppercase tracking-wider">Taux d'acceptation</p>
+                        <p className="mt-3 text-4xl font-black text-green-400">{conversionRate}%</p>
+                        <div className="mt-3 h-2 rounded-full bg-white/10">
+                          <div className="h-2 rounded-full bg-green-500 transition-all" style={{ width: `${conversionRate}%` }} />
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3">Événements populaires</p>
+                        {byEvent.map((e) => (
+                          <div key={e.title} className="flex items-center justify-between py-1">
+                            <p className="text-sm truncate text-zinc-300">{e.title}</p>
+                            <span className="ml-2 text-sm font-black text-[#FF5A1F]">{e.count}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
               <div className="mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
 
                 <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">

@@ -32,6 +32,13 @@ export default function SettingsPage() {
   const [notifications, setNotifications] =
     useState(true);
 
+  const [emailPrefs, setEmailPrefs] = useState({
+    email_on_application_accepted: true,
+    email_on_application_rejected: true,
+    email_on_new_message: true,
+    email_on_license_validated: true,
+  });
+
   const [toast, setToast] =
     useState<ToastData>(null);
 
@@ -65,17 +72,26 @@ export default function SettingsPage() {
     if (profile && typeof profile.notifications_enabled === "boolean") {
       setNotifications(profile.notifications_enabled);
     }
+    if (profile?.email_preferences) {
+      setEmailPrefs((prev) => ({ ...prev, ...profile.email_preferences }));
+    }
   }
 
   async function saveNotifications(value: boolean) {
     setNotifications(value);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    await supabase
-      .from("profiles")
-      .update({ notifications_enabled: value })
-      .eq("id", user.id);
+    await supabase.from("profiles").update({ notifications_enabled: value }).eq("id", user.id);
     setToast({ message: value ? "Notifications activées." : "Notifications désactivées.", type: "success" });
+  }
+
+  async function toggleEmailPref(key: keyof typeof emailPrefs) {
+    const next = { ...emailPrefs, [key]: !emailPrefs[key] };
+    setEmailPrefs(next);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("profiles").update({ email_preferences: next }).eq("id", user.id);
+    setToast({ message: "Préférences emails mises à jour.", type: "success" });
   }
 
   async function updatePassword() {
@@ -302,6 +318,38 @@ export default function SettingsPage() {
 
                 </div>
 
+              </div>
+
+              <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                <div className="flex items-center gap-4">
+                  <Bell size={28} className="text-[#FF5A1F]" />
+                  <div>
+                    <h2 className="text-3xl font-black">Préférences emails</h2>
+                    <p className="mt-2 text-zinc-400">Choisissez quels emails vous souhaitez recevoir.</p>
+                  </div>
+                </div>
+
+                <div className="mt-8 space-y-4">
+                  {([
+                    { key: "email_on_application_accepted", label: "Candidature acceptée", desc: "Recevoir un email quand votre candidature est acceptée" },
+                    { key: "email_on_application_rejected", label: "Candidature refusée", desc: "Recevoir un email quand votre candidature n'est pas retenue" },
+                    { key: "email_on_new_message", label: "Nouveau message", desc: "Recevoir un email lors d'un nouveau message" },
+                    { key: "email_on_license_validated", label: "Licence validée", desc: "Recevoir un email lors de la validation de votre licence" },
+                  ] as { key: keyof typeof emailPrefs; label: string; desc: string }[]).map(({ key, label, desc }) => (
+                    <div key={key} className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/30 p-5">
+                      <div>
+                        <h3 className="font-bold">{label}</h3>
+                        <p className="mt-1 text-sm text-zinc-500">{desc}</p>
+                      </div>
+                      <button
+                        onClick={() => toggleEmailPref(key)}
+                        className={`relative h-8 w-16 shrink-0 rounded-full transition ${emailPrefs[key] ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                      >
+                        <div className={`absolute top-1 h-6 w-6 rounded-full bg-white transition-all ${emailPrefs[key] ? "left-9" : "left-1"}`} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="rounded-[32px] border border-red-500/20 bg-red-500/5 p-6 backdrop-blur-xl lg:p-8">

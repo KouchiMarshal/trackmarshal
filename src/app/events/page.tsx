@@ -9,6 +9,7 @@ import {
 
 import {
   CalendarDays,
+  Heart,
   MapPin,
   Search,
   Users,
@@ -18,6 +19,7 @@ import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
 import { formatDate } from "@/lib/formatDate";
 import { SkeletonEventCard } from "@/components/ui/skeleton";
+import { useFavorites } from "@/hooks/useFavorites";
 
 export default function EventsPage() {
 
@@ -33,27 +35,43 @@ export default function EventsPage() {
   const [disciplineFilter, setDisciplineFilter] =
     useState("");
 
+  const [countryFilter, setCountryFilter] =
+    useState("");
+
+  const [dateFilter, setDateFilter] =
+    useState<"upcoming" | "all" | "past">("upcoming");
+
+  const [countries, setCountries] =
+    useState<string[]>([]);
+
   const [loading, setLoading] =
     useState(true);
+
+  const { toggle, isFavorite } = useFavorites();
 
   useEffect(() => {
     loadEvents();
   }, []);
 
   useEffect(() => {
-
+    const now = new Date();
     const filtered = events.filter((event) => {
       const matchSearch =
         event.title?.toLowerCase().includes(search.toLowerCase()) ||
         event.location?.toLowerCase().includes(search.toLowerCase());
       const matchDiscipline =
         !disciplineFilter || event.discipline === disciplineFilter;
-      return matchSearch && matchDiscipline;
+      const matchCountry =
+        !countryFilter || event.country === countryFilter;
+      const eventDate = new Date(event.event_date);
+      const matchDate =
+        dateFilter === "all" ||
+        (dateFilter === "upcoming" && eventDate >= now) ||
+        (dateFilter === "past" && eventDate < now);
+      return matchSearch && matchDiscipline && matchCountry && matchDate;
     });
-
     setFilteredEvents(filtered);
-
-  }, [search, disciplineFilter, events]);
+  }, [search, disciplineFilter, countryFilter, dateFilter, events]);
 
   async function loadEvents() {
 
@@ -65,9 +83,11 @@ export default function EventsPage() {
           ascending: true,
         });
 
-    setEvents(data || []);
+    const eventsData = data || [];
+    setEvents(eventsData);
 
-    setFilteredEvents(data || []);
+    const uniqueCountries = [...new Set(eventsData.map((e: any) => e.country).filter(Boolean))] as string[];
+    setCountries(uniqueCountries.sort());
 
     setLoading(false);
   }
@@ -144,7 +164,6 @@ export default function EventsPage() {
             </div>
 
             <div className="mt-5 flex flex-wrap gap-3">
-
               {["", "Rallye", "Circuit", "Karting", "Drift"].map((disc) => (
                 <button
                   key={disc}
@@ -158,7 +177,44 @@ export default function EventsPage() {
                   {disc || "Tous"}
                 </button>
               ))}
+            </div>
 
+            <div className="mt-4 flex flex-wrap gap-3">
+              <div className="flex overflow-hidden rounded-2xl border border-white/10">
+                {(["upcoming", "all", "past"] as const).map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => setDateFilter(d)}
+                    className={`px-5 py-2 text-sm font-bold transition ${
+                      dateFilter === d ? "bg-[#FF5A1F] text-white" : "bg-white/[0.04] text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    {d === "upcoming" ? "À venir" : d === "all" ? "Tous" : "Passés"}
+                  </button>
+                ))}
+              </div>
+
+              {countries.length > 0 && (
+                <select
+                  value={countryFilter}
+                  onChange={(e) => setCountryFilter(e.target.value)}
+                  className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-2 text-sm font-bold text-zinc-400 outline-none focus:border-[#FF5A1F]"
+                >
+                  <option value="">Tous les pays</option>
+                  {countries.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              )}
+
+              {(disciplineFilter || countryFilter || dateFilter !== "upcoming") && (
+                <button
+                  onClick={() => { setDisciplineFilter(""); setCountryFilter(""); setDateFilter("upcoming"); setSearch(""); }}
+                  className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-2 text-sm font-bold text-zinc-400 hover:text-red-400 transition"
+                >
+                  Réinitialiser
+                </button>
+              )}
             </div>
 
           </div>
@@ -187,7 +243,6 @@ export default function EventsPage() {
               >
 
                 <div className="relative h-[260px]">
-
                   <img
                     src={
                       event.image_url ||
@@ -195,19 +250,18 @@ export default function EventsPage() {
                     }
                     className="h-full w-full object-cover"
                   />
-
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-
+                  <button
+                    onClick={(e) => { e.preventDefault(); toggle(event.slug); }}
+                    className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 backdrop-blur-sm transition hover:scale-110"
+                  >
+                    <Heart size={18} className={isFavorite(event.slug) ? "fill-[#FF5A1F] text-[#FF5A1F]" : "text-white"} />
+                  </button>
                   <div className="absolute bottom-0 left-0 p-6">
-
                     <div className="rounded-full bg-[#FF5A1F] px-4 py-2 text-xs font-black uppercase tracking-[0.15em]">
-
                       Recrutement ouvert
-
                     </div>
-
                   </div>
-
                 </div>
 
                 <div className="p-6 lg:p-8">

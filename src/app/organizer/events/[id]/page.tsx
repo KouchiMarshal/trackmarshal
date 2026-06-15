@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   CalendarDays,
+  Copy,
   FileSpreadsheet,
   FileText,
   MapPin,
@@ -36,6 +37,8 @@ const [filter, setFilter] =
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [bulkLoading, setBulkLoading] = useState(false);
 
   useEffect(() => {
     if (!eventId) return;
@@ -106,6 +109,38 @@ const [filter, setFilter] =
     router.push("/organizer/events");
   }
 
+  async function cloneEvent() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !event) return;
+
+    const slug = `${event.slug || event.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-copie-${Date.now()}`;
+    const { data, error } = await supabase.from("events").insert({
+      title: `${event.title} (copie)`,
+      slug,
+      organizer_id: user.id,
+      location: event.location,
+      country: event.country,
+      event_date: event.event_date,
+      discipline: event.discipline,
+      description: event.description,
+      briefing: event.briefing,
+      marshals_needed: event.marshals_needed,
+      hotel: event.hotel,
+      repas: event.repas,
+      repas_type: event.repas_type,
+      defraiement: event.defraiement,
+      defraiement_amount: event.defraiement_amount,
+      pass_accompagnant: event.pass_accompagnant,
+      pass_accompagnant_count: event.pass_accompagnant_count,
+      organizer_contact: event.organizer_contact,
+      schedule: event.schedule,
+    }).select().single();
+
+    if (error) { setToast({ message: error.message, type: "error" }); return; }
+    setToast({ message: "Événement dupliqué avec succès !", type: "success" });
+    setTimeout(() => router.push(`/organizer/events/${data.id}`), 1000);
+  }
+
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-black text-white">
@@ -158,6 +193,16 @@ const filteredApplications =
 
     return app.status === filter;
   });
+
+  async function bulkUpdateStatus(status: "accepted" | "rejected") {
+    if (selected.length === 0) return;
+    setBulkLoading(true);
+    await supabase.from("applications").update({ status }).in("id", selected);
+    setSelected([]);
+    setBulkLoading(false);
+    loadEvent();
+    setToast({ message: `${selected.length} candidature(s) ${status === "accepted" ? "acceptée(s)" : "refusée(s)"}`, type: "success" });
+  }
 
   function escapeHtml(val: string | null | undefined): string {
     if (!val) return "—";
@@ -298,6 +343,14 @@ const filteredApplications =
 
             <div className="flex items-center gap-3">
               <NotificationBell />
+              <button
+                onClick={cloneEvent}
+                className="flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 font-bold backdrop-blur-xl transition hover:bg-white/20"
+              >
+                <Copy size={18} />
+                Cloner
+              </button>
+
               <Link
                 href={`/organizer/events/${eventId}/edit`}
                 className="flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 font-bold backdrop-blur-xl transition hover:bg-white/20"
@@ -429,6 +482,29 @@ const filteredApplications =
 
             </div>
 
+{selected.length > 0 && (
+  <div className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+    <span className="text-sm font-bold text-zinc-400">{selected.length} sélectionné(s)</span>
+    <button
+      onClick={() => bulkUpdateStatus("accepted")}
+      disabled={bulkLoading}
+      className="rounded-2xl bg-green-600 px-5 py-2 text-sm font-bold transition hover:bg-green-500 disabled:opacity-60"
+    >
+      Accepter la sélection
+    </button>
+    <button
+      onClick={() => bulkUpdateStatus("rejected")}
+      disabled={bulkLoading}
+      className="rounded-2xl bg-red-600 px-5 py-2 text-sm font-bold transition hover:bg-red-500 disabled:opacity-60"
+    >
+      Refuser la sélection
+    </button>
+    <button onClick={() => setSelected([])} className="text-sm text-zinc-500 hover:text-white transition">
+      Désélectionner
+    </button>
+  </div>
+)}
+
 <div className="mt-8 mb-6 flex flex-wrap gap-3">
 
   <button
@@ -498,11 +574,18 @@ const filteredApplications =
   {filteredApplications.map((app) => (
 <div
   key={app.id}
-  className="rounded-3xl border border-white/10 bg-black/30 p-6"
+  className={`rounded-3xl border bg-black/30 p-6 transition ${selected.includes(app.id) ? "border-[#FF5A1F]/50 bg-[#FF5A1F]/5" : "border-white/10"}`}
 >
   <div className="flex items-start justify-between">
 
     <div className="flex gap-4">
+
+      <input
+        type="checkbox"
+        checked={selected.includes(app.id)}
+        onChange={(e) => setSelected(prev => e.target.checked ? [...prev, app.id] : prev.filter(id => id !== app.id))}
+        className="mt-1 h-5 w-5 cursor-pointer accent-[#FF5A1F]"
+      />
 
       <Link href={`/organizer/commissaires/${app.marshal_id}`}>
         <img

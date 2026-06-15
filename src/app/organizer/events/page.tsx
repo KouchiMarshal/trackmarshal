@@ -8,9 +8,19 @@ import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 
+function getEventStatus(event: any): { label: string; color: string } {
+  const now = new Date();
+  const date = new Date(event.event_date);
+  if (date < now) return { label: "Terminé", color: "bg-zinc-700 text-zinc-300" };
+  if ((event.accepted_count || 0) >= (event.marshals_needed || 0))
+    return { label: "Complet", color: "bg-green-700 text-green-200" };
+  return { label: "Ouvert", color: "bg-[#FF5A1F] text-white" };
+}
+
 export default function OrganizerEventsPage() {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<"all" | "open" | "full" | "past">("all");
 
   useEffect(() => {
     loadEvents();
@@ -26,13 +36,28 @@ export default function OrganizerEventsPage() {
       return;
     }
 
-    const { data } = await supabase
+    const { data: eventsData } = await supabase
       .from("events")
       .select("*")
       .eq("organizer_id", user.id)
       .order("created_at", { ascending: false });
 
-    setEvents(data || []);
+    if (eventsData && eventsData.length > 0) {
+      const ids = eventsData.map((e: any) => e.id);
+      const { data: counts } = await supabase
+        .from("applications")
+        .select("event_id")
+        .in("event_id", ids)
+        .eq("status", "accepted");
+
+      const countMap: Record<string, number> = {};
+      (counts || []).forEach((a: any) => {
+        countMap[a.event_id] = (countMap[a.event_id] || 0) + 1;
+      });
+      setEvents(eventsData.map((e: any) => ({ ...e, accepted_count: countMap[e.id] || 0 })));
+    } else {
+      setEvents(eventsData || []);
+    }
     setLoading(false);
   }
 
@@ -86,8 +111,29 @@ export default function OrganizerEventsPage() {
               </div>
             )}
 
-            <div className="mt-10 grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
-              {events.map((event) => (
+            <div className="mt-8 flex flex-wrap gap-3">
+              {(["all", "open", "full", "past"] as const).map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  className={`rounded-full px-5 py-2 text-sm font-bold transition ${
+                    statusFilter === s ? "bg-[#FF5A1F] text-white" : "border border-white/10 text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  {s === "all" ? "Tous" : s === "open" ? "Ouverts" : s === "full" ? "Complets" : "Terminés"}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-6 grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
+              {events.filter((event) => {
+                if (statusFilter === "all") return true;
+                const status = getEventStatus(event).label;
+                if (statusFilter === "open") return status === "Ouvert";
+                if (statusFilter === "full") return status === "Complet";
+                if (statusFilter === "past") return status === "Terminé";
+                return true;
+              }).map((event) => (
                 <div
                   key={event.id}
                   className="overflow-hidden rounded-[36px] border border-white/10 bg-white/[0.03]"
@@ -102,9 +148,12 @@ export default function OrganizerEventsPage() {
                       className="h-full w-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                    <div className="absolute bottom-6 left-6">
+                    <div className="absolute bottom-6 left-6 flex gap-2">
                       <div className="rounded-full bg-[#FF5A1F] px-4 py-2 text-xs font-black uppercase tracking-[0.15em]">
                         {event.discipline}
+                      </div>
+                      <div className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.15em] ${getEventStatus(event).color}`}>
+                        {getEventStatus(event).label}
                       </div>
                     </div>
                   </div>
@@ -136,6 +185,7 @@ export default function OrganizerEventsPage() {
                     </div>
                   </div>
                 </div>
+              ))}
               ))}
             </div>
 
