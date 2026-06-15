@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Eye, EyeOff, Lock } from "lucide-react";
+import PublicFooter from "@/components/layout/public-footer";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -84,6 +85,7 @@ export default function ResetPasswordPage() {
           </form>
         </div>
       </div>
+      <PublicFooter />
     </main>
   );
 }

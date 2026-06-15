@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft, Mail } from "lucide-react";
+import PublicFooter from "@/components/layout/public-footer";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -91,6 +92,7 @@ export default function ForgotPasswordPage() {
           )}
         </div>
       </div>
+      <PublicFooter />
     </main>
   );
 }
