@@ -3,6 +3,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 
 import PublicNavbar from "@/components/layout/public-navbar";
+import PublicFooter from "@/components/layout/public-footer";
 
 type MarshalPageProps = {
   params: Promise<{
@@ -352,6 +353,8 @@ export default async function MarshalPage({
         </div>
 
       </section>
+
+      <PublicFooter />
 
     </main>
   );

@@ -1,25 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import PublicNavbar from "@/components/layout/public-navbar";
-import { supabase } from "@/lib/supabase";
-import { CheckCircle2, ClipboardList, MessageSquare, Search, ShieldCheck, Users } from "lucide-react";
+import PublicFooter from "@/components/layout/public-footer";
+import { CheckCircle2, ClipboardList, MessageSquare, Search, ShieldCheck } from "lucide-react";
 
 export default function HomePage() {
-  const [stats, setStats] = useState({ events: 0, marshals: 0, organizers: 0 });
-
-  useEffect(() => {
-    async function loadStats() {
-      const [{ count: events }, { count: marshals }, { count: organizers }] = await Promise.all([
-        supabase.from("events").select("id", { count: "exact", head: true }),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "marshal"),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "organizer"),
-      ]);
-      setStats({ events: events || 0, marshals: marshals || 0, organizers: organizers || 0 });
-    }
-    loadStats();
-  }, []);
 
   const steps = [
     {
@@ -42,23 +28,6 @@ export default function HomePage() {
     },
   ];
 
-  const testimonials = [
-    {
-      name: "Julien M.",
-      role: "Commissaire de piste — 8 ans d'expérience",
-      text: "Avant TrackMarshal, je trouvais mes missions par bouche à oreille. Maintenant j'ai un profil vérifié et je reçois des opportunités directement.",
-    },
-    {
-      name: "Circuit Auvergne Organisation",
-      role: "Organisateur — Rallye régional",
-      text: "On a trouvé 22 commissaires qualifiés en 3 jours pour notre rallye. Le processus de validation des licences nous a sauvé un temps fou.",
-    },
-    {
-      name: "Marie L.",
-      role: "Commissaire circuit — Licence FFSA",
-      text: "Interface claire, messagerie directe avec les organisateurs, briefings téléchargeables. Exactement ce qu'il manquait au milieu.",
-    },
-  ];
 
   return (
     <main className="min-h-screen overflow-hidden bg-black text-white">
@@ -107,25 +76,13 @@ export default function HomePage() {
                 Créer un compte
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="border-t border-white/10 bg-black py-16 lg:py-20">
-        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-3 gap-6 lg:gap-12">
-            {[
-              { value: stats.events, label: "Événements publiés", icon: ClipboardList },
-              { value: stats.marshals, label: "Commissaires inscrits", icon: Users },
-              { value: stats.organizers, label: "Organisateurs actifs", icon: ShieldCheck },
-            ].map((s) => (
-              <div key={s.label} className="text-center">
-                <s.icon size={28} className="mx-auto mb-4 text-[#FF5A1F]" />
-                <p className="text-4xl font-black lg:text-7xl">{s.value > 0 ? s.value : "—"}</p>
-                <p className="mt-2 text-sm text-zinc-500 lg:text-base">{s.label}</p>
-              </div>
-            ))}
+            <Link
+              href="/devenir-commissaire"
+              className="mt-5 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-[#FF5A1F]"
+            >
+              <span>Pas encore commissaire ?</span>
+              <span className="font-bold text-[#FF5A1F]">Découvrez comment le devenir →</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -185,33 +142,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Témoignages */}
-      <section className="border-t border-white/10 bg-[#050505] py-20 lg:py-32">
-        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
-          <div className="mb-16 text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Ils nous font confiance</p>
-            <h2 className="mt-4 text-4xl font-black lg:text-6xl">Ce qu'ils en disent</h2>
-          </div>
-
-          <div className="grid gap-6 lg:grid-cols-3">
-            {testimonials.map((t) => (
-              <div key={t.name} className="rounded-[32px] border border-white/10 bg-white/[0.02] p-8">
-                <div className="flex gap-1 mb-6">
-                  {[1,2,3,4,5].map((i) => (
-                    <span key={i} className="text-[#FF5A1F] text-xl">★</span>
-                  ))}
-                </div>
-                <p className="text-lg leading-relaxed text-zinc-300">"{t.text}"</p>
-                <div className="mt-6 border-t border-white/10 pt-6">
-                  <p className="font-black">{t.name}</p>
-                  <p className="mt-1 text-sm text-zinc-500">{t.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA final */}
       <section className="border-t border-white/10 bg-black py-20 lg:py-32">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 text-center">
@@ -231,21 +161,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 bg-black py-10">
-        <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-between gap-4 px-4 text-center sm:px-6 lg:flex-row lg:px-8">
-          <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="TrackMarshal" className="h-8 w-8 rounded-full object-cover" />
-            <p className="font-black">Track<span className="text-[#FF5A1F]">Marshal</span></p>
-          </div>
-          <p className="text-sm text-zinc-600">© 2026 TrackMarshal — Tous droits réservés.</p>
-          <div className="flex items-center gap-6 text-sm text-zinc-600">
-            <Link href="/about" className="transition hover:text-[#FF5A1F]">À propos</Link>
-            <Link href="/events" className="transition hover:text-[#FF5A1F]">Événements</Link>
-            <Link href="/login" className="transition hover:text-[#FF5A1F]">Connexion</Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </main>
   );
 }

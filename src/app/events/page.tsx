@@ -17,6 +17,7 @@ import {
 
 import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
+import PublicFooter from "@/components/layout/public-footer";
 import { formatDate } from "@/lib/formatDate";
 import { SkeletonEventCard } from "@/components/ui/skeleton";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -347,37 +348,7 @@ export default function EventsPage() {
 
       </section>
 
-      <footer className="border-t border-white/10 bg-black py-8">
-
-        <div className="mx-auto flex max-w-[1600px] flex-col items-center justify-between gap-4 px-4 text-center sm:px-6 lg:flex-row lg:px-8">
-
-          <p className="text-sm text-zinc-600">
-
-            © 2026 TrackMarshal — Tous droits réservés.
-
-          </p>
-
-          <div className="flex items-center gap-6 text-sm text-zinc-600">
-
-            <Link
-              href="/about"
-              className="transition hover:text-[#FF5A1F]"
-            >
-              À propos
-            </Link>
-
-            <Link
-              href="/events"
-              className="transition hover:text-[#FF5A1F]"
-            >
-              Événements
-            </Link>
-
-          </div>
-
-        </div>
-
-      </footer>
+      <PublicFooter />
 
     </main>
   );

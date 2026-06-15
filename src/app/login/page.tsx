@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
+import PublicFooter from "@/components/layout/public-footer";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function LoginPage() {
@@ -247,6 +248,8 @@ async function handleLogin(
         </div>
 
       </div>
+
+      <PublicFooter />
 
     </main>
   );

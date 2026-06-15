@@ -50,6 +50,16 @@ export default function PublicNavbar() {
                 {link.label}
               </Link>
             ))}
+            {!user && (
+              <Link
+                href="/devenir-commissaire"
+                className={`text-sm font-bold uppercase tracking-[0.15em] transition hover:text-[#FF5A1F] ${
+                  pathname === "/devenir-commissaire" ? "text-[#FF5A1F]" : "text-white"
+                }`}
+              >
+                Devenir commissaire
+              </Link>
+            )}
           </nav>
 
           <div className="flex items-center gap-3">
@@ -133,6 +143,19 @@ export default function PublicNavbar() {
                   {link.label}
                 </Link>
               ))}
+              {!user && (
+                <Link
+                  href="/devenir-commissaire"
+                  onClick={() => setOpen(false)}
+                  className={`flex h-16 items-center rounded-2xl px-6 text-xl font-black transition ${
+                    pathname === "/devenir-commissaire"
+                      ? "bg-[#FF5A1F] text-white"
+                      : "text-zinc-300 hover:bg-white/5"
+                  }`}
+                >
+                  Devenir commissaire
+                </Link>
+              )}
             </nav>
 
             <div className="space-y-3">

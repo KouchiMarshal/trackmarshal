@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
+import PublicFooter from "@/components/layout/public-footer";
 import { formatDate } from "@/lib/formatDate";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 
@@ -147,6 +148,8 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      <PublicFooter />
     </main>
   );
 }

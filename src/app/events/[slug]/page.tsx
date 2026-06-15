@@ -3,6 +3,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 
 import PublicNavbar from "@/components/layout/public-navbar";
+import PublicFooter from "@/components/layout/public-footer";
 import ApplyButton from "@/components/events/apply-button";
 
 type EventPageProps = {
@@ -288,6 +289,8 @@ export default async function EventPage({
         </div>
 
       </section>
+
+      <PublicFooter />
 
     </main>
   );
