@@ -1,99 +1,55 @@
 "use client";
 
-import {
-  CalendarDays,
-  MapPin,
-  Users,
-} from "lucide-react";
-
+import { CalendarDays, MapPin, Search, Users } from "lucide-react";
 import Link from "next/link";
-
-import {
-  useEffect,
-  useState,
-} from "react";
-
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import { formatDate } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
+const DISCIPLINES = ["Rallye", "Circuit", "Karting", "Drift"];
+
 export default function DashboardEventsPage() {
+  const [events, setEvents] = useState<any[]>([]);
+  const [applications, setApplications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState<ToastData>(null);
 
-  const [events, setEvents] =
-    useState<any[]>([]);
-
-  const [applications, setApplications] =
-    useState<any[]>([]);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [toast, setToast] =
-    useState<ToastData>(null);
+  const [search, setSearch] = useState("");
+  const [discipline, setDiscipline] = useState("");
+  const [dateFilter, setDateFilter] = useState("all");
 
   useEffect(() => {
     loadData();
   }, []);
 
   async function loadData() {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data: eventsData } =
-      await supabase
-        .from("events")
-        .select("*")
-        .order("created_at", {
-          ascending: false,
-        });
+    const { data: eventsData } = await supabase
+      .from("events")
+      .select("*")
+      .order("event_date", { ascending: true });
 
-    const {
-      data: applicationsData,
-    } = await supabase
+    const { data: applicationsData } = await supabase
       .from("applications")
       .select("*")
       .eq("marshal_id", user.id);
 
     setEvents(eventsData || []);
-    setApplications(
-      applicationsData || []
-    );
-
+    setApplications(applicationsData || []);
     setLoading(false);
   }
 
-  async function applyToEvent(
-    eventId: string
-  ) {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
+  async function applyToEvent(eventId: string) {
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const alreadyApplied =
-      applications.find(
-        (app) =>
-          app.event_id === eventId
-      );
-
-    if (alreadyApplied) {
-      setToast({ message: "Vous avez déjà postulé à cet événement.", type: "error" });
-      return;
-    }
-
-    const { error } =
-      await supabase
-        .from("applications")
-        .insert({
-          marshal_id: user.id,
-          event_id: eventId,
-          status: "pending",
-        });
+    const { error } = await supabase
+      .from("applications")
+      .insert({ marshal_id: user.id, event_id: eventId, status: "pending" });
 
     if (error) {
       setToast({ message: error.message, type: "error" });
@@ -103,6 +59,33 @@ export default function DashboardEventsPage() {
     setToast({ message: "Candidature envoyée avec succès !", type: "success" });
     loadData();
   }
+
+  const now = new Date();
+
+  const filtered = events.filter((event) => {
+    const matchSearch =
+      !search ||
+      event.title?.toLowerCase().includes(search.toLowerCase()) ||
+      event.location?.toLowerCase().includes(search.toLowerCase()) ||
+      event.country?.toLowerCase().includes(search.toLowerCase());
+
+    const matchDiscipline = !discipline || event.discipline === discipline;
+
+    let matchDate = true;
+    if (dateFilter === "month") {
+      const d = new Date(event.event_date);
+      matchDate = d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    } else if (dateFilter === "3months") {
+      const d = new Date(event.event_date);
+      const limit = new Date(now);
+      limit.setMonth(limit.getMonth() + 3);
+      matchDate = d >= now && d <= limit;
+    } else if (dateFilter === "upcoming") {
+      matchDate = new Date(event.event_date) >= now;
+    }
+
+    return matchSearch && matchDiscipline && matchDate;
+  });
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -124,127 +107,174 @@ export default function DashboardEventsPage() {
             </div>
           </header>
 
-      <div className="relative overflow-hidden">
-        <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
+          <div className="relative overflow-hidden">
+            <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px] pointer-events-none" />
 
-        <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
-          <div className="mb-10">
-            <p className="mt-3 max-w-2xl text-lg text-zinc-400">
-              Découvrez les événements ouverts
-              et postulez directement depuis la plateforme.
-            </p>
-          </div>
+            <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
-          {loading && (
-            <div className="py-20 text-center text-zinc-500">
-              Chargement...
-            </div>
-          )}
+              {/* Barre de recherche */}
+              <div className="mb-6 flex h-14 items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.04] px-5 backdrop-blur-xl">
+                <Search size={20} className="shrink-0 text-[#FF5A1F]" />
+                <input
+                  type="text"
+                  placeholder="Rechercher par nom, ville, pays..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full bg-transparent text-white outline-none placeholder:text-zinc-500"
+                />
+                {search && (
+                  <button onClick={() => setSearch("")} className="shrink-0 text-xs text-zinc-500 hover:text-white">
+                    Effacer
+                  </button>
+                )}
+              </div>
 
-          <div className="grid gap-6 xl:grid-cols-2">
-            {events.map((event) => {
-              const alreadyApplied =
-                applications.find(
-                  (app) =>
-                    app.event_id ===
-                    event.id
-                );
-
-              return (
-                <div
-                  key={event.id}
-                  className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] backdrop-blur-xl"
+              {/* Filtres discipline */}
+              <div className="mb-4 flex flex-wrap gap-2">
+                <button
+                  onClick={() => setDiscipline("")}
+                  className={`rounded-full px-4 py-2 text-sm font-bold uppercase tracking-[0.1em] transition ${
+                    discipline === "" ? "bg-[#FF5A1F] text-white" : "border border-white/10 text-zinc-400 hover:text-white"
+                  }`}
                 >
-                  <div className="relative h-[240px]">
-                    <img
-                      src={
-                        event.image_url ||
-                        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"
-                      }
-                      className="h-full w-full object-cover"
-                    />
+                  Toutes
+                </button>
+                {DISCIPLINES.map((d) => (
+                  <button
+                    key={d}
+                    onClick={() => setDiscipline(discipline === d ? "" : d)}
+                    className={`rounded-full px-4 py-2 text-sm font-bold uppercase tracking-[0.1em] transition ${
+                      discipline === d ? "bg-[#FF5A1F] text-white" : "border border-white/10 text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+              {/* Filtres date */}
+              <div className="mb-8 flex flex-wrap gap-2">
+                {[
+                  { key: "all", label: "Toutes dates" },
+                  { key: "upcoming", label: "À venir" },
+                  { key: "month", label: "Ce mois" },
+                  { key: "3months", label: "3 prochains mois" },
+                ].map((f) => (
+                  <button
+                    key={f.key}
+                    onClick={() => setDateFilter(f.key)}
+                    className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition ${
+                      dateFilter === f.key
+                        ? "bg-white/15 text-white"
+                        : "border border-white/10 text-zinc-500 hover:text-white"
+                    }`}
+                  >
+                    <CalendarDays size={14} />
+                    {f.label}
+                  </button>
+                ))}
+              </div>
 
-                    <div className="absolute bottom-0 left-0 p-6">
-                      <div className="rounded-full bg-[#FF5A1F] px-4 py-2 text-xs font-black uppercase tracking-[0.15em]">
-                        Recrutement ouvert
-                      </div>
-
-                      <h2 className="mt-5 text-4xl font-black leading-none">
-                        {event.title}
-                      </h2>
-                    </div>
-                  </div>
-
-                  <div className="p-6 lg:p-8">
-                    <div className="space-y-4 text-zinc-300">
-                      <div className="flex items-center gap-3">
-                        <CalendarDays size={18} />
-
-                        <p>{formatDate(event.event_date)}</p>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <MapPin size={18} />
-
-                        <p>
-                          {event.location ||
-                            "Lieu non renseigné"}
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <Users size={18} />
-
-                        <p>
-                          {event.marshals_needed ||
-                            0}{" "}
-                          commissaires recherchés
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                      <Link
-                        href={`/events/${event.slug}`}
-                        className="flex h-14 flex-1 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 font-bold transition hover:border-[#FF5A1F]/40"
-                      >
-                        Voir détails
-                      </Link>
-
-                      <button
-                        onClick={() =>
-                          applyToEvent(
-                            event.id
-                          )
-                        }
-                        disabled={
-                          !!alreadyApplied
-                        }
-                        className={`flex h-14 flex-1 items-center justify-center rounded-2xl px-6 font-bold transition ${
-                          alreadyApplied
-                            ? "bg-green-500/20 text-green-400"
-                            : "bg-[#FF5A1F] hover:scale-[1.01]"
-                        }`}
-                      >
-                        {alreadyApplied
-                          ? "Candidature envoyée"
-                          : "Postuler"}
-                      </button>
-                    </div>
-                  </div>
+              {/* Résultats */}
+              {loading ? (
+                <div className="py-20 text-center text-zinc-500">Chargement...</div>
+              ) : filtered.length === 0 ? (
+                <div className="rounded-[32px] border border-dashed border-white/10 p-16 text-center">
+                  <h2 className="text-3xl font-black">Aucun événement trouvé</h2>
+                  <p className="mt-4 text-zinc-500">Modifiez vos filtres ou revenez plus tard.</p>
                 </div>
-              );
-            })}
+              ) : (
+                <div className="grid gap-6 xl:grid-cols-2">
+                  {filtered.map((event) => {
+                    const app = applications.find((a) => a.event_id === event.id);
+
+                    return (
+                      <div
+                        key={event.id}
+                        className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] backdrop-blur-xl transition hover:border-white/20"
+                      >
+                        <div className="relative h-[200px]">
+                          <img
+                            src={
+                              event.image_url ||
+                              "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"
+                            }
+                            className="h-full w-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                          <div className="absolute bottom-4 left-4 flex gap-2">
+                            {event.discipline && (
+                              <span className="rounded-full bg-[#FF5A1F] px-3 py-1 text-xs font-black uppercase tracking-[0.1em]">
+                                {event.discipline}
+                              </span>
+                            )}
+                            {app && (
+                              <span className={`rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.1em] ${
+                                app.status === "accepted" ? "bg-green-500/80 text-white" :
+                                app.status === "rejected" ? "bg-red-500/80 text-white" :
+                                "bg-yellow-500/80 text-black"
+                              }`}>
+                                {app.status === "accepted" ? "Accepté" : app.status === "rejected" ? "Refusé" : "En attente"}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="p-6">
+                          <h2 className="text-2xl font-black lg:text-3xl">{event.title}</h2>
+
+                          <div className="mt-4 space-y-2 text-sm text-zinc-400">
+                            <div className="flex items-center gap-2">
+                              <CalendarDays size={16} className="text-[#FF5A1F]" />
+                              <span>{formatDate(event.event_date)}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <MapPin size={16} className="text-[#FF5A1F]" />
+                              <span>{event.location || "Lieu non renseigné"}{event.country ? `, ${event.country}` : ""}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Users size={16} className="text-[#FF5A1F]" />
+                              <span>{event.marshals_needed || 0} commissaires recherchés</span>
+                            </div>
+                          </div>
+
+                          <div className="mt-6 flex gap-3">
+                            <Link
+                              href={`/events/${event.slug}`}
+                              className="flex h-12 flex-1 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-sm font-bold transition hover:border-[#FF5A1F]/40"
+                            >
+                              Voir détails
+                            </Link>
+
+                            {!app ? (
+                              <button
+                                onClick={() => applyToEvent(event.id)}
+                                className="flex h-12 flex-1 items-center justify-center rounded-2xl bg-[#FF5A1F] text-sm font-bold transition hover:scale-[1.01]"
+                              >
+                                Postuler
+                              </button>
+                            ) : (
+                              <div className={`flex h-12 flex-1 items-center justify-center rounded-2xl text-sm font-bold ${
+                                app.status === "accepted" ? "bg-green-500/20 text-green-400" :
+                                app.status === "rejected" ? "bg-red-500/20 text-red-400" :
+                                "bg-yellow-500/20 text-yellow-400"
+                              }`}>
+                                {app.status === "accepted" ? "✓ Accepté" : app.status === "rejected" ? "✗ Refusé" : "⏳ En attente"}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+            </div>
           </div>
-        </div>
-      </div>
 
         </div>
-
       </div>
-
     </main>
   );
 }
