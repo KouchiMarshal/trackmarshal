@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { CheckCircle2, Clock3, Search } from "lucide-react";
+import { CheckCircle2, Clock3, ChevronRight, Search } from "lucide-react";
 
 export default function AdminCommissairesPage() {
   const [commissaires, setCommissaires] = useState<any[]>([]);
@@ -63,7 +64,7 @@ export default function AdminCommissairesPage() {
 
         <div className="space-y-4">
           {filtered.map((c) => (
-            <div key={c.id} className="flex flex-col gap-4 rounded-[24px] border border-white/10 bg-white/[0.03] p-5 sm:flex-row sm:items-center">
+            <Link key={c.id} href={`/admin/commissaires/${c.id}`} className="flex flex-col gap-4 rounded-[24px] border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/20 hover:bg-white/[0.06] sm:flex-row sm:items-center">
 
               <div className="flex items-center gap-4 flex-1 min-w-0">
                 <img
@@ -83,7 +84,7 @@ export default function AdminCommissairesPage() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3 sm:shrink-0">
+              <div className="flex flex-wrap items-center gap-3 sm:shrink-0 sm:ml-auto">
                 {c.license_type && (
                   <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-xs">
                     <p className="text-zinc-500">Licence</p>
@@ -117,9 +118,10 @@ export default function AdminCommissairesPage() {
                     Pas de licence
                   </span>
                 )}
+                <ChevronRight size={18} className="shrink-0 text-zinc-600" />
               </div>
 
-            </div>
+            </Link>
           ))}
         </div>
 
