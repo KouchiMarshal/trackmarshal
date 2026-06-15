@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { supabase } from "@/lib/supabase";
 
-import Navbar from "@/components/layout/navbar";
+import PublicNavbar from "@/components/layout/public-navbar";
 import ApplyButton from "@/components/events/apply-button";
 
 type EventPageProps = {
@@ -50,7 +50,7 @@ export default async function EventPage({
   return (
     <main className="min-h-screen overflow-hidden bg-[#050505] text-white">
 
-      <Navbar />
+      <PublicNavbar />
 
       <section className="relative min-h-[100svh] overflow-hidden">
 
