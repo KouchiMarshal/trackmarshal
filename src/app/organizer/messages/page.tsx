@@ -106,13 +106,18 @@ export default function OrganizerMessagesPage() {
     if (!message.trim() || !selectedConv || !user) return;
     setSending(true);
 
-    await supabase.from("messages").insert({
+    const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConv.id,
       sender_id: user.id,
       content: message.trim(),
     });
 
-    setMessage("");
+    if (error) {
+      console.error("Erreur envoi message:", error);
+      alert("Erreur: " + error.message);
+    } else {
+      setMessage("");
+    }
     setSending(false);
   }
 
