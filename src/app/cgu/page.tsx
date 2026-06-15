@@ -17,7 +17,7 @@ export default function CguPage() {
             <h2 className="text-xl font-black text-white mb-4">1. Objet</h2>
             <p>
               Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme
-              <strong> TrackMarshal</strong> (www.trackmarshall.app), éditée par Ysaline Foussard.
+              <strong> TrackMarshal</strong> (www.trackmarshall.app), éditée par Kevin Foussard.
               TrackMarshal est une plateforme de mise en relation entre commissaires de piste motorsport et
               organisateurs d'événements sportifs.
             </p>
@@ -124,7 +124,7 @@ export default function CguPage() {
             <h2 className="text-xl font-black text-white mb-4">8. Propriété intellectuelle</h2>
             <p>
               Le contenu de la plateforme (design, textes, logo) est protégé par le droit d'auteur et appartient
-              à Ysaline Foussard. Les contenus publiés par les utilisateurs (descriptions d'événements, profils)
+              à Kevin Foussard. Les contenus publiés par les utilisateurs (descriptions d'événements, profils)
               restent la propriété de leurs auteurs. En les publiant sur TrackMarshal, ils accordent une licence
               d'affichage non exclusive à la plateforme.
             </p>

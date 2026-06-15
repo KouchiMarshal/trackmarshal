@@ -17,7 +17,7 @@ export default function MentionsLegalesPage() {
             <h2 className="text-xl font-black text-white mb-4">1. Éditeur du site</h2>
             <p>Le site <strong>TrackMarshal</strong> (accessible à l'adresse <strong>www.trackmarshall.app</strong>) est édité par :</p>
             <ul className="mt-3 space-y-1 text-zinc-400">
-              <li><strong className="text-white">Nom :</strong> Ysaline Foussard</li>
+              <li><strong className="text-white">Nom :</strong> Kevin Foussard</li>
               <li><strong className="text-white">Statut :</strong> Particulier</li>
               <li><strong className="text-white">Ville :</strong> Alençon, France</li>
               <li><strong className="text-white">Email :</strong>{" "}
@@ -30,7 +30,7 @@ export default function MentionsLegalesPage() {
 
           <div>
             <h2 className="text-xl font-black text-white mb-4">2. Directeur de la publication</h2>
-            <p>Ysaline Foussard</p>
+            <p>Kevin Foussard</p>
           </div>
 
           <div>
@@ -51,7 +51,7 @@ export default function MentionsLegalesPage() {
             <h2 className="text-xl font-black text-white mb-4">4. Propriété intellectuelle</h2>
             <p>
               L'ensemble des contenus présents sur TrackMarshal (textes, images, logos, design) sont la propriété exclusive
-              d'Ysaline Foussard ou de leurs auteurs respectifs. Toute reproduction, représentation ou diffusion, totale ou
+              d'Kevin Foussard ou de leurs auteurs respectifs. Toute reproduction, représentation ou diffusion, totale ou
               partielle, sans autorisation écrite préalable est interdite.
             </p>
           </div>

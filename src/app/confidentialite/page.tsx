@@ -18,7 +18,7 @@ export default function ConfidentialitePage() {
             <p>
               TrackMarshal (<strong>www.trackmarshall.app</strong>) est une plateforme qui connecte les commissaires
               de piste motorsport avec les organisateurs d'événements. Le responsable du traitement des données est
-              <strong> Ysaline Foussard</strong>, domiciliée à Alençon, France.
+              <strong> Kevin Foussard</strong>, domiciliée à Alençon, France.
             </p>
             <p className="mt-3">Contact : <a href="mailto:contact@trackmarshall.app" className="text-[#FF5A1F] hover:underline">contact@trackmarshall.app</a></p>
           </div>
