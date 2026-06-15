@@ -7,10 +7,12 @@ import {
   LogOut,
   MessageSquare,
   Settings,
+  ShieldCheck,
   User,
 } from "lucide-react";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useUnreadMessages } from "@/hooks/useUnreadMessages";
@@ -28,6 +30,26 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const unread = useUnreadMessages();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [pendingLicenses, setPendingLicenses] = useState(0);
+
+  useEffect(() => {
+    async function checkAdmin() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.email !== "foussardk@gmail.com") return;
+      setIsAdmin(true);
+
+      const { count } = await supabase
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("role", "marshal")
+        .not("license_url", "is", null)
+        .eq("license_verified", false);
+
+      setPendingLicenses(count || 0);
+    }
+    checkAdmin();
+  }, []);
 
   async function logout() {
     await supabase.auth.signOut();
@@ -83,6 +105,34 @@ export default function DashboardSidebar() {
             })}
           </nav>
         </div>
+
+        {isAdmin && (
+          <div className="border-t border-white/10 p-6 pb-0">
+            <Link
+              href="/admin"
+              className={`flex h-14 w-full items-center gap-4 rounded-2xl px-5 transition ${
+                pathname.startsWith("/admin")
+                  ? "bg-[#FF5A1F] text-white"
+                  : "border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 text-[#FF5A1F] hover:bg-[#FF5A1F]/10"
+              }`}
+            >
+              <div className="relative">
+                <ShieldCheck size={20} />
+                {pendingLicenses > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-[9px] font-black text-black">
+                    {pendingLicenses > 9 ? "9+" : pendingLicenses}
+                  </span>
+                )}
+              </div>
+              <span className="font-semibold">Admin</span>
+              {pendingLicenses > 0 && !pathname.startsWith("/admin") && (
+                <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-400 px-1.5 text-[10px] font-black text-black">
+                  {pendingLicenses > 9 ? "9+" : pendingLicenses}
+                </span>
+              )}
+            </Link>
+          </div>
+        )}
 
         <div className="border-t border-white/10 p-6">
           <button
