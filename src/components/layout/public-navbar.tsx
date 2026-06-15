@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import NotificationBell from "@/components/notifications/notification-bell";
 
 const links = [
   { href: "/", label: "Accueil" },
@@ -53,12 +54,15 @@ export default function PublicNavbar() {
 
           <div className="flex items-center gap-3">
             {user ? (
-              <Link
-                href="/dashboard"
-                className="flex h-12 items-center rounded-2xl bg-[#FF5A1F] px-5 text-sm font-bold transition hover:scale-105 lg:h-14 lg:px-8 lg:text-base"
-              >
-                Dashboard
-              </Link>
+              <>
+                <NotificationBell />
+                <Link
+                  href="/dashboard"
+                  className="flex h-12 items-center rounded-2xl bg-[#FF5A1F] px-5 text-sm font-bold transition hover:scale-105 lg:h-14 lg:px-8 lg:text-base"
+                >
+                  Dashboard
+                </Link>
+              </>
             ) : (
               <>
                 <Link
