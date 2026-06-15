@@ -72,7 +72,7 @@ const [filter, setFilter] =
         const profileIds = [...new Set(appsData.map((a: any) => a.marshal_id))];
         const { data: profilesData } = await supabase
           .from("profiles")
-          .select("id, full_name, email, phone, city, country, experience, years_experience, avatar_url, license_type, license_url, license_verified, languages, specialties, disciplines")
+          .select("id, full_name, email, phone, city, country, experience, years_experience, avatar_url, license_type, license_number, license_url, license_verified, languages, specialties, disciplines")
           .in("id", profileIds);
 
         const profilesMap: Record<string, any> = {};
@@ -168,12 +168,12 @@ const filteredApplications =
 
   function exportCSV() {
     const accepted = applications.filter((a) => a.status === "accepted");
-    const headers = ["Nom", "Email", "Téléphone", "Ville", "Pays", "Années d'expérience", "Type licence", "Licence vérifiée", "URL licence", "Langues", "Spécialités", "Disciplines", "Expérience"];
+    const headers = ["Nom", "Email", "Téléphone", "Ville", "Pays", "Années d'expérience", "Type licence", "Numéro licence", "Licence vérifiée", "URL licence", "Langues", "Spécialités", "Disciplines", "Expérience"];
     const rows = accepted.map((app) => {
       const p = app.profiles || {};
       return [
         p.full_name, p.email, p.phone, p.city, p.country,
-        p.years_experience, p.license_type,
+        p.years_experience, p.license_type, p.license_number,
         p.license_verified ? "Oui" : "Non",
         p.license_url, p.languages, p.specialties, p.disciplines,
         p.experience,
@@ -202,6 +202,7 @@ const filteredApplications =
           <td>${p.city || ""}${p.country ? `, ${p.country}` : ""}</td>
           <td>${p.years_experience || "—"}</td>
           <td>${p.license_type || "—"}</td>
+          <td>${p.license_number || "—"}</td>
           <td>${p.license_verified ? "✔ Vérifiée" : "En attente"}</td>
           <td>${p.languages || "—"}</td>
           <td>${p.specialties || "—"}</td>
@@ -226,7 +227,7 @@ const filteredApplications =
       <table>
         <thead><tr>
           <th>Nom</th><th>Email</th><th>Téléphone</th><th>Localisation</th>
-          <th>Exp.</th><th>Licence</th><th>Vérifiée</th><th>Langues</th><th>Spécialités</th>
+          <th>Exp.</th><th>Type licence</th><th>N° licence</th><th>Vérifiée</th><th>Langues</th><th>Spécialités</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>

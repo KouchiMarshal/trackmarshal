@@ -29,6 +29,12 @@ export default function RegisterPage() {
   const [role, setRole] =
     useState("marshal");
 
+  const [licenseType, setLicenseType] =
+    useState("");
+
+  const [licenseNumber, setLicenseNumber] =
+    useState("");
+
   const [toast, setToast] =
     useState<ToastData>(null);
 
@@ -37,6 +43,16 @@ export default function RegisterPage() {
   ) {
 
     e.preventDefault();
+
+    if (role === "marshal" && !licenseType) {
+      setToast({ message: "Veuillez sélectionner votre type de licence.", type: "error" });
+      return;
+    }
+
+    if (role === "marshal" && !licenseNumber.trim()) {
+      setToast({ message: "Veuillez renseigner votre numéro de licence.", type: "error" });
+      return;
+    }
 
     setLoading(true);
 
@@ -68,13 +84,20 @@ export default function RegisterPage() {
       return;
     }
 
+    const profileData: any = {
+      id: user.id,
+      role,
+      full_name: fullName,
+    };
+
+    if (role === "marshal") {
+      profileData.license_type = licenseType;
+      profileData.license_number = licenseNumber.trim();
+    }
+
     await supabase
       .from("profiles")
-      .insert({
-        id: user.id,
-        role,
-        full_name: fullName,
-      });
+      .insert(profileData);
 
     setLoading(false);
 
@@ -251,28 +274,53 @@ export default function RegisterPage() {
                   <select
                     value={role}
                     onChange={(e) =>
-                      setRole(
-                        e.target.value
-                      )
+                      setRole(e.target.value)
                     }
                     className="h-14 w-full rounded-2xl border border-white/10 bg-[#111111] px-5 text-white outline-none focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                   >
 
-                    <option value="marshal">
+                    <option value="marshal">Commissaire</option>
 
-                      Commissaire
-
-                    </option>
-
-                    <option value="organizer">
-
-                      Organisateur
-
-                    </option>
+                    <option value="organizer">Organisateur</option>
 
                   </select>
 
                 </div>
+
+                {role === "marshal" && (
+                  <>
+                    <div>
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                        Type de licence <span className="text-[#FF5A1F]">*</span>
+                      </p>
+                      <select
+                        required
+                        value={licenseType}
+                        onChange={(e) => setLicenseType(e.target.value)}
+                        className="h-14 w-full rounded-2xl border border-white/10 bg-[#111111] px-5 text-white outline-none focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                      >
+                        <option value="">Sélectionner un type</option>
+                        <option value="ENCOC - Commissaire C">ENCOC - Commissaire C</option>
+                        <option value="EICOB - Commissaire B">EICOB - Commissaire B</option>
+                        <option value="EICOACPC - Commissaire">EICOACPC - Commissaire</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                        Numéro de licence <span className="text-[#FF5A1F]">*</span>
+                      </p>
+                      <input
+                        type="text"
+                        required
+                        value={licenseNumber}
+                        onChange={(e) => setLicenseNumber(e.target.value)}
+                        placeholder="ex : 2024-FFSA-00123"
+                        className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                      />
+                    </div>
+                  </>
+                )}
 
                 <button
                   type="submit"

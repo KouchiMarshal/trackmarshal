@@ -130,6 +130,9 @@ export default function CommissaireProfilePage() {
                     <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Licence</p>
                       <p className="mt-3 text-lg font-black text-[#FF5A1F]">🏁 {profile.license_type}</p>
+                      {profile.license_number && (
+                        <p className="mt-1 text-sm text-zinc-400">N° {profile.license_number}</p>
+                      )}
 
                       <div className="mt-4">
                         {profile.license_verified ? (

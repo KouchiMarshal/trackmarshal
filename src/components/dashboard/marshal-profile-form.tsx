@@ -32,6 +32,7 @@ export default function MarshalProfileForm() {
       languages: "",
       avatar_url: "",
       license_type: "",
+      license_number: "",
       license_url: "",
     });
 
@@ -80,6 +81,8 @@ export default function MarshalProfileForm() {
           data.avatar_url || "",
         license_type:
           data.license_type || "",
+        license_number:
+          data.license_number || "",
         license_url:
           data.license_url || "",
       });
@@ -219,6 +222,8 @@ export default function MarshalProfileForm() {
             formData.avatar_url,
           license_type:
             formData.license_type,
+          license_number:
+            formData.license_number,
           license_url:
             formData.license_url,
         })
@@ -596,53 +601,48 @@ export default function MarshalProfileForm() {
 
           <div className="mt-8 grid gap-8 lg:grid-cols-2">
 
-            <div>
+            <div className="space-y-6">
 
-              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+              <div>
 
-                Type de Licence
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                  Type de Licence <span className="text-[#FF5A1F]">*</span>
+                </label>
 
-              </label>
+                <select
+                  required
+                  value={formData.license_type}
+                  onChange={(e) =>
+                    setFormData({ ...formData, license_type: e.target.value })
+                  }
+                  className="h-16 w-full rounded-2xl border border-white/10 bg-[#111111] px-6 text-white outline-none focus:border-[#FF5A1F]"
+                >
+                  <option value="">Sélectionner un type</option>
+                  <option value="ENCOC - Commissaire C">ENCOC - Commissaire C</option>
+                  <option value="EICOB - Commissaire B">EICOB - Commissaire B</option>
+                  <option value="EICOACPC - Commissaire">EICOACPC - Commissaire</option>
+                </select>
 
-              <select
-                value={
-                  formData.license_type
-                }
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    license_type:
-                      e.target.value,
-                  })
-                }
-                className="h-16 w-full rounded-2xl border border-white/10 bg-[#111111] px-6 text-white outline-none"
-              >
+              </div>
 
-                <option value="">
+              <div>
 
-                  Sélectionner
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                  Numéro de Licence <span className="text-[#FF5A1F]">*</span>
+                </label>
 
-                </option>
+                <input
+                  type="text"
+                  required
+                  value={formData.license_number}
+                  onChange={(e) =>
+                    setFormData({ ...formData, license_number: e.target.value })
+                  }
+                  placeholder="ex : 2024-FFSA-00123"
+                  className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]"
+                />
 
-                <option>
-
-                  Commissaire C
-
-                </option>
-
-                <option>
-
-                  Commissaire B International
-
-                </option>
-
-                <option>
-
-                  Commissaire A Chef de Poste
-
-                </option>
-
-              </select>
+              </div>
 
             </div>
 
