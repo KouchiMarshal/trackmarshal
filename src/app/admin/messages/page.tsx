@@ -188,23 +188,43 @@ export default function AdminMessagesPage() {
     <div className="flex h-screen flex-col overflow-hidden">
 
       <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
-        <div className="flex h-20 items-center gap-4 px-6 lg:px-10">
-          {mobileView === "chat" && selectedUser && (
-            <button
-              onClick={() => setMobileView("list")}
-              className="shrink-0 text-sm text-zinc-400 transition hover:text-white lg:hidden"
-            >
-              ← Retour
-            </button>
-          )}
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Administration</p>
-            <h1 className="text-2xl font-black lg:text-3xl">
-              {mobileView === "chat" && selectedUser
-                ? (selectedUser.full_name || selectedUser.email)
-                : "Messages"}
-            </h1>
+        <div className="flex h-20 items-center justify-between gap-4 px-6 lg:px-10">
+          <div className="flex items-center gap-4">
+            {mobileView === "chat" && selectedUser && (
+              <button
+                onClick={() => setMobileView("list")}
+                className="shrink-0 text-sm text-zinc-400 transition hover:text-white lg:hidden"
+              >
+                ← Retour
+              </button>
+            )}
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Administration</p>
+              <h1 className="text-2xl font-black lg:text-3xl">
+                {mobileView === "chat" && selectedUser
+                  ? (selectedUser.full_name || selectedUser.email)
+                  : "Messages"}
+              </h1>
+            </div>
           </div>
+          {/* Delete button visible on mobile when in chat */}
+          {mobileView === "chat" && selectedConv && (
+            <div className="flex items-center gap-2 lg:hidden">
+              {confirmDelete ? (
+                <>
+                  <button onClick={deleteConversation} className="rounded-xl bg-red-600 px-3 py-1.5 text-xs font-bold">Oui</button>
+                  <button onClick={() => setConfirmDelete(false)} className="rounded-xl border border-white/10 px-3 py-1.5 text-xs text-zinc-400">Non</button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-zinc-500 transition hover:border-red-600/30 hover:text-red-400"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </header>
 
@@ -380,7 +400,7 @@ export default function AdminMessagesPage() {
                     }
                   </button>
                 </div>
-                <p className="mt-2 text-center text-[10px] text-zinc-700">Entrée pour envoyer · Maj+Entrée pour nouvelle ligne</p>
+                <p className="mt-2 hidden text-center text-[10px] text-zinc-700 lg:block">Entrée pour envoyer · Maj+Entrée pour nouvelle ligne</p>
               </div>
             </>
           )}

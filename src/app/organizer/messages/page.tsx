@@ -309,7 +309,7 @@ export default function OrganizerMessagesPage() {
                               </button>
                               <button
                                 onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(conv.id); }}
-                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-zinc-600 opacity-0 transition hover:bg-red-600/20 hover:text-red-400 group-hover:opacity-100"
+                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-zinc-500 transition hover:bg-red-600/20 hover:text-red-400 lg:opacity-0 lg:group-hover:opacity-100"
                               >
                                 <Trash2 size={14} />
                               </button>
@@ -396,7 +396,7 @@ export default function OrganizerMessagesPage() {
                         <Send size={16} />
                       </button>
                     </div>
-                    <p className="mt-2 text-center text-[10px] text-zinc-700">Entrée pour envoyer · Maj+Entrée pour nouvelle ligne</p>
+                    <p className="mt-2 hidden text-center text-[10px] text-zinc-700 lg:block">Entrée pour envoyer · Maj+Entrée pour nouvelle ligne</p>
                   </div>
                 </>
               )}
