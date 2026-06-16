@@ -2,18 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { canApplyToEvent } from "@/lib/licenseUtils";
 
 type ApplyButtonProps = {
   eventId: string;
+  eventDiscipline?: string;
   isFull?: boolean;
 };
 
-export default function ApplyButton({ eventId, isFull = false }: ApplyButtonProps) {
+export default function ApplyButton({ eventId, eventDiscipline, isFull = false }: ApplyButtonProps) {
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [applicationId, setApplicationId] = useState<string | null>(null);
   const [applicationStatus, setApplicationStatus] = useState<string | null>(null);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
+  const [discipline, setDiscipline] = useState(eventDiscipline);
 
   useEffect(() => {
     checkApplication();
@@ -25,11 +28,21 @@ export default function ApplyButton({ eventId, isFull = false }: ApplyButtonProp
 
     const { data: profileData } = await supabase
       .from("profiles")
-      .select("id, role")
+      .select("id, role, license_type, license_verified, license_type_2, license_verified_2")
       .eq("id", user.id)
       .single();
 
     setProfile(profileData);
+
+    // Fetch event discipline if not passed as prop
+    if (!discipline) {
+      const { data: eventData } = await supabase
+        .from("events")
+        .select("discipline")
+        .eq("id", eventId)
+        .single();
+      if (eventData?.discipline) setDiscipline(eventData.discipline);
+    }
 
     const { data } = await supabase
       .from("applications")
@@ -56,6 +69,14 @@ export default function ApplyButton({ eventId, isFull = false }: ApplyButtonProp
       return;
     }
 
+    // License category check
+    const check = canApplyToEvent(profile || {}, discipline);
+    if (!check.allowed) {
+      setMessage({ text: check.reason || "Licence non valide pour cet événement.", type: "error" });
+      setLoading(false);
+      return;
+    }
+
     const { error, data } = await supabase
       .from("applications")
       .insert({ event_id: eventId, marshal_id: user.id, status: isFull ? "waitlisted" : "pending" })
@@ -76,19 +97,14 @@ export default function ApplyButton({ eventId, isFull = false }: ApplyButtonProp
 
   async function handleCancel() {
     if (applicationStatus === "accepted") {
-      const confirmed = confirm(
-        "Votre candidature a été acceptée. Êtes-vous sûr de vouloir l'annuler ?"
-      );
+      const confirmed = confirm("Votre candidature a été acceptée. Êtes-vous sûr de vouloir l'annuler ?");
       if (!confirmed) return;
     }
 
     setLoading(true);
     setMessage(null);
 
-    const { error } = await supabase
-      .from("applications")
-      .delete()
-      .eq("id", applicationId);
+    const { error } = await supabase.from("applications").delete().eq("id", applicationId);
 
     if (error) {
       setMessage({ text: `Erreur : ${error.message}`, type: "error" });
@@ -106,15 +122,10 @@ export default function ApplyButton({ eventId, isFull = false }: ApplyButtonProp
 
   return (
     <div className="mt-10 space-y-4">
-
       {message && (
-        <div
-          className={`rounded-2xl px-5 py-4 text-sm font-semibold ${
-            message.type === "success"
-              ? "bg-green-500/15 text-green-400"
-              : "bg-red-500/15 text-red-400"
-          }`}
-        >
+        <div className={`rounded-2xl px-5 py-4 text-sm font-semibold ${
+          message.type === "success" ? "bg-green-500/15 text-green-400" : "bg-red-500/15 text-red-400"
+        }`}>
           {message.text}
         </div>
       )}
@@ -131,28 +142,19 @@ export default function ApplyButton({ eventId, isFull = false }: ApplyButtonProp
         </button>
       ) : (
         <div className="space-y-3">
-          <div
-            className={`flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-bold ${
-              applicationStatus === "accepted"
-                ? "bg-green-500/15 text-green-400"
-                : applicationStatus === "rejected"
-                ? "bg-red-500/15 text-red-400"
-                : applicationStatus === "waitlisted"
-                ? "bg-blue-500/15 text-blue-400"
-                : "bg-yellow-500/15 text-yellow-400"
-            }`}
-          >
+          <div className={`flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-bold ${
+            applicationStatus === "accepted" ? "bg-green-500/15 text-green-400"
+            : applicationStatus === "rejected" ? "bg-red-500/15 text-red-400"
+            : applicationStatus === "waitlisted" ? "bg-blue-500/15 text-blue-400"
+            : "bg-yellow-500/15 text-yellow-400"
+          }`}>
             <span>
-              {applicationStatus === "accepted"
-                ? "✓ Candidature acceptée"
-                : applicationStatus === "rejected"
-                ? "✗ Candidature refusée"
-                : applicationStatus === "waitlisted"
-                ? "⏳ Vous êtes sur la liste d'attente"
+              {applicationStatus === "accepted" ? "✓ Candidature acceptée"
+                : applicationStatus === "rejected" ? "✗ Candidature refusée"
+                : applicationStatus === "waitlisted" ? "⏳ Vous êtes sur la liste d'attente"
                 : "⏳ Candidature en attente de réponse"}
             </span>
           </div>
-
           {applicationStatus !== "rejected" && (
             <button
               onClick={handleCancel}
@@ -164,7 +166,6 @@ export default function ApplyButton({ eventId, isFull = false }: ApplyButtonProp
           )}
         </div>
       )}
-
     </div>
   );
 }

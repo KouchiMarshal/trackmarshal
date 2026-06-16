@@ -31,9 +31,11 @@ export default function ProfilePage() {
     useState<ToastData>(null);
 
   const [uploadingLicense, setUploadingLicense] = useState(false);
+  const [uploadingLicense2, setUploadingLicense2] = useState(false);
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const licenseInputRef = useRef<HTMLInputElement>(null);
+  const license2InputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadProfile();
@@ -98,6 +100,36 @@ export default function ProfilePage() {
 
     setProfile((p: any) => ({ ...p, license_url: result.publicUrl, license_verified: false }));
     setToast({ message: "Licence envoyée, en attente de vérification.", type: "success" });
+  }
+
+  async function uploadLicense2(file: File) {
+    setUploadingLicense2(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setToast({ message: "Session expirée, veuillez vous reconnecter.", type: "error" });
+      setUploadingLicense2(false);
+      return;
+    }
+
+    const formDataUpload = new FormData();
+    formDataUpload.append("file", file);
+
+    const res = await fetch("/api/upload-license-2", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session.access_token}` },
+      body: formDataUpload,
+    });
+
+    const result = await res.json();
+    setUploadingLicense2(false);
+
+    if (!res.ok) {
+      setToast({ message: result.error || "Erreur lors de l'upload.", type: "error" });
+      return;
+    }
+
+    setProfile((p: any) => ({ ...p, license_url_2: result.publicUrl, license_verified_2: false }));
+    setToast({ message: "2ème licence envoyée, en attente de vérification.", type: "success" });
   }
 
   async function updateProfile() {
@@ -593,6 +625,71 @@ export default function ProfilePage() {
           </div>
 
         </div>
+
+        {/* 2ème Licence — visible seulement si license_type_2 est défini */}
+        {profile?.license_type_2 && (
+          <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-3xl font-black">2ème Licence</h2>
+                <p className="mt-2 text-zinc-400">{profile.license_type_2}</p>
+              </div>
+              <button
+                onClick={() => license2InputRef.current?.click()}
+                disabled={uploadingLicense2}
+                className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-6 font-bold transition hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Upload size={18} />
+                {uploadingLicense2 ? "Envoi..." : profile.license_url_2 ? "Remplacer" : "Upload"}
+              </button>
+              <input
+                ref={license2InputRef}
+                type="file"
+                accept=".pdf,image/*"
+                className="hidden"
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadLicense2(f); }}
+              />
+            </div>
+
+            {!profile.license_url_2 && !uploadingLicense2 && (
+              <div className="mt-6 flex flex-col items-center gap-3 rounded-[24px] border border-dashed border-white/10 bg-black/20 p-8 text-center">
+                <Upload size={28} className="text-zinc-600" />
+                <p className="font-semibold text-zinc-400">Aucun document uploadé</p>
+                <p className="text-sm text-zinc-600">Cliquez sur Upload pour soumettre votre 2ème licence</p>
+              </div>
+            )}
+
+            {uploadingLicense2 && (
+              <div className="mt-6 flex items-center justify-center gap-3 rounded-[24px] border border-white/10 bg-black/20 p-8">
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#FF5A1F] border-t-transparent" />
+                <p className="text-zinc-400">Envoi en cours...</p>
+              </div>
+            )}
+
+            {profile.license_url_2 && !profile.license_verified_2 && !uploadingLicense2 && (
+              <div className="mt-6 rounded-[24px] border border-yellow-500/30 bg-yellow-500/5 p-6">
+                <div className="flex items-center gap-3">
+                  <Clock size={20} className="text-yellow-400" />
+                  <p className="font-bold text-yellow-400">En attente de validation</p>
+                </div>
+                <p className="mt-2 text-sm text-zinc-400">Votre 2ème licence a bien été reçue.</p>
+                <a href={profile.license_url_2} target="_blank" className="mt-3 inline-block text-sm font-bold text-[#FF5A1F] underline underline-offset-2">Voir le fichier envoyé</a>
+              </div>
+            )}
+
+            {profile.license_url_2 && profile.license_verified_2 && !uploadingLicense2 && (
+              <div className="mt-6 rounded-[24px] border border-green-500/30 bg-green-500/5 p-6">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 size={20} className="text-green-400" />
+                  <p className="font-bold text-green-400">2ème licence validée</p>
+                </div>
+                <a href={profile.license_url_2} target="_blank" className="mt-3 inline-block text-sm font-bold text-[#FF5A1F] underline underline-offset-2">Voir la licence</a>
+              </div>
+            )}
+
+          </div>
+        )}
 
       </div>
 

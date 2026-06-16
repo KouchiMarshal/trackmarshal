@@ -32,13 +32,34 @@ export default function AdminLicensesPage() {
   async function load() {
     const { data } = await supabase
       .from("profiles")
-      .select("id, full_name, email, avatar_url, license_type, license_number, license_url, license_verified, created_at")
+      .select("id, full_name, email, avatar_url, license_type, license_number, license_url, license_verified, license_type_2, license_number_2, license_url_2, license_verified_2, created_at")
       .eq("role", "marshal")
       .not("license_url", "is", null)
       .order("created_at", { ascending: false });
 
     setCommissaires(data || []);
     setLoading(false);
+  }
+
+  async function validate2(id: string, verified: boolean) {
+    await supabase.from("profiles").update({ license_verified_2: verified }).eq("id", id);
+
+    await supabase.from("notifications").insert({
+      user_id: id,
+      title: verified ? "Votre 2ème licence a été validée ✔" : "Votre 2ème licence n'a pas pu être validée",
+      type: verified ? "license_verified" : "license_rejected",
+      link: "/dashboard/profile",
+    });
+
+    const commissaire = commissaires.find((c) => c.id === id);
+    if (commissaire?.email) {
+      sendEmail(commissaire.email, verified ? "license_validated" : "license_rejected", {
+        licenseType: commissaire.license_type_2,
+      });
+    }
+
+    setToast({ message: verified ? "2ème licence validée." : "2ème licence rejetée.", type: verified ? "success" : "error" });
+    setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_verified_2: verified } : c));
   }
 
   async function validate(id: string, verified: boolean) {
@@ -299,6 +320,40 @@ export default function AdminLicensesPage() {
                     </div>
                   )}
                 </div>
+
+                {/* 2ème licence si présente */}
+                {c.license_type_2 && (
+                  <div className="w-full rounded-2xl border border-white/10 bg-white/[0.02] p-4 lg:w-auto">
+                    <p className="mb-2 text-xs uppercase tracking-[0.15em] text-zinc-500">2ème licence</p>
+                    <p className="font-bold text-[#FF5A1F]">{c.license_type_2}</p>
+                    {c.license_number_2 && <p className="mt-1 text-sm text-zinc-400">N° {c.license_number_2}</p>}
+                    {c.license_url_2 && (
+                      <a href={c.license_url_2} target="_blank" rel="noopener noreferrer"
+                        className="mt-2 inline-flex items-center gap-2 text-sm font-bold text-[#FF5A1F] underline underline-offset-2">
+                        <ExternalLink size={14} /> Ouvrir
+                      </a>
+                    )}
+                    <div className="mt-3 flex gap-2">
+                      <button
+                        onClick={() => validate2(c.id, true)}
+                        disabled={c.license_verified_2}
+                        className={`flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-bold transition ${c.license_verified_2 ? "cursor-not-allowed bg-zinc-800 text-zinc-600" : "bg-green-600 hover:scale-105"}`}
+                      >
+                        <CheckCircle2 size={12} /> Valider
+                      </button>
+                      <button
+                        onClick={() => validate2(c.id, false)}
+                        disabled={!c.license_verified_2}
+                        className={`flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-bold transition ${!c.license_verified_2 ? "cursor-not-allowed bg-zinc-800 text-zinc-600" : "bg-red-600 hover:scale-105"}`}
+                      >
+                        <XCircle size={12} /> Rejeter
+                      </button>
+                    </div>
+                    <span className={`mt-2 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase ${c.license_verified_2 ? "bg-green-500/20 text-green-400" : "bg-yellow-500/20 text-yellow-400"}`}>
+                      {c.license_verified_2 ? "✔ Validée" : "⏳ En attente"}
+                    </span>
+                  </div>
+                )}
 
                 {/* Statut + actions */}
                 <div className="flex flex-col items-start gap-3 sm:items-end sm:shrink-0">

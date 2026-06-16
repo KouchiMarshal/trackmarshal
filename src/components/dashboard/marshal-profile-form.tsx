@@ -42,6 +42,8 @@ export default function MarshalProfileForm() {
       license_type: "",
       license_number: "",
       license_url: "",
+      license_type_2: "",
+      license_number_2: "",
     });
 
   useEffect(() => {
@@ -93,6 +95,10 @@ export default function MarshalProfileForm() {
           data.license_number || "",
         license_url:
           data.license_url || "",
+        license_type_2:
+          data.license_type_2 || "",
+        license_number_2:
+          data.license_number_2 || "",
       });
 
     }
@@ -234,6 +240,10 @@ export default function MarshalProfileForm() {
             formData.license_number,
           license_url:
             formData.license_url,
+          license_type_2:
+            formData.license_type_2 || null,
+          license_number_2:
+            formData.license_number_2 || null,
           available,
         })
         .eq("id", user.id);
@@ -712,6 +722,63 @@ export default function MarshalProfileForm() {
 
           </div>
 
+        </div>
+
+        {/* Deuxième licence (optionnelle) */}
+        <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.3em] text-zinc-400">2ème Licence (optionnelle)</p>
+              <p className="mt-1 text-xs text-zinc-600">Si vous avez une licence auto ET moto, ajoutez la seconde ici.</p>
+            </div>
+            {formData.license_type_2 && (
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, license_type_2: "", license_number_2: "" })}
+                className="text-xs text-zinc-500 hover:text-red-400 transition"
+              >
+                Supprimer
+              </button>
+            )}
+          </div>
+
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <div>
+              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">Type de licence</label>
+              <select
+                value={formData.license_type_2}
+                onChange={(e) => setFormData({ ...formData, license_type_2: e.target.value })}
+                className="h-16 w-full rounded-2xl border border-white/10 bg-[#111111] px-6 text-white outline-none focus:border-[#FF5A1F]"
+              >
+                <option value="">— Aucune 2ème licence —</option>
+                <optgroup label="FFSA — Auto">
+                  <option value="ENCOC - Commissaire C">ENCOC - Commissaire C</option>
+                  <option value="EICOB - Commissaire international B">EICOB - Commissaire international B</option>
+                  <option value="EICOACPC - Chef de poste">EICOACPC - Chef de poste</option>
+                </optgroup>
+                <optgroup label="FFM — Moto">
+                  <option value="FFM - Commissaire de Course">FFM - Commissaire de Course</option>
+                  <option value="FFM - Commissaire International">FFM - Commissaire International</option>
+                  <option value="FFM - Chef de Poste">FFM - Chef de Poste</option>
+                </optgroup>
+              </select>
+            </div>
+            <div>
+              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">Numéro de licence</label>
+              <input
+                type="text"
+                value={formData.license_number_2}
+                onChange={(e) => setFormData({ ...formData, license_number_2: e.target.value })}
+                placeholder="ex : 2024-FFM-00456"
+                className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]"
+              />
+            </div>
+          </div>
+          {formData.license_type_2 && (
+            <p className="mt-4 text-xs text-zinc-500">
+              Le document de la 2ème licence se soumet depuis votre page Profil → section "2ème Licence".
+            </p>
+          )}
         </div>
 
         <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">

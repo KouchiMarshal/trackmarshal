@@ -9,12 +9,14 @@ import NotificationBell from "@/components/notifications/notification-bell";
 import { formatDate } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
 import { SkeletonEventCard } from "@/components/ui/skeleton";
+import { canApplyToEvent } from "@/lib/licenseUtils";
 
-const DISCIPLINES = ["Rallye", "Circuit", "Karting", "Drift"];
+const DISCIPLINES = ["Rallye", "Circuit", "Karting", "Drift", "Endurance", "Moto Cross", "Enduro", "Trial", "Road Racing", "Supermoto", "Rallye Moto"];
 
 export default function DashboardEventsPage() {
   const [events, setEvents] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<ToastData>(null);
 
@@ -32,22 +34,25 @@ export default function DashboardEventsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data: eventsData } = await supabase
-      .from("events")
-      .select("*")
-      .order("event_date", { ascending: true });
+    const [eventsRes, applicationsRes, profileRes] = await Promise.all([
+      supabase.from("events").select("*").order("event_date", { ascending: true }),
+      supabase.from("applications").select("*").eq("marshal_id", user.id),
+      supabase.from("profiles").select("license_type, license_verified, license_type_2, license_verified_2").eq("id", user.id).single(),
+    ]);
 
-    const { data: applicationsData } = await supabase
-      .from("applications")
-      .select("*")
-      .eq("marshal_id", user.id);
-
-    setEvents(eventsData || []);
-    setApplications(applicationsData || []);
+    setEvents(eventsRes.data || []);
+    setApplications(applicationsRes.data || []);
+    setUserProfile(profileRes.data || null);
     setLoading(false);
   }
 
-  async function applyToEvent(eventId: string) {
+  async function applyToEvent(eventId: string, eventDiscipline?: string) {
+    const check = canApplyToEvent(userProfile || {}, eventDiscipline);
+    if (!check.allowed) {
+      setToast({ message: check.reason || "Licence non valide pour cet événement.", type: "error" });
+      return;
+    }
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -348,7 +353,7 @@ export default function DashboardEventsPage() {
 
                             {!app ? (
                               <button
-                                onClick={() => applyToEvent(event.id)}
+                                onClick={() => applyToEvent(event.id, event.discipline)}
                                 className="flex h-12 flex-1 items-center justify-center rounded-2xl bg-[#FF5A1F] text-sm font-bold transition hover:scale-[1.01]"
                               >
                                 Postuler

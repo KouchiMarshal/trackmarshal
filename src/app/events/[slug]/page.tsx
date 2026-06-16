@@ -324,7 +324,7 @@ export default async function EventPage({
                 </div>
 
                 <div className="mt-8">
-                  <ApplyButton eventId={event.id} isFull={isFull} />
+                  <ApplyButton eventId={event.id} isFull={isFull} eventDiscipline={event.discipline} />
                 </div>
 
               </div>
