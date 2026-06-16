@@ -100,14 +100,6 @@ export default function AdminLicensesPage() {
             <h1 className="mt-1 text-2xl font-black lg:text-3xl">Validation des licences</h1>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={testEmailSystem}
-              disabled={testingEmail}
-              className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-bold text-zinc-400 transition hover:text-white disabled:opacity-50"
-            >
-              <FlaskConical size={16} />
-              {testingEmail ? "Envoi..." : "Tester les emails"}
-            </button>
             <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 px-5 py-3 text-center">
               <p className="text-xs text-zinc-500">En attente</p>
               <p className="text-2xl font-black text-yellow-400">{counts.pending}</p>
@@ -122,23 +114,33 @@ export default function AdminLicensesPage() {
 
       <div className="mx-auto max-w-[1400px] p-6 lg:p-10">
 
-        <div className="mb-8 flex flex-wrap gap-3">
-          {([
-            { key: "pending", label: "En attente", count: counts.pending, activeClass: "bg-yellow-600" },
-            { key: "verified", label: "Validées", count: counts.verified, activeClass: "bg-green-600" },
-            { key: "all", label: "Toutes", count: counts.all, activeClass: "bg-[#FF5A1F]" },
-          ] as const).map((f) => (
-            <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
-              className={`flex items-center gap-2 rounded-2xl px-5 py-3 font-bold transition ${
-                filter === f.key ? f.activeClass : "bg-white/[0.05] text-zinc-400 hover:text-white"
-              }`}
-            >
-              {f.label}
-              <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">{f.count}</span>
-            </button>
-          ))}
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-3">
+            {([
+              { key: "pending", label: "En attente", count: counts.pending, activeClass: "bg-yellow-600" },
+              { key: "verified", label: "Validées", count: counts.verified, activeClass: "bg-green-600" },
+              { key: "all", label: "Toutes", count: counts.all, activeClass: "bg-[#FF5A1F]" },
+            ] as const).map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className={`flex items-center gap-2 rounded-2xl px-5 py-3 font-bold transition ${
+                  filter === f.key ? f.activeClass : "bg-white/[0.05] text-zinc-400 hover:text-white"
+                }`}
+              >
+                {f.label}
+                <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">{f.count}</span>
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={testEmailSystem}
+            disabled={testingEmail}
+            className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-3 text-sm font-bold text-zinc-400 transition hover:text-white disabled:opacity-50"
+          >
+            <FlaskConical size={16} />
+            {testingEmail ? "Envoi..." : "Tester les emails"}
+          </button>
         </div>
 
         {loading && <p className="py-20 text-center text-zinc-500">Chargement...</p>}
