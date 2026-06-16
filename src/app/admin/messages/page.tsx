@@ -376,15 +376,9 @@ export default function AdminMessagesPage() {
                   <textarea
                     ref={textareaRef}
                     rows={1}
-                    placeholder="Écrire un message... (Entrée pour envoyer, Maj+Entrée pour sauter une ligne)"
+                    placeholder="Écrire un message..."
                     value={message}
                     onChange={(e) => { setMessage(e.target.value); growTextarea(e.target); }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        sendMessage();
-                      }
-                    }}
                     disabled={loadingConv || !selectedConv}
                     className="flex-1 resize-none bg-transparent py-2 text-sm outline-none placeholder:text-zinc-600 disabled:opacity-40"
                     style={{ maxHeight: "128px", overflowY: "auto" }}
@@ -400,7 +394,7 @@ export default function AdminMessagesPage() {
                     }
                   </button>
                 </div>
-                <p className="mt-2 hidden text-center text-[10px] text-zinc-700 lg:block">Entrée pour envoyer · Maj+Entrée pour nouvelle ligne</p>
+                <p className="mt-2 hidden text-center text-[10px] text-zinc-700 lg:block">Entrée pour nouvelle ligne · Cliquez sur le bouton pour envoyer</p>
               </div>
             </>
           )}
