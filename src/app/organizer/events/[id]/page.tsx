@@ -706,21 +706,39 @@ if (app.profiles?.email) {
 
 const { data: { user: currentUser } } = await supabase.auth.getUser();
 if (currentUser) {
-  const { data: convData, error: convError } = await supabase
-    .from("conversations")
-    .insert({ title: `${event.title} — ${app.profiles?.full_name || "Commissaire"}` })
-    .select()
-    .single();
+  // Vérifier si une conversation existe déjà entre cet organisateur et ce commissaire
+  const { data: myMemberships } = await supabase
+    .from("conversation_members")
+    .select("conversation_id")
+    .eq("user_id", currentUser.id);
 
-  if (convError) {
-    console.error("Erreur création conversation:", convError);
-    setToast({ message: `Candidature acceptée mais erreur messagerie: ${convError.message}`, type: "error" });
-  } else if (convData?.id) {
-    const { error: membersError } = await supabase.from("conversation_members").insert([
-      { conversation_id: convData.id, user_id: currentUser.id },
-      { conversation_id: convData.id, user_id: app.marshal_id },
-    ]);
-    if (membersError) console.error("Erreur membres conversation:", membersError);
+  const myConvIds = (myMemberships || []).map((m: any) => m.conversation_id);
+  let alreadyExists = false;
+
+  if (myConvIds.length > 0) {
+    const { data: shared } = await supabase
+      .from("conversation_members")
+      .select("conversation_id")
+      .eq("user_id", app.marshal_id)
+      .in("conversation_id", myConvIds);
+    alreadyExists = (shared || []).length > 0;
+  }
+
+  if (!alreadyExists) {
+    const { data: convData, error: convError } = await supabase
+      .from("conversations")
+      .insert({ title: `${event.title} — ${app.profiles?.full_name || "Commissaire"}` })
+      .select()
+      .single();
+
+    if (convError) {
+      console.error("Erreur création conversation:", convError);
+    } else if (convData?.id) {
+      await supabase.from("conversation_members").insert([
+        { conversation_id: convData.id, user_id: currentUser.id },
+        { conversation_id: convData.id, user_id: app.marshal_id },
+      ]);
+    }
   }
 }
 
