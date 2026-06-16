@@ -102,6 +102,8 @@ export default function SettingsPage() {
       setToast({ message: error.message, type: "error" });
       return;
     }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) await supabase.from("profiles").update({ email }).eq("id", user.id);
     setToast({ message: "Un email de confirmation a été envoyé à votre nouvelle adresse.", type: "success" });
   }
 
