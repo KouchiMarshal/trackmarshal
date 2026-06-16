@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { sendEmail } from "@/lib/sendEmail";
 import { MessageSquare, Search, Send, Users } from "lucide-react";
 
 export default function AdminMessagesPage() {
@@ -144,31 +145,22 @@ export default function AdminMessagesPage() {
     } else {
       setMessage("");
 
-      // Notify recipients server-side (bypasses RLS)
+      // Send email notification directly — selectedUser already has email & role
+      const replyUrl = selectedUser.role === "organizer"
+        ? "https://trackmarshal.app/organizer/messages"
+        : "https://trackmarshal.app/dashboard/messages";
+
       const { data: adminProfile } = await supabase
         .from("profiles")
         .select("full_name")
         .eq("id", adminUser.id)
         .single();
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        fetch("/api/messages/notify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({
-            conversationId: selectedConv.id,
-            senderName: adminProfile?.full_name || "TrackMarshal",
-            preview: text.slice(0, 100),
-          }),
-        })
-          .then((r) => r.json())
-          .then((d) => console.log("[notify]", d))
-          .catch((e) => console.error("[notify] fetch error", e));
-      }
+      sendEmail(selectedUser.email, "new_message", {
+        senderName: adminProfile?.full_name || "TrackMarshal",
+        preview: text.slice(0, 100),
+        replyUrl,
+      });
     }
     setSending(false);
   }
