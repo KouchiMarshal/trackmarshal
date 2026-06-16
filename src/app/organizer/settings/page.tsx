@@ -53,7 +53,7 @@ export default function OrganizerSettingsPage() {
   async function updateEmail() {
     if (!email) return;
     setUpdatingEmail(true);
-    const { error } = await supabase.auth.updateUser({ email });
+    const { error } = await supabase.auth.updateUser({ email }, { emailRedirectTo: window.location.origin });
     if (error) { setToast({ message: error.message, type: "error" }); setUpdatingEmail(false); return; }
     const { data: { user } } = await supabase.auth.getUser();
     if (user) await supabase.from("profiles").update({ email }).eq("id", user.id);
