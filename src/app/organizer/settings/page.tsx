@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Save, Shield, Trash2 } from "lucide-react";
+import { Bell, LogOut, Save, Shield, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -14,6 +14,7 @@ export default function OrganizerSettingsPage() {
   const [password, setPassword] = useState("");
   const [notifications, setNotifications] = useState(true);
   const [toast, setToast] = useState<ToastData>(null);
+  const [updatingEmail, setUpdatingEmail] = useState(false);
 
   useEffect(() => {
     loadUser();
@@ -47,6 +48,22 @@ export default function OrganizerSettingsPage() {
     if (error) { setToast({ message: error.message, type: "error" }); return; }
     setToast({ message: "Mot de passe mis à jour !", type: "success" });
     setPassword("");
+  }
+
+  async function updateEmail() {
+    if (!email) return;
+    setUpdatingEmail(true);
+    const { error } = await supabase.auth.updateUser({ email });
+    if (error) { setToast({ message: error.message, type: "error" }); setUpdatingEmail(false); return; }
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) await supabase.from("profiles").update({ email }).eq("id", user.id);
+    setToast({ message: "Email mis à jour. Vérifiez votre boîte mail.", type: "success" });
+    setUpdatingEmail(false);
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    router.push("/");
   }
 
   async function deleteAccount() {
@@ -94,10 +111,19 @@ export default function OrganizerSettingsPage() {
                   <div>
                     <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">Adresse Email</p>
                     <input
-                      disabled
+                      type="email"
                       value={email}
-                      className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 text-zinc-500 outline-none"
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
                     />
+                    <button
+                      onClick={updateEmail}
+                      disabled={updatingEmail}
+                      className="mt-3 flex h-12 items-center gap-3 rounded-2xl bg-zinc-800 px-6 text-sm font-bold transition hover:bg-zinc-700 disabled:opacity-50"
+                    >
+                      <Save size={16} />
+                      {updatingEmail ? "Mise à jour..." : "Mettre à jour l'email"}
+                    </button>
                   </div>
                   <div>
                     <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">Nouveau mot de passe</p>
@@ -141,6 +167,14 @@ export default function OrganizerSettingsPage() {
                   </button>
                 </div>
               </div>
+
+              <button
+                onClick={logout}
+                className="flex w-full items-center gap-4 rounded-[32px] border border-white/10 bg-white/[0.03] p-6 font-bold text-zinc-400 transition hover:bg-white/[0.06] hover:text-white lg:hidden"
+              >
+                <LogOut size={22} />
+                Se déconnecter
+              </button>
 
               <div className="rounded-[32px] border border-red-500/20 bg-red-500/5 p-6 backdrop-blur-xl lg:p-8">
                 <div className="flex items-center gap-4">

@@ -96,12 +96,13 @@ export default function OrganizerSidebar() {
 
       {/* Bottom nav mobile */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/90 backdrop-blur-2xl lg:hidden">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           {[
             { icon: Home, label: "Dashboard", href: "/organizer/dashboard" },
             { icon: FileBadge2, label: "Candidatures", href: "/organizer/applications" },
             { icon: MessageSquare, label: "Messages", href: "/organizer/messages" },
             { icon: Plus, label: "Créer", href: "/organizer/events/create" },
+            { icon: Settings, label: "Paramètres", href: "/organizer/settings" },
           ].map((item) => {
             const isMessages = item.href === "/organizer/messages";
             return (
