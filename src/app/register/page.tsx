@@ -45,27 +45,11 @@ export default function RegisterPage() {
   const [organizerOrgName, setOrganizerOrgName] =
     useState("");
 
-  const [organizerDocUrl, setOrganizerDocUrl] =
-    useState("");
-
-  const [uploadingDoc, setUploadingDoc] =
-    useState(false);
+  const [organizerDocFile, setOrganizerDocFile] =
+    useState<File | null>(null);
 
   const [toast, setToast] =
     useState<ToastData>(null);
-
-  async function uploadOrganizerDoc(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploadingDoc(true);
-    const ext = file.name.split(".").pop();
-    const fileName = `org_${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("licenses").upload(fileName, file);
-    if (error) { setToast({ message: error.message, type: "error" }); setUploadingDoc(false); return; }
-    const { data } = supabase.storage.from("licenses").getPublicUrl(fileName);
-    setOrganizerDocUrl(data.publicUrl);
-    setUploadingDoc(false);
-  }
 
   async function handleRegister(
     e: React.FormEvent
@@ -88,41 +72,40 @@ export default function RegisterPage() {
       return;
     }
 
-    if (role === "organizer" && !organizerDocUrl) {
+    if (role === "organizer" && !organizerDocFile) {
       setToast({ message: "Veuillez uploader un justificatif (document ASA / ASK).", type: "error" });
       return;
     }
 
     setLoading(true);
 
-    const {
-      data,
-      error,
-    } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    // 1. Création du compte auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
 
-    if (error) {
-
+    if (authError || !authData.user) {
       setLoading(false);
-
-      setToast({ message: error.message, type: "error" });
-
+      setToast({ message: authError?.message || "Erreur lors de la création du compte.", type: "error" });
       return;
     }
 
-    const user = data.user;
+    const user = authData.user;
 
-    if (!user) {
-
-      setLoading(false);
-
-      setToast({ message: "Erreur lors de la création du compte.", type: "error" });
-
-      return;
+    // 2. Upload du justificatif organisateur via route admin (pas de session requise)
+    let organizerDocUrl = "";
+    if (role === "organizer" && organizerDocFile) {
+      const formData = new FormData();
+      formData.append("file", organizerDocFile);
+      const res = await fetch("/api/upload-org-doc", { method: "POST", body: formData });
+      const result = await res.json();
+      if (!res.ok) {
+        setLoading(false);
+        setToast({ message: result.error || "Erreur lors de l'upload du justificatif.", type: "error" });
+        return;
+      }
+      organizerDocUrl = result.publicUrl;
     }
 
+    // 3. Création du profil
     const profileData: any = {
       id: user.id,
       role,
@@ -133,6 +116,8 @@ export default function RegisterPage() {
     if (role === "marshal") {
       profileData.license_type = licenseType;
       profileData.license_number = licenseNumber.trim();
+      profileData.license_verified = false;
+      profileData.available = true;
     }
 
     if (role === "organizer") {
@@ -141,17 +126,17 @@ export default function RegisterPage() {
       profileData.organizer_verified = false;
     }
 
-    await supabase
-      .from("profiles")
-      .insert(profileData);
+    const { error: profileError } = await supabase.from("profiles").insert(profileData);
+
+    if (profileError) {
+      setLoading(false);
+      setToast({ message: "Erreur lors de la création du profil : " + profileError.message, type: "error" });
+      return;
+    }
 
     setLoading(false);
 
-    if (role === "organizer") {
-      router.push("/organizer/dashboard");
-    } else {
-      router.push("/dashboard");
-    }
+    router.push(role === "organizer" ? "/organizer/dashboard" : "/dashboard");
   }
 
   return (
@@ -400,12 +385,11 @@ export default function RegisterPage() {
                       <input
                         type="file"
                         accept=".pdf,image/*"
-                        onChange={uploadOrganizerDoc}
+                        onChange={(e) => setOrganizerDocFile(e.target.files?.[0] || null)}
                         required
                         className="block w-full text-sm text-zinc-400 file:mr-4 file:rounded-xl file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-bold file:text-white"
                       />
-                      {uploadingDoc && <p className="mt-2 text-xs text-[#FF5A1F]">Upload en cours...</p>}
-                      {organizerDocUrl && <p className="mt-2 text-xs text-green-400">✔ Document uploadé avec succès</p>}
+                      {organizerDocFile && <p className="mt-2 text-xs text-green-400">✔ {organizerDocFile.name} sélectionné</p>}
                     </div>
                   </>
                 )}
