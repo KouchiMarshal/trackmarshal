@@ -40,9 +40,7 @@ export default function AdminOrganizersPage() {
 
     const org = organizers.find((o) => o.id === id);
     if (org?.email) {
-      sendEmail(org.email, verified ? "license_validated" : "license_rejected", {
-        licenseType: "Compte organisateur",
-      });
+      sendEmail(org.email, verified ? "organizer_verified" : "organizer_rejected", {});
     }
 
     setOrganizers((prev) => prev.map((o) => o.id === id ? { ...o, organizer_verified: verified } : o));

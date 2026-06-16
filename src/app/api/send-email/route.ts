@@ -10,6 +10,8 @@ type EmailType =
   | "application_rejected"
   | "license_validated"
   | "license_rejected"
+  | "organizer_verified"
+  | "organizer_rejected"
   | "new_message";
 
 interface EmailPayload {
@@ -96,6 +98,32 @@ function buildEmail(type: EmailType, data: Record<string, any>): { subject: stri
           <p style="color:#aaa">Mettez à jour votre licence sur votre profil et soumettez-la à nouveau.</p>
           <a href="https://trackmarshal.app/dashboard/profile" style="display:inline-block;background:#FF5A1F;color:#fff;padding:14px 28px;border-radius:12px;font-weight:bold;text-decoration:none;margin-top:16px;">
             Mettre à jour ma licence
+          </a>
+        `),
+      };
+
+    case "organizer_verified":
+      return {
+        subject: "✅ Votre compte organisateur a été vérifié — TrackMarshal",
+        html: wrap(`
+          <h2 style="color:#22c55e;margin-top:0">Compte organisateur vérifié !</h2>
+          <p>Votre compte organisateur TrackMarshal a été vérifié et validé par notre équipe.</p>
+          <p style="color:#aaa">Vous pouvez maintenant publier des événements et recruter des commissaires.</p>
+          <a href="https://trackmarshal.app/organizer/dashboard" style="display:inline-block;background:#FF5A1F;color:#fff;padding:14px 28px;border-radius:12px;font-weight:bold;text-decoration:none;margin-top:16px;">
+            Accéder à mon dashboard
+          </a>
+        `),
+      };
+
+    case "organizer_rejected":
+      return {
+        subject: "Vérification de compte — TrackMarshal",
+        html: wrap(`
+          <h2 style="margin-top:0">Vérification non accordée</h2>
+          <p>Votre demande de vérification organisateur n'a pas pu être validée.</p>
+          <p style="color:#aaa">Cela peut être dû à un justificatif insuffisant ou illisible. Contactez-nous pour plus d'informations.</p>
+          <a href="https://trackmarshal.app/organizer/settings" style="display:inline-block;background:#FF5A1F;color:#fff;padding:14px 28px;border-radius:12px;font-weight:bold;text-decoration:none;margin-top:16px;">
+            Mes paramètres
           </a>
         `),
       };
