@@ -346,8 +346,7 @@ export default function AdminLicensesPage() {
                       </button>
                       <button
                         onClick={() => validate2(c.id, false)}
-                        disabled={!c.license_verified_2}
-                        className={`flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-bold transition ${!c.license_verified_2 ? "cursor-not-allowed bg-zinc-800 text-zinc-600" : "bg-red-600 hover:scale-105"}`}
+                        className="flex items-center gap-1 rounded-xl bg-red-600 px-3 py-2 text-xs font-bold transition hover:scale-105"
                       >
                         <XCircle size={12} /> Rejeter
                       </button>
@@ -383,12 +382,7 @@ export default function AdminLicensesPage() {
                     </button>
                     <button
                       onClick={() => validate(c.id, false)}
-                      disabled={!c.license_verified}
-                      className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold transition ${
-                        !c.license_verified
-                          ? "cursor-not-allowed bg-zinc-800 text-zinc-600"
-                          : "bg-red-600 hover:scale-105"
-                      }`}
+                      className="flex items-center gap-2 rounded-2xl bg-red-600 px-5 py-3 text-sm font-bold transition hover:scale-105"
                     >
                       <XCircle size={16} />
                       Rejeter
