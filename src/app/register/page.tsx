@@ -48,6 +48,9 @@ export default function RegisterPage() {
   const [organizerDocFile, setOrganizerDocFile] =
     useState<File | null>(null);
 
+  const [marshalLicenseFile, setMarshalLicenseFile] =
+    useState<File | null>(null);
+
   const [toast, setToast] =
     useState<ToastData>(null);
 
@@ -64,6 +67,11 @@ export default function RegisterPage() {
 
     if (role === "marshal" && !licenseNumber.trim()) {
       setToast({ message: "Veuillez renseigner votre numéro de licence.", type: "error" });
+      return;
+    }
+
+    if (role === "marshal" && !marshalLicenseFile) {
+      setToast({ message: "Veuillez uploader une photo ou scan de votre licence.", type: "error" });
       return;
     }
 
@@ -90,7 +98,21 @@ export default function RegisterPage() {
 
     const user = authData.user;
 
-    // 2. Upload du justificatif organisateur via route admin (pas de session requise)
+    // 2. Upload des fichiers via route admin (pas de session requise)
+    let marshalLicenseUrl = "";
+    if (role === "marshal" && marshalLicenseFile) {
+      const formData = new FormData();
+      formData.append("file", marshalLicenseFile);
+      const res = await fetch("/api/upload-org-doc", { method: "POST", body: formData });
+      const result = await res.json();
+      if (!res.ok) {
+        setLoading(false);
+        setToast({ message: result.error || "Erreur lors de l'upload de la licence.", type: "error" });
+        return;
+      }
+      marshalLicenseUrl = result.publicUrl;
+    }
+
     let organizerDocUrl = "";
     if (role === "organizer" && organizerDocFile) {
       const formData = new FormData();
@@ -116,6 +138,7 @@ export default function RegisterPage() {
     if (role === "marshal") {
       profileData.license_type = licenseType;
       profileData.license_number = licenseNumber.trim();
+      profileData.license_url = marshalLicenseUrl;
       profileData.license_verified = false;
       profileData.available = true;
     }
@@ -349,6 +372,32 @@ export default function RegisterPage() {
                         placeholder="ex : 2024-FFSA-00123"
                         className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                       />
+                    </div>
+
+                    <div>
+                      <p className="mb-1 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                        Photo / scan de votre licence <span className="text-[#FF5A1F]">*</span>
+                      </p>
+                      <p className="mb-3 text-xs text-zinc-500">PDF ou image — recto de votre licence officielle.</p>
+                      <label className={`flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-6 text-center transition ${marshalLicenseFile ? "border-green-500/40 bg-green-500/5" : "border-white/10 bg-white/[0.03] hover:border-[#FF5A1F]/40"}`}>
+                        {marshalLicenseFile ? (
+                          <>
+                            <p className="text-sm font-bold text-green-400">✔ {marshalLicenseFile.name}</p>
+                            <p className="text-xs text-zinc-500">Cliquer pour changer</p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="text-sm font-semibold text-zinc-400">Cliquer pour uploader</p>
+                            <p className="text-xs text-zinc-600">PDF, JPG, PNG</p>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept=".pdf,image/*"
+                          className="hidden"
+                          onChange={(e) => setMarshalLicenseFile(e.target.files?.[0] || null)}
+                        />
+                      </label>
                     </div>
                   </>
                 )}
