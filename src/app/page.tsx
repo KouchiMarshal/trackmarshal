@@ -4,8 +4,18 @@ import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 import { CheckCircle2, ClipboardList, MessageSquare, Search, ShieldCheck } from "lucide-react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && (hash.includes("access_token") || hash.includes("error_code") || hash.includes("type=email"))) {
+      router.replace(`/auth/confirm${hash}`);
+    }
+  }, []);
 
   const steps = [
     {
