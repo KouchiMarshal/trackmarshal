@@ -127,6 +127,7 @@ export default function RegisterPage() {
       id: user.id,
       role,
       full_name: fullName,
+      email,
     };
 
     if (role === "marshal") {
