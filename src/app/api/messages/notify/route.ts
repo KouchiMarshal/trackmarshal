@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
 
   const { data: recipients, error: profilesError } = await supabaseAdmin
     .from("profiles")
-    .select("email, role, email_preferences")
+    .select("email, role, notifications_enabled")
     .in("id", recipientIds);
 
   if (profilesError) {
@@ -78,9 +78,8 @@ export async function POST(req: NextRequest) {
 
   let sent = 0;
   for (const recipient of recipients || []) {
-    const prefs = recipient.email_preferences as Record<string, boolean> | null;
     if (!recipient.email) { console.log("[messages/notify] Skipping — no email"); continue; }
-    if (prefs?.email_on_new_message === false) { console.log("[messages/notify] Skipping — opted out"); continue; }
+    if (recipient.notifications_enabled === false) { console.log("[messages/notify] Skipping — notifications disabled"); continue; }
 
     const replyUrl = recipient.role === "organizer"
       ? "https://trackmarshal.app/organizer/messages"
