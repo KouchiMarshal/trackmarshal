@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     description:
       "Tout savoir sur les licences FFSA C, B, A, la formation e-learning officielle et les étapes pour devenir commissaire de piste en France.",
     url: "https://www.trackmarshal.app/devenir-commissaire",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Devenir commissaire motorsport — TrackMarshal" }],
   },
   alternates: { canonical: "/devenir-commissaire" },
 };

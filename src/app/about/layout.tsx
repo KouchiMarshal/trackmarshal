@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     description:
       "Découvrez la plateforme qui simplifie le recrutement de commissaires de piste pour le motorsport français.",
     url: "https://www.trackmarshal.app/about",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "À propos de TrackMarshal" }],
   },
   alternates: { canonical: "/about" },
 };

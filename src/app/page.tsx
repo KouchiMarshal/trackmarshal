@@ -38,6 +38,7 @@ export default function HomePage() {
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1541773367336-d14e1d89924f?q=80&w=2070&auto=format&fit=crop"
+            alt="Course motorsport en piste"
             className="h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-black/80" />

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s | TrackMarshal",
   },
   description:
-    "TrackMarshal connecte les commissaires de piste et les organisateurs d'événements motorsport en France. Trouvez des missions, gérez vos candidatures, valorisez votre licence FFSA.",
+    "TrackMarshal connecte commissaires (FFSA/FFM) et organisateurs d'événements motorsport en France. Missions, candidatures et licences vérifiées.",
   keywords: [
     "commissaire de piste",
     "motorsport",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
       "Connectez-vous avec des organisateurs motorsport, trouvez des missions de commissaire de piste et gérez votre licence FFSA.",
     images: [
       {
-        url: "/og-image.png",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "TrackMarshal — Plateforme commissaires motorsport",
@@ -48,13 +48,23 @@ export const metadata: Metadata = {
     title: "TrackMarshal — La plateforme des commissaires motorsport",
     description:
       "Trouvez des missions de commissaire de piste motorsport en France.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,
     follow: true,
     googleBot: { index: true, follow: true },
   },
+};
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "TrackMarshal",
+  url: "https://www.trackmarshal.app",
+  logo: "https://www.trackmarshal.app/logo.png",
+  description: "Plateforme qui connecte commissaires motorsport (FFSA/FFM) et organisateurs d'événements en France.",
+  sameAs: [],
 };
 
 export default function RootLayout({
@@ -65,6 +75,13 @@ export default function RootLayout({
 
   return (
     <html lang="fr">
+
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+      </head>
 
       <body>
 

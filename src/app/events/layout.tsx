@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     description:
       "Tous les événements motorsport qui cherchent des commissaires de piste en France.",
     url: "https://www.trackmarshal.app/events",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Événements motorsport — TrackMarshal" }],
   },
   alternates: { canonical: "/events" },
 };
