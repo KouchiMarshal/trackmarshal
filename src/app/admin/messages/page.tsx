@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { sendEmail } from "@/lib/sendEmail";
 import { MessageSquare, Search, Send, Users } from "lucide-react";
 
 export default function AdminMessagesPage() {
@@ -131,10 +132,11 @@ export default function AdminMessagesPage() {
     if (!selectedConv) return;
     setSending(true);
 
+    const text = message.trim();
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConv.id,
       sender_id: adminUser.id,
-      content: message.trim(),
+      content: text,
     });
 
     if (error) {
@@ -142,6 +144,41 @@ export default function AdminMessagesPage() {
       alert("Erreur: " + error.message);
     } else {
       setMessage("");
+
+      // Notify other members by email
+      const { data: adminProfile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", adminUser.id)
+        .single();
+
+      const { data: otherMembers } = await supabase
+        .from("conversation_members")
+        .select("user_id")
+        .eq("conversation_id", selectedConv.id)
+        .neq("user_id", adminUser.id);
+
+      if (otherMembers && otherMembers.length > 0) {
+        const recipientIds = otherMembers.map((m: any) => m.user_id);
+        const { data: recipientProfiles } = await supabase
+          .from("profiles")
+          .select("email, full_name, role, email_preferences")
+          .in("id", recipientIds);
+
+        for (const recipient of recipientProfiles || []) {
+          const prefs = recipient.email_preferences as Record<string, boolean> | null;
+          if (recipient.email && prefs?.email_on_new_message !== false) {
+            const replyUrl = recipient.role === "organizer"
+              ? "https://trackmarshal.app/organizer/messages"
+              : "https://trackmarshal.app/dashboard/messages";
+            sendEmail(recipient.email, "new_message", {
+              senderName: adminProfile?.full_name || "TrackMarshal",
+              preview: text.slice(0, 100),
+              replyUrl,
+            });
+          }
+        }
+      }
     }
     setSending(false);
   }

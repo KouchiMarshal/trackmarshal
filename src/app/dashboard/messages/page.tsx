@@ -3,6 +3,7 @@
 import { Send, MessageSquare } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { sendEmail } from "@/lib/sendEmail";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
 
@@ -134,10 +135,11 @@ export default function MessagesPage() {
     if (!message.trim() || !selectedConv || !user) return;
     setSending(true);
 
+    const text = message.trim();
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConv.id,
       sender_id: user.id,
-      content: message.trim(),
+      content: text,
     });
 
     if (error) {
@@ -145,6 +147,41 @@ export default function MessagesPage() {
       alert("Erreur: " + error.message);
     } else {
       setMessage("");
+
+      // Notify other members by email
+      const { data: senderProfile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      const { data: otherMembers } = await supabase
+        .from("conversation_members")
+        .select("user_id")
+        .eq("conversation_id", selectedConv.id)
+        .neq("user_id", user.id);
+
+      if (otherMembers && otherMembers.length > 0) {
+        const recipientIds = otherMembers.map((m: any) => m.user_id);
+        const { data: recipientProfiles } = await supabase
+          .from("profiles")
+          .select("email, full_name, role, email_preferences")
+          .in("id", recipientIds);
+
+        for (const recipient of recipientProfiles || []) {
+          const prefs = recipient.email_preferences as Record<string, boolean> | null;
+          if (recipient.email && prefs?.email_on_new_message !== false) {
+            const replyUrl = recipient.role === "organizer"
+              ? "https://trackmarshal.app/organizer/messages"
+              : "https://trackmarshal.app/dashboard/messages";
+            sendEmail(recipient.email, "new_message", {
+              senderName: senderProfile?.full_name || "TrackMarshal",
+              preview: text.slice(0, 100),
+              replyUrl,
+            });
+          }
+        }
+      }
     }
     setSending(false);
   }

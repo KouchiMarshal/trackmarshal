@@ -128,18 +128,20 @@ function buildEmail(type: EmailType, data: Record<string, any>): { subject: stri
         `),
       };
 
-    case "new_message":
+    case "new_message": {
+      const replyUrl = data.replyUrl || "https://trackmarshal.app/dashboard/messages";
       return {
         subject: `💬 Nouveau message de ${data.senderName} — TrackMarshal`,
         html: wrap(`
           <h2 style="margin-top:0">Vous avez un nouveau message</h2>
           <p><strong>${data.senderName}</strong> vous a envoyé un message sur TrackMarshal.</p>
           <blockquote style="border-left:3px solid #FF5A1F;padding-left:16px;color:#aaa;margin:16px 0;">${data.preview}</blockquote>
-          <a href="https://trackmarshal.app/dashboard/messages" style="display:inline-block;background:#FF5A1F;color:#fff;padding:14px 28px;border-radius:12px;font-weight:bold;text-decoration:none;margin-top:16px;">
+          <a href="${replyUrl}" style="display:inline-block;background:#FF5A1F;color:#fff;padding:14px 28px;border-radius:12px;font-weight:bold;text-decoration:none;margin-top:16px;">
             Répondre
           </a>
         `),
       };
+    }
 
     default:
       return { subject: "TrackMarshal", html: wrap("<p>Notification</p>") };
