@@ -13,9 +13,8 @@ const LICENSE_TYPES_FFSA = [
 ];
 
 const LICENSE_TYPES_FFM = [
-  "FFM - Commissaire de Course",
-  "FFM - Commissaire International",
-  "FFM - Chef de Poste",
+  "OFS - Officiel Stagiaire",
+  "OFF - Officiel",
 ];
 
 export default function AdminLicensesPage() {

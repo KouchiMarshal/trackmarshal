@@ -6,7 +6,7 @@ export function isAutoLicense(type?: string | null): boolean {
 }
 
 export function isMotoLicense(type?: string | null): boolean {
-  return !!type && type.startsWith("FFM");
+  return !!type && (type.startsWith("FFM") || type.startsWith("OFS") || type.startsWith("OFF"));
 }
 
 export function canApplyToEvent(

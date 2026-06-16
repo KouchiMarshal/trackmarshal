@@ -360,9 +360,8 @@ export default function RegisterPage() {
                           <option value="EICOACPC - Chef de poste">EICOACPC - Chef de poste</option>
                         </optgroup>
                         <optgroup label="FFM — Moto">
-                          <option value="FFM - Commissaire de Course">FFM - Commissaire de Course</option>
-                          <option value="FFM - Commissaire International">FFM - Commissaire International</option>
-                          <option value="FFM - Chef de Poste">FFM - Chef de Poste</option>
+                          <option value="OFS - Officiel Stagiaire">OFS - Officiel Stagiaire</option>
+                          <option value="OFF - Officiel">OFF - Officiel</option>
                         </optgroup>
                       </select>
                     </div>
