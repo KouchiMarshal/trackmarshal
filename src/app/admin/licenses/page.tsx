@@ -2,15 +2,24 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { CheckCircle2, Clock3, ExternalLink, XCircle } from "lucide-react";
+import { CheckCircle2, ExternalLink, Pencil, XCircle } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
 import { sendEmail } from "@/lib/sendEmail";
+
+const LICENSE_TYPES = [
+  "ENCOC - Commissaire C",
+  "EICOB - Commissaire international B",
+  "EICOACPC - Chef de poste",
+];
 
 export default function AdminLicensesPage() {
   const [commissaires, setCommissaires] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "verified" | "all">("pending");
   const [toast, setToast] = useState<ToastData>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ license_type: "", license_number: "", note: "" });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -53,6 +62,51 @@ export default function AdminLicensesPage() {
     setCommissaires((prev) =>
       prev.map((c) => c.id === id ? { ...c, license_verified: verified } : c)
     );
+  }
+
+  function startEdit(c: any) {
+    setEditingId(c.id);
+    setEditForm({ license_type: c.license_type || "", license_number: c.license_number || "", note: "" });
+  }
+
+  async function saveEdit(c: any) {
+    if (saving) return;
+    setSaving(true);
+
+    await supabase
+      .from("profiles")
+      .update({ license_type: editForm.license_type, license_number: editForm.license_number })
+      .eq("id", c.id);
+
+    if (editForm.note.trim()) {
+      await supabase.from("notifications").insert({
+        user_id: c.id,
+        title: `Votre licence a été corrigée par l'admin`,
+        body: editForm.note.trim(),
+        type: "license_updated",
+        link: "/dashboard/profile",
+      });
+
+      if (c.email) {
+        sendEmail(c.email, "license_updated", {
+          note: editForm.note.trim(),
+          licenseType: editForm.license_type,
+          licenseNumber: editForm.license_number,
+        });
+      }
+    }
+
+    setCommissaires((prev) =>
+      prev.map((x) =>
+        x.id === c.id
+          ? { ...x, license_type: editForm.license_type, license_number: editForm.license_number }
+          : x
+      )
+    );
+
+    setEditingId(null);
+    setSaving(false);
+    setToast({ message: "Licence mise à jour.", type: "success" });
   }
 
   const filtered = commissaires.filter((c) => {
@@ -153,26 +207,86 @@ export default function AdminLicensesPage() {
 
                 {/* Infos licence */}
                 <div className="flex-1 space-y-3">
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-                      <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Type de licence</p>
-                      <p className="mt-2 font-bold text-[#FF5A1F]">{c.license_type || "—"}</p>
+                  {editingId === c.id ? (
+                    <div className="space-y-3 rounded-2xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/5 p-4">
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.15em] text-zinc-500">Type de licence</p>
+                        <select
+                          value={editForm.license_type}
+                          onChange={(e) => setEditForm((f) => ({ ...f, license_type: e.target.value }))}
+                          className="h-12 w-full rounded-xl border border-white/10 bg-black/60 px-4 text-sm text-white outline-none focus:border-[#FF5A1F]"
+                        >
+                          <option value="">— Sélectionner —</option>
+                          {LICENSE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.15em] text-zinc-500">Numéro de licence</p>
+                        <input
+                          type="text"
+                          value={editForm.license_number}
+                          onChange={(e) => setEditForm((f) => ({ ...f, license_number: e.target.value }))}
+                          className="h-12 w-full rounded-xl border border-white/10 bg-black/60 px-4 text-sm outline-none focus:border-[#FF5A1F]"
+                        />
+                      </div>
+                      <div>
+                        <p className="mb-2 text-xs uppercase tracking-[0.15em] text-zinc-500">Message pour le commissaire</p>
+                        <textarea
+                          value={editForm.note}
+                          onChange={(e) => setEditForm((f) => ({ ...f, note: e.target.value }))}
+                          placeholder="Ex : Votre numéro de licence était incorrect, nous l'avons corrigé."
+                          rows={3}
+                          className="w-full rounded-xl border border-white/10 bg-black/60 px-4 py-3 text-sm outline-none focus:border-[#FF5A1F] resize-none"
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => saveEdit(c)}
+                          disabled={saving}
+                          className="flex h-10 flex-1 items-center justify-center rounded-xl bg-[#FF5A1F] text-sm font-bold transition hover:scale-[1.02] disabled:opacity-50"
+                        >
+                          {saving ? "Sauvegarde..." : "Sauvegarder"}
+                        </button>
+                        <button
+                          onClick={() => setEditingId(null)}
+                          className="flex h-10 items-center justify-center rounded-xl border border-white/10 px-4 text-sm text-zinc-400 transition hover:text-white"
+                        >
+                          Annuler
+                        </button>
+                      </div>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-                      <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Numéro de licence</p>
-                      <p className="mt-2 font-bold">{c.license_number || "—"}</p>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                          <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Type de licence</p>
+                          <p className="mt-2 font-bold text-[#FF5A1F]">{c.license_type || "—"}</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                          <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Numéro de licence</p>
+                          <p className="mt-2 font-bold">{c.license_number || "—"}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <a
+                          href={c.license_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex flex-1 items-center gap-3 rounded-2xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 px-5 py-4 font-bold text-[#FF5A1F] transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10"
+                        >
+                          <ExternalLink size={18} />
+                          Ouvrir la licence (PDF ou image)
+                        </a>
+                        <button
+                          onClick={() => startEdit(c)}
+                          className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm font-bold text-zinc-400 transition hover:border-white/20 hover:text-white"
+                        >
+                          <Pencil size={16} />
+                          <span className="hidden sm:inline">Modifier</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-
-                  <a
-                    href={c.license_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 rounded-2xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 px-5 py-4 font-bold text-[#FF5A1F] transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10"
-                  >
-                    <ExternalLink size={18} />
-                    Ouvrir la licence (PDF ou image)
-                  </a>
+                  )}
                 </div>
 
                 {/* Statut + actions */}

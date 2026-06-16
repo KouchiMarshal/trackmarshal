@@ -10,6 +10,7 @@ type EmailType =
   | "application_rejected"
   | "license_validated"
   | "license_rejected"
+  | "license_updated"
   | "organizer_verified"
   | "organizer_rejected"
   | "new_message";
@@ -98,6 +99,23 @@ function buildEmail(type: EmailType, data: Record<string, any>): { subject: stri
           <p style="color:#aaa">Mettez à jour votre licence sur votre profil et soumettez-la à nouveau.</p>
           <a href="https://trackmarshal.app/dashboard/profile" style="display:inline-block;background:#FF5A1F;color:#fff;padding:14px 28px;border-radius:12px;font-weight:bold;text-decoration:none;margin-top:16px;">
             Mettre à jour ma licence
+          </a>
+        `),
+      };
+
+    case "license_updated":
+      return {
+        subject: "Votre licence a été corrigée — TrackMarshal",
+        html: wrap(`
+          <h2 style="color:#FF5A1F;margin-top:0">Correction de votre licence</h2>
+          <p>Un administrateur TrackMarshal a apporté une correction à vos informations de licence.</p>
+          <div style="background:#111;border-radius:12px;padding:16px;margin:16px 0;">
+            <p style="margin:0 0 6px;color:#aaa;font-size:13px;">Type : <strong style="color:#fff;">${data.licenseType}</strong></p>
+            <p style="margin:0;color:#aaa;font-size:13px;">Numéro : <strong style="color:#fff;">${data.licenseNumber}</strong></p>
+          </div>
+          ${data.note ? `<blockquote style="border-left:3px solid #FF5A1F;padding-left:16px;color:#aaa;margin:16px 0;">${data.note}</blockquote>` : ""}
+          <a href="https://trackmarshal.app/dashboard/profile" style="display:inline-block;background:#FF5A1F;color:#fff;padding:14px 28px;border-radius:12px;font-weight:bold;text-decoration:none;margin-top:16px;">
+            Voir mon profil
           </a>
         `),
       };
