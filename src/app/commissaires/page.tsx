@@ -74,7 +74,12 @@ export default function AnnuaireCommissairesPage() {
               className="h-12 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm outline-none focus:border-[#FF5A1F]/40"
             >
               <option value="">Toutes disciplines</option>
-              {DISCIPLINES.map((d) => <option key={d} value={d}>{d}</option>)}
+              <optgroup label="Auto (FFSA)">
+                {["Rallye", "Circuit", "Karting", "Drift", "Endurance"].map((d) => <option key={d} value={d}>{d}</option>)}
+              </optgroup>
+              <optgroup label="Moto (FFM)">
+                {["Moto Cross", "Enduro", "Trial", "Road Racing", "Supermoto", "Rallye Moto"].map((d) => <option key={d} value={d}>{d}</option>)}
+              </optgroup>
             </select>
 
             <button
@@ -139,10 +144,10 @@ export default function AnnuaireCommissairesPage() {
                   <h3 className="font-black text-white group-hover:text-[#FF5A1F] transition">{profile.full_name}</h3>
                   <div className="flex shrink-0 items-center gap-1">
                     {profile.license_verified && (
-                      <ShieldCheck size={16} className="text-green-400" title="Licence auto validée" />
+                      <ShieldCheck size={16} className="text-green-400" title={`Licence ${profile.license_type?.startsWith("OFS") || profile.license_type?.startsWith("OFF") || profile.license_type?.startsWith("FFM") ? "moto (FFM)" : "auto (FFSA)"} validée`} />
                     )}
                     {profile.license_verified_2 && (
-                      <ShieldCheck size={16} className="text-blue-400" title="Licence moto validée" />
+                      <ShieldCheck size={16} className="text-blue-400" title={`Licence ${profile.license_type_2?.startsWith("OFS") || profile.license_type_2?.startsWith("OFF") || profile.license_type_2?.startsWith("FFM") ? "moto (FFM)" : "auto (FFSA)"} validée`} />
                     )}
                   </div>
                 </div>

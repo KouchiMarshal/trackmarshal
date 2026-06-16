@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Annuaire des commissaires de piste",
+  title: "Annuaire des commissaires motorsport",
   description:
-    "Trouvez des commissaires de piste FFSA disponibles en France. Filtrez par discipline (rallye, circuit, karting), localisation et disponibilité.",
+    "Trouvez des commissaires auto (FFSA) et moto (FFM) disponibles en France. Filtrez par discipline (rallye, circuit, karting, moto cross, enduro…), localisation et disponibilité.",
   openGraph: {
-    title: "Annuaire commissaires de piste — TrackMarshal",
+    title: "Annuaire commissaires auto et moto — TrackMarshal",
     description:
-      "Retrouvez les commissaires de piste FFSA disponibles et qualifiés pour vos événements motorsport.",
+      "Retrouvez les commissaires FFSA (auto) et FFM (moto) disponibles et qualifiés pour vos événements motorsport.",
     url: "https://www.trackmarshal.app/commissaires",
   },
   alternates: { canonical: "/commissaires" },

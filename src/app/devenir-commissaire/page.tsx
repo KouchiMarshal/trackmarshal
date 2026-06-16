@@ -96,16 +96,20 @@ const licenses = [
 
 const faqs = [
   {
+    q: "Quelle est la différence entre une licence FFSA et FFM ?",
+    a: "La FFSA (Fédération Française du Sport Automobile) gère les disciplines auto : rallye, circuit, karting, drift, endurance. La FFM (Fédération Française de Motocyclisme) gère les disciplines moto : moto cross, enduro, trial, road racing, supermoto. Vous pouvez avoir les deux licences pour officier dans tous les types d'épreuves.",
+  },
+  {
     q: "Quel est l'âge minimum pour devenir commissaire FFSA ?",
     a: "16 ans. Les mineurs peuvent obtenir la licence Commissaire C avec une autorisation parentale, mais ils ne peuvent pas officier seuls à un poste — ils doivent être accompagnés d'un commissaire expérimenté.",
   },
   {
     q: "Faut-il avoir de l'expérience en motorsport pour commencer ?",
-    a: "Non. La formation e-learning FFSA est accessible à tous, sans prérequis. La motivation, la rigueur et la disponibilité sont les qualités les plus recherchées par les organisateurs.",
+    a: "Non. La formation est accessible à tous, sans prérequis, que ce soit côté FFSA ou FFM. La motivation, la rigueur et la disponibilité sont les qualités les plus recherchées par les organisateurs.",
   },
   {
-    q: "La formation e-learning est-elle vraiment obligatoire ?",
-    a: "Oui, c'est la porte d'entrée officielle depuis que la FFSA a mis en place sa plateforme en ligne (licence.ffsa.org). Elle est suivie d'un stage pratique auprès d'un club affilié avant d'obtenir la licence C.",
+    q: "Comment obtenir une licence FFM ?",
+    a: "La démarche passe par votre club moto local affilié à la FFM. Contrairement à la FFSA, il n'y a pas de plateforme e-learning unique — la formation se fait directement avec le club qui vous accompagne jusqu'à l'obtention du grade OFS (Officiel Stagiaire), puis OFF (Officiel).",
   },
   {
     q: "Est-ce que c'est bénévole ou rémunéré ?",
@@ -113,7 +117,7 @@ const faqs = [
   },
   {
     q: "Combien coûte une licence FFSA Commissaire ?",
-    a: "Une licence de commissaire FFSA coûte environ 40 à 80 € par an selon le grade. Elle inclut une assurance pour toutes les épreuves officielles auxquelles vous participez.",
+    a: "Une licence de commissaire FFSA coûte environ 40 à 80 € par an selon le grade. Elle inclut une assurance pour toutes les épreuves officielles auxquelles vous participez. Pour la FFM, les tarifs varient — renseignez-vous auprès de votre club affilié.",
   },
 ];
 
@@ -152,12 +156,12 @@ export default function DevenirCommissairePage() {
             <h1 className="mt-6 text-5xl font-black uppercase leading-[0.92] tracking-[-0.03em] sm:text-6xl lg:text-8xl">
               Devenir<br />
               commissaire<br />
-              <span className="text-[#FF5A1F]">de piste.</span>
+              <span className="text-[#FF5A1F]">motorsport.</span>
             </h1>
 
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-zinc-300 lg:text-xl">
-              Le rôle de commissaire de piste est essentiel à la sécurité du motorsport.
-              Découvrez comment vous lancer, obtenir votre licence et trouver vos premières missions.
+              Auto ou moto — le rôle de commissaire est essentiel à la sécurité du sport mécanique.
+              Découvrez comment obtenir votre licence FFSA (auto) ou FFM (moto) et trouver vos premières missions.
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -185,19 +189,20 @@ export default function DevenirCommissairePage() {
           <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Le rôle</p>
-              <h2 className="mt-4 text-4xl font-black lg:text-6xl">C'est quoi un commissaire de piste ?</h2>
+              <h2 className="mt-4 text-4xl font-black lg:text-6xl">C'est quoi un commissaire motorsport ?</h2>
               <p className="mt-6 text-lg leading-relaxed text-zinc-400">
-                Les commissaires de piste sont les garants de la sécurité lors des épreuves motorsport.
-                Positionnés à des postes stratégiques, ils surveillent la course, signalent les incidents
-                aux pilotes via les drapeaux réglementaires et interviennent en cas d'accident.
+                Les commissaires sont les garants de la sécurité lors des épreuves — qu'il s'agisse
+                d'auto (rallye, circuit, karting) ou de moto (cross, enduro, road racing).
+                Positionnés à des postes stratégiques, ils surveillent l'épreuve, signalent les incidents
+                via les drapeaux réglementaires et interviennent en cas d'accident.
               </p>
               <p className="mt-4 text-lg leading-relaxed text-zinc-400">
-                Sans eux, aucune épreuve officielle ne peut se tenir. C'est un rôle indispensable,
-                valorisant et accessible à toutes et tous — que vous soyez passionné de motorsport
-                ou simple curieux souhaitant vivre les courses de l'intérieur.
+                Sans eux, aucune épreuve officielle ne peut se tenir. Rôle indispensable, valorisant
+                et accessible à toutes et tous — licence <strong className="text-white">FFSA</strong> pour les disciplines auto,
+                licence <strong className="text-white">FFM</strong> pour les disciplines moto.
               </p>
               <div className="mt-8 space-y-3">
-                {["Aucun permis de conduire requis", "Accessible dès 16 ans", "Formation e-learning + stage pratique FFSA", "Couverture assurance incluse avec la licence"].map((item) => (
+                {["Aucun permis de conduire requis", "Accessible dès 16 ans", "FFSA (auto) : formation e-learning + stage pratique", "FFM (moto) : formation via votre club affilié FFM", "Couverture assurance incluse avec la licence"].map((item) => (
                   <div key={item} className="flex items-center gap-3 text-zinc-300">
                     <CheckCircle2 size={18} className="shrink-0 text-[#FF5A1F]" />
                     {item}
@@ -229,10 +234,15 @@ export default function DevenirCommissairePage() {
             <h2 className="mt-4 text-4xl font-black lg:text-6xl">Les licences</h2>
             <p className="mt-5 mx-auto max-w-2xl text-zinc-400 text-lg">
               Pour officier dans une épreuve officielle, vous avez besoin d'une licence fédérale.
-              Elle vous couvre en assurance et vous identifie comme officiel agréé.
+              FFSA pour les disciplines auto, FFM pour les disciplines moto.
             </p>
           </div>
 
+          {/* FFSA Auto */}
+          <div className="mb-4 flex items-center gap-4">
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-zinc-400">Auto — FFSA</span>
+            <div className="flex-1 border-t border-white/10" />
+          </div>
           <div className="grid gap-6 lg:grid-cols-3">
             {licenses.map((lic) => (
               <div key={lic.grade} className={`rounded-[32px] border p-8 ${lic.color}`}>
@@ -246,13 +256,51 @@ export default function DevenirCommissairePage() {
             ))}
           </div>
 
-          <div className="mt-10 rounded-[24px] border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-6 text-center">
+          <div className="mt-6 rounded-[24px] border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-5 text-center">
             <p className="text-sm text-zinc-300">
-              La formation e-learning officielle FFSA est disponible sur{" "}
+              Formation e-learning FFSA disponible sur{" "}
               <a href="https://licence.ffsa.org/" target="_blank" rel="noopener noreferrer" className="font-bold text-[#FF5A1F] hover:underline">
                 licence.ffsa.org
               </a>
-              {" "}— plateforme officielle pour créer votre compte et suivre la formation certifiante.
+            </p>
+          </div>
+
+          {/* FFM Moto */}
+          <div className="mb-4 mt-14 flex items-center gap-4">
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-zinc-400">Moto — FFM</span>
+            <div className="flex-1 border-t border-white/10" />
+          </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-8">
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-zinc-300">FFM</span>
+              <div className="mt-4 flex items-baseline gap-3">
+                <span className="text-5xl font-black text-zinc-300">OFS</span>
+                <h3 className="text-xl font-black text-white">Officiel Stagiaire</h3>
+              </div>
+              <p className="mt-4 text-zinc-400 leading-relaxed">
+                Premier niveau FFM. Permet d'officier sur les épreuves moto nationales en tant que stagiaire,
+                encadré par un officiel confirmé. S'obtient via votre club affilié FFM et une formation fédérale.
+              </p>
+            </div>
+            <div className="rounded-[32px] border border-[#FF5A1F]/30 bg-[#FF5A1F]/5 p-8">
+              <span className="text-xs font-black uppercase tracking-[0.2em] text-[#FF5A1F]">FFM</span>
+              <div className="mt-4 flex items-baseline gap-3">
+                <span className="text-5xl font-black text-[#FF5A1F]">OFF</span>
+                <h3 className="text-xl font-black text-white">Officiel</h3>
+              </div>
+              <p className="mt-4 text-zinc-400 leading-relaxed">
+                Niveau confirmé FFM. Après plusieurs épreuves en tant qu'OFS, vous accédez au titre d'Officiel
+                et pouvez encadrer des stagiaires et officier en autonomie sur toutes les épreuves FFM.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-[24px] border border-white/10 bg-white/[0.03] p-5 text-center">
+            <p className="text-sm text-zinc-300">
+              Pour la licence FFM, rapprochez-vous de votre club moto affilié ou consultez{" "}
+              <a href="https://www.ffmoto.org/" target="_blank" rel="noopener noreferrer" className="font-bold text-[#FF5A1F] hover:underline">
+                ffmoto.org
+              </a>
             </p>
           </div>
         </div>
@@ -261,9 +309,13 @@ export default function DevenirCommissairePage() {
       {/* Les étapes */}
       <section className="border-t border-white/10 bg-[#050505] py-20 lg:py-32">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-          <div className="mb-14">
+          <div className="mb-10">
             <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Par où commencer</p>
             <h2 className="mt-4 text-4xl font-black lg:text-6xl">5 étapes pour débuter</h2>
+            <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2 text-sm text-zinc-400">
+              <span className="h-2 w-2 rounded-full bg-[#FF5A1F]" />
+              Voie Auto (FFSA) — pour la voie Moto (FFM), rapprochez-vous de votre club affilié FFM local
+            </div>
           </div>
 
           <div className="space-y-4">

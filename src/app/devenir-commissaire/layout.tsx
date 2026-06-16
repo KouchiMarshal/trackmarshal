@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Devenir commissaire de piste FFSA",
+  title: "Devenir commissaire motorsport (FFSA / FFM)",
   description:
-    "Guide complet pour devenir commissaire de piste en France : licences FFSA grades C, B et A, formation e-learning officielle, âge minimum 16 ans, étapes pour obtenir votre première mission.",
+    "Guide complet pour devenir commissaire auto (FFSA) ou moto (FFM) en France : licences, formations officielles, étapes pour débuter et trouver vos premières missions.",
   keywords: [
-    "devenir commissaire de piste",
+    "devenir commissaire motorsport",
     "licence commissaire FFSA",
-    "grade C commissaire",
-    "formation e-learning FFSA",
-    "commissaire piste débutant",
-    "comment devenir commissaire motorsport",
+    "licence commissaire FFM",
+    "commissaire auto",
+    "commissaire moto",
+    "OFS FFM",
+    "OFF FFM",
+    "formation commissaire",
+    "commissaire débutant",
   ],
   openGraph: {
-    title: "Devenir commissaire de piste FFSA — TrackMarshal",
+    title: "Devenir commissaire auto ou moto — TrackMarshal",
     description:
-      "Tout savoir sur les licences FFSA C, B, A, la formation e-learning officielle et les étapes pour devenir commissaire de piste en France.",
+      "Tout savoir sur les licences FFSA (auto) et FFM (moto), les formations officielles et les étapes pour débuter le commissariat motorsport en France.",
     url: "https://www.trackmarshal.app/devenir-commissaire",
   },
   alternates: { canonical: "/devenir-commissaire" },

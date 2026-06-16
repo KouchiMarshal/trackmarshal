@@ -136,7 +136,7 @@ export default function HomePage() {
 
           <div className="grid gap-6 lg:grid-cols-3">
             {[
-              { icon: ShieldCheck, title: "Profils vérifiés", text: "Licences FFSA/UFOLEP vérifiées manuellement. Les organisateurs savent exactement à qui ils ont affaire." },
+              { icon: ShieldCheck, title: "Profils vérifiés", text: "Licences FFSA (auto) et FFM (moto) vérifiées manuellement. Les organisateurs savent exactement à qui ils ont affaire." },
               { icon: MessageSquare, title: "Messagerie intégrée", text: "Communication directe entre organisateurs et commissaires après acceptation. Zéro email externe nécessaire." },
               { icon: ClipboardList, title: "Gestion des candidatures", text: "Workflow complet : candidature → examen → acceptation/refus → briefing PDF téléchargeable." },
             ].map((item) => (
