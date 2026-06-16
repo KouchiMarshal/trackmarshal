@@ -5,13 +5,15 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { Building2, FileBadge2, Home, LogOut, Users } from "lucide-react";
+import { Building2, FileBadge2, Home, LogOut, Megaphone, MessageSquare, Users } from "lucide-react";
 
 const navItems = [
   { icon: Home, label: "Tableau de bord", href: "/admin" },
   { icon: FileBadge2, label: "Licences à valider", href: "/admin/licenses" },
   { icon: Users, label: "Tous les commissaires", href: "/admin/commissaires" },
   { icon: Building2, label: "Organisateurs", href: "/admin/organizers" },
+  { icon: MessageSquare, label: "Messages", href: "/admin/messages" },
+  { icon: Megaphone, label: "Email groupé", href: "/admin/broadcast" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
