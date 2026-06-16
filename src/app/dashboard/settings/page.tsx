@@ -95,6 +95,16 @@ export default function SettingsPage() {
     setToast({ message: "Préférences emails mises à jour.", type: "success" });
   }
 
+  async function updateEmail() {
+    if (!email) return;
+    const { error } = await supabase.auth.updateUser({ email });
+    if (error) {
+      setToast({ message: error.message, type: "error" });
+      return;
+    }
+    setToast({ message: "Un email de confirmation a été envoyé à votre nouvelle adresse.", type: "success" });
+  }
+
   async function updatePassword() {
 
     if (!password) return;
@@ -206,16 +216,27 @@ export default function SettingsPage() {
                   <div>
 
                     <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
-
                       Adresse Email
-
                     </p>
 
                     <input
-                      disabled
+                      type="email"
                       value={email}
-                      className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 text-zinc-500 outline-none"
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
                     />
+
+                    <p className="mt-2 text-xs text-zinc-600">
+                      Un email de confirmation sera envoyé à la nouvelle adresse.
+                    </p>
+
+                    <button
+                      onClick={updateEmail}
+                      className="mt-4 flex h-12 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-6 font-bold transition hover:scale-[1.01]"
+                    >
+                      <Save size={16} />
+                      Mettre à jour l'email
+                    </button>
 
                   </div>
 
