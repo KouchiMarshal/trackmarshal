@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { sendEmail } from "@/lib/sendEmail";
 import { MessageSquare, Search, Send, Users } from "lucide-react";
 
 export default function AdminMessagesPage() {
@@ -145,39 +144,27 @@ export default function AdminMessagesPage() {
     } else {
       setMessage("");
 
-      // Notify other members by email
+      // Notify recipients server-side (bypasses RLS)
       const { data: adminProfile } = await supabase
         .from("profiles")
         .select("full_name")
         .eq("id", adminUser.id)
         .single();
 
-      const { data: otherMembers } = await supabase
-        .from("conversation_members")
-        .select("user_id")
-        .eq("conversation_id", selectedConv.id)
-        .neq("user_id", adminUser.id);
-
-      if (otherMembers && otherMembers.length > 0) {
-        const recipientIds = otherMembers.map((m: any) => m.user_id);
-        const { data: recipientProfiles } = await supabase
-          .from("profiles")
-          .select("email, full_name, role, email_preferences")
-          .in("id", recipientIds);
-
-        for (const recipient of recipientProfiles || []) {
-          const prefs = recipient.email_preferences as Record<string, boolean> | null;
-          if (recipient.email && prefs?.email_on_new_message !== false) {
-            const replyUrl = recipient.role === "organizer"
-              ? "https://trackmarshal.app/organizer/messages"
-              : "https://trackmarshal.app/dashboard/messages";
-            sendEmail(recipient.email, "new_message", {
-              senderName: adminProfile?.full_name || "TrackMarshal",
-              preview: text.slice(0, 100),
-              replyUrl,
-            });
-          }
-        }
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        fetch("/api/messages/notify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            conversationId: selectedConv.id,
+            senderName: adminProfile?.full_name || "TrackMarshal",
+            preview: text.slice(0, 100),
+          }),
+        }).catch(() => {});
       }
     }
     setSending(false);

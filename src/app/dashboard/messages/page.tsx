@@ -3,7 +3,6 @@
 import { Send, MessageSquare } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { sendEmail } from "@/lib/sendEmail";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
 
@@ -148,39 +147,27 @@ export default function MessagesPage() {
     } else {
       setMessage("");
 
-      // Notify other members by email
+      // Notify recipients server-side (bypasses RLS)
       const { data: senderProfile } = await supabase
         .from("profiles")
         .select("full_name")
         .eq("id", user.id)
         .single();
 
-      const { data: otherMembers } = await supabase
-        .from("conversation_members")
-        .select("user_id")
-        .eq("conversation_id", selectedConv.id)
-        .neq("user_id", user.id);
-
-      if (otherMembers && otherMembers.length > 0) {
-        const recipientIds = otherMembers.map((m: any) => m.user_id);
-        const { data: recipientProfiles } = await supabase
-          .from("profiles")
-          .select("email, full_name, role, email_preferences")
-          .in("id", recipientIds);
-
-        for (const recipient of recipientProfiles || []) {
-          const prefs = recipient.email_preferences as Record<string, boolean> | null;
-          if (recipient.email && prefs?.email_on_new_message !== false) {
-            const replyUrl = recipient.role === "organizer"
-              ? "https://trackmarshal.app/organizer/messages"
-              : "https://trackmarshal.app/dashboard/messages";
-            sendEmail(recipient.email, "new_message", {
-              senderName: senderProfile?.full_name || "TrackMarshal",
-              preview: text.slice(0, 100),
-              replyUrl,
-            });
-          }
-        }
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        fetch("/api/messages/notify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            conversationId: selectedConv.id,
+            senderName: senderProfile?.full_name || "TrackMarshal",
+            preview: text.slice(0, 100),
+          }),
+        }).catch(() => {});
       }
     }
     setSending(false);
