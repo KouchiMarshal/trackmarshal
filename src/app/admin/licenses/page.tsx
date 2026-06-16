@@ -59,7 +59,13 @@ export default function AdminLicensesPage() {
     }
 
     setToast({ message: verified ? "2ème licence validée." : "2ème licence rejetée.", type: verified ? "success" : "error" });
-    setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_verified_2: verified } : c));
+    if (verified) {
+      setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_verified_2: true } : c));
+    } else {
+      // On rejection, wipe the second license from DB and remove it from the card
+      await supabase.from("profiles").update({ license_url_2: null, license_type_2: null, license_number_2: null, license_verified_2: false }).eq("id", id);
+      setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_url_2: null, license_type_2: null, license_number_2: null, license_verified_2: false } : c));
+    }
   }
 
   async function validate(id: string, verified: boolean) {
@@ -86,9 +92,13 @@ export default function AdminLicensesPage() {
       type: verified ? "success" : "error",
     });
 
-    setCommissaires((prev) =>
-      prev.map((c) => c.id === id ? { ...c, license_verified: verified } : c)
-    );
+    if (verified) {
+      setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_verified: true } : c));
+    } else {
+      // On rejection, wipe the license from DB and remove commissaire from the list
+      await supabase.from("profiles").update({ license_url: null, license_verified: false }).eq("id", id);
+      setCommissaires((prev) => prev.filter((c) => c.id !== id));
+    }
   }
 
   function startEdit(c: any) {
