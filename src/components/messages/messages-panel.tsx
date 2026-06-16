@@ -8,6 +8,7 @@ import {
 import toast from "react-hot-toast";
 
 import { supabase } from "@/lib/supabase";
+import { sendEmail } from "@/lib/sendEmail";
 
 type MessagesPanelProps = {
   receiverId?: string;
@@ -150,25 +151,24 @@ export default function MessagesPanel({
       return;
     }
 
-    const {
-      data: profile,
-    } = await supabase
-      .from("profiles")
-      .select("full_name")
-      .eq("id", currentUser.id)
-      .single();
+    const [{ data: senderProfile }, { data: receiverProfile }] = await Promise.all([
+      supabase.from("profiles").select("full_name").eq("id", currentUser.id).single(),
+      supabase.from("profiles").select("email").eq("id", receiverId).single(),
+    ]);
 
-    await supabase
-      .from("notifications")
-      .insert({
-        user_id: receiverId,
-        title: `${
-          profile?.full_name ||
-          "Utilisateur"
-        } vous a envoyé un message`,
-        type: "message",
-        link: "/dashboard",
+    await supabase.from("notifications").insert({
+      user_id: receiverId,
+      title: `${senderProfile?.full_name || "Utilisateur"} vous a envoyé un message`,
+      type: "message",
+      link: "/dashboard",
+    });
+
+    if (receiverProfile?.email) {
+      sendEmail(receiverProfile.email, "new_message", {
+        senderName: senderProfile?.full_name || "Utilisateur",
+        preview: message.slice(0, 100),
       });
+    }
 
     setLoading(false);
 
