@@ -80,7 +80,7 @@ export default function OrganizerApplicationsPage() {
     setLoading(false);
   }
 
-  async function updateStatus(appId: string, status: "accepted" | "rejected", marshalId: string, eventSlug: string, eventTitle: string, marshalName: string) {
+  async function updateStatus(appId: string, status: "accepted" | "rejected", marshalId: string, eventSlug: string, eventTitle: string, marshalName: string, marshalEmail: string, eventDate: string, eventLocation: string) {
     await supabase.from("applications").update({ status }).eq("id", appId);
 
     await supabase.from("notifications").insert({
@@ -91,6 +91,27 @@ export default function OrganizerApplicationsPage() {
       type: status === "accepted" ? "application_accepted" : "application_rejected",
       link: `/events/${eventSlug}`,
     });
+
+    // Envoi de l'email au commissaire
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && marshalEmail) {
+      await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          to: marshalEmail,
+          type: status === "accepted" ? "application_accepted" : "application_rejected",
+          data: {
+            eventTitle,
+            eventDate: formatDate(eventDate),
+            eventLocation,
+          },
+        }),
+      });
+    }
 
     if (status === "accepted") {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
@@ -292,7 +313,7 @@ export default function OrganizerApplicationsPage() {
                               </Link>
                               <button
                                 disabled={app.status === "accepted"}
-                                onClick={() => updateStatus(app.id, "accepted", app.marshal_id, app.events?.slug, app.events?.title, app.profiles?.full_name)}
+                                onClick={() => updateStatus(app.id, "accepted", app.marshal_id, app.events?.slug, app.events?.title, app.profiles?.full_name, app.profiles?.email, app.events?.event_date, app.events?.location)}
                                 className={`rounded-2xl px-5 py-3 text-sm font-bold transition ${
                                   app.status === "accepted"
                                     ? "cursor-not-allowed bg-zinc-800 text-zinc-600"
@@ -303,7 +324,7 @@ export default function OrganizerApplicationsPage() {
                               </button>
                               <button
                                 disabled={app.status === "rejected"}
-                                onClick={() => updateStatus(app.id, "rejected", app.marshal_id, app.events?.slug, app.events?.title, app.profiles?.full_name)}
+                                onClick={() => updateStatus(app.id, "rejected", app.marshal_id, app.events?.slug, app.events?.title, app.profiles?.full_name, app.profiles?.email, app.events?.event_date, app.events?.location)}
                                 className={`rounded-2xl px-5 py-3 text-sm font-bold transition ${
                                   app.status === "rejected"
                                     ? "cursor-not-allowed bg-zinc-800 text-zinc-600"
