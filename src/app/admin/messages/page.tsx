@@ -164,7 +164,10 @@ export default function AdminMessagesPage() {
             senderName: adminProfile?.full_name || "TrackMarshal",
             preview: text.slice(0, 100),
           }),
-        }).catch(() => {});
+        })
+          .then((r) => r.json())
+          .then((d) => console.log("[notify]", d))
+          .catch((e) => console.error("[notify] fetch error", e));
       }
     }
     setSending(false);
