@@ -68,14 +68,29 @@ export default function ProfilePage() {
   }
 
   async function uploadLicense(file: File) {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    const ext = file.name.split(".").pop();
-    const path = `${user.id}-license.${ext}`;
-    const { error } = await supabase.storage.from("licenses").upload(path, file, { upsert: true });
-    if (error) { setToast({ message: error.message, type: "error" }); return; }
-    const { data: { publicUrl } } = supabase.storage.from("licenses").getPublicUrl(path);
-    await supabase.from("profiles").update({ license_url: publicUrl }).eq("id", user.id);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setToast({ message: "Session expirée, veuillez vous reconnecter.", type: "error" });
+      return;
+    }
+
+    const formDataUpload = new FormData();
+    formDataUpload.append("file", file);
+
+    const res = await fetch("/api/upload-license", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session.access_token}` },
+      body: formDataUpload,
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      setToast({ message: result.error || "Erreur lors de l'upload de la licence.", type: "error" });
+      return;
+    }
+
+    setProfile((p: any) => ({ ...p, license_url: result.publicUrl, license_verified: false }));
     setToast({ message: "Licence envoyée, en attente de vérification.", type: "success" });
   }
 

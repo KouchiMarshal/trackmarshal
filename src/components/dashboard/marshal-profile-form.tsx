@@ -148,35 +148,35 @@ export default function MarshalProfileForm() {
 
     setUploadingLicense(true);
 
-    const fileExt =
-      file.name.split(".").pop();
+    const { data: { session } } =
+      await supabase.auth.getSession();
 
-    const fileName =
-      `${Date.now()}.${fileExt}`;
-
-    const { error } =
-      await supabase.storage
-        .from("licenses")
-        .upload(fileName, file);
-
-    if (error) {
-
-      alert(error.message);
-
+    if (!session) {
+      alert("Session expirée, veuillez vous reconnecter.");
       setUploadingLicense(false);
-
       return;
     }
 
-    const { data } =
-      supabase.storage
-        .from("licenses")
-        .getPublicUrl(fileName);
+    const formDataUpload = new FormData();
+    formDataUpload.append("file", file);
+
+    const res = await fetch("/api/upload-license", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${session.access_token}` },
+      body: formDataUpload,
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) {
+      alert(result.error || "Erreur lors de l'upload de la licence.");
+      setUploadingLicense(false);
+      return;
+    }
 
     setFormData((prev) => ({
       ...prev,
-      license_url:
-        data.publicUrl,
+      license_url: result.publicUrl,
     }));
 
     setUploadingLicense(false);
