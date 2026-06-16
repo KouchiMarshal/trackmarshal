@@ -62,8 +62,14 @@ export default function AdminLicensesPage() {
     if (verified) {
       setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_verified_2: true } : c));
     } else {
-      // On rejection, wipe the second license from DB and remove it from the card
-      await supabase.from("profiles").update({ license_url_2: null, license_type_2: null, license_number_2: null, license_verified_2: false }).eq("id", id);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        await fetch("/api/admin/delete-license", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+          body: JSON.stringify({ targetUserId: id, licenseField: "2" }),
+        });
+      }
       setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_url_2: null, license_type_2: null, license_number_2: null, license_verified_2: false } : c));
     }
   }
@@ -95,8 +101,14 @@ export default function AdminLicensesPage() {
     if (verified) {
       setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_verified: true } : c));
     } else {
-      // On rejection, wipe the license from DB and remove commissaire from the list
-      await supabase.from("profiles").update({ license_url: null, license_verified: false }).eq("id", id);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        await fetch("/api/admin/delete-license", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+          body: JSON.stringify({ targetUserId: id, licenseField: "1" }),
+        });
+      }
       setCommissaires((prev) => prev.filter((c) => c.id !== id));
     }
   }
