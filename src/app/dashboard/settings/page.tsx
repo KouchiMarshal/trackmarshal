@@ -2,6 +2,7 @@
 
 import {
   Bell,
+  LogOut,
   Save,
   Shield,
   Trash2,
@@ -111,6 +112,11 @@ export default function SettingsPage() {
     setToast({ message: "Mot de passe mis à jour !", type: "success" });
 
     setPassword("");
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    router.push("/");
   }
 
   async function deleteAccount() {
@@ -350,6 +356,16 @@ export default function SettingsPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8 lg:hidden">
+                <button
+                  onClick={logout}
+                  className="flex h-14 w-full items-center justify-center gap-3 rounded-2xl border border-white/10 font-bold text-zinc-400 transition hover:border-white/20 hover:text-white"
+                >
+                  <LogOut size={18} />
+                  Se déconnecter
+                </button>
               </div>
 
               <div className="rounded-[32px] border border-red-500/20 bg-red-500/5 p-6 backdrop-blur-xl lg:p-8">
