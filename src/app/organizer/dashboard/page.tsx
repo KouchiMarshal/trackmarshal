@@ -153,7 +153,7 @@ export default function OrganizerDashboard() {
 
             <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
 
-            <div className="relative z-10 mx-auto max-w-[1600px] p-4 sm:p-6 lg:p-10">
+            <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               {/* Banner vérification en attente */}
               {profile && !profile.organizer_verified && (

@@ -400,7 +400,7 @@ const filteredApplications =
 
       </div>
 
-      <div className="mx-auto max-w-[1700px] p-6 lg:p-10">
+      <div className="mx-auto max-w-[1700px] p-6 pb-24 lg:p-10 lg:pb-10">
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
 
