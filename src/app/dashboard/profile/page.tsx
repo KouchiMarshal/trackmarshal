@@ -242,59 +242,10 @@ export default function ProfilePage() {
 
                 </div>
 
-                <div className="mt-10 space-y-5">
-
-                  <div>
-
-                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-
-                      Expérience
-
-                    </p>
-
-                    <p className="mt-2 text-lg font-semibold">
-
-                      {profile.experience ||
-                        "Non renseigné"}
-
-                    </p>
-
-                  </div>
-
-                  <div>
-
-                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-
-                      Pays
-
-                    </p>
-
-                    <p className="mt-2 text-lg font-semibold">
-
-                      {profile.country ||
-                        "Non renseigné"}
-
-                    </p>
-
-                  </div>
-
-                  <div>
-
-                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-
-                      Langues
-
-                    </p>
-
-                    <p className="mt-2 text-lg font-semibold">
-
-                      {profile.languages ||
-                        "Non renseigné"}
-
-                    </p>
-
-                  </div>
-
+                <div className="mt-8 rounded-2xl border border-white/5 bg-white/[0.03] px-5 py-4">
+                  <p className="text-center text-xs text-zinc-500">
+                    Faites défiler vers le bas pour modifier vos informations
+                  </p>
                 </div>
 
               </div>
