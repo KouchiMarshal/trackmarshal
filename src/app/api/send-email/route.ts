@@ -119,25 +119,27 @@ function buildEmail(type: EmailType, data: Record<string, any>): { subject: stri
 }
 
 export async function POST(req: NextRequest) {
-  // Verify caller is an authenticated Supabase user
   const authHeader = req.headers.get("Authorization");
   const token = authHeader?.replace("Bearer ", "");
   if (!token) {
+    console.error("[send-email] Pas de token Authorization");
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
   const { createClient } = await import("@supabase/supabase-js");
   const supabaseServer = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
   const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token);
   if (authError || !user) {
+    console.error("[send-email] Auth échouée:", authError?.message);
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
   if (!RESEND_API_KEY) {
-    return NextResponse.json({ ok: false, error: "RESEND_API_KEY not set" }, { status: 200 });
+    console.error("[send-email] RESEND_API_KEY manquant dans les variables d'environnement Vercel");
+    return NextResponse.json({ ok: false, error: "RESEND_API_KEY not set" }, { status: 500 });
   }
 
   let body: EmailPayload;
@@ -149,8 +151,11 @@ export async function POST(req: NextRequest) {
 
   const { to, type, data } = body;
   if (!to || !type) {
+    console.error("[send-email] Champs manquants: to ou type");
     return NextResponse.json({ ok: false, error: "Missing fields" }, { status: 400 });
   }
+
+  console.log(`[send-email] Envoi "${type}" à ${to} depuis ${FROM_EMAIL}`);
 
   const { subject, html } = buildEmail(type, data);
 
@@ -164,6 +169,12 @@ export async function POST(req: NextRequest) {
   });
 
   const result = await res.json();
+
+  if (!res.ok) {
+    console.error("[send-email] Erreur Resend:", JSON.stringify(result));
+  } else {
+    console.log("[send-email] Email envoyé avec succès, id:", result.id);
+  }
 
   return NextResponse.json({ ok: res.ok, result });
 }
