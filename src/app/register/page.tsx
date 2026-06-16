@@ -354,9 +354,16 @@ export default function RegisterPage() {
                         className="h-14 w-full rounded-2xl border border-white/10 bg-[#111111] px-5 text-white outline-none focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                       >
                         <option value="">Sélectionner un type</option>
-                        <option value="ENCOC - Commissaire C">ENCOC - Commissaire C</option>
-                        <option value="EICOB - Commissaire international B">EICOB - Commissaire international B</option>
-                        <option value="EICOACPC - Chef de poste">EICOACPC - Chef de poste</option>
+                        <optgroup label="FFSA — Auto">
+                          <option value="ENCOC - Commissaire C">ENCOC - Commissaire C</option>
+                          <option value="EICOB - Commissaire international B">EICOB - Commissaire international B</option>
+                          <option value="EICOACPC - Chef de poste">EICOACPC - Chef de poste</option>
+                        </optgroup>
+                        <optgroup label="FFM — Moto">
+                          <option value="FFM - Commissaire de Course">FFM - Commissaire de Course</option>
+                          <option value="FFM - Commissaire International">FFM - Commissaire International</option>
+                          <option value="FFM - Chef de Poste">FFM - Chef de Poste</option>
+                        </optgroup>
                       </select>
                     </div>
 

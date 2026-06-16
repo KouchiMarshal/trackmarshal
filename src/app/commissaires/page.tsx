@@ -7,7 +7,10 @@ import PublicFooter from "@/components/layout/public-footer";
 import { supabase } from "@/lib/supabase";
 import { MapPin, Search, ShieldCheck, Star } from "lucide-react";
 
-const DISCIPLINES = ["Rallye", "Circuit", "Karting", "Drift"];
+const DISCIPLINES = [
+  "Rallye", "Circuit", "Karting", "Drift", "Endurance",
+  "Moto Cross", "Enduro", "Trial", "Road Racing", "Supermoto", "Rallye Moto",
+];
 
 export default function AnnuaireCommissairesPage() {
   const [profiles, setProfiles] = useState<any[]>([]);

@@ -164,20 +164,44 @@ export default function EventsPage() {
 
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-3">
-              {["", "Rallye", "Circuit", "Karting", "Drift"].map((disc) => (
-                <button
-                  key={disc}
-                  onClick={() => setDisciplineFilter(disc)}
-                  className={`rounded-full px-5 py-2 text-sm font-bold uppercase tracking-[0.15em] transition ${
-                    disciplineFilter === disc
-                      ? "bg-[#FF5A1F] text-white"
-                      : "border border-white/10 bg-white/[0.04] text-zinc-400 hover:border-[#FF5A1F]/40 hover:text-white"
-                  }`}
-                >
-                  {disc || "Tous"}
+            <div className="mt-5 space-y-2">
+              <div className="flex flex-wrap gap-2">
+                <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-zinc-600 pr-1">Auto</span>
+                {["Rallye", "Circuit", "Karting", "Drift", "Endurance"].map((disc) => (
+                  <button
+                    key={disc}
+                    onClick={() => setDisciplineFilter(disciplineFilter === disc ? "" : disc)}
+                    className={`rounded-full px-4 py-1.5 text-sm font-bold uppercase tracking-[0.15em] transition ${
+                      disciplineFilter === disc
+                        ? "bg-[#FF5A1F] text-white"
+                        : "border border-white/10 bg-white/[0.04] text-zinc-400 hover:border-[#FF5A1F]/40 hover:text-white"
+                    }`}
+                  >
+                    {disc}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-zinc-600 pr-1">Moto</span>
+                {["Moto Cross", "Enduro", "Trial", "Road Racing", "Supermoto", "Rallye Moto"].map((disc) => (
+                  <button
+                    key={disc}
+                    onClick={() => setDisciplineFilter(disciplineFilter === disc ? "" : disc)}
+                    className={`rounded-full px-4 py-1.5 text-sm font-bold uppercase tracking-[0.15em] transition ${
+                      disciplineFilter === disc
+                        ? "bg-[#FF5A1F] text-white"
+                        : "border border-white/10 bg-white/[0.04] text-zinc-400 hover:border-[#FF5A1F]/40 hover:text-white"
+                    }`}
+                  >
+                    {disc}
+                  </button>
+                ))}
+              </div>
+              {disciplineFilter && (
+                <button onClick={() => setDisciplineFilter("")} className="text-xs text-zinc-500 hover:text-white transition">
+                  ✕ Effacer le filtre
                 </button>
-              ))}
+              )}
             </div>
 
             <div className="mt-4 flex flex-wrap gap-3">

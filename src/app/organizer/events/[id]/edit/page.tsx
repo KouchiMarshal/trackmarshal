@@ -258,10 +258,21 @@ export default function EditEventPage() {
                         className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 px-6 outline-none focus:border-[#FF5A1F]"
                       >
                         <option value="">Choisir</option>
-                        <option value="Rallye">Rallye</option>
-                        <option value="Circuit">Circuit</option>
-                        <option value="Karting">Karting</option>
-                        <option value="Drift">Drift</option>
+                        <optgroup label="Auto">
+                          <option value="Rallye">Rallye</option>
+                          <option value="Circuit">Circuit</option>
+                          <option value="Karting">Karting</option>
+                          <option value="Drift">Drift</option>
+                          <option value="Endurance">Endurance</option>
+                        </optgroup>
+                        <optgroup label="Moto">
+                          <option value="Moto Cross">Moto Cross</option>
+                          <option value="Enduro">Enduro</option>
+                          <option value="Trial">Trial</option>
+                          <option value="Road Racing">Road Racing</option>
+                          <option value="Supermoto">Supermoto</option>
+                          <option value="Rallye Moto">Rallye Moto</option>
+                        </optgroup>
                       </select>
                     </div>
                   </div>

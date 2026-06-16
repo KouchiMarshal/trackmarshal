@@ -6,10 +6,16 @@ import { CheckCircle2, ExternalLink, Pencil, XCircle } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
 import { sendEmail } from "@/lib/sendEmail";
 
-const LICENSE_TYPES = [
+const LICENSE_TYPES_FFSA = [
   "ENCOC - Commissaire C",
   "EICOB - Commissaire international B",
   "EICOACPC - Chef de poste",
+];
+
+const LICENSE_TYPES_FFM = [
+  "FFM - Commissaire de Course",
+  "FFM - Commissaire International",
+  "FFM - Chef de Poste",
 ];
 
 export default function AdminLicensesPage() {
@@ -217,7 +223,12 @@ export default function AdminLicensesPage() {
                           className="h-12 w-full rounded-xl border border-white/10 bg-black/60 px-4 text-sm text-white outline-none focus:border-[#FF5A1F]"
                         >
                           <option value="">— Sélectionner —</option>
-                          {LICENSE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                          <optgroup label="FFSA (Auto)">
+                            {LICENSE_TYPES_FFSA.map((t) => <option key={t} value={t}>{t}</option>)}
+                          </optgroup>
+                          <optgroup label="FFM (Moto)">
+                            {LICENSE_TYPES_FFM.map((t) => <option key={t} value={t}>{t}</option>)}
+                          </optgroup>
                         </select>
                       </div>
                       <div>
