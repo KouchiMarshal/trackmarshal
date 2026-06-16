@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { sendEmail } from "@/lib/sendEmail";
-import { MessageSquare, Search, Send, Users } from "lucide-react";
+import { MessageSquare, Search, Send, Trash2, Users } from "lucide-react";
 
 export default function AdminMessagesPage() {
   const [adminUser, setAdminUser] = useState<any>(null);
@@ -18,7 +18,9 @@ export default function AdminMessagesPage() {
   const [sending, setSending] = useState(false);
   const [loadingConv, setLoadingConv] = useState(false);
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => { init(); }, []);
 
@@ -85,16 +87,14 @@ export default function AdminMessagesPage() {
     setMessages([]);
     setSelectedConv(null);
     setLoadingConv(true);
+    setConfirmDelete(false);
 
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { setLoadingConv(false); return; }
 
     const res = await fetch("/api/admin/start-conversation", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session.access_token}`,
-      },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
       body: JSON.stringify({ targetUserId: user.id }),
     });
 
@@ -128,8 +128,7 @@ export default function AdminMessagesPage() {
   }
 
   async function sendMessage() {
-    if (!message.trim() || !adminUser || !selectedUser) return;
-    if (!selectedConv) return;
+    if (!message.trim() || !adminUser || !selectedUser || !selectedConv) return;
     setSending(true);
 
     const text = message.trim();
@@ -141,11 +140,10 @@ export default function AdminMessagesPage() {
 
     if (error) {
       console.error("Erreur envoi message:", error);
-      alert("Erreur: " + error.message);
     } else {
       setMessage("");
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
 
-      // Send email notification directly — selectedUser already has email & role
       const replyUrl = selectedUser.role === "organizer"
         ? "https://trackmarshal.app/organizer/messages"
         : "https://trackmarshal.app/dashboard/messages";
@@ -163,6 +161,27 @@ export default function AdminMessagesPage() {
       });
     }
     setSending(false);
+  }
+
+  async function deleteConversation() {
+    if (!selectedConv) return;
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
+    await fetch("/api/messages/delete-conversation", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ conversationId: selectedConv.id }),
+    });
+
+    setSelectedConv(null);
+    setMessages([]);
+    setConfirmDelete(false);
+  }
+
+  function growTextarea(el: HTMLTextAreaElement) {
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 128) + "px";
   }
 
   return (
@@ -259,9 +278,38 @@ export default function AdminMessagesPage() {
             </div>
           ) : (
             <>
-              <div className="hidden border-b border-white/10 px-6 py-4 lg:block">
-                <p className="font-black">{selectedUser.full_name || "Sans nom"}</p>
-                <p className="text-sm text-zinc-400">{selectedUser.email}</p>
+              <div className="hidden border-b border-white/10 px-6 py-4 lg:flex lg:items-center lg:justify-between">
+                <div>
+                  <p className="font-black">{selectedUser.full_name || "Sans nom"}</p>
+                  <p className="text-sm text-zinc-400">{selectedUser.email}</p>
+                </div>
+                {selectedConv && (
+                  confirmDelete ? (
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm text-zinc-400">Supprimer la conversation ?</p>
+                      <button
+                        onClick={deleteConversation}
+                        className="rounded-xl bg-red-600 px-3 py-1.5 text-xs font-bold transition hover:scale-105"
+                      >
+                        Oui
+                      </button>
+                      <button
+                        onClick={() => setConfirmDelete(false)}
+                        className="rounded-xl border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition hover:text-white"
+                      >
+                        Non
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setConfirmDelete(true)}
+                      className="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs text-zinc-500 transition hover:border-red-600/30 hover:bg-red-600/10 hover:text-red-400"
+                    >
+                      <Trash2 size={14} />
+                      Supprimer
+                    </button>
+                  )
+                )}
               </div>
 
               <div className="flex-1 overflow-y-auto p-4 lg:p-6">
@@ -284,7 +332,7 @@ export default function AdminMessagesPage() {
                             {!isMe && (
                               <p className="px-1 text-xs text-zinc-500">{sender?.full_name || "Inconnu"}</p>
                             )}
-                            <div className={`rounded-2xl px-4 py-3 text-sm ${
+                            <div className={`rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
                               isMe
                                 ? "rounded-br-sm bg-[#FF5A1F] text-white"
                                 : "rounded-bl-sm border border-white/10 bg-white/[0.05] text-zinc-100"
@@ -304,20 +352,27 @@ export default function AdminMessagesPage() {
               </div>
 
               <div className="border-t border-white/10 p-4 pb-24 lg:pb-4">
-                <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2">
-                  <input
-                    type="text"
-                    placeholder="Écrire un message..."
+                <div className="flex items-end gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2">
+                  <textarea
+                    ref={textareaRef}
+                    rows={1}
+                    placeholder="Écrire un message... (Entrée pour envoyer, Maj+Entrée pour sauter une ligne)"
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }}}
+                    onChange={(e) => { setMessage(e.target.value); growTextarea(e.target); }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
                     disabled={loadingConv || !selectedConv}
-                    className="flex-1 bg-transparent py-2 text-sm outline-none placeholder:text-zinc-600 disabled:opacity-40"
+                    className="flex-1 resize-none bg-transparent py-2 text-sm outline-none placeholder:text-zinc-600 disabled:opacity-40"
+                    style={{ maxHeight: "128px", overflowY: "auto" }}
                   />
                   <button
                     onClick={sendMessage}
                     disabled={sending || !message.trim() || !selectedConv || loadingConv}
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FF5A1F] transition hover:scale-105 disabled:opacity-40"
+                    className="mb-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FF5A1F] transition hover:scale-105 disabled:opacity-40"
                   >
                     {sending
                       ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -325,6 +380,7 @@ export default function AdminMessagesPage() {
                     }
                   </button>
                 </div>
+                <p className="mt-2 text-center text-[10px] text-zinc-700">Entrée pour envoyer · Maj+Entrée pour nouvelle ligne</p>
               </div>
             </>
           )}

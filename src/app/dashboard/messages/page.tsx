@@ -1,6 +1,6 @@
 "use client";
 
-import { Send, MessageSquare } from "lucide-react";
+import { Send, MessageSquare, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
@@ -16,7 +16,9 @@ export default function MessagesPage() {
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [mobileView, setMobileView] = useState<"list" | "chat">("list");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => { initUser(); }, []);
 
@@ -66,7 +68,6 @@ export default function MessagesPage() {
       .update({ last_read_at: new Date().toISOString() })
       .eq("conversation_id", convId)
       .eq("user_id", user.id);
-
     setUnreadMap((prev) => ({ ...prev, [convId]: 0 }));
   }
 
@@ -90,7 +91,6 @@ export default function MessagesPage() {
 
     setConversations(convs || []);
 
-    // Compute unread per conversation
     const newUnreadMap: Record<string, number> = {};
     await Promise.all(membersArr.map(async (m: any) => {
       let q = supabase
@@ -143,11 +143,10 @@ export default function MessagesPage() {
 
     if (error) {
       console.error("Erreur envoi message:", error);
-      alert("Erreur: " + error.message);
     } else {
       setMessage("");
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
 
-      // Notify recipients server-side (bypasses RLS)
       const { data: senderProfile } = await supabase
         .from("profiles")
         .select("full_name")
@@ -158,10 +157,7 @@ export default function MessagesPage() {
       if (session) {
         fetch("/api/messages/notify", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
           body: JSON.stringify({
             conversationId: selectedConv.id,
             senderName: senderProfile?.full_name || "TrackMarshal",
@@ -173,9 +169,34 @@ export default function MessagesPage() {
     setSending(false);
   }
 
+  async function deleteConversation(convId: string) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
+    await fetch("/api/messages/delete-conversation", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ conversationId: convId }),
+    });
+
+    setConversations((prev) => prev.filter((c) => c.id !== convId));
+    if (selectedConv?.id === convId) {
+      setSelectedConv(null);
+      setMessages([]);
+      setMobileView("list");
+    }
+    setConfirmDeleteId(null);
+  }
+
   function selectConversation(conv: any) {
     setSelectedConv(conv);
     setMobileView("chat");
+    setConfirmDeleteId(null);
+  }
+
+  function growTextarea(el: HTMLTextAreaElement) {
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 128) + "px";
   }
 
   const totalUnread = Object.values(unreadMap).reduce((a, b) => a + b, 0);
@@ -188,7 +209,6 @@ export default function MessagesPage() {
 
         <div className="flex flex-1 flex-col overflow-hidden">
 
-          {/* Header */}
           <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
             <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-10">
               <div className="flex items-center gap-3">
@@ -216,7 +236,6 @@ export default function MessagesPage() {
             </div>
           </header>
 
-          {/* Body */}
           <div className="flex flex-1 overflow-hidden">
 
             {/* Liste conversations */}
@@ -237,11 +256,11 @@ export default function MessagesPage() {
                   <div className="space-y-2">
                     {conversations.map((conv) => {
                       const convUnread = unreadMap[conv.id] || 0;
+                      const isConfirming = confirmDeleteId === conv.id;
                       return (
-                        <button
+                        <div
                           key={conv.id}
-                          onClick={() => selectConversation(conv)}
-                          className={`w-full rounded-2xl border p-4 text-left transition ${
+                          className={`group relative rounded-2xl border transition ${
                             selectedConv?.id === conv.id
                               ? "border-[#FF5A1F] bg-[#FF5A1F]/10"
                               : convUnread > 0
@@ -249,22 +268,55 @@ export default function MessagesPage() {
                               : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05]"
                           }`}
                         >
-                          <div className="flex items-center justify-between gap-2">
-                            <p className={`font-bold leading-tight ${convUnread > 0 ? "text-white" : "text-zinc-200"}`}>
-                              {conv.title || "Conversation"}
-                            </p>
-                            {convUnread > 0 && (
-                              <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#FF5A1F] px-1 text-[10px] font-black text-white">
-                                {convUnread > 9 ? "9+" : convUnread}
-                              </span>
-                            )}
-                          </div>
-                          {convUnread > 0 ? (
-                            <p className="mt-1 text-xs font-semibold text-[#FF5A1F]">{convUnread} nouveau{convUnread > 1 ? "x" : ""} message{convUnread > 1 ? "s" : ""}</p>
+                          {isConfirming ? (
+                            <div className="flex items-center justify-between gap-2 p-4">
+                              <p className="text-sm font-semibold text-zinc-300">Supprimer ?</p>
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => deleteConversation(conv.id)}
+                                  className="rounded-xl bg-red-600 px-3 py-1.5 text-xs font-bold transition hover:scale-105"
+                                >
+                                  Oui
+                                </button>
+                                <button
+                                  onClick={() => setConfirmDeleteId(null)}
+                                  className="rounded-xl border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition hover:text-white"
+                                >
+                                  Non
+                                </button>
+                              </div>
+                            </div>
                           ) : (
-                            <p className="mt-1 text-xs text-zinc-500">Tap pour ouvrir</p>
+                            <div className="flex items-center gap-1 p-1 pl-4">
+                              <button
+                                onClick={() => selectConversation(conv)}
+                                className="flex flex-1 flex-col py-3 text-left"
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className={`font-bold leading-tight ${convUnread > 0 ? "text-white" : "text-zinc-200"}`}>
+                                    {conv.title || "Conversation"}
+                                  </p>
+                                  {convUnread > 0 && (
+                                    <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#FF5A1F] px-1 text-[10px] font-black text-white">
+                                      {convUnread > 9 ? "9+" : convUnread}
+                                    </span>
+                                  )}
+                                </div>
+                                {convUnread > 0 ? (
+                                  <p className="mt-1 text-xs font-semibold text-[#FF5A1F]">{convUnread} nouveau{convUnread > 1 ? "x" : ""} message{convUnread > 1 ? "s" : ""}</p>
+                                ) : (
+                                  <p className="mt-1 text-xs text-zinc-500">Tap pour ouvrir</p>
+                                )}
+                              </button>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(conv.id); }}
+                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-zinc-600 opacity-0 transition hover:bg-red-600/20 hover:text-red-400 group-hover:opacity-100"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
                           )}
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -302,7 +354,7 @@ export default function MessagesPage() {
                                 {!isMe && (
                                   <p className="px-1 text-xs text-zinc-500">{sender?.full_name || "Inconnu"}</p>
                                 )}
-                                <div className={`rounded-2xl px-4 py-3 text-sm ${
+                                <div className={`rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
                                   isMe
                                     ? "rounded-br-sm bg-[#FF5A1F] text-white"
                                     : "rounded-bl-sm border border-white/10 bg-white/[0.05] text-zinc-100"
@@ -322,23 +374,31 @@ export default function MessagesPage() {
                   </div>
 
                   <div className="border-t border-white/10 p-4 pb-24 lg:pb-4">
-                    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2">
-                      <input
-                        type="text"
-                        placeholder="Écrire un message..."
+                    <div className="flex items-end gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2">
+                      <textarea
+                        ref={textareaRef}
+                        rows={1}
+                        placeholder="Écrire un message... (Entrée pour envoyer, Maj+Entrée pour sauter une ligne)"
                         value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }}}
-                        className="flex-1 bg-transparent py-2 text-sm outline-none placeholder:text-zinc-600"
+                        onChange={(e) => { setMessage(e.target.value); growTextarea(e.target); }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            sendMessage();
+                          }
+                        }}
+                        className="flex-1 resize-none bg-transparent py-2 text-sm outline-none placeholder:text-zinc-600"
+                        style={{ maxHeight: "128px", overflowY: "auto" }}
                       />
                       <button
                         onClick={sendMessage}
                         disabled={sending || !message.trim()}
-                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FF5A1F] transition hover:scale-105 disabled:opacity-40"
+                        className="mb-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FF5A1F] transition hover:scale-105 disabled:opacity-40"
                       >
                         <Send size={16} />
                       </button>
                     </div>
+                    <p className="mt-2 text-center text-[10px] text-zinc-700">Entrée pour envoyer · Maj+Entrée pour nouvelle ligne</p>
                   </div>
                 </>
               )}
