@@ -97,7 +97,7 @@ export default function SettingsPage() {
 
   async function updateEmail() {
     if (!email) return;
-    const { error } = await supabase.auth.updateUser({ email }, { emailRedirectTo: window.location.origin });
+    const { error } = await supabase.auth.updateUser({ email }, { emailRedirectTo: `${window.location.origin}/auth/confirm` });
     if (error) {
       setToast({ message: error.message, type: "error" });
       return;
