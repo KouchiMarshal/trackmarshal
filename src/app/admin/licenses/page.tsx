@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { CheckCircle2, Clock3, ExternalLink, XCircle } from "lucide-react";
+import { CheckCircle2, Clock3, ExternalLink, FlaskConical, XCircle } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
 import { sendEmail } from "@/lib/sendEmail";
 
@@ -11,6 +11,7 @@ export default function AdminLicensesPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "verified" | "all">("pending");
   const [toast, setToast] = useState<ToastData>(null);
+  const [testingEmail, setTestingEmail] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -24,6 +25,27 @@ export default function AdminLicensesPage() {
 
     setCommissaires(data || []);
     setLoading(false);
+  }
+
+  async function testEmailSystem() {
+    setTestingEmail(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!session || !user?.email) {
+      setToast({ message: "Session introuvable.", type: "error" });
+      setTestingEmail(false);
+      return;
+    }
+    const res = await fetch("/api/send-email/test", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+    const result = await res.json();
+    if (result.ok) {
+      setToast({ message: `Email de test envoyé à ${result.to} ✓`, type: "success" });
+    } else {
+      setToast({ message: `Échec : ${JSON.stringify(result)}`, type: "error" });
+    }
+    setTestingEmail(false);
   }
 
   async function validate(id: string, verified: boolean) {
@@ -77,7 +99,15 @@ export default function AdminLicensesPage() {
             <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Administration</p>
             <h1 className="mt-1 text-2xl font-black lg:text-3xl">Validation des licences</h1>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={testEmailSystem}
+              disabled={testingEmail}
+              className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-bold text-zinc-400 transition hover:text-white disabled:opacity-50"
+            >
+              <FlaskConical size={16} />
+              {testingEmail ? "Envoi..." : "Tester les emails"}
+            </button>
             <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 px-5 py-3 text-center">
               <p className="text-xs text-zinc-500">En attente</p>
               <p className="text-2xl font-black text-yellow-400">{counts.pending}</p>

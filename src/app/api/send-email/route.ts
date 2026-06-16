@@ -129,12 +129,12 @@ export async function POST(req: NextRequest) {
   const { createClient } = await import("@supabase/supabase-js");
   const supabaseServer = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
   const { data: { user }, error: authError } = await supabaseServer.auth.getUser(token);
   if (authError || !user) {
     console.error("[send-email] Auth échouée:", authError?.message);
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ ok: false, error: "Unauthorized", detail: authError?.message }, { status: 401 });
   }
 
   if (!RESEND_API_KEY) {
