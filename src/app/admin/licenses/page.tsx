@@ -112,7 +112,7 @@ export default function AdminLicensesPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1400px] p-6 lg:p-10">
+      <div className="mx-auto max-w-[1400px] p-6 pb-24 lg:p-10 lg:pb-10">
 
         <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-3">

@@ -47,7 +47,7 @@ export default function AdminCommissairesPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1400px] p-6 lg:p-10">
+      <div className="mx-auto max-w-[1400px] p-6 pb-24 lg:p-10 lg:pb-10">
 
         <div className="mb-8 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3">
           <Search size={18} className="shrink-0 text-zinc-500" />

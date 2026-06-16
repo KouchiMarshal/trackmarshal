@@ -47,7 +47,7 @@ export default function AdminDashboardPage() {
       <div className="relative overflow-hidden">
         <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px] pointer-events-none" />
 
-        <div className="relative z-10 mx-auto max-w-[1400px] p-6 lg:p-10">
+        <div className="relative z-10 mx-auto max-w-[1400px] p-6 pb-24 lg:p-10 lg:pb-10">
 
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">

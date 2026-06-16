@@ -70,7 +70,7 @@ export default function AdminBroadcastPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-2xl p-6 lg:p-10">
+      <div className="mx-auto max-w-2xl p-6 pb-24 lg:p-10 lg:pb-10">
 
         {/* Sélection des destinataires */}
         <div className="mb-8">

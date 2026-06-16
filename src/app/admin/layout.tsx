@@ -16,6 +16,14 @@ const navItems = [
   { icon: Megaphone, label: "Email groupé", href: "/admin/broadcast" },
 ];
 
+const mobileNavItems = [
+  { icon: Home, label: "Accueil", href: "/admin" },
+  { icon: FileBadge2, label: "Licences", href: "/admin/licenses" },
+  { icon: Building2, label: "Organisateurs", href: "/admin/organizers" },
+  { icon: MessageSquare, label: "Messages", href: "/admin/messages" },
+  { icon: Megaphone, label: "Broadcast", href: "/admin/broadcast" },
+];
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -102,6 +110,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {children}
+      </div>
+
+      {/* Bottom nav mobile */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/90 backdrop-blur-2xl lg:hidden">
+        <div className="grid grid-cols-5">
+          {mobileNavItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex flex-col items-center gap-1.5 py-3 text-center transition ${
+                pathname === item.href ? "text-[#FF5A1F]" : "text-zinc-400 hover:text-[#FF5A1F]"
+              }`}
+            >
+              <item.icon size={20} />
+              <span className="text-[10px] font-semibold leading-none">{item.label}</span>
+            </Link>
+          ))}
+        </div>
       </div>
 
     </div>
