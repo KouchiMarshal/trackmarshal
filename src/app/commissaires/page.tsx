@@ -22,7 +22,7 @@ export default function AnnuaireCommissairesPage() {
   useEffect(() => {
     supabase
       .from("profiles")
-      .select("id, full_name, slug, avatar_url, city, country, disciplines, years_experience, license_verified, available, license_type")
+      .select("id, full_name, slug, avatar_url, city, country, disciplines, years_experience, license_verified, license_verified_2, available, license_type, license_type_2")
       .eq("role", "marshal")
       .order("full_name")
       .then(({ data }) => { setProfiles(data || []); setLoading(false); });
@@ -137,9 +137,14 @@ export default function AnnuaireCommissairesPage() {
               <div className="p-5">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-black text-white group-hover:text-[#FF5A1F] transition">{profile.full_name}</h3>
-                  {profile.license_verified && (
-                    <ShieldCheck size={16} className="shrink-0 text-green-400" />
-                  )}
+                  <div className="flex shrink-0 items-center gap-1">
+                    {profile.license_verified && (
+                      <ShieldCheck size={16} className="text-green-400" title="Licence auto validée" />
+                    )}
+                    {profile.license_verified_2 && (
+                      <ShieldCheck size={16} className="text-blue-400" title="Licence moto validée" />
+                    )}
+                  </div>
                 </div>
 
                 {(profile.city || profile.country) && (

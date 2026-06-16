@@ -136,16 +136,19 @@ export default function AdminLicensesPage() {
     setToast({ message: "Licence mise à jour.", type: "success" });
   }
 
+  const hasPending = (c: any) =>
+    !c.license_verified || (c.license_url_2 && !c.license_verified_2);
+
   const filtered = commissaires.filter((c) => {
-    if (filter === "pending") return !c.license_verified;
-    if (filter === "verified") return c.license_verified;
+    if (filter === "pending") return hasPending(c);
+    if (filter === "verified") return c.license_verified && (!c.license_url_2 || c.license_verified_2);
     return true;
   });
 
   const counts = {
     all: commissaires.length,
-    pending: commissaires.filter((c) => !c.license_verified).length,
-    verified: commissaires.filter((c) => c.license_verified).length,
+    pending: commissaires.filter(hasPending).length,
+    verified: commissaires.filter((c) => c.license_verified && (!c.license_url_2 || c.license_verified_2)).length,
   };
 
   return (
