@@ -3,6 +3,7 @@
 import {
   Camera,
   CheckCircle2,
+  Clock,
   Save,
   Upload,
 } from "lucide-react";
@@ -28,6 +29,8 @@ export default function ProfilePage() {
 
   const [toast, setToast] =
     useState<ToastData>(null);
+
+  const [uploadingLicense, setUploadingLicense] = useState(false);
 
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const licenseInputRef = useRef<HTMLInputElement>(null);
@@ -68,9 +71,11 @@ export default function ProfilePage() {
   }
 
   async function uploadLicense(file: File) {
+    setUploadingLicense(true);
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       setToast({ message: "Session expirée, veuillez vous reconnecter.", type: "error" });
+      setUploadingLicense(false);
       return;
     }
 
@@ -84,6 +89,7 @@ export default function ProfilePage() {
     });
 
     const result = await res.json();
+    setUploadingLicense(false);
 
     if (!res.ok) {
       setToast({ message: result.error || "Erreur lors de l'upload de la licence.", type: "error" });
@@ -546,27 +552,17 @@ export default function ProfilePage() {
                   <div className="flex items-center justify-between">
 
                     <div>
-
-                      <h2 className="text-3xl font-black">
-
-                        Licence
-
-                      </h2>
-
-                      <p className="mt-2 text-zinc-400">
-
-                        Upload et validation administrateur
-
-                      </p>
-
+                      <h2 className="text-3xl font-black">Licence</h2>
+                      <p className="mt-2 text-zinc-400">Upload et validation administrateur</p>
                     </div>
 
                     <button
                       onClick={() => licenseInputRef.current?.click()}
-                      className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-6 font-bold transition hover:scale-[1.02]"
+                      disabled={uploadingLicense}
+                      className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-6 font-bold transition hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Upload size={18} />
-                      Upload
+                      {uploadingLicense ? "Envoi..." : profile.license_url ? "Remplacer" : "Upload"}
                     </button>
 
                     <input
@@ -582,28 +578,60 @@ export default function ProfilePage() {
 
                   </div>
 
-                  <div className="mt-8 rounded-[28px] border border-white/10 bg-black/30 p-6">
+                  {/* Aucune licence */}
+                  {!profile.license_url && !uploadingLicense && (
+                    <div className="mt-6 flex flex-col items-center gap-3 rounded-[24px] border border-dashed border-white/10 bg-black/20 p-8 text-center">
+                      <Upload size={28} className="text-zinc-600" />
+                      <p className="font-semibold text-zinc-400">Aucune licence uploadée</p>
+                      <p className="text-sm text-zinc-600">Cliquez sur Upload pour soumettre votre licence motorsport</p>
+                    </div>
+                  )}
 
-                    <p className="text-lg font-semibold">
+                  {/* Upload en cours */}
+                  {uploadingLicense && (
+                    <div className="mt-6 flex items-center justify-center gap-3 rounded-[24px] border border-white/10 bg-black/20 p-8">
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#FF5A1F] border-t-transparent" />
+                      <p className="text-zinc-400">Envoi en cours...</p>
+                    </div>
+                  )}
 
-                      {
-                        profile.license_type ||
-                        "Aucune licence"
-                      }
+                  {/* En attente de validation */}
+                  {profile.license_url && !profile.license_verified && !uploadingLicense && (
+                    <div className="mt-6 rounded-[24px] border border-yellow-500/30 bg-yellow-500/5 p-6">
+                      <div className="flex items-center gap-3">
+                        <Clock size={20} className="text-yellow-400" />
+                        <p className="font-bold text-yellow-400">En attente de validation</p>
+                      </div>
+                      <p className="mt-2 text-sm text-zinc-400">
+                        Votre licence a bien été reçue. Notre équipe va la vérifier dans les plus brefs délais.
+                      </p>
+                      {profile.license_type && (
+                        <p className="mt-3 text-sm font-semibold text-white">{profile.license_type}</p>
+                      )}
+                      <a href={profile.license_url} target="_blank" className="mt-3 inline-block text-sm font-bold text-[#FF5A1F] underline underline-offset-2">
+                        Voir le fichier envoyé
+                      </a>
+                    </div>
+                  )}
 
-                    </p>
-
-                    <p className="mt-3 text-zinc-500">
-
-                      Statut :
-                      {" "}
-                      {profile.license_verified
-                        ? "Vérifiée"
-                        : "En attente"}
-
-                    </p>
-
-                  </div>
+                  {/* Licence validée */}
+                  {profile.license_url && profile.license_verified && !uploadingLicense && (
+                    <div className="mt-6 rounded-[24px] border border-green-500/30 bg-green-500/5 p-6">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle2 size={20} className="text-green-400" />
+                        <p className="font-bold text-green-400">Licence validée</p>
+                      </div>
+                      <p className="mt-2 text-sm text-zinc-400">
+                        Votre licence a été vérifiée et validée par notre équipe. Votre profil est complet.
+                      </p>
+                      {profile.license_type && (
+                        <p className="mt-3 text-sm font-semibold text-white">{profile.license_type}</p>
+                      )}
+                      <a href={profile.license_url} target="_blank" className="mt-3 inline-block text-sm font-bold text-[#FF5A1F] underline underline-offset-2">
+                        Voir la licence
+                      </a>
+                    </div>
+                  )}
 
                 </div>
 

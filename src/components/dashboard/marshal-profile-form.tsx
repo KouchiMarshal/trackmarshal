@@ -1,6 +1,12 @@
 "use client";
 
 import {
+  CheckCircle2,
+  Clock,
+  Upload,
+} from "lucide-react";
+
+import {
   useEffect,
   useState,
 } from "react";
@@ -652,44 +658,47 @@ export default function MarshalProfileForm() {
             <div>
 
               <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
-
                 Upload Licence
-
               </label>
 
-              <input
-                type="file"
-                accept=".pdf,image/*"
-                onChange={
-                  uploadLicense
-                }
-                className="block w-full text-sm text-zinc-400"
-              />
-
-              {uploadingLicense && (
-
-                <p className="mt-4 text-sm text-[#FF5A1F]">
-
-                  Upload licence...
-
-                </p>
-
+              {/* Aucune licence */}
+              {!formData.license_url && !uploadingLicense && (
+                <label className="flex cursor-pointer flex-col items-center gap-3 rounded-2xl border border-dashed border-white/10 bg-black/20 p-8 text-center hover:border-[#FF5A1F]/40 transition">
+                  <Upload size={24} className="text-zinc-600" />
+                  <span className="text-sm text-zinc-400">Cliquez pour uploader votre licence</span>
+                  <span className="text-xs text-zinc-600">PDF ou image acceptés</span>
+                  <input type="file" accept=".pdf,image/*" onChange={uploadLicense} className="hidden" />
+                </label>
               )}
 
-              {formData.license_url && (
+              {/* Upload en cours */}
+              {uploadingLicense && (
+                <div className="flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-8">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#FF5A1F] border-t-transparent" />
+                  <span className="text-sm text-zinc-400">Envoi en cours...</span>
+                </div>
+              )}
 
-                <a
-                  href={
-                    formData.license_url
-                  }
-                  target="_blank"
-                  className="mt-5 inline-block text-sm font-bold text-[#FF5A1F]"
-                >
-
-                  Voir la licence
-
-                </a>
-
+              {/* En attente de validation */}
+              {formData.license_url && !uploadingLicense && (
+                <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/5 p-5">
+                  <div className="flex items-center gap-2">
+                    <Clock size={18} className="text-yellow-400" />
+                    <p className="font-bold text-yellow-400">En attente de validation</p>
+                  </div>
+                  <p className="mt-1 text-xs text-zinc-400">
+                    Votre licence a bien été reçue et sera vérifiée par notre équipe.
+                  </p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <a href={formData.license_url} target="_blank" className="text-xs font-bold text-[#FF5A1F] underline underline-offset-2">
+                      Voir le fichier envoyé
+                    </a>
+                    <label className="cursor-pointer text-xs text-zinc-500 hover:text-white transition">
+                      Remplacer
+                      <input type="file" accept=".pdf,image/*" onChange={uploadLicense} className="hidden" />
+                    </label>
+                  </div>
+                </div>
               )}
 
             </div>
