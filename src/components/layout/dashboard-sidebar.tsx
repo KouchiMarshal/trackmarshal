@@ -162,7 +162,7 @@ export default function DashboardSidebar() {
             { icon: MessageSquare, label: "Messages", href: "/dashboard/messages" },
             { icon: User, label: "Profil", href: "/dashboard/profile" },
             { icon: Settings, label: "Réglages", href: "/dashboard/settings" },
-            { icon: Globe, label: "Site", href: "/" },
+            { icon: Globe, label: "Accueil", href: "/" },
           ].map((item) => {
             const isMessages = item.href === "/dashboard/messages";
             return (

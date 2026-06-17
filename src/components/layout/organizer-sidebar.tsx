@@ -104,7 +104,7 @@ export default function OrganizerSidebar() {
             { icon: MessageSquare, label: "Messages", href: "/organizer/messages" },
             { icon: Plus, label: "Créer", href: "/organizer/events/create" },
             { icon: Settings, label: "Réglages", href: "/organizer/settings" },
-            { icon: Globe, label: "Site", href: "/" },
+            { icon: Globe, label: "Accueil", href: "/" },
           ].map((item) => {
             const isMessages = item.href === "/organizer/messages";
             return (
