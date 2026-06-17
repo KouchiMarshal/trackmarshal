@@ -86,10 +86,61 @@ export default function MessagesPage() {
     const { data: convs } = await supabase
       .from("conversations")
       .select("*")
-      .in("id", convIds)
-      .order("created_at", { ascending: false });
+      .in("id", convIds);
 
-    setConversations(convs || []);
+    if (!convs || convs.length === 0) { setConversations([]); return; }
+
+    // Fetch other members' profiles for display names
+    const { data: otherMembers } = await supabase
+      .from("conversation_members")
+      .select("conversation_id, user_id")
+      .in("conversation_id", convIds)
+      .neq("user_id", user.id);
+
+    const otherUserIds = [...new Set((otherMembers || []).map((m: any) => m.user_id))];
+    const { data: otherProfiles } = otherUserIds.length > 0
+      ? await supabase.from("profiles").select("id, full_name, avatar_url").in("id", otherUserIds)
+      : { data: [] };
+
+    const profilesById: Record<string, any> = {};
+    (otherProfiles || []).forEach((p: any) => { profilesById[p.id] = p; });
+
+    const otherMembersMap: Record<string, string> = {};
+    (otherMembers || []).forEach((m: any) => { otherMembersMap[m.conversation_id] = m.user_id; });
+
+    // Fetch last message per conversation for preview + sorting
+    const lastMsgsResults = await Promise.all(convIds.map(async (cid: string) => {
+      const { data } = await supabase
+        .from("messages")
+        .select("content, created_at, sender_id")
+        .eq("conversation_id", cid)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      return { convId: cid, msg: data?.[0] || null };
+    }));
+
+    const lastMsgMap: Record<string, any> = {};
+    lastMsgsResults.forEach(({ convId, msg }) => { lastMsgMap[convId] = msg; });
+
+    // Enrich conversations with display name and last message
+    const enriched = convs.map((conv: any) => {
+      const otherId = otherMembersMap[conv.id];
+      const otherProfile = otherId ? profilesById[otherId] : null;
+      return {
+        ...conv,
+        displayName: otherProfile?.full_name || conv.title || "Conversation",
+        lastMsg: lastMsgMap[conv.id] || null,
+      };
+    });
+
+    // Sort by last message time (most recent first), fallback to created_at
+    enriched.sort((a: any, b: any) => {
+      const aTime = a.lastMsg?.created_at || a.created_at;
+      const bTime = b.lastMsg?.created_at || b.created_at;
+      return new Date(bTime).getTime() - new Date(aTime).getTime();
+    });
+
+    setConversations(enriched);
 
     const newUnreadMap: Record<string, number> = {};
     await Promise.all(membersArr.map(async (m: any) => {
@@ -104,8 +155,8 @@ export default function MessagesPage() {
     }));
     setUnreadMap(newUnreadMap);
 
-    if (convs && convs.length > 0 && !selectedConv) {
-      setSelectedConv(convs[0]);
+    if (enriched.length > 0 && !selectedConv) {
+      setSelectedConv(enriched[0]);
     }
   }
 
@@ -223,7 +274,7 @@ export default function MessagesPage() {
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Commissaire</p>
                   <h1 className="flex items-center gap-3 text-xl font-black lg:text-2xl">
-                    {mobileView === "chat" && selectedConv ? selectedConv.title : "Messages"}
+                    {mobileView === "chat" && selectedConv ? (selectedConv.displayName || selectedConv.title) : "Messages"}
                     {totalUnread > 0 && mobileView !== "chat" && (
                       <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#FF5A1F] px-1.5 text-xs font-black">
                         {totalUnread > 9 ? "9+" : totalUnread}
@@ -294,7 +345,7 @@ export default function MessagesPage() {
                               >
                                 <div className="flex items-center justify-between gap-2">
                                   <p className={`font-bold leading-tight ${convUnread > 0 ? "text-white" : "text-zinc-200"}`}>
-                                    {conv.title || "Conversation"}
+                                    {conv.displayName || conv.title || "Conversation"}
                                   </p>
                                   {convUnread > 0 && (
                                     <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#FF5A1F] px-1 text-[10px] font-black text-white">
@@ -304,8 +355,10 @@ export default function MessagesPage() {
                                 </div>
                                 {convUnread > 0 ? (
                                   <p className="mt-1 text-xs font-semibold text-[#FF5A1F]">{convUnread} nouveau{convUnread > 1 ? "x" : ""} message{convUnread > 1 ? "s" : ""}</p>
+                                ) : conv.lastMsg ? (
+                                  <p className="mt-1 truncate text-xs text-zinc-500">{conv.lastMsg.content.slice(0, 60)}</p>
                                 ) : (
-                                  <p className="mt-1 text-xs text-zinc-500">Tap pour ouvrir</p>
+                                  <p className="mt-1 text-xs text-zinc-500">Aucun message</p>
                                 )}
                               </button>
                               <button
@@ -335,7 +388,7 @@ export default function MessagesPage() {
               ) : (
                 <>
                   <div className="hidden border-b border-white/10 px-6 py-4 lg:block">
-                    <p className="font-black">{selectedConv.title}</p>
+                    <p className="font-black">{selectedConv.displayName || selectedConv.title}</p>
                   </div>
 
                   <div className="flex-1 overflow-y-auto p-4 lg:p-6">
