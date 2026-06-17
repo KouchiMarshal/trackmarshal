@@ -16,7 +16,7 @@ export default function PublicFooter() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram TrackMarshal"
-              className="text-zinc-600 transition hover:text-[#FF5A1F]"
+              className="text-zinc-400 transition hover:text-[#FF5A1F]"
             >
               <Instagram className="h-5 w-5" />
             </a>
