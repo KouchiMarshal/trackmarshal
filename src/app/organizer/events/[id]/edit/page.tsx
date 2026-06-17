@@ -93,11 +93,26 @@ export default function EditEventPage() {
 
   async function uploadImage() {
     if (!imageFile) return null;
-    const fileName = `${Date.now()}-${imageFile.name}`;
-    const { error } = await supabase.storage.from("events").upload(fileName, imageFile);
-    if (error) { setToast({ message: error.message, type: "error" }); return null; }
-    const { data: { publicUrl } } = supabase.storage.from("events").getPublicUrl(fileName);
-    return publicUrl;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return null;
+
+    const formData = new FormData();
+    formData.append("file", imageFile);
+
+    const res = await fetch("/api/events/upload-image", {
+      method: "POST",
+      headers: { authorization: `Bearer ${session.access_token}` },
+      body: formData,
+    });
+
+    const json = await res.json();
+    if (!res.ok) {
+      setToast({ message: json.error || "Erreur upload image", type: "error" });
+      return null;
+    }
+
+    return json.url as string;
   }
 
   async function saveEvent() {
