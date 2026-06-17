@@ -210,7 +210,7 @@ export default function EditEventPage() {
               </p>
             </div>
 
-            <div className="mt-10 grid gap-6 xl:grid-cols-[1fr_0.45fr]">
+            <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_0.45fr]">
 
               <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
 

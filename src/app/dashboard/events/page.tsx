@@ -223,6 +223,8 @@ export default function DashboardEventsPage() {
                       <ChevronRight size={18} />
                     </button>
                   </div>
+                  <div className="overflow-x-auto">
+                  <div className="min-w-[320px]">
                   <div className="grid grid-cols-7 gap-1 text-center">
                     {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map((d) => (
                       <div key={d} className="py-2 text-xs font-bold uppercase tracking-[0.1em] text-zinc-600">{d}</div>
@@ -270,6 +272,8 @@ export default function DashboardEventsPage() {
                       return cells;
                     })()}
                   </div>
+                  </div>
+                  </div>
                   <div className="mt-4 flex flex-wrap gap-4 text-xs text-zinc-500">
                     <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-[#FF5A1F]/40" /> Événement disponible</span>
                     <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-yellow-500/30" /> En attente</span>
@@ -280,7 +284,7 @@ export default function DashboardEventsPage() {
 
               {/* Résultats — vue grille */}
               {viewMode === "grid" && (loading ? (
-                <div className="grid gap-6 xl:grid-cols-2">
+                <div className="grid gap-6 lg:grid-cols-2">
                   {[1, 2, 3, 4].map((i) => <SkeletonEventCard key={i} />)}
                 </div>
               ) : filtered.length === 0 ? (
@@ -289,7 +293,7 @@ export default function DashboardEventsPage() {
                   <p className="mt-4 text-zinc-500">Modifiez vos filtres ou revenez plus tard.</p>
                 </div>
               ) : (
-                <div className="grid gap-6 xl:grid-cols-2">
+                <div className="grid gap-6 lg:grid-cols-2">
                   {filtered.map((event) => {
                     const app = applications.find((a) => a.event_id === event.id);
 

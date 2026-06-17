@@ -273,13 +273,13 @@ export default function OrganizerMessagesPage() {
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => deleteConversation(conv.id)}
-                                  className="rounded-xl bg-red-600 px-3 py-1.5 text-xs font-bold transition hover:scale-105"
+                                  className="h-10 rounded-xl bg-red-600 px-4 text-xs font-bold transition hover:scale-105"
                                 >
                                   Oui
                                 </button>
                                 <button
                                   onClick={() => setConfirmDeleteId(null)}
-                                  className="rounded-xl border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition hover:text-white"
+                                  className="h-10 rounded-xl border border-white/10 px-4 text-xs text-zinc-400 transition hover:text-white"
                                 >
                                   Non
                                 </button>

@@ -254,12 +254,12 @@ export default function EventsPage() {
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
 
           {loading && (
-            <div className="grid gap-6 xl:grid-cols-2">
+            <div className="grid gap-6 lg:grid-cols-2">
               {[1, 2, 3, 4].map((i) => <SkeletonEventCard key={i} />)}
             </div>
           )}
 
-          <div className="grid gap-6 xl:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2">
 
             {filteredEvents.map((event) => (
 
