@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Instagram } from "lucide-react";
 
 export default function Footer() {
 
@@ -133,13 +134,23 @@ export default function Footer() {
 
             </p>
 
-            <div className="flex gap-8 text-sm text-zinc-500">
+            <div className="flex items-center gap-8 text-sm text-zinc-500">
 
               <p>Privacy Policy</p>
 
               <p>Terms of Service</p>
 
               <p>Contact</p>
+
+              <a
+                href="https://www.instagram.com/trackmarshal.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram TrackMarshal"
+                className="transition hover:text-[#FF5A1F]"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
 
             </div>
 

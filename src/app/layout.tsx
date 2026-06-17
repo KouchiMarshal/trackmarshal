@@ -67,7 +67,7 @@ const organizationSchema = {
   url: "https://www.trackmarshal.app",
   logo: "https://www.trackmarshal.app/logo.png",
   description: "Plateforme qui connecte commissaires motorsport (FFSA/FFM) et organisateurs d'événements en France.",
-  sameAs: [],
+  sameAs: ["https://www.instagram.com/trackmarshal.app"],
 };
 
 export default function RootLayout({
