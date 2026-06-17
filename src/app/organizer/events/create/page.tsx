@@ -545,18 +545,13 @@ export default function CreateEventPage() {
 
                   {repas && (
 
-                    <select
+                    <input
+                      type="text"
+                      placeholder="ex : Déjeuner sam. + dim., dîner samedi soir"
                       value={repasType}
                       onChange={(e) => setRepasType(e.target.value)}
                       className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
-                    >
-
-                      <option value="">Choisir</option>
-                      <option value="Midi">Midi</option>
-                      <option value="Soir">Soir</option>
-                      <option value="Midi + Soir">Midi + Soir</option>
-
-                    </select>
+                    />
 
                   )}
 
