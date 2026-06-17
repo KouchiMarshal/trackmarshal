@@ -167,10 +167,13 @@ export default function ApplicationsPage() {
         <div class="value">${escapeHtml(ev.location)}${ev.country ? ", " + escapeHtml(ev.country) : ""}</div>
         ${ev.discipline ? `<div class="label">Discipline</div><div class="value">${escapeHtml(ev.discipline)}</div>` : ""}
       </div>
-      ${ev.description ? `<div class="section"><div class="label">Description</div><div class="value">${escapeHtml(ev.description)}</div></div>` : ""}
-      ${ev.accommodation !== null ? `<div class="section"><div class="label">Hébergement</div><div class="value">${ev.accommodation ? "✅ Inclus" : "❌ Non inclus"}</div></div>` : ""}
-      ${ev.meals !== null ? `<div class="section"><div class="label">Repas</div><div class="value">${ev.meals ? "✅ Inclus" : "❌ Non inclus"}</div></div>` : ""}
-      ${ev.travel_reimbursement !== null ? `<div class="section"><div class="label">Défraiement</div><div class="value">${ev.travel_reimbursement ? "✅ Inclus" : "❌ Non inclus"}</div></div>` : ""}
+      ${ev.briefing ? `<div class="section"><div class="label">Description</div><div class="value">${escapeHtml(ev.briefing)}</div></div>` : ""}
+      <div class="section"><div class="label">Hébergement</div><div class="value">${ev.hotel ? "✅ " + escapeHtml(ev.hotel_detail || "Inclus") : "❌ Non inclus"}</div></div>
+      <div class="section"><div class="label">Repas</div><div class="value">${ev.repas ? "✅ " + escapeHtml(ev.repas_type || "Inclus") : "❌ Non inclus"}</div></div>
+      <div class="section"><div class="label">Défraiement</div><div class="value">${ev.defraiement ? "✅ " + escapeHtml(ev.defraiement_amount || "Inclus") : "❌ Non prévu"}</div></div>
+      ${ev.pass_accompagnant ? `<div class="section"><div class="label">Pass accompagnant</div><div class="value">✅ ${ev.pass_accompagnant_count ? ev.pass_accompagnant_count + " pass" : "Inclus"}</div></div>` : ""}
+      ${ev.organizer_contact ? `<div class="section"><div class="label">Contact organisateur</div><div class="value">${escapeHtml(ev.organizer_contact)}</div></div>` : ""}
+      ${ev.schedule ? `<div class="section"><div class="label">Planning</div><div class="value" style="white-space:pre-line">${escapeHtml(ev.schedule)}</div></div>` : ""}
       <div class="section" style="background:#fff8f5;border-color:#FF5A1F22">
         <div class="label">Document généré le</div>
         <div class="value">${new Date().toLocaleDateString("fr-FR")} — TrackMarshal.app</div>

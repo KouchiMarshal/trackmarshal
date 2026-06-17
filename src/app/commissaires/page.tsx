@@ -144,7 +144,7 @@ export default function AnnuaireCommissairesPage() {
                   <h3 className="font-black text-white group-hover:text-[#FF5A1F] transition">{profile.full_name}</h3>
                   <div className="flex shrink-0 items-center gap-1">
                     {profile.license_verified && (
-                      <ShieldCheck size={16} className="text-green-400" title={`Licence ${profile.license_type?.startsWith("OFS") || profile.license_type?.startsWith("OFF") || profile.license_type?.startsWith("FFM") ? "moto (FFM)" : "auto (FFSA)"} validée`} />
+                      <ShieldCheck size={16} className="text-green-400" title={`Licence ${profile.license_type?.startsWith("OFS") || profile.license_type?.startsWith("OFF") ? "moto (FFM)" : "auto (FFSA)"} validée`} />
                     )}
                     {profile.license_verified_2 && (
                       <ShieldCheck size={16} className="text-blue-400" title={`Licence ${profile.license_type_2?.startsWith("OFS") || profile.license_type_2?.startsWith("OFF") || profile.license_type_2?.startsWith("FFM") ? "moto (FFM)" : "auto (FFSA)"} validée`} />

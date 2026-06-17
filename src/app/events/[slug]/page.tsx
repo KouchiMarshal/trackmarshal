@@ -248,7 +248,7 @@ export default async function EventPage({
                 </p>
 
                 <p className="mt-6 text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
-                  {event.accommodation || (event.hotel ? "Hôtel inclus" : "Non inclus")}
+                  {event.hotel ? (event.hotel_detail || "Hébergement inclus") : "Non inclus"}
                 </p>
 
               </div>
@@ -260,7 +260,7 @@ export default async function EventPage({
                 </p>
 
                 <p className="mt-6 text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
-                  {event.meals || (event.repas ? event.repas_type || "Repas fournis" : "Non inclus")}
+                  {event.repas ? (event.repas_type || "Repas fournis") : "Non inclus"}
                 </p>
 
               </div>
@@ -287,9 +287,7 @@ export default async function EventPage({
 
                 <p className="mt-6 text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
                   {event.defraiement
-                    ? event.defraiement_amount
-                      ? `${event.defraiement_amount} €`
-                      : "Inclus (montant à confirmer)"
+                    ? (event.defraiement_amount || "Inclus (détails à confirmer)")
                     : "Non prévu"}
                 </p>
 
@@ -362,6 +360,13 @@ export default async function EventPage({
         </div>
 
       </section>
+
+      {/* Bouton postuler fixe en bas sur mobile */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/90 p-4 backdrop-blur-xl lg:hidden">
+        <ApplyButton eventId={event.id} isFull={isFull} eventDiscipline={event.discipline} />
+      </div>
+
+      <div className="h-20 lg:hidden" />
 
       <PublicFooter />
 

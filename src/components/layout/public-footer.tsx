@@ -13,6 +13,7 @@ export default function PublicFooter() {
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-zinc-600">
             <Link href="/about" className="transition hover:text-[#FF5A1F]">À propos</Link>
             <Link href="/events" className="transition hover:text-[#FF5A1F]">Événements</Link>
+            <Link href="/commissaires" className="transition hover:text-[#FF5A1F]">Annuaire commissaires</Link>
             <Link href="/devenir-commissaire" className="transition hover:text-[#FF5A1F]">Devenir commissaire</Link>
             <Link href="/login" className="transition hover:text-[#FF5A1F]">Connexion</Link>
           </div>
