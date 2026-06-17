@@ -391,6 +391,16 @@ export default function ApplicationsPage() {
 
                             </div>
 
+                            {app.status === "accepted" && app.post && (
+                              <div className="flex items-center gap-3">
+                                <span className="text-lg">📍</span>
+                                <p>
+                                  <span className="text-zinc-500">Poste assigné : </span>
+                                  <span className="font-bold text-white">{app.post}</span>
+                                </p>
+                              </div>
+                            )}
+
                           </div>
 
                           <div className="mt-8 flex flex-col gap-4 sm:flex-row">

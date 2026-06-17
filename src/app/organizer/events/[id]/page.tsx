@@ -5,14 +5,20 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
+  Bell,
   CalendarDays,
+  ClipboardCheck,
   Copy,
   FileSpreadsheet,
   FileText,
   MapPin,
+  MessageSquare,
   Pencil,
   Users,
   Trash2,
+  X,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
@@ -25,14 +31,10 @@ import { sendEmail } from "@/lib/sendEmail";
 export default function OrganizerEventDetailsPage() {
   const params = useParams();
   const router = useRouter();
-
   const eventId = params?.id as string;
 
-const [filter, setFilter] =
-  useState("all");
-
+  const [filter, setFilter] = useState("all");
   const [toast, setToast] = useState<ToastData>(null);
-
   const [event, setEvent] = useState<any>(null);
   const [applications, setApplications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,18 +42,32 @@ const [filter, setFilter] =
   const [selected, setSelected] = useState<string[]>([]);
   const [bulkLoading, setBulkLoading] = useState(false);
 
+  // Feature 1: Messagerie groupée
+  const [showGroupMsg, setShowGroupMsg] = useState(false);
+  const [groupMsg, setGroupMsg] = useState("");
+  const [sendingGroupMsg, setSendingGroupMsg] = useState(false);
+
+  // Feature 4: Rappels automatiques
+  const [sendingReminders, setSendingReminders] = useState(false);
+
+  // Feature 2: Attribution de postes
+  const [postValues, setPostValues] = useState<Record<string, string>>({});
+  const [postSaving, setPostSaving] = useState<Record<string, boolean>>({});
+
+  // Feature 5: Bilan post-événement
+  const [bilanAttended, setBilanAttended] = useState<Record<string, boolean | null>>({});
+  const [bilanNotes, setBilanNotes] = useState<Record<string, string>>({});
+  const [bilanSaving, setBilanSaving] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
     if (!eventId) return;
-
     loadEvent();
-
     const channel = supabase
       .channel(`organizer-event-${eventId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "applications", filter: `event_id=eq.${eventId}` }, () => {
         loadEvent();
       })
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   }, [eventId]);
 
@@ -69,12 +85,11 @@ const [filter, setFilter] =
 
       setEvent(eventData ?? null);
 
-      const { data: appsRaw } =
-        await supabase
-          .from("applications")
-          .select("*")
-          .eq("event_id", eventId)
-          .order("created_at", { ascending: false });
+      const { data: appsRaw } = await supabase
+        .from("applications")
+        .select("*")
+        .eq("event_id", eventId)
+        .order("created_at", { ascending: false });
 
       const appsData = appsRaw || [];
 
@@ -88,17 +103,30 @@ const [filter, setFilter] =
         const profilesMap: Record<string, any> = {};
         (profilesData || []).forEach((p: any) => { profilesMap[p.id] = p; });
 
-        setApplications(appsData.map((a: any) => ({
+        const appsWithProfiles = appsData.map((a: any) => ({
           ...a,
           profiles: profilesMap[a.marshal_id] || null,
-        })));
+        }));
+
+        setApplications(appsWithProfiles);
+
+        const initPosts: Record<string, string> = {};
+        const initAttended: Record<string, boolean | null> = {};
+        const initNotes: Record<string, string> = {};
+        appsWithProfiles.forEach((a: any) => {
+          initPosts[a.id] = a.post || "";
+          initAttended[a.id] = a.attended ?? null;
+          initNotes[a.id] = a.attended_note || "";
+        });
+        setPostValues(initPosts);
+        setBilanAttended(initAttended);
+        setBilanNotes(initNotes);
       } else {
         setApplications([]);
       }
     } catch (error) {
       console.error(error);
     }
-
     setLoading(false);
   }
 
@@ -112,7 +140,6 @@ const [filter, setFilter] =
   async function cloneEvent() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user || !event) return;
-
     const slug = `${event.slug || event.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-copie-${Date.now()}`;
     const { data, error } = await supabase.from("events").insert({
       title: `${event.title} (copie)`,
@@ -126,6 +153,7 @@ const [filter, setFilter] =
       briefing: event.briefing,
       marshals_needed: event.marshals_needed,
       hotel: event.hotel,
+      hotel_detail: event.hotel_detail,
       repas: event.repas,
       repas_type: event.repas_type,
       defraiement: event.defraiement,
@@ -135,73 +163,91 @@ const [filter, setFilter] =
       organizer_contact: event.organizer_contact,
       schedule: event.schedule,
     }).select().single();
-
     if (error) { setToast({ message: error.message, type: "error" }); return; }
     setToast({ message: "Événement dupliqué avec succès !", type: "success" });
     setTimeout(() => router.push(`/organizer/events/${data.id}`), 1000);
   }
 
-  if (loading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-black text-white">
-        Chargement...
-      </main>
-    );
-  }
-
-  if (!event) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-black text-white">
-        <div className="text-center">
-          <h1 className="text-4xl font-black">
-            Événement introuvable
-          </h1>
-
-          <Link
-            href="/organizer/events"
-            className="mt-6 inline-flex rounded-2xl bg-[#FF5A1F] px-6 py-3 font-bold"
-          >
-            Retour aux événements
-          </Link>
-        </div>
-      </main>
-    );
-  }
-
-  const accepted =
-    applications.filter(
-      (a) => a.status === "accepted"
-    ).length;
-
-  const pending =
-    applications.filter(
-      (a) => a.status === "pending"
-    ).length;
-
-  const remaining =
-    Math.max(
-      0,
-      (event.marshals_needed || 0) - accepted
-    );
-
-const filteredApplications =
-  applications.filter((app) => {
-
-    if (filter === "all") {
-      return true;
+  async function savePost(appId: string, post: string) {
+    setPostSaving((prev) => ({ ...prev, [appId]: true }));
+    const { error } = await supabase
+      .from("applications")
+      .update({ post: post || null })
+      .eq("id", appId);
+    setPostSaving((prev) => ({ ...prev, [appId]: false }));
+    if (error) {
+      setToast({ message: "Erreur lors de la sauvegarde du poste.", type: "error" });
+    } else {
+      setToast({ message: "Poste enregistré.", type: "success" });
     }
+  }
 
-    return app.status === filter;
-  });
+  async function sendGroupMessage() {
+    if (!groupMsg.trim()) return;
+    setSendingGroupMsg(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/organizer/send-group-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({ eventId, message: groupMsg.trim() }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setToast({ message: `Message envoyé à ${data.sent} commissaire(s) !`, type: "success" });
+        setGroupMsg("");
+        setShowGroupMsg(false);
+      } else {
+        setToast({ message: data.error || "Erreur lors de l'envoi.", type: "error" });
+      }
+    } catch {
+      setToast({ message: "Erreur réseau.", type: "error" });
+    }
+    setSendingGroupMsg(false);
+  }
 
-  async function bulkUpdateStatus(status: "accepted" | "rejected") {
-    if (selected.length === 0) return;
-    setBulkLoading(true);
-    await supabase.from("applications").update({ status }).in("id", selected);
-    setSelected([]);
-    setBulkLoading(false);
-    loadEvent();
-    setToast({ message: `${selected.length} candidature(s) ${status === "accepted" ? "acceptée(s)" : "refusée(s)"}`, type: "success" });
+  async function sendReminders() {
+    setSendingReminders(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/organizer/send-reminders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({ eventId }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setToast({ message: `Rappels envoyés à ${data.sent} commissaire(s) !`, type: "success" });
+      } else {
+        setToast({ message: data.error || "Erreur lors de l'envoi.", type: "error" });
+      }
+    } catch {
+      setToast({ message: "Erreur réseau.", type: "error" });
+    }
+    setSendingReminders(false);
+  }
+
+  async function saveBilan(appId: string) {
+    setBilanSaving((prev) => ({ ...prev, [appId]: true }));
+    const { error } = await supabase
+      .from("applications")
+      .update({
+        attended: bilanAttended[appId] ?? null,
+        attended_note: bilanNotes[appId] || null,
+      })
+      .eq("id", appId);
+    setBilanSaving((prev) => ({ ...prev, [appId]: false }));
+    if (error) {
+      setToast({ message: "Erreur lors de la sauvegarde.", type: "error" });
+    } else {
+      setToast({ message: "Présence enregistrée.", type: "success" });
+    }
   }
 
   function escapeHtml(val: string | null | undefined): string {
@@ -222,18 +268,17 @@ const filteredApplications =
 
   function exportCSV() {
     const accepted = applications.filter((a) => a.status === "accepted");
-    const headers = ["Nom", "Email", "Téléphone", "Ville", "Pays", "Années d'expérience", "Type licence", "Numéro licence", "Licence vérifiée", "URL licence", "Langues", "Spécialités", "Disciplines", "Expérience"];
+    const headers = ["Nom", "Email", "Téléphone", "Ville", "Pays", "Années d'expérience", "Type licence", "Numéro licence", "Licence vérifiée", "Poste", "Langues", "Spécialités", "Disciplines", "Expérience"];
     const rows = accepted.map((app) => {
       const p = app.profiles || {};
       return [
         p.full_name, p.email, p.phone, p.city, p.country,
         p.years_experience, p.license_type, p.license_number,
         p.license_verified ? "Oui" : "Non",
-        p.license_url, p.languages, p.specialties, p.disciplines,
-        p.experience,
+        app.post,
+        p.languages, p.specialties, p.disciplines, p.experience,
       ].map(escapeCSV);
     });
-
     const csvContent = "﻿" + [headers, ...rows].map((r) => r.join(",")).join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -258,8 +303,8 @@ const filteredApplications =
           <td>${escapeHtml(p.license_type)}</td>
           <td>${escapeHtml(p.license_number)}</td>
           <td>${p.license_verified ? "✔ Vérifiée" : "En attente"}</td>
+          <td>${escapeHtml(app.post)}</td>
           <td>${escapeHtml(p.languages)}</td>
-          <td>${escapeHtml(p.specialties)}</td>
         </tr>
       `;
     }).join("");
@@ -281,7 +326,7 @@ const filteredApplications =
       <table>
         <thead><tr>
           <th>Nom</th><th>Email</th><th>Téléphone</th><th>Localisation</th>
-          <th>Exp.</th><th>Type licence</th><th>N° licence</th><th>Vérifiée</th><th>Langues</th><th>Spécialités</th>
+          <th>Exp.</th><th>Type licence</th><th>N° licence</th><th>Vérifiée</th><th>Poste</th><th>Langues</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -294,6 +339,177 @@ const filteredApplications =
       win.focus();
       setTimeout(() => { win.print(); }, 300);
     }
+  }
+
+  // Feature 3: Feuille d'émargement
+  function exportEmargement() {
+    const accepted = applications.filter((a) => a.status === "accepted");
+    const rows = accepted.map((app, idx) => {
+      const p = app.profiles || {};
+      return `
+        <tr>
+          <td style="text-align:center;">${idx + 1}</td>
+          <td><strong>${escapeHtml(p.full_name)}</strong><br/><span style="color:#888;font-size:10px;">${escapeHtml(p.license_type)} ${escapeHtml(p.license_number)}</span></td>
+          <td>${escapeHtml(app.post) !== "—" ? escapeHtml(app.post) : '<span style="color:#bbb;">—</span>'}</td>
+          <td style="text-align:center;font-size:18px;">☐</td>
+          <td></td>
+        </tr>
+      `;
+    }).join("");
+
+    const eventDate = new Date(event.event_date).toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
+      <title>Feuille d'émargement — ${event.title}</title>
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 11px; color: #111; margin: 20px; }
+        .header { border-bottom: 3px solid #FF5A1F; padding-bottom: 12px; margin-bottom: 20px; }
+        .header h1 { font-size: 20px; margin: 0 0 4px; }
+        .badge { display: inline-block; background: #FF5A1F; color: #fff; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th { background: #111; color: #fff; padding: 10px 8px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; }
+        td { padding: 10px 8px; border-bottom: 1px solid #ddd; vertical-align: middle; }
+        tr:nth-child(even) td { background: #f9f9f9; }
+        .footer { margin-top: 24px; font-size: 10px; color: #aaa; text-align: center; border-top: 1px solid #eee; padding-top: 12px; }
+      </style>
+    </head><body>
+      <div class="header">
+        <span class="badge">🏁 TrackMarshal</span>
+        <h1>${escapeHtml(event.title)}</h1>
+        <p style="margin:0;color:#555;">📅 ${eventDate} &nbsp;·&nbsp; 📍 ${escapeHtml(event.location)}</p>
+      </div>
+      <p style="color:#555;">Feuille d'émargement — ${accepted.length} commissaire(s) accepté(s)</p>
+      <table>
+        <thead><tr>
+          <th style="width:32px;">#</th>
+          <th>Commissaire</th>
+          <th>Poste assigné</th>
+          <th style="width:60px;">Présence</th>
+          <th>Signature</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="footer">Document généré le ${new Date().toLocaleDateString("fr-FR")} via TrackMarshal</div>
+    </body></html>`;
+
+    const win = window.open("", "_blank");
+    if (win) {
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      setTimeout(() => { win.print(); }, 300);
+    }
+  }
+
+  // Feature 5: Bilan PDF
+  function exportBilanPDF() {
+    const accepted = applications.filter((a) => a.status === "accepted");
+    const present = accepted.filter((a) => bilanAttended[a.id] === true).length;
+    const absent = accepted.filter((a) => bilanAttended[a.id] === false).length;
+
+    const rows = accepted.map((app) => {
+      const p = app.profiles || {};
+      const att = bilanAttended[app.id];
+      const note = bilanNotes[app.id];
+      return `
+        <tr>
+          <td><strong>${escapeHtml(p.full_name)}</strong><br/><span style="color:#888;font-size:10px;">${escapeHtml(p.license_type)}</span></td>
+          <td>${escapeHtml(app.post)}</td>
+          <td style="text-align:center;font-weight:bold;color:${att === true ? "#16a34a" : att === false ? "#dc2626" : "#888"}">
+            ${att === true ? "✔ Présent" : att === false ? "✗ Absent" : "—"}
+          </td>
+          <td style="color:#555;font-size:10px;">${escapeHtml(note)}</td>
+        </tr>
+      `;
+    }).join("");
+
+    const eventDate = new Date(event.event_date).toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
+      <title>Bilan — ${event.title}</title>
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 11px; color: #111; margin: 20px; }
+        .header { border-bottom: 3px solid #FF5A1F; padding-bottom: 12px; margin-bottom: 20px; }
+        .badge { display: inline-block; background: #FF5A1F; color: #fff; padding: 3px 10px; border-radius: 20px; font-weight: bold; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+        .stats { display: flex; gap: 24px; margin-bottom: 20px; flex-wrap: wrap; }
+        .stat { background: #f5f5f5; border-radius: 12px; padding: 12px 20px; }
+        .stat h3 { margin: 0; font-size: 24px; }
+        .stat p { margin: 0; color: #888; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #111; color: #fff; padding: 10px 8px; text-align: left; font-size: 10px; text-transform: uppercase; }
+        td { padding: 10px 8px; border-bottom: 1px solid #ddd; vertical-align: top; }
+        tr:nth-child(even) td { background: #f9f9f9; }
+        .footer { margin-top: 24px; font-size: 10px; color: #aaa; text-align: center; border-top: 1px solid #eee; padding-top: 12px; }
+      </style>
+    </head><body>
+      <div class="header">
+        <span class="badge">🏁 TrackMarshal</span>
+        <h1 style="font-size:20px;margin:4px 0;">Bilan post-événement — ${escapeHtml(event.title)}</h1>
+        <p style="color:#555;margin:0;">📅 ${eventDate} &nbsp;·&nbsp; 📍 ${escapeHtml(event.location)}</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><h3 style="color:#FF5A1F;">${accepted.length}</h3><p>Commissaires</p></div>
+        <div class="stat"><h3 style="color:#16a34a;">${present}</h3><p>Présents</p></div>
+        <div class="stat"><h3 style="color:#dc2626;">${absent}</h3><p>Absents</p></div>
+        <div class="stat"><h3 style="color:#888;">${accepted.length - present - absent}</h3><p>Non renseigné</p></div>
+      </div>
+      <table>
+        <thead><tr>
+          <th>Commissaire</th><th>Poste</th><th>Présence</th><th>Note</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="footer">Bilan généré le ${new Date().toLocaleDateString("fr-FR")} via TrackMarshal</div>
+    </body></html>`;
+
+    const win = window.open("", "_blank");
+    if (win) {
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      setTimeout(() => { win.print(); }, 300);
+    }
+  }
+
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-black text-white">
+        Chargement...
+      </main>
+    );
+  }
+
+  if (!event) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-black text-white">
+        <div className="text-center">
+          <h1 className="text-4xl font-black">Événement introuvable</h1>
+          <Link href="/organizer/events" className="mt-6 inline-flex rounded-2xl bg-[#FF5A1F] px-6 py-3 font-bold">
+            Retour aux événements
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  const acceptedCount = applications.filter((a) => a.status === "accepted").length;
+  const pendingCount = applications.filter((a) => a.status === "pending").length;
+  const remaining = Math.max(0, (event.marshals_needed || 0) - acceptedCount);
+  const isEventPast = new Date(event.event_date) < new Date();
+
+  const filteredApplications = applications.filter((app) => {
+    if (filter === "all") return true;
+    return app.status === filter;
+  });
+
+  async function bulkUpdateStatus(status: "accepted" | "rejected") {
+    if (selected.length === 0) return;
+    setBulkLoading(true);
+    await supabase.from("applications").update({ status }).in("id", selected);
+    setSelected([]);
+    setBulkLoading(false);
+    loadEvent();
+    setToast({ message: `${selected.length} candidature(s) ${status === "accepted" ? "acceptée(s)" : "refusée(s)"}`, type: "success" });
   }
 
   return (
@@ -310,541 +526,514 @@ const filteredApplications =
         onCancel={() => setConfirmDelete(false)}
       />
 
-      <div className="flex min-h-screen">
+      {/* Modal messagerie groupée */}
+      {showGroupMsg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#0a0a0a] p-6 lg:p-8">
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-2xl font-black">💬 Message groupé</h2>
+              <button onClick={() => setShowGroupMsg(false)} className="rounded-xl p-2 hover:bg-white/10 transition">
+                <X size={20} />
+              </button>
+            </div>
+            <p className="mb-4 text-sm text-zinc-400">
+              Ce message sera envoyé à tous les commissaires <span className="font-bold text-green-400">acceptés</span> ({acceptedCount}) dans leur conversation individuelle.
+            </p>
+            <textarea
+              value={groupMsg}
+              onChange={(e) => setGroupMsg(e.target.value)}
+              rows={6}
+              placeholder="Votre message pour tous les commissaires acceptés..."
+              className="w-full rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F]/60 resize-none"
+            />
+            <div className="mt-4 flex gap-3 justify-end">
+              <button
+                onClick={() => setShowGroupMsg(false)}
+                className="rounded-2xl border border-white/10 px-5 py-3 font-bold text-zinc-400 hover:text-white transition"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={sendGroupMessage}
+                disabled={sendingGroupMsg || !groupMsg.trim()}
+                className="flex items-center gap-2 rounded-2xl bg-[#FF5A1F] px-6 py-3 font-bold transition hover:opacity-90 disabled:opacity-50"
+              >
+                <MessageSquare size={16} />
+                {sendingGroupMsg ? "Envoi..." : "Envoyer"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
+      <div className="flex min-h-screen">
         <OrganizerSidebar />
 
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto pb-24 lg:pb-0">
 
-      <div className="relative h-[420px] overflow-hidden">
+          {/* Hero banner */}
+          <div className="relative h-[280px] overflow-hidden lg:h-[420px]">
+            <img
+              src={event.image_url || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"}
+              alt={event.title}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
 
-        <img
-          src={
-            event.image_url ||
-            "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"
-          }
-          alt={event.title}
-          className="h-full w-full object-cover"
-        />
-
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
-
-        <div className="absolute inset-0 flex flex-col justify-between p-6 lg:p-10">
-
-          <div className="flex justify-between">
-
-            <Link
-              href="/organizer/events"
-              className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/40 px-5 py-3 backdrop-blur-xl"
-            >
-              <ArrowLeft size={18} />
-              Retour
-            </Link>
-
-            <div className="flex items-center gap-3">
-              <NotificationBell />
-              <button
-                onClick={cloneEvent}
-                className="flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 font-bold backdrop-blur-xl transition hover:bg-white/20"
-              >
-                <Copy size={18} />
-                Cloner
-              </button>
-
-              <Link
-                href={`/organizer/events/${eventId}/edit`}
-                className="flex items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 font-bold backdrop-blur-xl transition hover:bg-white/20"
-              >
-                <Pencil size={18} />
-                Modifier
-              </Link>
-
-              <button
-                onClick={() => setConfirmDelete(true)}
-                className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
-              >
-                <Trash2 size={18} />
-                Supprimer
-              </button>
-            </div>
-
-          </div>
-
-          <div>
-
-            <div className="mb-4 inline-flex rounded-full bg-[#FF5A1F] px-4 py-2 text-sm font-bold">
-              {event.discipline}
-            </div>
-
-            <h1 className="max-w-5xl text-5xl font-black lg:text-7xl">
-              {event.title}
-            </h1>
-
-            <div className="mt-6 flex flex-wrap gap-6 text-zinc-300">
-
-              <div className="flex items-center gap-2">
-                <CalendarDays size={18} />
-                {formatDate(event.event_date)}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <MapPin size={18} />
-                {event.location}, {event.country}
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <div className="mx-auto max-w-[1700px] p-6 lg:p-10">
-
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-            <p className="text-zinc-500">
-              Candidatures
-            </p>
-            <h2 className="mt-4 text-5xl font-black">
-              {applications.length}
-            </h2>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-            <p className="text-zinc-500">
-              Acceptés
-            </p>
-            <h2 className="mt-4 text-5xl font-black text-green-400">
-              {accepted}
-            </h2>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-            <p className="text-zinc-500">
-              En attente
-            </p>
-            <h2 className="mt-4 text-5xl font-black text-yellow-400">
-              {pending}
-            </h2>
-          </div>
-
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-            <p className="text-zinc-500">
-              Places restantes
-            </p>
-            <h2 className="mt-4 text-5xl font-black text-[#FF5A1F]">
-              {remaining}
-            </h2>
-          </div>
-
-        </div>
-
-        <div className="mt-8 grid gap-8 xl:grid-cols-[1fr_420px]">
-
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-
-            <div className="flex flex-wrap items-center justify-between gap-4">
-
-              <div className="flex items-center gap-3">
-                <Users />
-                <h2 className="text-3xl font-black">
-                  Candidatures
-                </h2>
-              </div>
-
-              {accepted > 0 && (
-                <div className="flex flex-wrap items-center gap-3">
-                  <Link
-                    href={`/organizer/events/${eventId}/reviews`}
-                    className="flex items-center gap-2 rounded-2xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-5 py-3 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20"
+            <div className="absolute inset-0 flex flex-col justify-between p-4 lg:p-10">
+              <div className="flex justify-between">
+                <Link
+                  href="/organizer/events"
+                  className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/40 px-4 py-2 text-sm backdrop-blur-xl lg:px-5 lg:py-3"
+                >
+                  <ArrowLeft size={16} />
+                  Retour
+                </Link>
+                <div className="flex items-center gap-2 lg:gap-3">
+                  <NotificationBell />
+                  <button
+                    onClick={cloneEvent}
+                    className="hidden items-center gap-2 rounded-2xl bg-white/10 px-5 py-3 font-bold backdrop-blur-xl transition hover:bg-white/20 lg:flex"
                   >
-                    ⭐ Évaluer
+                    <Copy size={18} />
+                    Cloner
+                  </button>
+                  <Link
+                    href={`/organizer/events/${eventId}/edit`}
+                    className="flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-2 text-sm font-bold backdrop-blur-xl transition hover:bg-white/20 lg:px-5 lg:py-3"
+                  >
+                    <Pencil size={16} />
+                    <span className="hidden sm:inline">Modifier</span>
                   </Link>
                   <button
-                    onClick={exportCSV}
-                    className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                    onClick={() => setConfirmDelete(true)}
+                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-4 py-2 text-sm font-bold lg:px-5 lg:py-3"
                   >
-                    <FileSpreadsheet size={16} />
-                    Excel / CSV
-                  </button>
-                  <button
-                    onClick={exportPDF}
-                    className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
-                  >
-                    <FileText size={16} />
-                    Imprimer / PDF
+                    <Trash2 size={16} />
+                    <span className="hidden sm:inline">Supprimer</span>
                   </button>
                 </div>
-              )}
-
-            </div>
-
-{selected.length > 0 && (
-  <div className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-    <span className="text-sm font-bold text-zinc-400">{selected.length} sélectionné(s)</span>
-    <button
-      onClick={() => bulkUpdateStatus("accepted")}
-      disabled={bulkLoading}
-      className="rounded-2xl bg-green-600 px-5 py-2 text-sm font-bold transition hover:bg-green-500 disabled:opacity-60"
-    >
-      Accepter la sélection
-    </button>
-    <button
-      onClick={() => bulkUpdateStatus("rejected")}
-      disabled={bulkLoading}
-      className="rounded-2xl bg-red-600 px-5 py-2 text-sm font-bold transition hover:bg-red-500 disabled:opacity-60"
-    >
-      Refuser la sélection
-    </button>
-    <button onClick={() => setSelected([])} className="text-sm text-zinc-500 hover:text-white transition">
-      Désélectionner
-    </button>
-  </div>
-)}
-
-<div className="mt-8 mb-6 flex flex-wrap gap-3">
-
-  <button
-    onClick={() => setFilter("all")}
-    className={`rounded-2xl px-4 py-2 font-bold ${
-      filter === "all"
-        ? "bg-[#FF5A1F]"
-        : "bg-white/10"
-    }`}
-  >
-    Toutes
-  </button>
-
-  <button
-    onClick={() => setFilter("pending")}
-    className={`rounded-2xl px-4 py-2 font-bold ${
-      filter === "pending"
-        ? "bg-yellow-600"
-        : "bg-white/10"
-    }`}
-  >
-    En attente
-  </button>
-
-  <button
-    onClick={() => setFilter("accepted")}
-    className={`rounded-2xl px-4 py-2 font-bold ${
-      filter === "accepted"
-        ? "bg-green-600"
-        : "bg-white/10"
-    }`}
-  >
-    Acceptées
-  </button>
-
-  <button
-    onClick={() => setFilter("rejected")}
-    className={`rounded-2xl px-4 py-2 font-bold ${
-      filter === "rejected"
-        ? "bg-red-600"
-        : "bg-white/10"
-    }`}
-  >
-    Refusées
-  </button>
-
-</div>
-            {filteredApplications.length === 0 ? (
-
-              <div className="mt-8 rounded-3xl border border-dashed border-white/10 p-12 text-center">
-
-                <h3 className="text-2xl font-black">
-                  Aucune candidature
-                </h3>
-
-                <p className="mt-4 text-zinc-500">
-                  Votre événement est en ligne.
-                  Les commissaires peuvent
-                  désormais postuler.
-                </p>
-
               </div>
 
-            ) : (
+              <div>
+                <div className="mb-3 inline-flex rounded-full bg-[#FF5A1F] px-4 py-2 text-sm font-bold">
+                  {event.discipline}
+                </div>
+                <h1 className="max-w-5xl text-3xl font-black lg:text-7xl">{event.title}</h1>
+                <div className="mt-4 flex flex-wrap gap-4 text-zinc-300 lg:mt-6 lg:gap-6">
+                  <div className="flex items-center gap-2 text-sm lg:text-base">
+                    <CalendarDays size={16} />
+                    {formatDate(event.event_date)}
+                  </div>
+                  <div className="flex items-center gap-2 text-sm lg:text-base">
+                    <MapPin size={16} />
+                    {event.location}, {event.country}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-<div className="mt-8 space-y-4">
-  {filteredApplications.map((app) => (
-<div
-  key={app.id}
-  className={`rounded-3xl border bg-black/30 p-6 transition ${selected.includes(app.id) ? "border-[#FF5A1F]/50 bg-[#FF5A1F]/5" : "border-white/10"}`}
->
-  <div className="flex items-start justify-between">
+          <div className="mx-auto max-w-[1700px] p-4 lg:p-10">
 
-    <div className="flex gap-4">
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
+                <p className="text-sm text-zinc-500">Candidatures</p>
+                <h2 className="mt-3 text-4xl font-black lg:text-5xl">{applications.length}</h2>
+              </div>
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
+                <p className="text-sm text-zinc-500">Acceptés</p>
+                <h2 className="mt-3 text-4xl font-black text-green-400 lg:text-5xl">{acceptedCount}</h2>
+              </div>
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
+                <p className="text-sm text-zinc-500">En attente</p>
+                <h2 className="mt-3 text-4xl font-black text-yellow-400 lg:text-5xl">{pendingCount}</h2>
+              </div>
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
+                <p className="text-sm text-zinc-500">Places restantes</p>
+                <h2 className="mt-3 text-4xl font-black text-[#FF5A1F] lg:text-5xl">{remaining}</h2>
+              </div>
+            </div>
 
-      <input
-        type="checkbox"
-        checked={selected.includes(app.id)}
-        onChange={(e) => setSelected(prev => e.target.checked ? [...prev, app.id] : prev.filter(id => id !== app.id))}
-        className="mt-1 h-5 w-5 cursor-pointer accent-[#FF5A1F]"
-      />
+            <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_420px] lg:mt-8">
 
-      <Link href={`/organizer/commissaires/${app.marshal_id}`}>
-        <img
-          src={
-            app.profiles?.avatar_url ||
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(
-              app.profiles?.full_name || "Marshal"
-            )}`
-          }
-          alt=""
-          className="h-16 w-16 rounded-full transition hover:opacity-80"
-        />
-      </Link>
+              {/* Applications panel */}
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
 
-      <div>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <Users size={22} />
+                    <h2 className="text-2xl font-black lg:text-3xl">Candidatures</h2>
+                  </div>
 
-        <Link href={`/organizer/commissaires/${app.marshal_id}`} className="transition hover:text-[#FF5A1F]">
-          <h3 className="text-2xl font-black">
-            {app.profiles?.full_name}
-          </h3>
-        </Link>
+                  {acceptedCount > 0 && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Link
+                        href={`/organizer/events/${eventId}/reviews`}
+                        className="flex items-center gap-1.5 rounded-2xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-3 py-2 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20"
+                      >
+                        ⭐ Évaluer
+                      </Link>
+                      <button
+                        onClick={() => setShowGroupMsg(true)}
+                        className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                      >
+                        <MessageSquare size={14} />
+                        Message
+                      </button>
+                      <button
+                        onClick={sendReminders}
+                        disabled={sendingReminders}
+                        className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F] disabled:opacity-50"
+                      >
+                        <Bell size={14} />
+                        {sendingReminders ? "..." : "Rappels"}
+                      </button>
+                      <button
+                        onClick={exportEmargement}
+                        className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                      >
+                        <ClipboardCheck size={14} />
+                        Émargement
+                      </button>
+                      <button
+                        onClick={exportCSV}
+                        className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                      >
+                        <FileSpreadsheet size={14} />
+                        CSV
+                      </button>
+                      <button
+                        onClick={exportPDF}
+                        className="flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-2 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                      >
+                        <FileText size={14} />
+                        PDF
+                      </button>
+                    </div>
+                  )}
+                </div>
 
-        <p className="mt-2 text-zinc-400">
-          📍 {app.profiles?.city || "Ville inconnue"}
-          {app.profiles?.country
-            ? `, ${app.profiles.country}`
-            : ""}
-        </p>
+                {selected.length > 0 && (
+                  <div className="mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <span className="text-sm font-bold text-zinc-400">{selected.length} sélectionné(s)</span>
+                    <button
+                      onClick={() => bulkUpdateStatus("accepted")}
+                      disabled={bulkLoading}
+                      className="rounded-2xl bg-green-600 px-4 py-2 text-sm font-bold transition hover:bg-green-500 disabled:opacity-60"
+                    >
+                      Accepter
+                    </button>
+                    <button
+                      onClick={() => bulkUpdateStatus("rejected")}
+                      disabled={bulkLoading}
+                      className="rounded-2xl bg-red-600 px-4 py-2 text-sm font-bold transition hover:bg-red-500 disabled:opacity-60"
+                    >
+                      Refuser
+                    </button>
+                    <button onClick={() => setSelected([])} className="text-sm text-zinc-500 hover:text-white transition">
+                      Désélectionner
+                    </button>
+                  </div>
+                )}
 
-        <p className="text-zinc-400">
-          📧 {app.profiles?.email || "-"}
-        </p>
+                <div className="mt-5 mb-4 flex flex-wrap gap-2">
+                  {[
+                    { key: "all", label: "Toutes", activeClass: "bg-[#FF5A1F]" },
+                    { key: "pending", label: "En attente", activeClass: "bg-yellow-600" },
+                    { key: "accepted", label: "Acceptées", activeClass: "bg-green-600" },
+                    { key: "rejected", label: "Refusées", activeClass: "bg-red-600" },
+                  ].map(({ key, label, activeClass }) => (
+                    <button
+                      key={key}
+                      onClick={() => setFilter(key)}
+                      className={`rounded-2xl px-3 py-2 text-sm font-bold transition lg:px-4 ${filter === key ? activeClass : "bg-white/10 hover:bg-white/15"}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
 
-        <p className="text-zinc-400">
-          📞 {app.profiles?.phone || "-"}
-        </p>
+                {filteredApplications.length === 0 ? (
+                  <div className="mt-8 rounded-3xl border border-dashed border-white/10 p-10 text-center">
+                    <h3 className="text-xl font-black">Aucune candidature</h3>
+                    <p className="mt-4 text-zinc-500">Votre événement est en ligne. Les commissaires peuvent désormais postuler.</p>
+                  </div>
+                ) : (
+                  <div className="mt-4 space-y-4">
+                    {filteredApplications.map((app) => (
+                      <div
+                        key={app.id}
+                        className={`rounded-3xl border bg-black/30 p-4 transition lg:p-6 ${selected.includes(app.id) ? "border-[#FF5A1F]/50 bg-[#FF5A1F]/5" : "border-white/10"}`}
+                      >
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
 
-        <p className="mt-3 text-zinc-300">
-          🏁 Expérience :
-        </p>
+                          <div className="flex gap-3 lg:gap-4">
+                            <input
+                              type="checkbox"
+                              checked={selected.includes(app.id)}
+                              onChange={(e) => setSelected(prev => e.target.checked ? [...prev, app.id] : prev.filter(id => id !== app.id))}
+                              className="mt-1 h-5 w-5 cursor-pointer accent-[#FF5A1F] shrink-0"
+                            />
+                            <Link href={`/organizer/commissaires/${app.marshal_id}`}>
+                              <img
+                                src={app.profiles?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(app.profiles?.full_name || "Marshal")}`}
+                                alt=""
+                                className="h-14 w-14 rounded-full transition hover:opacity-80 lg:h-16 lg:w-16"
+                              />
+                            </Link>
+                            <div className="min-w-0 flex-1">
+                              <Link href={`/organizer/commissaires/${app.marshal_id}`} className="transition hover:text-[#FF5A1F]">
+                                <h3 className="text-xl font-black lg:text-2xl">{app.profiles?.full_name}</h3>
+                              </Link>
+                              <p className="mt-1 text-sm text-zinc-400">
+                                📍 {app.profiles?.city || "Ville inconnue"}{app.profiles?.country ? `, ${app.profiles.country}` : ""}
+                              </p>
+                              <p className="text-sm text-zinc-400">📧 {app.profiles?.email || "-"}</p>
+                              <p className="text-sm text-zinc-400">📞 {app.profiles?.phone || "-"}</p>
+                              <p className="mt-2 text-sm font-semibold text-zinc-300">🏁 Expérience :</p>
+                              <p className="whitespace-pre-line text-sm text-zinc-400">{app.profiles?.experience || "Aucune"}</p>
+                              <p className="mt-2 text-sm text-zinc-300">⏳ {app.profiles?.years_experience || "-"} ans</p>
 
-        <p className="whitespace-pre-line text-zinc-400">
-          {app.profiles?.experience || "Aucune"}
-        </p>
+                              <div className="mt-3">
+                                <span className={`rounded-full px-3 py-1 text-xs font-bold lg:text-sm ${
+                                  app.status === "accepted" ? "bg-green-500/20 text-green-400"
+                                  : app.status === "rejected" ? "bg-red-500/20 text-red-400"
+                                  : "bg-yellow-500/20 text-yellow-400"
+                                }`}>
+                                  {app.status === "accepted" ? "Accepté" : app.status === "rejected" ? "Refusé" : "En attente"}
+                                </span>
+                              </div>
 
-        <p className="mt-3 text-zinc-300">
-          ⏳ Ancienneté :
-          {" "}
-          {app.profiles?.years_experience || "-"}
-        </p>
+                              {/* Feature 2: Attribution de poste */}
+                              {app.status === "accepted" && (
+                                <div className="mt-4">
+                                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-zinc-500">
+                                    Poste assigné
+                                  </label>
+                                  <div className="flex gap-2">
+                                    <input
+                                      type="text"
+                                      value={postValues[app.id] ?? ""}
+                                      onChange={(e) => setPostValues(prev => ({ ...prev, [app.id]: e.target.value }))}
+                                      placeholder="ex : Poste 12, Direction de course..."
+                                      className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]/60"
+                                    />
+                                    <button
+                                      onClick={() => savePost(app.id, postValues[app.id] ?? "")}
+                                      disabled={postSaving[app.id]}
+                                      className="rounded-xl bg-[#FF5A1F]/20 px-3 py-2 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/30 disabled:opacity-50"
+                                    >
+                                      {postSaving[app.id] ? "..." : "OK"}
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
 
-<div className="mt-3">
+                          <div className="flex flex-row gap-2 sm:flex-col sm:shrink-0">
+                            <Link
+                              href={`/organizer/commissaires/${app.marshal_id}`}
+                              className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2 text-center text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                            >
+                              Voir profil
+                            </Link>
+                            <div className="flex gap-2">
+                              <button
+                                disabled={app.status === "accepted"}
+                                onClick={async () => {
+                                  if (acceptedCount >= event.marshals_needed) {
+                                    setToast({ message: "Le nombre maximum de commissaires a été atteint.", type: "error" });
+                                    return;
+                                  }
+                                  await supabase.from("applications").update({ status: "accepted" }).eq("id", app.id);
+                                  await supabase.from("notifications").insert({
+                                    user_id: app.marshal_id,
+                                    title: "Votre candidature a été acceptée",
+                                    type: "application_accepted",
+                                    link: `/events/${event.slug}`,
+                                  });
+                                  if (app.profiles?.email) {
+                                    sendEmail(app.profiles.email, "application_accepted", {
+                                      eventTitle: event.title,
+                                      eventDate: formatDate(event.event_date),
+                                      eventLocation: event.location,
+                                    });
+                                  }
+                                  const { data: { user: currentUser } } = await supabase.auth.getUser();
+                                  if (currentUser) {
+                                    const { data: myMemberships } = await supabase
+                                      .from("conversation_members").select("conversation_id").eq("user_id", currentUser.id);
+                                    const myConvIds = (myMemberships || []).map((m: any) => m.conversation_id);
+                                    let alreadyExists = false;
+                                    if (myConvIds.length > 0) {
+                                      const { data: shared } = await supabase
+                                        .from("conversation_members").select("conversation_id")
+                                        .eq("user_id", app.marshal_id).in("conversation_id", myConvIds);
+                                      alreadyExists = (shared || []).length > 0;
+                                    }
+                                    if (!alreadyExists) {
+                                      const { data: convData } = await supabase
+                                        .from("conversations")
+                                        .insert({ title: `${event.title} — ${app.profiles?.full_name || "Commissaire"}` })
+                                        .select().single();
+                                      if (convData?.id) {
+                                        await supabase.from("conversation_members").insert([
+                                          { conversation_id: convData.id, user_id: currentUser.id },
+                                          { conversation_id: convData.id, user_id: app.marshal_id },
+                                        ]);
+                                      }
+                                    }
+                                  }
+                                  loadEvent();
+                                }}
+                                className={`rounded-2xl px-4 py-2 text-sm font-bold transition ${app.status === "accepted" ? "cursor-not-allowed bg-zinc-700" : "bg-green-600 hover:bg-green-500"}`}
+                              >
+                                Accepter
+                              </button>
+                              <button
+                                disabled={app.status === "rejected"}
+                                onClick={async () => {
+                                  await supabase.from("applications").update({ status: "rejected" }).eq("id", app.id);
+                                  await supabase.from("notifications").insert({
+                                    user_id: app.marshal_id,
+                                    title: "Votre candidature a été refusée",
+                                    type: "application_rejected",
+                                    link: `/events/${event.slug}`,
+                                  });
+                                  if (app.profiles?.email) {
+                                    sendEmail(app.profiles.email, "application_rejected", { eventTitle: event.title });
+                                  }
+                                  loadEvent();
+                                }}
+                                className={`rounded-2xl px-4 py-2 text-sm font-bold transition ${app.status === "rejected" ? "cursor-not-allowed bg-zinc-700" : "bg-red-600 hover:bg-red-500"}`}
+                              >
+                                Refuser
+                              </button>
+                            </div>
+                          </div>
 
-  <span
-    className={`rounded-full px-3 py-1 text-sm font-bold ${
-      app.status === "accepted"
-        ? "bg-green-500/20 text-green-400"
-        : app.status === "rejected"
-        ? "bg-red-500/20 text-red-400"
-        : "bg-yellow-500/20 text-yellow-400"
-    }`}
-  >
-    {app.status === "accepted"
-      ? "Accepté"
-      : app.status === "rejected"
-      ? "Refusé"
-      : "En attente"}
-  </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-</div>
+              {/* Sidebar info panel */}
+              <div className="space-y-6">
+                <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
+                  <h3 className="text-xl font-black">Description</h3>
+                  <p className="mt-4 text-zinc-300">{event.briefing || event.description || "Aucune description disponible."}</p>
+                </div>
 
-      </div>
+                <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
+                  <h3 className="text-xl font-black">Avantages</h3>
+                  <div className="mt-4 flex flex-col gap-3">
+                    {event.hotel && (
+                      <div>🏨 {event.hotel_detail || "Hébergement inclus"}</div>
+                    )}
+                    {event.pass_accompagnant && (
+                      <div>🎟️ {event.pass_accompagnant_count} pass accompagnant(s)</div>
+                    )}
+                    {event.defraiement && (
+                      <div>💰 Défraiement : {event.defraiement_amount}</div>
+                    )}
+                    {event.repas && (
+                      <div>🍽️ {event.repas_type}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-    </div>
+            {/* Feature 5: Bilan post-événement */}
+            {isEventPast && acceptedCount > 0 && (
+              <div className="mt-6 lg:mt-8">
+                <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
+                  <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <ClipboardCheck className="text-[#FF5A1F]" size={24} />
+                      <h2 className="text-2xl font-black lg:text-3xl">Bilan post-événement</h2>
+                    </div>
+                    <button
+                      onClick={exportBilanPDF}
+                      className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F] lg:px-5 lg:py-3"
+                    >
+                      <FileText size={15} />
+                      Exporter le bilan
+                    </button>
+                  </div>
 
-    <div className="flex flex-col gap-3">
+                  <p className="mb-5 text-sm text-zinc-400">
+                    Marquez la présence de chaque commissaire. Ces données sont sauvegardées et permettent de générer un rapport de participation.
+                  </p>
 
-  <Link
-    href={`/organizer/commissaires/${app.marshal_id}`}
-    className="rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2 text-center text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
-  >
-    Voir profil
-  </Link>
+                  <div className="space-y-3">
+                    {applications.filter((a) => a.status === "accepted").map((app) => {
+                      const p = app.profiles || {};
+                      const attended = bilanAttended[app.id];
+                      return (
+                        <div key={app.id} className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 sm:flex-row sm:items-center">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <img
+                              src={p.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.full_name || "Marshal")}`}
+                              alt=""
+                              className="h-10 w-10 rounded-full shrink-0"
+                            />
+                            <div className="min-w-0">
+                              <p className="font-bold truncate">{p.full_name}</p>
+                              <p className="text-xs text-zinc-500 truncate">{app.post || "Aucun poste assigné"}</p>
+                            </div>
+                          </div>
 
-  <div className="flex gap-3">
-  <button
-  disabled={app.status === "accepted"}
-  onClick={async () => {
-
-    if (accepted >= event.marshals_needed) {
-
-      setToast({ message: "Le nombre maximum de commissaires a été atteint.", type: "error" });
-
-      return;
-    }
-
- await supabase
-  .from("applications")
-  .update({ status: "accepted" })
-  .eq("id", app.id);
-
-await supabase
-  .from("notifications")
-  .insert({
-    user_id: app.marshal_id,
-    title: "Votre candidature a été acceptée",
-    type: "application_accepted",
-    link: `/events/${event.slug}`,
-  });
-
-if (app.profiles?.email) {
-  sendEmail(app.profiles.email, "application_accepted", {
-    eventTitle: event.title,
-    eventDate: formatDate(event.event_date),
-    eventLocation: event.location,
-  });
-}
-
-const { data: { user: currentUser } } = await supabase.auth.getUser();
-if (currentUser) {
-  const { data: convData, error: convError } = await supabase
-    .from("conversations")
-    .insert({ title: `${event.title} — ${app.profiles?.full_name || "Commissaire"}` })
-    .select()
-    .single();
-
-  if (convError) {
-    console.error("Erreur création conversation:", convError);
-    setToast({ message: `Candidature acceptée mais erreur messagerie: ${convError.message}`, type: "error" });
-  } else if (convData?.id) {
-    const { error: membersError } = await supabase.from("conversation_members").insert([
-      { conversation_id: convData.id, user_id: currentUser.id },
-      { conversation_id: convData.id, user_id: app.marshal_id },
-    ]);
-    if (membersError) console.error("Erreur membres conversation:", membersError);
-  }
-}
-
-loadEvent();
-  }}
-  className={`rounded-2xl px-5 py-3 font-bold ${
-    app.status === "accepted"
-      ? "bg-zinc-700 cursor-not-allowed"
-      : "bg-green-600"
-  }`}
->
-  Accepter
-</button>
-
- <button
-  disabled={app.status === "rejected"}
-  onClick={async () => {
-
-   await supabase
-  .from("applications")
-  .update({
-    status: "rejected",
-  })
-  .eq("id", app.id);
-
-await supabase
-  .from("notifications")
-  .insert({
-    user_id: app.marshal_id,
-    title: "Votre candidature a été refusée",
-    type: "application_rejected",
-    link: `/events/${event.slug}`,
-  });
-
-if (app.profiles?.email) {
-  sendEmail(app.profiles.email, "application_rejected", {
-    eventTitle: event.title,
-  });
-}
-
-loadEvent();
-  }}
-  className={`rounded-2xl px-5 py-3 font-bold ${
-    app.status === "rejected"
-      ? "bg-zinc-700 cursor-not-allowed"
-      : "bg-red-600"
-  }`}
->
-  Refuser
-</button>
-
-    </div>
-
-  </div>
-
-  </div>
-</div>
-  ))}
-</div>
-
+                          <div className="flex flex-wrap items-center gap-2 lg:gap-3">
+                            <button
+                              onClick={() => setBilanAttended(prev => ({ ...prev, [app.id]: true }))}
+                              className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold transition ${
+                                attended === true ? "bg-green-600 text-white" : "border border-white/10 bg-white/[0.04] text-zinc-400 hover:border-green-500/40 hover:text-green-400"
+                              }`}
+                            >
+                              <CheckCircle2 size={14} />
+                              Présent
+                            </button>
+                            <button
+                              onClick={() => setBilanAttended(prev => ({ ...prev, [app.id]: false }))}
+                              className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-bold transition ${
+                                attended === false ? "bg-red-600 text-white" : "border border-white/10 bg-white/[0.04] text-zinc-400 hover:border-red-500/40 hover:text-red-400"
+                              }`}
+                            >
+                              <XCircle size={14} />
+                              Absent
+                            </button>
+                            <input
+                              type="text"
+                              value={bilanNotes[app.id] ?? ""}
+                              onChange={(e) => setBilanNotes(prev => ({ ...prev, [app.id]: e.target.value }))}
+                              placeholder="Note..."
+                              className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]/60 w-32 lg:w-48"
+                            />
+                            <button
+                              onClick={() => saveBilan(app.id)}
+                              disabled={bilanSaving[app.id] || attended === null}
+                              className="rounded-xl bg-[#FF5A1F]/20 px-3 py-2 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/30 disabled:opacity-40"
+                            >
+                              {bilanSaving[app.id] ? "..." : "Enregistrer"}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             )}
 
           </div>
-
-          <div className="space-y-6">
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-
-              <h3 className="text-xl font-black">
-                Description
-              </h3>
-
-              <p className="mt-4 text-zinc-300">
-                {event.briefing || event.description || "Aucune description disponible."}
-              </p>
-
-            </div>
-
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8">
-
-              <h3 className="text-xl font-black">
-                Avantages
-              </h3>
-
-              <div className="mt-4 flex flex-col gap-3">
-
-                {event.hotel && (
-                  <div>🏨 Hôtel fourni</div>
-                )}
-
-                {event.pass_accompagnant && (
-                  <div>
-                    🎟️ {event.pass_accompagnant_count}
-                    {" "}pass accompagnant(s)
-                  </div>
-                )}
-
-                {event.defraiement && (
-                  <div>
-                    💰 Défraiement :
-                    {" "}
-                    {event.defraiement_amount} €
-                  </div>
-                )}
-
-                {event.repas && (
-                  <div>
-                    🍽️ {event.repas_type}
-                  </div>
-                )}
-
-              </div>
-
-            </div>
-
-          </div>
-
         </div>
-
       </div>
-
-        </div>
-
-      </div>
-
     </main>
   );
 }
