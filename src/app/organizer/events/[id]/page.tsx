@@ -345,14 +345,31 @@ export default function OrganizerEventDetailsPage() {
   // Feature 3: Feuille d'émargement
   function exportEmargement() {
     const accepted = applications.filter((a) => a.status === "accepted");
+
+    // Build list of event days
+    const days: Date[] = [];
+    const startDay = new Date(event.event_date);
+    const endDay = event.event_end_date ? new Date(event.event_end_date) : new Date(event.event_date);
+    for (let d = new Date(startDay); d <= endDay; d.setDate(d.getDate() + 1)) {
+      days.push(new Date(d));
+    }
+    const isMultiDay = days.length > 1;
+
+    const dayHeaders = isMultiDay
+      ? days.map((d) => `<th style="width:54px;text-align:center;">${d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })}</th>`).join("")
+      : `<th style="width:60px;">Présence</th>`;
+
     const rows = accepted.map((app, idx) => {
       const p = app.profiles || {};
+      const checkboxCells = isMultiDay
+        ? days.map(() => `<td style="text-align:center;font-size:18px;">☐</td>`).join("")
+        : `<td style="text-align:center;font-size:18px;">☐</td>`;
       return `
         <tr>
           <td style="text-align:center;">${idx + 1}</td>
           <td><strong>${escapeHtml(p.full_name)}</strong><br/><span style="color:#888;font-size:10px;">${escapeHtml(p.license_type)} ${escapeHtml(p.license_number)}</span></td>
           <td>${escapeHtml(app.post) !== "—" ? escapeHtml(app.post) : '<span style="color:#bbb;">—</span>'}</td>
-          <td style="text-align:center;font-size:18px;">☐</td>
+          ${checkboxCells}
           <td></td>
         </tr>
       `;
@@ -385,7 +402,7 @@ export default function OrganizerEventDetailsPage() {
           <th style="width:32px;">#</th>
           <th>Commissaire</th>
           <th>Poste assigné</th>
-          <th style="width:60px;">Présence</th>
+          ${dayHeaders}
           <th>Signature</th>
         </tr></thead>
         <tbody>${rows}</tbody>
