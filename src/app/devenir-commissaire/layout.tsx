@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     description:
       "Tout savoir sur les licences FFSA (auto) et FFM (moto), les formations officielles et les étapes pour débuter le commissariat motorsport en France.",
     url: "https://www.trackmarshal.app/devenir-commissaire",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Devenir commissaire motorsport — TrackMarshal" }],
   },
   alternates: { canonical: "/devenir-commissaire" },
 };

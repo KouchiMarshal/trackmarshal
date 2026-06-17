@@ -104,6 +104,7 @@ export default function EventsPage() {
 
           <img
             src="https://images.unsplash.com/photo-1541773367336-d14e1d89924f?q=80&w=2070&auto=format&fit=crop"
+            alt="Événements motorsport en France"
             className="h-full w-full object-cover"
           />
 
@@ -273,6 +274,7 @@ export default function EventsPage() {
                       event.image_url ||
                       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"
                     }
+                    alt={event.title || "Événement motorsport"}
                     className="h-full w-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />

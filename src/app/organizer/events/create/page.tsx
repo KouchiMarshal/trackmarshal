@@ -72,6 +72,9 @@ export default function CreateEventPage() {
   const [hotel, setHotel] =
     useState(false);
 
+  const [hotelDetail, setHotelDetail] =
+    useState("");
+
   const [organizerContact, setOrganizerContact] =
     useState("");
 
@@ -199,6 +202,8 @@ export default function CreateEventPage() {
             repasType || null,
 
           hotel,
+
+          hotel_detail: hotelDetail || null,
 
           organizer_contact: organizerContact,
 
@@ -545,18 +550,13 @@ export default function CreateEventPage() {
 
                   {repas && (
 
-                    <select
+                    <input
+                      type="text"
+                      placeholder="ex : Déjeuner sam. + dim., dîner samedi soir"
                       value={repasType}
                       onChange={(e) => setRepasType(e.target.value)}
                       className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
-                    >
-
-                      <option value="">Choisir</option>
-                      <option value="Midi">Midi</option>
-                      <option value="Soir">Soir</option>
-                      <option value="Midi + Soir">Midi + Soir</option>
-
-                    </select>
+                    />
 
                   )}
 
@@ -566,7 +566,7 @@ export default function CreateEventPage() {
 
                   <div className="flex items-center justify-between">
 
-                    <span className="font-semibold">🏨 Hôtel inclus</span>
+                    <span className="font-semibold">🏨 Hébergement</span>
 
                     <button
                       type="button"
@@ -577,6 +577,18 @@ export default function CreateEventPage() {
                     </button>
 
                   </div>
+
+                  {hotel && (
+
+                    <input
+                      type="text"
+                      placeholder="ex : Hôtel pris en charge vendredi et samedi soir"
+                      value={hotelDetail}
+                      onChange={(e) => setHotelDetail(e.target.value)}
+                      className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
+                    />
+
+                  )}
 
                 </div>
 

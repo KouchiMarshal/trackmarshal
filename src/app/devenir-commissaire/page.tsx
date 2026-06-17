@@ -121,6 +121,16 @@ const faqs = [
   },
 ];
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a },
+  })),
+};
+
 export default function DevenirCommissairePage() {
   const router = useRouter();
 
@@ -132,6 +142,10 @@ export default function DevenirCommissairePage() {
 
   return (
     <main className="min-h-screen bg-black text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <PublicNavbar />
 
       {/* Hero */}
@@ -139,6 +153,7 @@ export default function DevenirCommissairePage() {
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1541773367336-d14e1d89924f?q=80&w=2070&auto=format&fit=crop"
+            alt="Commissaire motorsport sur circuit"
             className="h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-black/85" />

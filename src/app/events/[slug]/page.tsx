@@ -15,6 +15,11 @@ type EventPageProps = {
   }>;
 };
 
+export async function generateStaticParams() {
+  const { data } = await supabase.from("events").select("slug");
+  return (data || []).map((e) => ({ slug: e.slug }));
+}
+
 export async function generateMetadata({ params }: EventPageProps): Promise<Metadata> {
   const { slug } = await params;
   const { data: event } = await supabase.from("events").select("title, briefing, location, country, discipline, image_url").eq("slug", slug).single();
@@ -80,8 +85,29 @@ export default async function EventPage({
       )
     : "Date à confirmer";
 
+  const eventSchema = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.title,
+    startDate: event.event_date,
+    location: {
+      "@type": "Place",
+      name: event.location || event.title,
+      address: { "@type": "PostalAddress", addressCountry: event.country || "FR" },
+    },
+    description: event.briefing || `Événement ${event.discipline || "motorsport"} — Postulez comme commissaire.`,
+    image: imageUrl,
+    organizer: { "@type": "Organization", name: "TrackMarshal", url: "https://www.trackmarshal.app" },
+    url: `https://www.trackmarshal.app/events/${slug}`,
+  };
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#050505] text-white">
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventSchema) }}
+      />
 
       <PublicNavbar />
 
