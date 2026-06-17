@@ -44,6 +44,7 @@ export default function EditEventPage() {
   const [repas, setRepas] = useState(false);
   const [repasType, setRepasType] = useState("");
   const [hotel, setHotel] = useState(false);
+  const [hotelDetail, setHotelDetail] = useState("");
   const [organizerContact, setOrganizerContact] = useState("");
   const [schedule, setSchedule] = useState("");
 
@@ -84,6 +85,7 @@ export default function EditEventPage() {
     setRepas(data.repas || false);
     setRepasType(data.repas_type || "");
     setHotel(data.hotel || false);
+    setHotelDetail(data.hotel_detail || "");
     setOrganizerContact(data.organizer_contact || "");
     setSchedule(data.schedule || "");
     setLoadingData(false);
@@ -126,6 +128,7 @@ export default function EditEventPage() {
         repas,
         repas_type: repasType || null,
         hotel,
+        hotel_detail: hotelDetail || null,
         organizer_contact: organizerContact,
         schedule: schedule || null,
       })
@@ -352,7 +355,7 @@ export default function EditEventPage() {
 
                     <div className={`rounded-2xl border p-5 transition ${hotel ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-white/10 bg-black/30"}`}>
                       <div className="flex items-center justify-between">
-                        <span className="font-semibold">🏨 Hôtel inclus</span>
+                        <span className="font-semibold">🏨 Hébergement</span>
                         <button
                           type="button"
                           onClick={() => setHotel(!hotel)}
@@ -361,6 +364,15 @@ export default function EditEventPage() {
                           <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${hotel ? "translate-x-6" : "translate-x-1"}`} />
                         </button>
                       </div>
+                      {hotel && (
+                        <input
+                          type="text"
+                          placeholder="ex : Hôtel pris en charge vendredi et samedi soir"
+                          value={hotelDetail}
+                          onChange={(e) => setHotelDetail(e.target.value)}
+                          className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
+                        />
+                      )}
                     </div>
 
                   </div>
