@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 
+import { formatDateRange } from "@/lib/formatDate";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 import ApplyButton from "@/components/events/apply-button";
@@ -75,14 +76,7 @@ export default async function EventPage({
       : "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=2070&auto=format&fit=crop";
 
   const formattedDate = event.event_date
-    ? new Date(event.event_date).toLocaleDateString(
-        "fr-FR",
-        {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }
-      )
+    ? formatDateRange(event.event_date, event.event_end_date)
     : "Date à confirmer";
 
   const eventSchema = {
@@ -90,6 +84,7 @@ export default async function EventPage({
     "@type": "Event",
     name: event.title,
     startDate: event.event_date,
+    endDate: event.event_end_date || event.event_date,
     location: {
       "@type": "Place",
       name: event.location || event.title,

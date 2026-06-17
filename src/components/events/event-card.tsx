@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { formatDateRange } from "@/lib/formatDate";
 
 type EventCardProps = {
   event: any;
@@ -14,16 +15,7 @@ export default function EventCard({
       ? event.image_url
       : "https://images.unsplash.com/photo-1541773367336-d14e5f0d8d2f?q=80&w=2070&auto=format&fit=crop";
 
-  const formattedDate = event.event_date
-    ? new Date(event.event_date).toLocaleDateString(
-        "fr-FR",
-        {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }
-      )
-    : "Date à confirmer";
+  const formattedDate = formatDateRange(event.event_date, event.event_end_date);
 
   return (
     <Link

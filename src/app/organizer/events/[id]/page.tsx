@@ -23,7 +23,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
-import { formatDate } from "@/lib/formatDate";
+import { formatDateRange } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
 import { ConfirmModal } from "@/components/ui/confirm-modal";
 import { sendEmail } from "@/lib/sendEmail";
@@ -148,6 +148,7 @@ export default function OrganizerEventDetailsPage() {
       location: event.location,
       country: event.country,
       event_date: event.event_date,
+      event_end_date: event.event_end_date || null,
       discipline: event.discipline,
       description: event.description,
       briefing: event.briefing,
@@ -357,7 +358,7 @@ export default function OrganizerEventDetailsPage() {
       `;
     }).join("");
 
-    const eventDate = new Date(event.event_date).toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const eventDate = formatDateRange(event.event_date, event.event_end_date);
 
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
       <title>Feuille d'émargement — ${event.title}</title>
@@ -423,7 +424,7 @@ export default function OrganizerEventDetailsPage() {
       `;
     }).join("");
 
-    const eventDate = new Date(event.event_date).toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+    const eventDate = formatDateRange(event.event_date, event.event_end_date);
 
     const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/>
       <title>Bilan — ${event.title}</title>
@@ -495,7 +496,8 @@ export default function OrganizerEventDetailsPage() {
   const acceptedCount = applications.filter((a) => a.status === "accepted").length;
   const pendingCount = applications.filter((a) => a.status === "pending").length;
   const remaining = Math.max(0, (event.marshals_needed || 0) - acceptedCount);
-  const isEventPast = new Date(event.event_date) < new Date();
+  const eventEndDate = event.event_end_date ? new Date(event.event_end_date) : new Date(event.event_date);
+  const isEventPast = eventEndDate < new Date();
 
   const filteredApplications = applications.filter((app) => {
     if (filter === "all") return true;
@@ -623,7 +625,7 @@ export default function OrganizerEventDetailsPage() {
                 <div className="mt-4 flex flex-wrap gap-4 text-zinc-300 lg:mt-6 lg:gap-6">
                   <div className="flex items-center gap-2 text-sm lg:text-base">
                     <CalendarDays size={16} />
-                    {formatDate(event.event_date)}
+                    {formatDateRange(event.event_date, event.event_end_date)}
                   </div>
                   <div className="flex items-center gap-2 text-sm lg:text-base">
                     <MapPin size={16} />
@@ -858,7 +860,7 @@ export default function OrganizerEventDetailsPage() {
                                   if (app.profiles?.email) {
                                     sendEmail(app.profiles.email, "application_accepted", {
                                       eventTitle: event.title,
-                                      eventDate: formatDate(event.event_date),
+                                      eventDate: formatDateRange(event.event_date, event.event_end_date),
                                       eventLocation: event.location,
                                     });
                                   }

@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
-import { formatDate } from "@/lib/formatDate";
+import { formatDateRange } from "@/lib/formatDate";
 import { CalendarDays, MapPin, Users } from "lucide-react";
 
 type Props = { params: Promise<{ id: string }> };
@@ -135,7 +135,7 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
                     <div className="p-6">
                       <h3 className="text-xl font-black">{event.title}</h3>
                       <div className="mt-3 space-y-2 text-sm text-zinc-400">
-                        <div className="flex items-center gap-2"><CalendarDays size={14} />{formatDate(event.event_date)}</div>
+                        <div className="flex items-center gap-2"><CalendarDays size={14} />{formatDateRange(event.event_date, event.event_end_date)}</div>
                         <div className="flex items-center gap-2"><MapPin size={14} />{event.location}{event.country ? `, ${event.country}` : ""}</div>
                         <div className="flex items-center gap-2"><Users size={14} />{event.marshals_needed} commissaires</div>
                       </div>

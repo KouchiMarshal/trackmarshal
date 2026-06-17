@@ -31,6 +31,7 @@ export default function EditEventPage() {
   const [country, setCountry] = useState("");
   const [location, setLocation] = useState("");
   const [date, setDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
@@ -73,6 +74,7 @@ export default function EditEventPage() {
     setCountry(data.country || "");
     setLocation(data.location || "");
     setDate(data.event_date ? data.event_date.split("T")[0] : "");
+    setEndDate(data.event_end_date ? data.event_end_date.split("T")[0] : "");
     setDescription(data.briefing || "");
     setCurrentImageUrl(data.image_url || "");
     setImagePreview(data.image_url || "");
@@ -132,6 +134,7 @@ export default function EditEventPage() {
         country,
         location,
         event_date: date,
+        event_end_date: endDate || null,
         briefing: description,
         ...(uploadedImage ? { image_url: uploadedImage } : {}),
         marshals_needed: Number(marshalsNeeded),
@@ -257,7 +260,7 @@ export default function EditEventPage() {
 
                   <div className="grid gap-6 lg:grid-cols-2">
                     <div>
-                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">Date</p>
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">Date de début</p>
                       <div className="relative">
                         <CalendarDays size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500" />
                         <input
@@ -268,6 +271,22 @@ export default function EditEventPage() {
                         />
                       </div>
                     </div>
+                    <div>
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">Date de fin <span className="text-zinc-600 normal-case">(optionnel)</span></p>
+                      <div className="relative">
+                        <CalendarDays size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500" />
+                        <input
+                          type="date"
+                          value={endDate}
+                          min={date || undefined}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 pl-14 pr-6 outline-none focus:border-[#FF5A1F]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-6 lg:grid-cols-2">
                     <div>
                       <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">Discipline</p>
                       <select

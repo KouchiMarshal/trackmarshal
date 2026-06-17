@@ -6,7 +6,7 @@ import { CalendarDays, Heart, MapPin, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
-import { formatDate } from "@/lib/formatDate";
+import { formatDateRange } from "@/lib/formatDate";
 import { useFavorites } from "@/hooks/useFavorites";
 
 export default function FavoritesPage() {
@@ -87,7 +87,7 @@ export default function FavoritesPage() {
                     <h2 className="text-2xl font-black lg:text-3xl">{event.title}</h2>
                     <div className="mt-4 space-y-3 text-zinc-300">
                       <div className="flex items-center gap-3"><MapPin size={16} /><p>{event.location}</p></div>
-                      <div className="flex items-center gap-3"><CalendarDays size={16} /><p>{formatDate(event.event_date)}</p></div>
+                      <div className="flex items-center gap-3"><CalendarDays size={16} /><p>{formatDateRange(event.event_date, event.event_end_date)}</p></div>
                       <div className="flex items-center gap-3"><Users size={16} /><p>{event.marshals_needed || 0} commissaires recherchés</p></div>
                     </div>
                     <Link

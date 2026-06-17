@@ -18,7 +18,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
-import { formatDate } from "@/lib/formatDate";
+import { formatDateRange } from "@/lib/formatDate";
 import { SkeletonEventCard } from "@/components/ui/skeleton";
 import { useFavorites } from "@/hooks/useFavorites";
 
@@ -64,11 +64,11 @@ export default function EventsPage() {
         !disciplineFilter || event.discipline === disciplineFilter;
       const matchCountry =
         !countryFilter || event.country === countryFilter;
-      const eventDate = new Date(event.event_date);
+      const eventEnd = event.event_end_date ? new Date(event.event_end_date) : new Date(event.event_date);
       const matchDate =
         dateFilter === "all" ||
-        (dateFilter === "upcoming" && eventDate >= now) ||
-        (dateFilter === "past" && eventDate < now);
+        (dateFilter === "upcoming" && eventEnd >= now) ||
+        (dateFilter === "past" && eventEnd < now);
       return matchSearch && matchDiscipline && matchCountry && matchDate;
     });
     setFilteredEvents(filtered);
@@ -325,7 +325,7 @@ export default function EventsPage() {
                       />
 
                       <p>
-                        {formatDate(event.event_date)}
+                        {formatDateRange(event.event_date, event.event_end_date)}
                       </p>
 
                     </div>

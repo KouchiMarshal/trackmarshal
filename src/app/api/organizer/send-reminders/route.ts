@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 
   const { data: event } = await supabaseAdmin
     .from("events")
-    .select("id, title, event_date, location, slug")
+    .select("id, title, event_date, event_end_date, location, slug")
     .eq("id", eventId)
     .eq("organizer_id", user.id)
     .single();
@@ -42,12 +42,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "RESEND_API_KEY not set" }, { status: 500 });
   }
 
-  const eventDate = new Date(event.event_date).toLocaleDateString("fr-FR", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const startDate = new Date(event.event_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+  const eventDate = event.event_end_date
+    ? (() => {
+        const s = new Date(event.event_date);
+        const e = new Date(event.event_end_date);
+        if (s.toDateString() === e.toDateString()) return startDate;
+        if (s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear())
+          return `${s.getDate()} – ${e.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
+        if (s.getFullYear() === e.getFullYear())
+          return `${s.toLocaleDateString("fr-FR", { day: "numeric", month: "long" })} – ${e.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
+        return `${startDate} – ${e.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}`;
+      })()
+    : startDate;
 
   const base = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0a0a0a;color:#fff;border-radius:16px;overflow:hidden;"><div style="background:#FF5A1F;padding:24px 32px;"><h1 style="margin:0;font-size:22px;font-weight:900;">🏁 TrackMarshal</h1></div><div style="padding:32px;">BODY</div><div style="padding:16px 32px;border-top:1px solid #222;font-size:12px;color:#555;">TrackMarshal — La plateforme des commissaires motorsport</div></div>`;
 

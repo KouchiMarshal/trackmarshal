@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
-import { formatDate } from "@/lib/formatDate";
+import { formatDateRange } from "@/lib/formatDate";
 
 import {
   useEffect,
@@ -265,7 +265,7 @@ setProfile(profileData);
                           size={18}
                         />
 
-                        <p>{formatDate(events[0]?.event_date)}</p>
+                        <p>{formatDateRange(events[0]?.event_date, events[0]?.event_end_date)}</p>
 
                       </div>
 
@@ -367,7 +367,7 @@ setProfile(profileData);
                             )}
 
                             <p className="mt-2 text-sm text-zinc-500">
-                              {formatDate(application.events?.event_date)}
+                              {formatDateRange(application.events?.event_date, application.events?.event_end_date)}
                             </p>
 
                           </div>

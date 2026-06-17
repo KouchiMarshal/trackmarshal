@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
-import { formatDate } from "@/lib/formatDate";
+import { formatDateRange } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
 import { SkeletonEventCard } from "@/components/ui/skeleton";
 import { canApplyToEvent } from "@/lib/licenseUtils";
@@ -90,7 +90,8 @@ export default function DashboardEventsPage() {
       limit.setMonth(limit.getMonth() + 3);
       matchDate = d >= now && d <= limit;
     } else if (dateFilter === "upcoming") {
-      matchDate = new Date(event.event_date) >= now;
+      const eventEnd = event.event_end_date ? new Date(event.event_end_date) : new Date(event.event_date);
+      matchDate = eventEnd >= now;
     }
 
     return matchSearch && matchDiscipline && matchDate;
@@ -240,8 +241,12 @@ export default function DashboardEventsPage() {
                       for (let day = 1; day <= daysInMonth; day++) {
                         const date = new Date(year, month, day);
                         const eventsOnDay = events.filter((ev) => {
-                          const d = new Date(ev.event_date);
-                          return d.getFullYear() === year && d.getMonth() === month && d.getDate() === day;
+                          const start = new Date(ev.event_date);
+                          const end = ev.event_end_date ? new Date(ev.event_end_date) : start;
+                          start.setHours(0, 0, 0, 0);
+                          end.setHours(0, 0, 0, 0);
+                          const day_ = new Date(year, month, day);
+                          return day_ >= start && day_ <= end;
                         });
                         const hasApp = eventsOnDay.some((ev) => applications.find((a) => a.event_id === ev.id));
                         const isToday = date.toDateString() === new Date().toDateString();
@@ -335,7 +340,7 @@ export default function DashboardEventsPage() {
                           <div className="mt-4 space-y-2 text-sm text-zinc-400">
                             <div className="flex items-center gap-2">
                               <CalendarDays size={16} className="text-[#FF5A1F]" />
-                              <span>{formatDate(event.event_date)}</span>
+                              <span>{formatDateRange(event.event_date, event.event_end_date)}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <MapPin size={16} className="text-[#FF5A1F]" />

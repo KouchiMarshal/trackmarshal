@@ -36,6 +36,9 @@ export default function CreateEventPage() {
   const [date, setDate] =
     useState("");
 
+  const [endDate, setEndDate] =
+    useState("");
+
   const [description, setDescription] =
     useState("");
 
@@ -167,6 +170,7 @@ export default function CreateEventPage() {
           location,
 
           event_date: date,
+          event_end_date: endDate || null,
 
           briefing: description,
 
@@ -368,7 +372,7 @@ export default function CreateEventPage() {
 
                   <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
 
-                    Date
+                    Date de début
 
                   </p>
 
@@ -387,6 +391,33 @@ export default function CreateEventPage() {
                           e.target.value
                         )
                       }
+                      className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 pl-14 pr-6 outline-none focus:border-[#FF5A1F]"
+                    />
+
+                  </div>
+
+                </div>
+
+                <div>
+
+                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
+
+                    Date de fin <span className="text-zinc-600 normal-case">(optionnel)</span>
+
+                  </p>
+
+                  <div className="relative">
+
+                    <CalendarDays
+                      size={18}
+                      className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500"
+                    />
+
+                    <input
+                      type="date"
+                      value={endDate}
+                      min={date || undefined}
+                      onChange={(e) => setEndDate(e.target.value)}
                       className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 pl-14 pr-6 outline-none focus:border-[#FF5A1F]"
                     />
 

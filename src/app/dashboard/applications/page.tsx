@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import DashboardSidebar from "@/components/layout/dashboard-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
-import { formatDate } from "@/lib/formatDate";
+import { formatDateRange } from "@/lib/formatDate";
 import { SkeletonApplicationCard } from "@/components/ui/skeleton";
 
 export default function ApplicationsPage() {
@@ -106,12 +106,18 @@ export default function ApplicationsPage() {
   function downloadICS(ev: any) {
     if (!ev) return;
     const start = new Date(ev.event_date);
-    const end = new Date(start.getTime() + 9 * 60 * 60 * 1000);
-    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    const isMultiDay = !!ev.event_end_date;
+    // For multi-day: use all-day format (DTEND is exclusive, so add 1 day)
+    const end = isMultiDay
+      ? new Date(new Date(ev.event_end_date).getTime() + 24 * 60 * 60 * 1000)
+      : new Date(start.getTime() + 9 * 60 * 60 * 1000);
+    const fmtDate = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, "");
+    const fmtDateTime = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
     const ics = [
       "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//TrackMarshal//FR",
       "BEGIN:VEVENT",
-      `DTSTART:${fmt(start)}`, `DTEND:${fmt(end)}`,
+      isMultiDay ? `DTSTART;VALUE=DATE:${fmtDate(start)}` : `DTSTART:${fmtDateTime(start)}`,
+      isMultiDay ? `DTEND;VALUE=DATE:${fmtDate(end)}` : `DTEND:${fmtDateTime(end)}`,
       `SUMMARY:${ev.title} — Commissaire TrackMarshal`,
       `LOCATION:${ev.location}${ev.country ? ", " + ev.country : ""}`,
       `URL:https://www.trackmarshal.app/events/${ev.slug}`,
@@ -126,9 +132,16 @@ export default function ApplicationsPage() {
 
   function googleCalUrl(ev: any) {
     const start = new Date(ev.event_date);
-    const end = new Date(start.getTime() + 9 * 60 * 60 * 1000);
-    const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title + " — Commissaire")}&dates=${fmt(start)}/${fmt(end)}&location=${encodeURIComponent(ev.location)}&details=${encodeURIComponent("TrackMarshal\nhttps://www.trackmarshal.app/events/" + ev.slug)}`;
+    const isMultiDay = !!ev.event_end_date;
+    const end = isMultiDay
+      ? new Date(new Date(ev.event_end_date).getTime() + 24 * 60 * 60 * 1000)
+      : new Date(start.getTime() + 9 * 60 * 60 * 1000);
+    const fmtDate = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, "");
+    const fmtDateTime = (d: Date) => d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+    const dateStr = isMultiDay
+      ? `${fmtDate(start)}/${fmtDate(end)}`
+      : `${fmtDateTime(start)}/${fmtDateTime(end)}`;
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(ev.title + " — Commissaire")}&dates=${dateStr}&location=${encodeURIComponent(ev.location)}&details=${encodeURIComponent("TrackMarshal\nhttps://www.trackmarshal.app/events/" + ev.slug)}`;
   }
 
   function escapeHtml(str: string | null | undefined): string {
@@ -161,8 +174,11 @@ export default function ApplicationsPage() {
       <h1>🏁 Briefing Commissaire — ${escapeHtml(ev.title)}</h1>
       <div class="badge">CANDIDATURE ACCEPTÉE</div>
       <div class="section">
-        <div class="label">Date de l'événement</div>
-        <div class="value">${new Date(ev.event_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</div>
+        <div class="label">Date${ev.event_end_date ? "s" : ""} de l'événement</div>
+        <div class="value">${ev.event_end_date
+          ? `${new Date(ev.event_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })} → ${new Date(ev.event_end_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}`
+          : new Date(ev.event_date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+        }</div>
         <div class="label">Lieu</div>
         <div class="value">${escapeHtml(ev.location)}${ev.country ? ", " + escapeHtml(ev.country) : ""}</div>
         ${ev.discipline ? `<div class="label">Discipline</div><div class="value">${escapeHtml(ev.discipline)}</div>` : ""}
@@ -374,7 +390,7 @@ export default function ApplicationsPage() {
                                 size={18}
                               />
 
-                              <p>{formatDate(app.events?.event_date)}</p>
+                              <p>{formatDateRange(app.events?.event_date, app.events?.event_end_date)}</p>
 
                             </div>
 

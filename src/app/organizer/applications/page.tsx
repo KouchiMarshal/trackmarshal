@@ -6,7 +6,7 @@ import { CalendarDays, MapPin, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
-import { formatDate } from "@/lib/formatDate";
+import { formatDateRange } from "@/lib/formatDate";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function OrganizerApplicationsPage() {
@@ -34,7 +34,7 @@ export default function OrganizerApplicationsPage() {
 
     const { data: eventsData } = await supabase
       .from("events")
-      .select("id, title, location, event_date, slug, marshals_needed, image_url")
+      .select("id, title, location, event_date, event_end_date, slug, marshals_needed, image_url")
       .eq("organizer_id", user.id);
 
     const eventIds = (eventsData || []).map((e: any) => e.id);
@@ -106,7 +106,7 @@ export default function OrganizerApplicationsPage() {
           type: status === "accepted" ? "application_accepted" : "application_rejected",
           data: {
             eventTitle,
-            eventDate: formatDate(eventDate),
+            eventDate: formatDateRange(eventDate, undefined),
             eventLocation,
           },
         }),
@@ -273,7 +273,7 @@ export default function OrganizerApplicationsPage() {
                           </p>
                           <div className="mt-1 flex items-center gap-2 text-xs text-zinc-400">
                             <CalendarDays size={12} />
-                            {formatDate(app.events?.event_date)}
+                            {formatDateRange(app.events?.event_date, app.events?.event_end_date)}
                           </div>
                         </div>
                       </div>

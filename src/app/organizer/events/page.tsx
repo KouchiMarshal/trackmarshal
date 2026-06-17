@@ -6,11 +6,11 @@ import { CalendarDays, Eye, MapPin, Plus, Users } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
-import { formatDate } from "@/lib/formatDate";
+import { formatDateRange } from "@/lib/formatDate";
 
 function getEventStatus(event: any): { label: string; color: string } {
   const now = new Date();
-  const date = new Date(event.event_date);
+  const date = event.event_end_date ? new Date(event.event_end_date) : new Date(event.event_date);
   if (date < now) return { label: "Terminé", color: "bg-zinc-700 text-zinc-300" };
   if ((event.accepted_count || 0) >= (event.marshals_needed || 0))
     return { label: "Complet", color: "bg-green-700 text-green-200" };
@@ -163,7 +163,7 @@ export default function OrganizerEventsPage() {
                     <div className="mt-5 space-y-3 text-zinc-400">
                       <div className="flex items-center gap-3">
                         <CalendarDays size={16} />
-                        {formatDate(event.event_date)}
+                        {formatDateRange(event.event_date, event.event_end_date)}
                       </div>
                       <div className="flex items-center gap-3">
                         <MapPin size={16} />
