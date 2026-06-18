@@ -14,6 +14,7 @@ export default function AdminDashboardPage() {
   const [disciplineStats, setDisciplineStats] = useState<{ disc: string; count: number }[]>([]);
   const [topOrganizers, setTopOrganizers] = useState<any[]>([]);
   const [totalEvents, setTotalEvents] = useState(0);
+  const [asaExpanded, setAsaExpanded] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -266,7 +267,7 @@ export default function AdminDashboardPage() {
                 <p className="mt-6 text-sm text-zinc-500">Aucune ASA renseignée pour le moment.</p>
               ) : (
                 <div className="mt-6 space-y-3">
-                  {asaStats.map(({ asa, count }) => (
+                  {(asaExpanded ? asaStats : asaStats.slice(0, 6)).map(({ asa, count }) => (
                     <Link
                       key={asa}
                       href={`/admin/commissaires?filter=asa&value=${encodeURIComponent(asa)}`}
@@ -283,6 +284,14 @@ export default function AdminDashboardPage() {
                       </div>
                     </Link>
                   ))}
+                  {asaStats.length > 6 && (
+                    <button
+                      onClick={() => setAsaExpanded((v) => !v)}
+                      className="mt-1 flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 py-2.5 text-sm font-bold text-zinc-400 transition hover:border-white/20 hover:text-white"
+                    >
+                      {asaExpanded ? "Réduire ↑" : `··· ${asaStats.length - 6} de plus`}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
