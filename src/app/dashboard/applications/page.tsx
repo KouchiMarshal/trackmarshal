@@ -44,6 +44,10 @@ export default function ApplicationsPage() {
   const [userId, setUserId] =
     useState("");
 
+  const [withdrawModal, setWithdrawModal] = useState<{ appId: string; eventTitle: string; eventId: string; organizerId: string } | null>(null);
+  const [withdrawReason, setWithdrawReason] = useState("");
+  const [withdrawSending, setWithdrawSending] = useState(false);
+
   useEffect(() => {
     loadApplications();
   }, []);
@@ -87,7 +91,7 @@ export default function ApplicationsPage() {
     const { data: eventsData } =
       await supabase
         .from("events")
-        .select("*")
+        .select("id, title, slug, location, image_url, event_date, event_end_date, discipline, briefing, schedule, hotel, hotel_detail, repas, repas_type, defraiement, defraiement_amount, pass_accompagnant, pass_accompagnant_count, organizer_contact, organizer_id")
         .in("id", eventIds);
 
     const eventsMap: Record<string, any> = {};
@@ -199,20 +203,24 @@ export default function ApplicationsPage() {
     w.document.close();
   }
 
-  async function cancelApplication(appId: string, status: string) {
-    if (status === "accepted") {
-      const confirmed = confirm(
-        "Votre candidature a été acceptée. Êtes-vous sûr de vouloir l'annuler ?"
-      );
-      if (!confirmed) return;
+  async function cancelApplication(app: any) {
+    if (app.status === "accepted") {
+      setWithdrawReason("");
+      setWithdrawModal({
+        appId: app.id,
+        eventTitle: app.events?.title || "cet événement",
+        eventId: app.event_id,
+        organizerId: app.events?.organizer_id || "",
+      });
+      return;
     }
 
-    setCancelling(appId);
+    setCancelling(app.id);
 
     const { error } = await supabase
       .from("applications")
       .delete()
-      .eq("id", appId)
+      .eq("id", app.id)
       .eq("marshal_id", userId);
 
     if (error) {
@@ -221,8 +229,28 @@ export default function ApplicationsPage() {
       return;
     }
 
-    setApplications((prev) => prev.filter((a) => a.id !== appId));
+    setApplications((prev) => prev.filter((a) => a.id !== app.id));
     setCancelling(null);
+  }
+
+  async function sendWithdrawRequest() {
+    if (!withdrawModal || !withdrawReason.trim()) return;
+    setWithdrawSending(true);
+
+    if (withdrawModal.organizerId) {
+      await supabase.from("notifications").insert({
+        user_id: withdrawModal.organizerId,
+        title: `Demande d'annulation — ${withdrawModal.eventTitle}`,
+        message: withdrawReason.trim(),
+        type: "withdrawal_request",
+        link: `/organizer/events/${withdrawModal.eventId}`,
+        read: false,
+      });
+    }
+
+    setWithdrawSending(false);
+    setWithdrawModal(null);
+    setWithdrawReason("");
   }
 
   function getStatus(status: string) {
@@ -471,11 +499,13 @@ export default function ApplicationsPage() {
 
                             {app.status !== "rejected" && (
                               <button
-                                onClick={() => cancelApplication(app.id, app.status)}
+                                onClick={() => cancelApplication(app)}
                                 disabled={cancelling === app.id}
                                 className="flex h-14 items-center justify-center rounded-2xl border border-red-500/30 bg-red-500/10 px-8 font-bold text-red-400 transition hover:bg-red-500/20 disabled:opacity-60"
                               >
-                                {cancelling === app.id ? "Annulation..." : "Annuler"}
+                                {cancelling === app.id ? "Annulation..."
+                                  : app.status === "accepted" ? "Demander l'annulation"
+                                  : "Annuler"}
                               </button>
                             )}
 
@@ -500,6 +530,47 @@ export default function ApplicationsPage() {
 
       </div>
 
+      {/* Modal demande d'annulation */}
+      {withdrawModal && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center" style={{ backgroundColor: "rgba(0,0,0,0.8)" }}>
+          <div className="w-full max-w-lg rounded-[28px] border border-white/10 bg-[#111] p-6 space-y-5">
+            <div>
+              <h3 className="text-xl font-black">Demander l'annulation</h3>
+              <p className="mt-1 text-sm text-zinc-500">{withdrawModal.eventTitle}</p>
+              <p className="mt-3 text-sm text-zinc-400">
+                Votre participation reste active jusqu'à confirmation de l'organisateur.
+              </p>
+            </div>
+            <div>
+              <label className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
+                Raison de l'annulation <span className="text-red-400">*</span>
+              </label>
+              <textarea
+                value={withdrawReason}
+                onChange={(e) => setWithdrawReason(e.target.value)}
+                placeholder="Expliquez pourquoi vous ne pouvez plus participer..."
+                rows={4}
+                className="mt-2 w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm outline-none placeholder:text-zinc-600 transition focus:border-[#FF5A1F]/40"
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setWithdrawModal(null); setWithdrawReason(""); }}
+                className="flex h-12 flex-1 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-sm font-bold transition hover:bg-white/10"
+              >
+                Retour
+              </button>
+              <button
+                onClick={sendWithdrawRequest}
+                disabled={!withdrawReason.trim() || withdrawSending}
+                className="flex h-12 flex-1 items-center justify-center rounded-2xl bg-[#FF5A1F] text-sm font-bold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {withdrawSending ? "Envoi..." : "Envoyer la demande"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
