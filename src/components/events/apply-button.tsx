@@ -15,11 +15,9 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
   const [profile, setProfile] = useState<any>(null);
   const [applicationId, setApplicationId] = useState<string | null>(null);
   const [applicationStatus, setApplicationStatus] = useState<string | null>(null);
+  const [withdrawalPending, setWithdrawalPending] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const [discipline, setDiscipline] = useState(eventDiscipline);
-  const [eventOrganizerId, setEventOrganizerId] = useState<string | null>(null);
-  const [eventTitle, setEventTitle] = useState<string>("");
-  const [eventSlug, setEventSlug] = useState<string>("");
 
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [withdrawReason, setWithdrawReason] = useState("");
@@ -41,22 +39,18 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
 
     setProfile(profileData);
 
-    const { data: eventData } = await supabase
-      .from("events")
-      .select("discipline, organizer_id, title, slug")
-      .eq("id", eventId)
-      .single();
-
-    if (eventData) {
-      if (!discipline && eventData.discipline) setDiscipline(eventData.discipline);
-      setEventOrganizerId(eventData.organizer_id);
-      setEventTitle(eventData.title || "");
-      setEventSlug(eventData.slug || "");
+    if (!discipline) {
+      const { data: eventData } = await supabase
+        .from("events")
+        .select("discipline")
+        .eq("id", eventId)
+        .single();
+      if (eventData?.discipline) setDiscipline(eventData.discipline);
     }
 
     const { data } = await supabase
       .from("applications")
-      .select("id, status")
+      .select("id, status, withdrawal_reason")
       .eq("event_id", eventId)
       .eq("marshal_id", user.id)
       .maybeSingle();
@@ -64,6 +58,7 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
     if (data) {
       setApplicationId(data.id);
       setApplicationStatus(data.status);
+      setWithdrawalPending(!!data.withdrawal_reason);
     }
   }
 
@@ -129,27 +124,33 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
   }
 
   async function sendWithdrawRequest() {
-    if (!withdrawReason.trim()) return;
+    if (!withdrawReason.trim() || !applicationId) return;
     setWithdrawLoading(true);
 
-    if (eventOrganizerId) {
-      await supabase.from("notifications").insert({
-        user_id: eventOrganizerId,
-        title: `Demande d'annulation — ${eventTitle}`,
-        message: withdrawReason.trim(),
-        type: "withdrawal_request",
-        link: `/organizer/events/${eventId}`,
-        read: false,
-      });
-    }
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch("/api/marshal/request-withdrawal", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({ applicationId, reason: withdrawReason.trim() }),
+    });
 
+    const result = await res.json();
     setWithdrawLoading(false);
     setShowWithdrawModal(false);
     setWithdrawReason("");
-    setMessage({
-      text: "Votre demande a été envoyée à l'organisateur. Votre inscription reste active jusqu'à sa validation.",
-      type: "success",
-    });
+
+    if (result.ok) {
+      setWithdrawalPending(true);
+      setMessage({
+        text: "Votre demande a été envoyée à l'organisateur. Votre inscription reste active jusqu'à sa validation.",
+        type: "success",
+      });
+    } else {
+      setMessage({ text: `Erreur : ${result.error || "Inconnue"}`, type: "error" });
+    }
   }
 
   if (profile?.role === "organizer") return null;
@@ -189,7 +190,14 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
                 : "⏳ Candidature en attente de réponse"}
             </span>
           </div>
-          {applicationStatus !== "rejected" && (
+
+          {withdrawalPending && (
+            <div className="rounded-2xl bg-orange-500/10 px-5 py-3 text-sm font-semibold text-orange-400 border border-orange-500/20">
+              ⏳ Demande d'annulation envoyée — en attente de l'organisateur
+            </div>
+          )}
+
+          {applicationStatus !== "rejected" && !withdrawalPending && (
             <button
               onClick={handleCancel}
               disabled={loading}

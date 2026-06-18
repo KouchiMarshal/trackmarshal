@@ -828,7 +828,7 @@ export default function OrganizerEventDetailsPage() {
                               <p className="whitespace-pre-line text-sm text-zinc-400">{app.profiles?.experience || "Aucune"}</p>
                               <p className="mt-2 text-sm text-zinc-300">⏳ {app.profiles?.years_experience || "-"} ans</p>
 
-                              <div className="mt-3">
+                              <div className="mt-3 flex flex-wrap gap-2">
                                 <span className={`rounded-full px-3 py-1 text-xs font-bold lg:text-sm ${
                                   app.status === "accepted" ? "bg-green-500/20 text-green-400"
                                   : app.status === "rejected" ? "bg-red-500/20 text-red-400"
@@ -836,7 +836,18 @@ export default function OrganizerEventDetailsPage() {
                                 }`}>
                                   {app.status === "accepted" ? "Accepté" : app.status === "rejected" ? "Refusé" : "En attente"}
                                 </span>
+                                {app.withdrawal_reason && (
+                                  <span className="rounded-full bg-orange-500/20 px-3 py-1 text-xs font-bold text-orange-400 lg:text-sm">
+                                    ⚠ Demande d'annulation
+                                  </span>
+                                )}
                               </div>
+                              {app.withdrawal_reason && (
+                                <div className="mt-3 rounded-2xl border border-orange-500/20 bg-orange-500/10 p-3">
+                                  <p className="text-xs font-bold uppercase tracking-[0.15em] text-orange-400">Raison de l'annulation</p>
+                                  <p className="mt-1 whitespace-pre-wrap text-sm text-zinc-300">{app.withdrawal_reason}</p>
+                                </div>
+                              )}
 
                               {/* Feature 2: Attribution de poste */}
                               {app.status === "accepted" && (

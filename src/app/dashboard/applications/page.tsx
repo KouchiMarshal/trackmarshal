@@ -237,18 +237,30 @@ export default function ApplicationsPage() {
     if (!withdrawModal || !withdrawReason.trim()) return;
     setWithdrawSending(true);
 
-    if (withdrawModal.organizerId) {
-      await supabase.from("notifications").insert({
-        user_id: withdrawModal.organizerId,
-        title: `Demande d'annulation — ${withdrawModal.eventTitle}`,
-        message: withdrawReason.trim(),
-        type: "withdrawal_request",
-        link: `/organizer/events/${withdrawModal.eventId}`,
-        read: false,
-      });
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch("/api/marshal/request-withdrawal", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({ applicationId: withdrawModal.appId, reason: withdrawReason.trim() }),
+    });
+
+    const result = await res.json();
+    setWithdrawSending(false);
+
+    if (result.ok) {
+      // Mark withdrawal pending in local state
+      setApplications((prev) =>
+        prev.map((a) =>
+          a.id === withdrawModal.appId
+            ? { ...a, withdrawal_reason: withdrawReason.trim(), withdrawal_requested_at: new Date().toISOString() }
+            : a
+        )
+      );
     }
 
-    setWithdrawSending(false);
     setWithdrawModal(null);
     setWithdrawReason("");
   }
@@ -497,7 +509,7 @@ export default function ApplicationsPage() {
                               </>
                             )}
 
-                            {app.status !== "rejected" && (
+                            {app.status !== "rejected" && !app.withdrawal_reason && (
                               <button
                                 onClick={() => cancelApplication(app)}
                                 disabled={cancelling === app.id}
@@ -507,6 +519,11 @@ export default function ApplicationsPage() {
                                   : app.status === "accepted" ? "Demander l'annulation"
                                   : "Annuler"}
                               </button>
+                            )}
+                            {app.withdrawal_reason && (
+                              <div className="flex h-14 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10 px-6 text-sm font-bold text-orange-400">
+                                ⏳ Annulation en attente
+                              </div>
                             )}
 
                           </div>
