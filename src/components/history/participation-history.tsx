@@ -18,8 +18,8 @@ const DISC_STYLE: Record<string, string> = {
   "Road Racing":    "text-orange-400 border-orange-500/30 bg-orange-500/10",
 };
 
-export default function ParticipationHistory({ marshalId }: { marshalId: string }) {
-  const [isOrganizer, setIsOrganizer] = useState(false);
+export default function ParticipationHistory({ marshalId, forceShow = false }: { marshalId: string; forceShow?: boolean }) {
+  const [isOrganizer, setIsOrganizer] = useState(forceShow);
   const [loading, setLoading] = useState(true);
   const [participations, setParticipations] = useState<any[]>([]);
 
@@ -28,17 +28,21 @@ export default function ParticipationHistory({ marshalId }: { marshalId: string 
   }, [marshalId]);
 
   async function checkAndLoad() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); return; }
+    if (!forceShow) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoading(false); return; }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, email")
+        .eq("id", user.id)
+        .single();
 
-    if (profile?.role !== "organizer") { setLoading(false); return; }
-    setIsOrganizer(true);
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "foussardk@gmail.com";
+      const canView = profile?.role === "organizer" || user.email === adminEmail;
+      if (!canView) { setLoading(false); return; }
+      setIsOrganizer(true);
+    }
 
     const { data: apps } = await supabase
       .from("applications")

@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
+import ParticipationHistory from "@/components/history/participation-history";
 
 export default function CommissaireProfilePage() {
   const params = useParams();
@@ -245,6 +246,9 @@ export default function CommissaireProfilePage() {
                       </div>
                     </div>
                   )}
+
+                  {/* Historique des participations */}
+                  <ParticipationHistory marshalId={marshalId} forceShow />
 
                   {/* Avis organisateurs — visible uniquement par les organisateurs */}
                   <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">

@@ -9,6 +9,7 @@ import {
   ExternalLink, Globe, Mail, MapPin, Phone, XCircle,
 } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
+import ParticipationHistory from "@/components/history/participation-history";
 
 function CopyRow({ icon: Icon, label, value, href }: { icon: any; label: string; value: string; href?: string }) {
   const [copied, setCopied] = useState(false);
@@ -275,6 +276,8 @@ export default function AdminCommissaireProfilePage() {
                   </div>
                 </div>
               )}
+
+              <ParticipationHistory marshalId={profile.id} forceShow />
 
             </div>
           </div>
