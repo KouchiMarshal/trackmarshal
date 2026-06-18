@@ -9,7 +9,8 @@ import { sendEmail } from "@/lib/sendEmail";
 const LICENSE_TYPES_FFSA = [
   "ENCOC - Commissaire C",
   "EICOB - Commissaire international B",
-  "EICOACPC - Chef de poste",
+  "EICOACPC - CHEF DE POSTE CIRCUIT",
+  "EICOACPR - CHEF DE POSTE ROUTE",
 ];
 
 const LICENSE_TYPES_FFM = [

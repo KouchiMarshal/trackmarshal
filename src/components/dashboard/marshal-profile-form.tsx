@@ -640,7 +640,8 @@ export default function MarshalProfileForm() {
                   <optgroup label="FFSA — Auto">
                     <option value="ENCOC - Commissaire C">ENCOC - Commissaire C</option>
                     <option value="EICOB - Commissaire international B">EICOB - Commissaire international B</option>
-                    <option value="EICOACPC - Chef de poste">EICOACPC - Chef de poste</option>
+                    <option value="EICOACPC - CHEF DE POSTE CIRCUIT">EICOACPC - CHEF DE POSTE CIRCUIT</option>
+                    <option value="EICOACPR - CHEF DE POSTE ROUTE">EICOACPR - CHEF DE POSTE ROUTE</option>
                   </optgroup>
                   <optgroup label="FFM — Moto">
                     <option value="OFS - Officiel Stagiaire">OFS - Officiel Stagiaire</option>

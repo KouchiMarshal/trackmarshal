@@ -2,7 +2,7 @@ export const AUTO_DISCIPLINES = ["Rallye", "Circuit", "Karting", "Drift", "Endur
 export const MOTO_DISCIPLINES = ["Moto Cross", "Enduro", "Trial", "Road Racing", "Supermoto", "Rallye Moto"];
 
 export function isAutoLicense(type?: string | null): boolean {
-  return !!type && /ENCOC|EICOB|EICOACPC/.test(type);
+  return !!type && /ENCOC|EICOB|EICOACPC|EICOACPR/.test(type);
 }
 
 export function isMotoLicense(type?: string | null): boolean {
