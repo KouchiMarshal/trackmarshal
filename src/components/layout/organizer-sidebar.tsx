@@ -3,7 +3,6 @@
 import {
   CalendarDays,
   FileBadge2,
-  Globe,
   Home,
   LogOut,
   MessageSquare,
@@ -98,20 +97,29 @@ export default function OrganizerSidebar() {
       {/* Bottom nav mobile */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/90 backdrop-blur-2xl lg:hidden">
         <div className="grid grid-cols-6">
+
+          {/* Logo → accueil */}
+          <Link
+            href="/"
+            className="flex flex-col items-center gap-1.5 py-4 text-zinc-400 transition hover:text-[#FF5A1F]"
+          >
+            <img src="/logo.png" alt="Accueil" className="h-5 w-5 rounded-full object-cover" />
+            <span className="text-[10px] font-semibold">Accueil</span>
+          </Link>
+
           {[
             { icon: Home, label: "Dashboard", href: "/organizer/dashboard" },
             { icon: CalendarDays, label: "Events", href: "/organizer/events" },
             { icon: MessageSquare, label: "Messages", href: "/organizer/messages" },
             { icon: Plus, label: "Créer", href: "/organizer/events/create" },
             { icon: Settings, label: "Réglages", href: "/organizer/settings" },
-            { icon: Globe, label: "Accueil", href: "/" },
           ].map((item) => {
             const isMessages = item.href === "/organizer/messages";
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-2 py-4 transition ${
+                className={`flex flex-col items-center gap-1.5 py-4 transition ${
                   pathname === item.href ? "text-[#FF5A1F]" : "text-zinc-400 hover:text-[#FF5A1F]"
                 }`}
               >
@@ -123,7 +131,7 @@ export default function OrganizerSidebar() {
                     </span>
                   )}
                 </div>
-                <span className="text-xs font-semibold">{item.label}</span>
+                <span className="text-[10px] font-semibold">{item.label}</span>
               </Link>
             );
           })}
