@@ -89,6 +89,8 @@ export default function RootLayout({
 
       <head>
         <meta name="theme-color" content="#FF5A1F" />
+        <link rel="icon" href="/logo.png" type="image/png" />
+        <link rel="shortcut icon" href="/logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/logo.png" />
         <script
           type="application/ld+json"
