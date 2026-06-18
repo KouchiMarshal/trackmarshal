@@ -36,7 +36,7 @@ export default function HistoryPage() {
 
     const { data: profileData } = await supabase
       .from("profiles")
-      .select("full_name, license_type, license_number, avatar_url")
+      .select("full_name, license_type, license_number, asa, avatar_url")
       .eq("id", user.id)
       .single();
     setProfile(profileData);
@@ -109,6 +109,7 @@ export default function HistoryPage() {
                   <p className="font-black text-[#FF5A1F] truncate">
                     {profile?.license_type || "—"}
                     {profile?.license_number ? ` · N° ${profile.license_number}` : ""}
+                    {profile?.asa ? ` — ${profile.asa}` : ""}
                   </p>
                 </div>
                 <div className="text-right shrink-0">

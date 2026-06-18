@@ -315,7 +315,7 @@ export default function AdminLicensesPage() {
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="grid gap-3 sm:grid-cols-3">
                         <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
                           <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Type de licence</p>
                           <p className="mt-2 font-bold text-[#FF5A1F]">{c.license_type || "—"}</p>
@@ -323,6 +323,10 @@ export default function AdminLicensesPage() {
                         <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
                           <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Numéro de licence</p>
                           <p className="mt-2 font-bold">{c.license_number || "—"}</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                          <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">ASA</p>
+                          <p className="mt-2 font-bold">{c.asa || "—"}</p>
                         </div>
                       </div>
                       <div className="flex gap-2">

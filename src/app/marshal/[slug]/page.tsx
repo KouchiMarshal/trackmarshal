@@ -153,6 +153,10 @@ export default async function MarshalPage({
 
                       </p>
 
+                      {profile.asa && (
+                        <p className="mt-1 text-sm text-zinc-400">ASA : {profile.asa}</p>
+                      )}
+
                       <div className="mt-4 flex flex-wrap gap-3">
 
                         {profile.license_verified ? (

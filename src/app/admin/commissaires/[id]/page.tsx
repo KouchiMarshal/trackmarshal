@@ -144,6 +144,9 @@ export default function AdminCommissaireProfilePage() {
                     {profile.license_number && (
                       <p className="mt-1 text-sm font-bold text-zinc-300">N° {profile.license_number}</p>
                     )}
+                    {profile.asa && (
+                      <p className="mt-1 text-sm text-zinc-400">ASA : {profile.asa}</p>
+                    )}
                     {profile.license_type_2 && (
                       <div className="mt-4 border-t border-white/10 pt-4">
                         <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500 mb-2">2ème licence</p>

@@ -15,7 +15,7 @@ export default function AdminCommissairesPage() {
     async function load() {
       const { data } = await supabase
         .from("profiles")
-        .select("id, full_name, email, avatar_url, city, country, license_type, license_number, license_verified, license_url, years_experience, created_at")
+        .select("id, full_name, email, avatar_url, city, country, license_type, license_number, asa, license_verified, license_url, years_experience, created_at")
         .eq("role", "marshal")
         .order("created_at", { ascending: false });
 
@@ -90,6 +90,7 @@ export default function AdminCommissairesPage() {
                     <p className="text-zinc-500">Licence</p>
                     <p className="font-bold text-[#FF5A1F]">{c.license_type}</p>
                     {c.license_number && <p className="text-zinc-400">N° {c.license_number}</p>}
+                    {c.asa && <p className="mt-0.5 text-zinc-500">{c.asa}</p>}
                   </div>
                 )}
 

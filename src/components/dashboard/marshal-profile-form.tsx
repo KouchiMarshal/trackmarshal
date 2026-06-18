@@ -41,6 +41,7 @@ export default function MarshalProfileForm() {
       avatar_url: "",
       license_type: "",
       license_number: "",
+      asa: "",
       license_url: "",
       license_type_2: "",
       license_number_2: "",
@@ -93,6 +94,8 @@ export default function MarshalProfileForm() {
           data.license_type || "",
         license_number:
           data.license_number || "",
+        asa:
+          data.asa || "",
         license_url:
           data.license_url || "",
         license_type_2:
@@ -238,6 +241,8 @@ export default function MarshalProfileForm() {
             formData.license_type,
           license_number:
             formData.license_number,
+          asa:
+            formData.asa || null,
           license_url:
             formData.license_url,
           license_type_2:
@@ -665,6 +670,22 @@ export default function MarshalProfileForm() {
                     setFormData({ ...formData, license_number: e.target.value })
                   }
                   placeholder="ex : 2024-FFSA-00123"
+                  className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]"
+                />
+
+              </div>
+
+              <div>
+
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                  ASA (Association Sportive Automobile)
+                </label>
+
+                <input
+                  type="text"
+                  value={formData.asa}
+                  onChange={(e) => setFormData({ ...formData, asa: e.target.value })}
+                  placeholder="ex : ASA Lyon, ASA Côte d'Azur..."
                   className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]"
                 />
 

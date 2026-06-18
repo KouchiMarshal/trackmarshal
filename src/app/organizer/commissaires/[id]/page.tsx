@@ -149,6 +149,9 @@ export default function CommissaireProfilePage() {
                           {profile.license_number && (
                             <p className="mt-1 text-sm text-zinc-400">N° {profile.license_number}</p>
                           )}
+                          {profile.asa && (
+                            <p className="mt-1 text-sm text-zinc-400">ASA : {profile.asa}</p>
+                          )}
                           <div className="mt-3">
                             {profile.license_verified ? (
                               <div className="flex items-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">

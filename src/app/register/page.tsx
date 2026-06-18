@@ -42,6 +42,8 @@ export default function RegisterPage() {
   const [licenseNumber, setLicenseNumber] =
     useState("");
 
+  const [asa, setAsa] = useState("");
+
   const [organizerOrgName, setOrganizerOrgName] =
     useState("");
 
@@ -140,6 +142,7 @@ export default function RegisterPage() {
     if (role === "marshal") {
       profileData.license_type = licenseType;
       profileData.license_number = licenseNumber.trim();
+      profileData.asa = asa.trim() || null;
       profileData.license_url = marshalLicenseUrl;
       profileData.license_verified = false;
       profileData.available = true;
@@ -379,6 +382,19 @@ export default function RegisterPage() {
                         value={licenseNumber}
                         onChange={(e) => setLicenseNumber(e.target.value)}
                         placeholder="ex : 2024-FFSA-00123"
+                        className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                      />
+                    </div>
+
+                    <div>
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                        ASA (Association Sportive Automobile)
+                      </p>
+                      <input
+                        type="text"
+                        value={asa}
+                        onChange={(e) => setAsa(e.target.value)}
+                        placeholder="ex : ASA Lyon, ASA Côte d'Azur..."
                         className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                       />
                     </div>
