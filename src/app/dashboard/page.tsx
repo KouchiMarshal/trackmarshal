@@ -57,15 +57,10 @@ export default function DashboardPage() {
     .eq("id", user.id)
     .single();
 
-if (
-  profileData?.role ===
-  "organizer"
-) {
+const isAdmin = user.email === (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "foussardk@gmail.com");
 
-  router.push(
-    "/organizer/dashboard"
-  );
-
+if (profileData?.role === "organizer" && !isAdmin) {
+  router.push("/organizer/dashboard");
   return;
 }
 
