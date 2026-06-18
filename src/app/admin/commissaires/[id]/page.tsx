@@ -224,6 +224,16 @@ export default function AdminCommissaireProfilePage() {
                             </div>
                           )}
                         </div>
+                        {profile.license_url_2 && (
+                          <a
+                            href={profile.license_url_2}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-3 flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 py-3 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                          >
+                            <ExternalLink size={15} /> Ouvrir la 2ème licence
+                          </a>
+                        )}
                       </div>
                     )}
 
