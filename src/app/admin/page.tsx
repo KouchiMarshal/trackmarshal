@@ -10,14 +10,24 @@ export default function AdminDashboardPage() {
   const [orgStats, setOrgStats] = useState({ total: 0, pending: 0, verified: 0 });
   const [licenseStats, setLicenseStats] = useState<{ type: string; count: number }[]>([]);
   const [asaStats, setAsaStats] = useState<{ asa: string; count: number }[]>([]);
+  const [monthlyStats, setMonthlyStats] = useState<{ key: string; label: string; count: number }[]>([]);
+  const [disciplineStats, setDisciplineStats] = useState<{ disc: string; count: number }[]>([]);
+  const [topOrganizers, setTopOrganizers] = useState<any[]>([]);
+  const [totalEvents, setTotalEvents] = useState(0);
 
   useEffect(() => {
     async function load() {
-      const [marshals, organizers] = await Promise.all([
+      const now = new Date();
+      const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1).toISOString();
+
+      const [marshals, organizers, eventsRes, monthlyRes] = await Promise.all([
         supabase.from("profiles").select("license_url, license_verified, license_type, asa").eq("role", "marshal"),
         supabase.from("profiles").select("organizer_verified").eq("role", "organizer"),
+        supabase.from("events").select("organizer_id, discipline"),
+        supabase.from("profiles").select("created_at").eq("role", "marshal").gte("created_at", twelveMonthsAgo),
       ]);
 
+      // --- Commissaires ---
       const data = marshals.data || [];
       const total = data.length;
       const pending = data.filter((p) => p.license_url && !p.license_verified).length;
@@ -25,42 +35,88 @@ export default function AdminDashboardPage() {
       const noLicense = data.filter((p) => !p.license_url).length;
       setStats({ total, pending, verified, noLicense });
 
-      // License type breakdown
       const ltMap: Record<string, number> = {};
       data.forEach((p) => {
         const t = p.license_type || "Non renseigné";
         ltMap[t] = (ltMap[t] || 0) + 1;
       });
       setLicenseStats(
-        Object.entries(ltMap)
-          .map(([type, count]) => ({ type, count }))
-          .sort((a, b) => b.count - a.count)
+        Object.entries(ltMap).map(([type, count]) => ({ type, count })).sort((a, b) => b.count - a.count)
       );
 
-      // ASA breakdown
       const asaMap: Record<string, number> = {};
       data.forEach((p) => {
-        if (p.asa) {
-          const a = p.asa.trim();
-          asaMap[a] = (asaMap[a] || 0) + 1;
-        }
+        if (p.asa) { const a = p.asa.trim(); asaMap[a] = (asaMap[a] || 0) + 1; }
       });
       setAsaStats(
-        Object.entries(asaMap)
-          .map(([asa, count]) => ({ asa, count }))
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 15)
+        Object.entries(asaMap).map(([asa, count]) => ({ asa, count })).sort((a, b) => b.count - a.count).slice(0, 15)
       );
 
+      // --- Organisateurs ---
       const orgData = organizers.data || [];
       setOrgStats({
         total: orgData.length,
         pending: orgData.filter((o) => !o.organizer_verified).length,
         verified: orgData.filter((o) => o.organizer_verified).length,
       });
+
+      // --- Événements ---
+      const eventsData = eventsRes.data || [];
+      setTotalEvents(eventsData.length);
+
+      // Discipline breakdown
+      const discMap: Record<string, number> = {};
+      eventsData.forEach((e) => {
+        const d = e.discipline || "Non renseigné";
+        discMap[d] = (discMap[d] || 0) + 1;
+      });
+      setDisciplineStats(
+        Object.entries(discMap).map(([disc, count]) => ({ disc, count })).sort((a, b) => b.count - a.count)
+      );
+
+      // Top organisateurs par nombre d'événements
+      const orgEventMap: Record<string, number> = {};
+      eventsData.forEach((e) => {
+        if (e.organizer_id) orgEventMap[e.organizer_id] = (orgEventMap[e.organizer_id] || 0) + 1;
+      });
+      const topOrgIds = Object.entries(orgEventMap).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([id]) => id);
+      if (topOrgIds.length > 0) {
+        const { data: orgProfiles } = await supabase
+          .from("profiles")
+          .select("id, full_name, organization_name, avatar_url")
+          .in("id", topOrgIds);
+        const profileMap: Record<string, any> = {};
+        (orgProfiles || []).forEach((p) => { profileMap[p.id] = p; });
+        setTopOrganizers(
+          Object.entries(orgEventMap)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([id, count]) => ({ ...profileMap[id], eventCount: count }))
+            .filter((o) => o.id)
+        );
+      }
+
+      // --- Inscriptions par mois (12 derniers mois) ---
+      const monthMap: Record<string, number> = {};
+      (monthlyRes.data || []).forEach((p) => {
+        const d = new Date(p.created_at);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        monthMap[key] = (monthMap[key] || 0) + 1;
+      });
+      const months: { key: string; label: string; count: number }[] = [];
+      for (let i = 11; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        const label = d.toLocaleDateString("fr-FR", { month: "short" });
+        months.push({ key, label, count: monthMap[key] || 0 });
+      }
+      setMonthlyStats(months);
     }
     load();
   }, []);
+
+  const maxMonthCount = Math.max(...monthlyStats.map((m) => m.count), 1);
+  const maxDisciplineCount = Math.max(...disciplineStats.map((d) => d.count), 1);
 
   return (
     <div>
@@ -142,10 +198,42 @@ export default function AdminDashboardPage() {
             </Link>
           </div>
 
-          {/* Stats licences + ASA */}
+          {/* Inscriptions par mois */}
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+            <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
+                <h2 className="mt-2 text-2xl font-black">Nouvelles inscriptions</h2>
+                <p className="mt-1 text-sm text-zinc-500">Commissaires — 12 derniers mois</p>
+              </div>
+              <p className="text-4xl font-black text-[#FF5A1F]">
+                {monthlyStats.reduce((s, m) => s + m.count, 0)}
+                <span className="ml-2 text-sm font-normal text-zinc-500">cette période</span>
+              </p>
+            </div>
+
+            <div className="flex items-end gap-1.5 sm:gap-2">
+              {monthlyStats.map((m) => (
+                <div key={m.key} className="group flex flex-1 flex-col items-center gap-1">
+                  <span className={`text-[10px] font-black text-[#FF5A1F] transition ${m.count === 0 ? "opacity-0" : ""}`}>
+                    {m.count}
+                  </span>
+                  <div
+                    className="w-full rounded-t-lg bg-[#FF5A1F] transition-all group-hover:opacity-80"
+                    style={{
+                      height: `${Math.max(4, Math.round((m.count / maxMonthCount) * 80))}px`,
+                      opacity: m.count === 0 ? 0.15 : 1,
+                    }}
+                  />
+                  <span className="text-[9px] text-zinc-500 sm:text-[10px]">{m.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Licence + ASA */}
           <div className="grid gap-6 lg:grid-cols-2">
 
-            {/* Répartition par type de licence */}
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 lg:p-8">
               <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
               <h2 className="mt-2 text-2xl font-black">Répartition par licence</h2>
@@ -163,10 +251,7 @@ export default function AdminDashboardPage() {
                         <span className="ml-3 shrink-0 text-sm font-black text-[#FF5A1F]">{count}</span>
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-white/10">
-                        <div
-                          className="h-1.5 rounded-full bg-[#FF5A1F]"
-                          style={{ width: `${Math.round((count / stats.total) * 100)}%` }}
-                        />
+                        <div className="h-1.5 rounded-full bg-[#FF5A1F]" style={{ width: `${Math.round((count / stats.total) * 100)}%` }} />
                       </div>
                     </div>
                   </Link>
@@ -174,7 +259,6 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Répartition par ASA */}
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 lg:p-8">
               <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
               <h2 className="mt-2 text-2xl font-black">Répartition par ASA</h2>
@@ -194,13 +278,79 @@ export default function AdminDashboardPage() {
                           <span className="ml-3 shrink-0 text-sm font-black text-[#FF5A1F]">{count}</span>
                         </div>
                         <div className="h-1.5 w-full rounded-full bg-white/10">
-                          <div
-                            className="h-1.5 rounded-full bg-[#FF5A1F]"
-                            style={{ width: `${Math.round((count / stats.total) * 100)}%` }}
-                          />
+                          <div className="h-1.5 rounded-full bg-[#FF5A1F]" style={{ width: `${Math.round((count / stats.total) * 100)}%` }} />
                         </div>
                       </div>
                     </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* Discipline + Top organisateurs */}
+          <div className="grid gap-6 lg:grid-cols-2">
+
+            {/* Répartition par discipline */}
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+              <div className="flex items-end justify-between mb-6">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
+                  <h2 className="mt-2 text-2xl font-black">Répartition par discipline</h2>
+                </div>
+                <p className="text-3xl font-black text-zinc-400">{totalEvents} <span className="text-sm font-normal text-zinc-600">événements</span></p>
+              </div>
+              {disciplineStats.length === 0 ? (
+                <p className="text-sm text-zinc-500">Aucun événement publié.</p>
+              ) : (
+                <div className="space-y-3">
+                  {disciplineStats.map(({ disc, count }) => (
+                    <div key={disc} className="flex items-center gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-bold truncate">{disc}</span>
+                          <span className="ml-3 shrink-0 text-sm font-black text-[#FF5A1F]">{count}</span>
+                        </div>
+                        <div className="h-1.5 w-full rounded-full bg-white/10">
+                          <div className="h-1.5 rounded-full bg-[#FF5A1F]" style={{ width: `${Math.round((count / maxDisciplineCount) * 100)}%` }} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Top organisateurs */}
+            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+              <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
+              <h2 className="mt-2 text-2xl font-black">Top organisateurs</h2>
+              <p className="mt-1 mb-6 text-sm text-zinc-500">Par nombre d'événements publiés</p>
+              {topOrganizers.length === 0 ? (
+                <p className="text-sm text-zinc-500">Aucun événement publié.</p>
+              ) : (
+                <div className="space-y-3">
+                  {topOrganizers.map((org, i) => (
+                    <div key={org.id} className="flex items-center gap-4 rounded-2xl border border-white/10 bg-black/20 p-4">
+                      <span className="shrink-0 w-7 text-center text-lg font-black text-zinc-600">
+                        {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`}
+                      </span>
+                      <img
+                        src={org.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(org.full_name || org.organization_name || "O")}&background=1a1a2e&color=FF5A1F&size=80`}
+                        alt=""
+                        className="h-9 w-9 shrink-0 rounded-xl object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="truncate text-sm font-black">{org.organization_name || org.full_name || "Organisateur"}</p>
+                        {org.organization_name && org.full_name && (
+                          <p className="truncate text-xs text-zinc-500">{org.full_name}</p>
+                        )}
+                      </div>
+                      <span className="shrink-0 rounded-xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/10 px-3 py-1.5 text-sm font-black text-[#FF5A1F]">
+                        {org.eventCount} event{org.eventCount > 1 ? "s" : ""}
+                      </span>
+                    </div>
                   ))}
                 </div>
               )}
