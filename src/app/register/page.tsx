@@ -74,6 +74,11 @@ export default function RegisterPage() {
       return;
     }
 
+    if (role === "marshal" && !asa.trim()) {
+      setToast({ message: "Veuillez renseigner votre ASA.", type: "error" });
+      return;
+    }
+
     if (role === "marshal" && !marshalLicenseFile) {
       setToast({ message: "Veuillez uploader une photo ou scan de votre licence.", type: "error" });
       return;
@@ -388,10 +393,11 @@ export default function RegisterPage() {
 
                     <div>
                       <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
-                        ASA (Association Sportive Automobile)
+                        ASA (Association Sportive Automobile) <span className="text-[#FF5A1F]">*</span>
                       </p>
                       <input
                         type="text"
+                        required
                         value={asa}
                         onChange={(e) => setAsa(e.target.value)}
                         placeholder="ex : ASA Lyon, ASA Côte d'Azur..."
