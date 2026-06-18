@@ -6,6 +6,7 @@ import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 import InviteButton from "@/components/events/invite-button";
+import ParticipationHistory from "@/components/history/participation-history";
 
 type MarshalPageProps = {
   params: Promise<{
@@ -363,6 +364,8 @@ export default async function MarshalPage({
                 </p>
 
               </div>
+
+              <ParticipationHistory marshalId={profile.id} />
 
               {reviews && reviews.length > 0 && (
                 <div className="mt-10 rounded-[40px] border border-white/10 bg-[#0A0A0A] p-10">
