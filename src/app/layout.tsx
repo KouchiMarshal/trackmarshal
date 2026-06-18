@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
+import RegisterSW from "@/components/pwa/register-sw";
 
 export const metadata: Metadata = {
   title: {
@@ -28,6 +29,13 @@ export const metadata: Metadata = {
   authors: [{ name: "TrackMarshal" }],
   creator: "TrackMarshal",
   metadataBase: new URL("https://www.trackmarshal.app"),
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "TrackMarshal",
+    statusBarStyle: "black-translucent",
+  },
+  formatDetection: { telephone: false },
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -80,6 +88,8 @@ export default function RootLayout({
     <html lang="fr">
 
       <head>
+        <meta name="theme-color" content="#FF5A1F" />
+        <link rel="apple-touch-icon" href="/logo.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
@@ -87,6 +97,8 @@ export default function RootLayout({
       </head>
 
       <body>
+
+        <RegisterSW />
 
         {children}
 

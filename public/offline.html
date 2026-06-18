@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hors ligne — TrackMarshal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #050505;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 2rem;
+    }
+    img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin-bottom: 2rem; }
+    h1 { font-size: 1.75rem; font-weight: 900; margin-bottom: 1rem; }
+    p { color: #71717a; font-size: 0.95rem; line-height: 1.6; max-width: 320px; }
+    button {
+      margin-top: 2rem;
+      background: #FF5A1F;
+      color: #fff;
+      border: none;
+      border-radius: 1rem;
+      padding: 0.875rem 2rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <img src="/logo.png" alt="TrackMarshal" />
+  <h1>Vous êtes hors ligne</h1>
+  <p>Vérifiez votre connexion internet et réessayez.</p>
+  <button onclick="window.location.reload()">Réessayer</button>
+</body>
+</html>
