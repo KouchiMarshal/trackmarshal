@@ -43,11 +43,12 @@ export default function DashboardSidebar() {
       if (user?.email !== (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "foussardk@gmail.com")) return;
       setIsAdmin(true);
 
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "foussardk@gmail.com";
       const [{ count: licenseCount }, { count: orgCount }] = await Promise.all([
         supabase
           .from("profiles")
           .select("id", { count: "exact", head: true })
-          .eq("role", "marshal")
+          .or(`role.eq.marshal,email.eq.${adminEmail}`)
           .not("license_url", "is", null)
           .eq("license_verified", false),
         supabase
