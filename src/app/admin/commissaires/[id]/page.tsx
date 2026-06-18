@@ -241,14 +241,14 @@ export default function AdminCommissaireProfilePage() {
               {profile.bio && (
                 <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Biographie</p>
-                  <p className="mt-4 leading-relaxed text-zinc-300">{profile.bio}</p>
+                  <p className="mt-4 whitespace-pre-wrap leading-relaxed text-zinc-300">{profile.bio}</p>
                 </div>
               )}
 
               {profile.experience && (
                 <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Expérience Motorsport</p>
-                  <p className="mt-4 whitespace-pre-line leading-relaxed text-zinc-300">{profile.experience}</p>
+                  <p className="mt-4 whitespace-pre-wrap leading-relaxed text-zinc-300">{profile.experience}</p>
                 </div>
               )}
 

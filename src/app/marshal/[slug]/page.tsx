@@ -322,7 +322,7 @@ export default async function MarshalPage({
 
                 </p>
 
-                <p className="mt-8 text-xl leading-relaxed text-zinc-300">
+                <p className="mt-8 whitespace-pre-wrap text-xl leading-relaxed text-zinc-300">
 
                   {profile.bio ||
                     "Aucune biographie disponible."}
@@ -339,7 +339,7 @@ export default async function MarshalPage({
 
                 </p>
 
-                <p className="mt-8 whitespace-pre-line text-xl leading-relaxed text-zinc-300">
+                <p className="mt-8 whitespace-pre-wrap text-xl leading-relaxed text-zinc-300">
 
                   {profile.experience ||
                     "Aucune expérience renseignée."}
@@ -356,7 +356,7 @@ export default async function MarshalPage({
 
                 </p>
 
-                <p className="mt-8 text-xl leading-relaxed text-zinc-300">
+                <p className="mt-8 whitespace-pre-wrap text-xl leading-relaxed text-zinc-300">
 
                   {profile.disciplines ||
                     "Aucune discipline renseignée."}
@@ -381,7 +381,7 @@ export default async function MarshalPage({
                             {new Date(r.created_at).toLocaleDateString("fr-FR")}
                           </span>
                         </div>
-                        <p className="text-zinc-300 leading-relaxed">"{r.comment}"</p>
+                        <p className="whitespace-pre-wrap text-zinc-300 leading-relaxed">"{r.comment}"</p>
                       </div>
                     ))}
                   </div>
