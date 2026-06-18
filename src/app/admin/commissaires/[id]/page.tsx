@@ -6,7 +6,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import {
   ArrowLeft, CalendarDays, CheckCircle2, Clock3, Copy,
-  ExternalLink, Globe, Mail, MapPin, Phone, XCircle,
+  ExternalLink, Globe, Mail, MapPin, Pencil, Phone, Save, XCircle,
 } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
 import ParticipationHistory from "@/components/history/participation-history";
@@ -48,6 +48,8 @@ export default function AdminCommissaireProfilePage() {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<ToastData>(null);
+  const [asaEdit, setAsaEdit] = useState("");
+  const [asaSaving, setAsaSaving] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -56,8 +58,16 @@ export default function AdminCommissaireProfilePage() {
       .select("*")
       .eq("id", id)
       .single()
-      .then(({ data }) => { setProfile(data); setLoading(false); });
+      .then(({ data }) => { setProfile(data); setAsaEdit(data?.asa || ""); setLoading(false); });
   }, [id]);
+
+  async function saveAsa() {
+    setAsaSaving(true);
+    await supabase.from("profiles").update({ asa: asaEdit.trim() || null }).eq("id", id);
+    setProfile((prev: any) => ({ ...prev, asa: asaEdit.trim() || null }));
+    setAsaSaving(false);
+    setToast({ message: "ASA mis à jour.", type: "success" });
+  }
 
   async function validate(verified: boolean) {
     await supabase.from("profiles").update({ license_verified: verified }).eq("id", id);
@@ -144,9 +154,27 @@ export default function AdminCommissaireProfilePage() {
                     {profile.license_number && (
                       <p className="mt-1 text-sm font-bold text-zinc-300">N° {profile.license_number}</p>
                     )}
-                    {profile.asa && (
-                      <p className="mt-1 text-sm text-zinc-400">ASA : {profile.asa}</p>
-                    )}
+                    <div className="mt-3">
+                      <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">ASA</p>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={asaEdit}
+                          onChange={(e) => setAsaEdit(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === "Enter") saveAsa(); }}
+                          placeholder="ex : ASA Lyon, ASA Côte d'Azur..."
+                          className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]/60"
+                        />
+                        <button
+                          onClick={saveAsa}
+                          disabled={asaSaving}
+                          className="shrink-0 rounded-xl bg-[#FF5A1F]/20 px-3 py-2 text-[#FF5A1F] transition hover:bg-[#FF5A1F]/30 disabled:opacity-50"
+                          title="Enregistrer l'ASA"
+                        >
+                          {asaSaving ? <Clock3 size={14} /> : <Save size={14} />}
+                        </button>
+                      </div>
+                    </div>
                     {profile.license_type_2 && (
                       <div className="mt-4 border-t border-white/10 pt-4">
                         <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500 mb-2">2ème licence</p>
