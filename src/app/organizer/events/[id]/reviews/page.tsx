@@ -115,6 +115,15 @@ export default function OrganizerReviewsPage() {
         rating: r.rating,
         comment: r.comment,
       });
+      const stars = "★".repeat(r.rating) + "☆".repeat(5 - r.rating);
+      await supabase.from("notifications").insert({
+        user_id: marshalId,
+        title: `Nouvel avis reçu ${stars}`,
+        message: `Un organisateur vous a attribué ${r.rating}/5 pour "${event?.title}".`,
+        type: "review_received",
+        link: `/events/${event?.slug}`,
+        read: false,
+      });
     }
 
     setExistingReviews((prev) => ({ ...prev, [marshalId]: { ...reviews[marshalId] } }));

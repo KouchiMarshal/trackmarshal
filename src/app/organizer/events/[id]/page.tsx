@@ -180,6 +180,19 @@ export default function OrganizerEventDetailsPage() {
       setToast({ message: "Erreur lors de la sauvegarde du poste.", type: "error" });
     } else {
       setToast({ message: "Poste enregistré.", type: "success" });
+      if (post) {
+        const app = applications.find((a: any) => a.id === appId);
+        if (app?.marshal_id) {
+          await supabase.from("notifications").insert({
+            user_id: app.marshal_id,
+            title: `Poste assigné : ${post}`,
+            message: `Vous avez été assigné au poste "${post}" pour l'événement "${event?.title}".`,
+            type: "post_assigned",
+            link: `/events/${event?.slug}`,
+            read: false,
+          });
+        }
+      }
     }
   }
 
