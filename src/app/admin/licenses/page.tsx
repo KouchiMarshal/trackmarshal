@@ -33,7 +33,7 @@ export default function AdminLicensesPage() {
     const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "foussardk@gmail.com";
     const { data } = await supabase
       .from("profiles")
-      .select("id, full_name, email, avatar_url, license_type, license_number, license_url, license_verified, license_type_2, license_number_2, license_url_2, license_verified_2, created_at")
+      .select("id, full_name, email, avatar_url, license_type, license_number, license_url, license_verified, license_type_2, license_number_2, license_url_2, license_verified_2, asa, created_at")
       .or(`role.eq.marshal,email.eq.${adminEmail}`)
       .not("license_url", "is", null)
       .order("created_at", { ascending: false });
