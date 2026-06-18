@@ -51,6 +51,8 @@ export default function RegisterPage() {
   const [marshalLicenseFile, setMarshalLicenseFile] =
     useState<File | null>(null);
 
+  const [consentAccepted, setConsentAccepted] = useState(false);
+
   const [toast, setToast] =
     useState<ToastData>(null);
 
@@ -450,10 +452,27 @@ export default function RegisterPage() {
                   </>
                 )}
 
+                <label className="flex cursor-pointer items-start gap-3">
+                  <input
+                    type="checkbox"
+                    required
+                    checked={consentAccepted}
+                    onChange={(e) => setConsentAccepted(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[#FF5A1F]"
+                  />
+                  <span className="text-sm leading-relaxed text-zinc-400">
+                    J'ai lu et j'accepte la{" "}
+                    <Link href="/confidentialite" target="_blank" className="text-[#FF5A1F] underline underline-offset-2">politique de confidentialité</Link>
+                    {" "}et les{" "}
+                    <Link href="/cgu" target="_blank" className="text-[#FF5A1F] underline underline-offset-2">conditions générales d'utilisation</Link>.
+                    Je consens au traitement de mes données personnelles pour les finalités décrites.
+                  </span>
+                </label>
+
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="h-14 w-full rounded-2xl bg-[#FF5A1F] text-base font-black transition hover:scale-[1.01] hover:opacity-90 lg:h-16 lg:text-lg"
+                  disabled={loading || !consentAccepted}
+                  className="h-14 w-full rounded-2xl bg-[#FF5A1F] text-base font-black transition hover:scale-[1.01] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 lg:h-16 lg:text-lg"
                 >
 
                   {loading

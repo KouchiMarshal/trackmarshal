@@ -2,6 +2,7 @@
 
 import {
   Bell,
+  Download,
   LogOut,
   Save,
   Shield,
@@ -42,6 +43,9 @@ export default function SettingsPage() {
 
   const [toast, setToast] =
     useState<ToastData>(null);
+
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const [exportingData, setExportingData] = useState(false);
 
   useEffect(() => {
 
@@ -131,16 +135,48 @@ export default function SettingsPage() {
     router.push("/");
   }
 
+  async function exportData() {
+    setExportingData(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    const res = await fetch("/api/account/export", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
+    if (!res.ok) { setToast({ message: "Erreur lors de l'export.", type: "error" }); setExportingData(false); return; }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `trackmarshal-mes-donnees-${new Date().toISOString().split("T")[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setExportingData(false);
+    setToast({ message: "Vos données ont été téléchargées.", type: "success" });
+  }
+
   async function deleteAccount() {
+    const confirmed = confirm(
+      "Supprimer définitivement votre compte ? Cette action est irréversible. Toutes vos données seront effacées."
+    );
+    if (!confirmed) return;
 
-    const confirmDelete =
-      confirm(
-        "Supprimer définitivement votre compte ?"
-      );
+    setDeletingAccount(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
 
-    if (!confirmDelete) return;
+    const res = await fetch("/api/account/delete", {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    });
 
-    setToast({ message: "La suppression de compte sera disponible prochainement.", type: "error" });
+    if (!res.ok) {
+      setToast({ message: "Erreur lors de la suppression. Contactez le support.", type: "error" });
+      setDeletingAccount(false);
+      return;
+    }
+
+    await supabase.auth.signOut();
+    router.push("/?compte=supprime");
   }
 
   return (
@@ -391,44 +427,49 @@ export default function SettingsPage() {
                 </button>
               </div>
 
-              <div className="rounded-[32px] border border-red-500/20 bg-red-500/5 p-6 backdrop-blur-xl lg:p-8">
-
+              <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
                 <div className="flex items-center gap-4">
-
-                  <Trash2
-                    size={28}
-                    className="text-red-400"
-                  />
-
+                  <Shield size={28} className="text-[#FF5A1F]" />
                   <div>
-
-                    <h2 className="text-3xl font-black text-red-400">
-
-                      Zone dangereuse
-
-                    </h2>
-
-                    <p className="mt-2 text-zinc-400">
-
-                      Actions irréversibles liées à votre compte.
-
-                    </p>
-
+                    <h2 className="text-3xl font-black">Mes données (RGPD)</h2>
+                    <p className="mt-2 text-zinc-400">Exercez vos droits conformément au RGPD.</p>
                   </div>
-
                 </div>
+                <div className="mt-8 space-y-4">
+                  <div className="flex items-start justify-between gap-4 rounded-2xl border border-white/10 bg-black/30 p-5">
+                    <div>
+                      <h3 className="font-bold">Télécharger mes données</h3>
+                      <p className="mt-1 text-sm text-zinc-500">Exportez toutes vos données personnelles au format JSON (droit à la portabilité — Art. 20 RGPD).</p>
+                    </div>
+                    <button
+                      onClick={exportData}
+                      disabled={exportingData}
+                      className="flex shrink-0 h-12 items-center gap-2 rounded-2xl bg-zinc-800 px-6 text-sm font-bold transition hover:bg-zinc-700 disabled:opacity-50"
+                    >
+                      <Download size={16} />
+                      {exportingData ? "Export..." : "Télécharger"}
+                    </button>
+                  </div>
+                </div>
+              </div>
 
+              <div className="rounded-[32px] border border-red-500/20 bg-red-500/5 p-6 backdrop-blur-xl lg:p-8">
+                <div className="flex items-center gap-4">
+                  <Trash2 size={28} className="text-red-400" />
+                  <div>
+                    <h2 className="text-3xl font-black text-red-400">Zone dangereuse</h2>
+                    <p className="mt-2 text-zinc-400">Actions irréversibles liées à votre compte.</p>
+                  </div>
+                </div>
+                <p className="mt-6 text-sm text-zinc-500">La suppression efface définitivement votre profil, vos candidatures, vos messages et toutes vos données personnelles (droit à l'effacement — Art. 17 RGPD).</p>
                 <button
                   onClick={deleteAccount}
-                  className="mt-10 flex h-14 items-center gap-3 rounded-2xl bg-red-500 px-8 font-bold transition hover:scale-[1.01]"
+                  disabled={deletingAccount}
+                  className="mt-6 flex h-14 items-center gap-3 rounded-2xl bg-red-500 px-8 font-bold transition hover:scale-[1.01] disabled:opacity-50"
                 >
-
                   <Trash2 size={18} />
-
-                  Supprimer mon compte
-
+                  {deletingAccount ? "Suppression..." : "Supprimer mon compte"}
                 </button>
-
               </div>
 
             </div>
