@@ -525,12 +525,14 @@ export default function OrganizerEventDetailsPage() {
 
   const acceptedCount = applications.filter((a) => a.status === "accepted").length;
   const pendingCount = applications.filter((a) => a.status === "pending").length;
+  const withdrawalCount = applications.filter((a) => a.withdrawal_reason).length;
   const remaining = Math.max(0, (event.marshals_needed || 0) - acceptedCount);
   const eventEndDate = event.event_end_date ? new Date(event.event_end_date) : new Date(event.event_date);
   const isEventPast = eventEndDate < new Date();
 
   const filteredApplications = applications.filter((app) => {
     if (filter === "all") return true;
+    if (filter === "withdrawal") return !!app.withdrawal_reason;
     return app.status === filter;
   });
 
@@ -669,7 +671,7 @@ export default function OrganizerEventDetailsPage() {
           <div className="mx-auto max-w-[1700px] p-4 lg:p-10">
 
             {/* Stats grid */}
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-5 lg:gap-6">
               <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
                 <p className="text-sm text-zinc-500">Candidatures</p>
                 <h2 className="mt-3 text-4xl font-black lg:text-5xl">{applications.length}</h2>
@@ -685,6 +687,14 @@ export default function OrganizerEventDetailsPage() {
               <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
                 <p className="text-sm text-zinc-500">Places restantes</p>
                 <h2 className="mt-3 text-4xl font-black text-[#FF5A1F] lg:text-5xl">{remaining}</h2>
+              </div>
+              <div
+                onClick={() => withdrawalCount > 0 ? setFilter("withdrawal") : undefined}
+                className={`rounded-3xl border p-5 lg:p-8 transition ${withdrawalCount > 0 ? "cursor-pointer border-orange-500/40 bg-orange-500/10 hover:bg-orange-500/15" : "border-white/10 bg-white/[0.03]"}`}
+              >
+                <p className="text-sm text-zinc-500">Annulations</p>
+                <h2 className={`mt-3 text-4xl font-black lg:text-5xl ${withdrawalCount > 0 ? "text-orange-400" : ""}`}>{withdrawalCount}</h2>
+                {withdrawalCount > 0 && <p className="mt-1 text-xs text-orange-400">⚠ Voir demandes</p>}
               </div>
             </div>
 
@@ -776,6 +786,7 @@ export default function OrganizerEventDetailsPage() {
                     { key: "pending", label: "En attente", activeClass: "bg-yellow-600" },
                     { key: "accepted", label: "Acceptées", activeClass: "bg-green-600" },
                     { key: "rejected", label: "Refusées", activeClass: "bg-red-600" },
+                    ...(withdrawalCount > 0 ? [{ key: "withdrawal", label: `⚠ Annulations (${withdrawalCount})`, activeClass: "bg-orange-600" }] : []),
                   ].map(({ key, label, activeClass }) => (
                     <button
                       key={key}

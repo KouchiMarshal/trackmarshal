@@ -17,19 +17,42 @@ export async function POST(req: NextRequest) {
   if (!applicationId || !reason?.trim())
     return NextResponse.json({ ok: false, error: "Champs manquants" }, { status: 400 });
 
-  // Verify the application belongs to this user and is accepted
+  // Fetch the application (no join — avoids FK dependency)
   const { data: app, error: appError } = await supabaseAdmin
     .from("applications")
-    .select("id, marshal_id, event_id, status, events(title, slug, organizer_id)")
+    .select("id, marshal_id, event_id, status")
     .eq("id", applicationId)
     .eq("marshal_id", user.id)
     .single();
 
-  if (appError || !app)
+  if (appError || !app) {
+    console.error("[withdrawal] app not found:", appError);
     return NextResponse.json({ ok: false, error: "Candidature introuvable" }, { status: 404 });
+  }
 
   if (app.status !== "accepted")
     return NextResponse.json({ ok: false, error: "Seules les candidatures acceptées peuvent faire l'objet d'une demande d'annulation" }, { status: 400 });
+
+  // Fetch event separately
+  const { data: event, error: eventError } = await supabaseAdmin
+    .from("events")
+    .select("id, title, organizer_id")
+    .eq("id", app.event_id)
+    .single();
+
+  if (eventError || !event) {
+    console.error("[withdrawal] event not found:", eventError);
+    return NextResponse.json({ ok: false, error: "Événement introuvable" }, { status: 404 });
+  }
+
+  // Fetch marshal name
+  const { data: profile } = await supabaseAdmin
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user.id)
+    .single();
+
+  const marshalName = profile?.full_name || "Un commissaire";
 
   // Store the reason in the application
   const { error: updateError } = await supabaseAdmin
@@ -40,30 +63,23 @@ export async function POST(req: NextRequest) {
     })
     .eq("id", applicationId);
 
-  if (updateError)
+  if (updateError) {
+    console.error("[withdrawal] update error:", updateError);
     return NextResponse.json({ ok: false, error: updateError.message }, { status: 500 });
+  }
 
-  // Fetch marshal name for the notification
-  const { data: profile } = await supabaseAdmin
-    .from("profiles")
-    .select("full_name")
-    .eq("id", user.id)
-    .single();
+  // Send notification to organizer via supabaseAdmin (bypasses RLS)
+  const { error: notifError } = await supabaseAdmin.from("notifications").insert({
+    user_id: event.organizer_id,
+    title: `Demande d'annulation — ${event.title}`,
+    message: `${marshalName} : "${reason.trim()}"`,
+    type: "withdrawal_request",
+    link: `/organizer/events/${app.event_id}`,
+    read: false,
+  });
 
-  const event = (app as any).events;
-  const organizerId = event?.organizer_id;
-  const marshalName = profile?.full_name || "Un commissaire";
-
-  // Send notification to organizer (bypasses RLS via supabaseAdmin)
-  if (organizerId) {
-    await supabaseAdmin.from("notifications").insert({
-      user_id: organizerId,
-      title: `Demande d'annulation — ${event?.title || "événement"}`,
-      message: `${marshalName} : "${reason.trim()}"`,
-      type: "withdrawal_request",
-      link: `/organizer/events/${app.event_id}`,
-      read: false,
-    });
+  if (notifError) {
+    console.error("[withdrawal] notification error:", notifError);
   }
 
   return NextResponse.json({ ok: true });
