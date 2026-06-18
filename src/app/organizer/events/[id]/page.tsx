@@ -945,8 +945,15 @@ export default function OrganizerEventDetailsPage() {
               <div className="space-y-6">
                 <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
                   <h3 className="text-xl font-black">Description</h3>
-                  <p className="mt-4 text-zinc-300">{event.briefing || event.description || "Aucune description disponible."}</p>
+                  <p className="mt-4 whitespace-pre-wrap text-zinc-300">{event.briefing || event.description || "Aucune description disponible."}</p>
                 </div>
+
+                {event.schedule && (
+                  <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
+                    <h3 className="text-xl font-black">Planning détaillé</h3>
+                    <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-zinc-300">{event.schedule}</p>
+                  </div>
+                )}
 
                 <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 lg:p-8">
                   <h3 className="text-xl font-black">Avantages</h3>

@@ -164,7 +164,7 @@ export default async function EventPage({
 
             </h1>
 
-            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-300 sm:mt-10 sm:text-xl lg:text-2xl">
+            <p className="mt-8 max-w-3xl whitespace-pre-wrap text-lg leading-relaxed text-zinc-300 sm:mt-10 sm:text-xl lg:text-2xl">
 
               {event.briefing || "Aucune description disponible."}
 
@@ -224,7 +224,7 @@ export default async function EventPage({
 
               <div className="p-6 sm:p-10">
 
-                <p className="text-base leading-relaxed text-zinc-300 sm:text-lg lg:text-xl">
+                <p className="whitespace-pre-wrap text-base leading-relaxed text-zinc-300 sm:text-lg lg:text-xl">
 
                   {event.briefing || "Aucune description disponible."}
 
@@ -296,7 +296,7 @@ export default async function EventPage({
                 Planning de l'Événement
               </p>
 
-              <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
+              <div className="mt-6 whitespace-pre-wrap text-base leading-relaxed text-zinc-300 sm:mt-8 sm:text-lg">
                 {event.schedule || "Planning à communiquer."}
               </div>
 
