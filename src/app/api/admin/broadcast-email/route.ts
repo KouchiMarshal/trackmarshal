@@ -11,9 +11,8 @@ export async function POST(req: NextRequest) {
   const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
   if (authError || !user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-  const { data: adminProfile } = await supabaseAdmin
-    .from("profiles").select("role").eq("id", user.id).single();
-  if (adminProfile?.role !== "admin")
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "foussardk@gmail.com";
+  if (user.email !== adminEmail)
     return NextResponse.json({ ok: false, error: "Forbidden" }, { status: 403 });
 
   if (!RESEND_API_KEY)
@@ -50,20 +49,51 @@ export async function POST(req: NextRequest) {
     </div>
   `;
 
+  // Use Resend batch API to send all emails in a single request (avoids rate limiting)
+  const BATCH_SIZE = 100;
   let sent = 0;
-  for (const recipient of recipients) {
-    const res = await fetch("https://api.resend.com/emails", {
+
+  for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
+    const batch = recipients.slice(i, i + BATCH_SIZE);
+    const batchPayload = batch.map((recipient: any) => ({
+      from: FROM_EMAIL,
+      to: recipient.email,
+      subject,
+      html,
+    }));
+
+    const res = await fetch("https://api.resend.com/emails/batch", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${RESEND_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ from: FROM_EMAIL, to: recipient.email, subject, html }),
+      body: JSON.stringify(batchPayload),
     });
-    if (res.ok) sent++;
-    else {
+
+    if (res.ok) {
+      const result = await res.json().catch(() => ({ data: [] }));
+      sent += result.data?.length ?? batch.length;
+    } else {
       const err = await res.json().catch(() => ({}));
-      console.error(`[broadcast] Erreur pour ${recipient.email}:`, err);
+      console.error(`[broadcast] Erreur batch ${i}-${i + batch.length}:`, err);
+      // Fallback: send individually with delay if batch fails
+      for (const recipient of batch) {
+        const r = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ from: FROM_EMAIL, to: recipient.email, subject, html }),
+        });
+        if (r.ok) sent++;
+        else {
+          const e = await r.json().catch(() => ({}));
+          console.error(`[broadcast] Erreur pour ${recipient.email}:`, e);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 600));
+      }
     }
   }
 
