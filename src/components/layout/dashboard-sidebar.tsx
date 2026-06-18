@@ -3,7 +3,6 @@
 import {
   CalendarDays,
   FileBadge2,
-  Globe,
   Heart,
   Home,
   LogOut,
@@ -162,9 +161,9 @@ export default function DashboardSidebar() {
             { icon: Home, label: "Dashboard", href: "/dashboard" },
             { icon: CalendarDays, label: "Events", href: "/dashboard/events" },
             { icon: MessageSquare, label: "Messages", href: "/dashboard/messages" },
+            { icon: Trophy, label: "Historique", href: "/dashboard/history" },
             { icon: User, label: "Profil", href: "/dashboard/profile" },
             { icon: Settings, label: "Réglages", href: "/dashboard/settings" },
-            { icon: Globe, label: "Accueil", href: "/" },
           ].map((item) => {
             const isMessages = item.href === "/dashboard/messages";
             return (
