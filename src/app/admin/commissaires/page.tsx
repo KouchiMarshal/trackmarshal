@@ -4,12 +4,20 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { CheckCircle2, Clock3, ChevronRight, Search } from "lucide-react";
+import { CheckCircle2, Clock3, ChevronRight, Search, X } from "lucide-react";
 
 export default function AdminCommissairesPage() {
   const [commissaires, setCommissaires] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [urlFilter, setUrlFilter] = useState<{ type: string; value: string } | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("filter");
+    const value = params.get("value");
+    if (type && value) setUrlFilter({ type, value });
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -26,13 +34,22 @@ export default function AdminCommissairesPage() {
   }, []);
 
   const filtered = commissaires.filter((c) => {
+    if (urlFilter) {
+      if (urlFilter.type === "license_type") {
+        return urlFilter.value === "Non renseigné" ? !c.license_type : c.license_type === urlFilter.value;
+      }
+      if (urlFilter.type === "asa") {
+        return c.asa === urlFilter.value;
+      }
+    }
     if (!search.trim()) return true;
     const q = search.toLowerCase();
     return (
       c.full_name?.toLowerCase().includes(q) ||
       c.email?.toLowerCase().includes(q) ||
       c.license_number?.toLowerCase().includes(q) ||
-      c.license_type?.toLowerCase().includes(q)
+      c.license_type?.toLowerCase().includes(q) ||
+      c.asa?.toLowerCase().includes(q)
     );
   });
 
@@ -42,12 +59,30 @@ export default function AdminCommissairesPage() {
         <div className="flex h-20 items-center justify-between px-6 lg:px-10">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Administration</p>
-            <h1 className="mt-1 text-2xl font-black lg:text-3xl">Commissaires ({commissaires.length})</h1>
+            <h1 className="mt-1 text-2xl font-black lg:text-3xl">
+              Commissaires ({filtered.length}{filtered.length !== commissaires.length ? `/${commissaires.length}` : ""})
+            </h1>
           </div>
         </div>
       </header>
 
       <div className="mx-auto max-w-[1400px] p-6 pb-24 lg:p-10 lg:pb-10">
+
+        {urlFilter && (
+          <div className="mb-4 flex items-center gap-3 rounded-2xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-5 py-3">
+            <span className="text-xs uppercase tracking-[0.15em] text-[#FF5A1F]">
+              {urlFilter.type === "license_type" ? "Licence" : "ASA"}
+            </span>
+            <span className="flex-1 text-sm font-black text-white">{urlFilter.value}</span>
+            <Link
+              href="/admin/commissaires"
+              onClick={() => setUrlFilter(null)}
+              className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-zinc-400 transition hover:text-white"
+            >
+              <X size={12} /> Effacer
+            </Link>
+          </div>
+        )}
 
         <div className="mb-8 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3">
           <Search size={18} className="shrink-0 text-zinc-500" />
@@ -55,7 +90,7 @@ export default function AdminCommissairesPage() {
             type="text"
             placeholder="Rechercher par nom, email, numéro ou type de licence..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => { setSearch(e.target.value); setUrlFilter(null); }}
             className="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-600"
           />
         </div>

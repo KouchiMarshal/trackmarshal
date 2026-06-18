@@ -152,10 +152,14 @@ export default function AdminDashboardPage() {
               <div className="mt-6 space-y-3">
                 {licenseStats.length === 0 && <p className="text-sm text-zinc-500">Aucune donnée.</p>}
                 {licenseStats.map(({ type, count }) => (
-                  <div key={type} className="flex items-center gap-3">
-                    <div className="flex-1">
+                  <Link
+                    key={type}
+                    href={`/admin/commissaires?filter=license_type&value=${encodeURIComponent(type)}`}
+                    className="group flex items-center gap-3 rounded-2xl p-2 -mx-2 transition hover:bg-white/[0.04]"
+                  >
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-bold truncate">{type}</span>
+                        <span className="text-sm font-bold truncate group-hover:text-[#FF5A1F] transition">{type}</span>
                         <span className="ml-3 shrink-0 text-sm font-black text-[#FF5A1F]">{count}</span>
                       </div>
                       <div className="h-1.5 w-full rounded-full bg-white/10">
@@ -165,7 +169,7 @@ export default function AdminDashboardPage() {
                         />
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -179,10 +183,14 @@ export default function AdminDashboardPage() {
               ) : (
                 <div className="mt-6 space-y-3">
                   {asaStats.map(({ asa, count }) => (
-                    <div key={asa} className="flex items-center gap-3">
-                      <div className="flex-1">
+                    <Link
+                      key={asa}
+                      href={`/admin/commissaires?filter=asa&value=${encodeURIComponent(asa)}`}
+                      className="group flex items-center gap-3 rounded-2xl p-2 -mx-2 transition hover:bg-white/[0.04]"
+                    >
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-bold truncate">{asa}</span>
+                          <span className="text-sm font-bold truncate group-hover:text-[#FF5A1F] transition">{asa}</span>
                           <span className="ml-3 shrink-0 text-sm font-black text-[#FF5A1F]">{count}</span>
                         </div>
                         <div className="h-1.5 w-full rounded-full bg-white/10">
@@ -192,7 +200,7 @@ export default function AdminDashboardPage() {
                           />
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               )}
