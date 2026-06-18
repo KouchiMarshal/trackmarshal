@@ -144,6 +144,26 @@ export default function AdminCommissaireProfilePage() {
                     {profile.license_number && (
                       <p className="mt-1 text-sm font-bold text-zinc-300">N° {profile.license_number}</p>
                     )}
+                    {profile.license_type_2 && (
+                      <div className="mt-4 border-t border-white/10 pt-4">
+                        <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500 mb-2">2ème licence</p>
+                        <p className="text-base font-black text-[#FF5A1F]">🏁 {profile.license_type_2}</p>
+                        {profile.license_number_2 && (
+                          <p className="mt-1 text-sm font-bold text-zinc-300">N° {profile.license_number_2}</p>
+                        )}
+                        <div className="mt-3">
+                          {profile.license_verified_2 ? (
+                            <div className="flex items-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
+                              <CheckCircle2 size={15} /> Vérifiée
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 text-sm font-bold text-yellow-400">
+                              <Clock3 size={15} /> En attente
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
 
                     <div className="mt-4">
                       {profile.license_verified ? (

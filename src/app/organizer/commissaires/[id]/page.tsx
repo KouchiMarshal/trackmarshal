@@ -135,38 +135,63 @@ export default function CommissaireProfilePage() {
                     </div>
                   </div>
 
-                  {/* Licence */}
-                  {profile.license_type && (
-                    <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6">
-                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Licence</p>
-                      <p className="mt-3 text-lg font-black text-[#FF5A1F]">🏁 {profile.license_type}</p>
-                      {profile.license_number && (
-                        <p className="mt-1 text-sm text-zinc-400">N° {profile.license_number}</p>
+                  {/* Licence(s) */}
+                  {(profile.license_type || profile.license_type_2) && (
+                    <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 space-y-4">
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+                        Licence{profile.license_type_2 ? "s" : ""}
+                      </p>
+
+                      {/* Licence 1 */}
+                      {profile.license_type && (
+                        <div>
+                          <p className="text-lg font-black text-[#FF5A1F]">🏁 {profile.license_type}</p>
+                          {profile.license_number && (
+                            <p className="mt-1 text-sm text-zinc-400">N° {profile.license_number}</p>
+                          )}
+                          <div className="mt-3">
+                            {profile.license_verified ? (
+                              <div className="flex items-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
+                                <CheckCircle2 size={16} /> Vérifiée
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 text-sm font-bold text-yellow-400">
+                                <Clock3 size={16} /> En attente
+                              </div>
+                            )}
+                          </div>
+                          {profile.license_url && (
+                            <a href={profile.license_url} target="_blank" rel="noopener noreferrer"
+                              className="mt-3 flex h-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]">
+                              📄 Voir la licence
+                            </a>
+                          )}
+                        </div>
                       )}
 
-                      <div className="mt-4">
-                        {profile.license_verified ? (
-                          <div className="flex items-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
-                            <CheckCircle2 size={16} />
-                            Licence vérifiée
+                      {/* Licence 2 */}
+                      {profile.license_type_2 && (
+                        <>
+                          <div className="border-t border-white/10" />
+                          <div>
+                            <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500 mb-2">2ème licence</p>
+                            <p className="text-lg font-black text-[#FF5A1F]">🏁 {profile.license_type_2}</p>
+                            {profile.license_number_2 && (
+                              <p className="mt-1 text-sm text-zinc-400">N° {profile.license_number_2}</p>
+                            )}
+                            <div className="mt-3">
+                              {profile.license_verified_2 ? (
+                                <div className="flex items-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
+                                  <CheckCircle2 size={16} /> Vérifiée
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 text-sm font-bold text-yellow-400">
+                                  <Clock3 size={16} /> En attente
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        ) : (
-                          <div className="flex items-center gap-2 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 text-sm font-bold text-yellow-400">
-                            <Clock3 size={16} />
-                            Vérification en attente
-                          </div>
-                        )}
-                      </div>
-
-                      {profile.license_url && (
-                        <a
-                          href={profile.license_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-4 flex h-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
-                        >
-                          📄 Voir la licence
-                        </a>
+                        </>
                       )}
                     </div>
                   )}
