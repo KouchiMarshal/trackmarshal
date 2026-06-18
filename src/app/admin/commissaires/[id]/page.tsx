@@ -50,6 +50,8 @@ export default function AdminCommissaireProfilePage() {
   const [toast, setToast] = useState<ToastData>(null);
   const [asaEdit, setAsaEdit] = useState("");
   const [asaSaving, setAsaSaving] = useState(false);
+  const [asa2Edit, setAsa2Edit] = useState("");
+  const [asa2Saving, setAsa2Saving] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -58,7 +60,7 @@ export default function AdminCommissaireProfilePage() {
       .select("*")
       .eq("id", id)
       .single()
-      .then(({ data }) => { setProfile(data); setAsaEdit(data?.asa || ""); setLoading(false); });
+      .then(({ data }) => { setProfile(data); setAsaEdit(data?.asa || ""); setAsa2Edit(data?.asa_2 || ""); setLoading(false); });
   }, [id]);
 
   async function saveAsa() {
@@ -67,6 +69,14 @@ export default function AdminCommissaireProfilePage() {
     setProfile((prev: any) => ({ ...prev, asa: asaEdit.trim() || null }));
     setAsaSaving(false);
     setToast({ message: "ASA mis à jour.", type: "success" });
+  }
+
+  async function saveAsa2() {
+    setAsa2Saving(true);
+    await supabase.from("profiles").update({ asa_2: asa2Edit.trim() || null }).eq("id", id);
+    setProfile((prev: any) => ({ ...prev, asa_2: asa2Edit.trim() || null }));
+    setAsa2Saving(false);
+    setToast({ message: "ASA 2ème licence mis à jour.", type: "success" });
   }
 
   async function validate(verified: boolean) {
@@ -182,6 +192,27 @@ export default function AdminCommissaireProfilePage() {
                         {profile.license_number_2 && (
                           <p className="mt-1 text-sm font-bold text-zinc-300">N° {profile.license_number_2}</p>
                         )}
+                        <div className="mt-3">
+                          <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">ASA</p>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={asa2Edit}
+                              onChange={(e) => setAsa2Edit(e.target.value)}
+                              onKeyDown={(e) => { if (e.key === "Enter") saveAsa2(); }}
+                              placeholder="ex : ASA Lyon, ASA Côte d'Azur..."
+                              className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]/60"
+                            />
+                            <button
+                              onClick={saveAsa2}
+                              disabled={asa2Saving}
+                              className="shrink-0 rounded-xl bg-[#FF5A1F]/20 px-3 py-2 text-[#FF5A1F] transition hover:bg-[#FF5A1F]/30 disabled:opacity-50"
+                              title="Enregistrer l'ASA"
+                            >
+                              {asa2Saving ? <Clock3 size={14} /> : <Save size={14} />}
+                            </button>
+                          </div>
+                        </div>
                         <div className="mt-3">
                           {profile.license_verified_2 ? (
                             <div className="flex items-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
