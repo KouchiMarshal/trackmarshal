@@ -1042,8 +1042,9 @@ export default function DrapeauxPage() {
           <div className="mt-12 flex items-start gap-3 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
             <span className="shrink-0 text-lg">📄</span>
             <p className="text-sm leading-relaxed text-zinc-500">
-              <span className="font-bold text-zinc-700">Sources :</span> Dossier Candidat Commissaire de Piste FFM — Version janvier 2023 · Règles Techniques et de Sécurité FFM (Art. 8 Vitesse, Art. 6 Motocross) · Dépliant FFM <em>Drapeaux en usage sur les épreuves motocyclistes</em>.
-              Les règles auto sont issues du Règlement Sportif FFSA 2025. Ces contenus sont fournis à titre pédagogique — consultez toujours le règlement particulier de l&apos;épreuve et le briefing de la direction de course.
+              <span className="font-bold text-zinc-700">Sources auto :</span> Dépliant FFSA <em>Drapeaux et Signaux 2026</em> · Règlement Sportif FFSA — Procédures Circuit Asphalte 2025 · Règlement Sportif FFSA 2025 (rallye, course de côte, karting, tout-terrain).{" "}
+              <span className="font-bold text-zinc-700">Sources moto :</span> Dossier Candidat Commissaire de Piste FFM — Version janvier 2023 · Règles Techniques et de Sécurité FFM (Art. 8 Vitesse, Art. 6 Motocross) · Dépliant FFM <em>Drapeaux en usage sur les épreuves motocyclistes</em>.
+              Ces contenus sont fournis à titre pédagogique — consultez toujours le règlement particulier de l&apos;épreuve et le briefing de la direction de course.
             </p>
           </div>
 

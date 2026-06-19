@@ -363,12 +363,12 @@ const procedures: Procedure[] = [
       "Attendez le ralentissement effectif du trafic avant toute intervention.",
       "Vérifiez que le moteur est coupé avant d'approcher le véhicule.",
       "Si le pilote est conscient, guidez-le vers un endroit sûr hors piste.",
-      "Si le pilote est inconscient : NE PAS déplacer — appelez les secours, signalez aux postes voisins.",
+      "Si le pilote est inconscient : NE PAS toucher ni déplacer — appelez les secours, signalez aux postes voisins. Deux exceptions absolues : incendie ou immersion — l'évacuation immédiate s'impose même sans secours (règle FFSA Gestion Incident).",
       "Une fois la zone sécurisée, assistez au remorquage du véhicule hors piste.",
       "Annoncez la fin d'intervention à la direction — passage au drapeau vert.",
     ],
     pointCritique:
-      "Ne déplacez jamais un pilote inconscient sans personnel médical qualifié.",
+      "Ne touchez pas un pilote inconscient sans personnel médical — sauf en cas d'incendie ou d'immersion (danger vital immédiat), où l'évacuation prime sur toute autre règle.",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -822,7 +822,7 @@ export default function ProceduresPage() {
               <span className="font-bold text-zinc-700">Sources :</span>{" "}
               {sportMode === "moto"
                 ? "Dossier Candidat Commissaire de Piste FFM — Version janvier 2023 · Règles Techniques et de Sécurité FFM (Art. 8 Vitesse, Art. 6 Motocross, Art. Enduro/Endurance TT)."
-                : "Règlement Sportif FFSA 2025 · Code Sportif FIA (procédures Safety Car/FCY)."}
+                : "Règlement Sportif FFSA — Procédures Circuit Asphalte 2025 · Gestion des Incidents FFSA 2025 · Le Rapport en Course FFSA 2026 · Code Sportif International FIA 2025 (procédures Safety Car/FCY)."}
             </p>
           </div>
 

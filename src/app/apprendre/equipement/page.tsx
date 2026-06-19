@@ -215,6 +215,16 @@ export default function EquipementPage() {
             </p>
           </div>
 
+          {/* Sources */}
+          <div className="mt-12 flex items-start gap-3 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
+            <span className="shrink-0 text-lg">📄</span>
+            <p className="text-sm leading-relaxed text-zinc-500">
+              <span className="font-bold text-zinc-700">Sources :</span>{" "}
+              Règlement Général des Épreuves Automobile FFSA — Généralités 2024 (Art. 2.6 Annexe H — tenue et équipement des commissaires de piste) · Règlement Sportif FFSA 2025.
+              Ces contenus sont fournis à titre pédagogique — l&apos;organisateur et le briefing de la direction de course font foi pour chaque épreuve.
+            </p>
+          </div>
+
           {/* CTA */}
           <div className="mt-12 flex flex-wrap gap-4">
             <Link

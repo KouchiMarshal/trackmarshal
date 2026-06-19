@@ -151,7 +151,7 @@ const faqs = [
   },
   {
     q: "Y a-t-il une tenue vestimentaire obligatoire ?",
-    a: "Oui. La combinaison en coton (orange ou rouge selon l'organisateur) est la tenue de référence sur circuit — elle protège du feu et identifie le commissaire. Sur épreuves route et karting, une chasuble facilement identifiable est souvent utilisée. L'organisateur précise la tenue attendue au briefing.",
+    a: "Oui. La combinaison en coton orange est la tenue de référence sur circuit — elle protège du feu et identifie le commissaire. Le rouge et le jaune sont explicitement proscrits par la réglementation FFSA (risque de confusion avec la signalisation). Sur épreuves route et karting, une chasuble facilement identifiable est souvent utilisée. L'organisateur précise la tenue attendue au briefing.",
   },
 ];
 
@@ -276,8 +276,8 @@ export default function DevenirCommissairePage() {
             <p className="text-sm leading-relaxed text-zinc-500">
               <span className="font-bold text-zinc-700">Sources :</span>{" "}
               {sportMode === "moto"
-                ? "Dossier Candidat Commissaire de Piste FFM — Version janvier 2023 (Formation des Officiels, Fédération Française de Motocyclisme)."
-                : "Règlement Sportif FFSA 2025 · Formations FFSA e-learning (ffsa.org/divers/commissaires)."}
+                ? "Dossier Candidat Commissaire de Piste FFM — Version janvier 2023 (Formation des Officiels, Fédération Française de Motocyclisme) · Règlement Sportif FFM 2025."
+                : "Devenir Commissaire — Les étapes clés (FFSA, 2025) · Règlement Général des Épreuves Automobile FFSA — Généralités 2024 (Art. 3 — Licences et grades des officiels) · Règlement Sportif FFSA 2025."}
               {" "}Ces contenus sont fournis à titre pédagogique — les règlements peuvent évoluer chaque saison.
             </p>
           </div>

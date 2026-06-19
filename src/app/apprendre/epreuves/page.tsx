@@ -368,6 +368,18 @@ export default function EpreuvesPage() {
             </div>
           </div>
 
+          {/* Sources */}
+          <div className="mt-12 flex items-start gap-3 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
+            <span className="shrink-0 text-lg">📄</span>
+            <p className="text-sm leading-relaxed text-zinc-500">
+              <span className="font-bold text-zinc-700">Sources auto :</span>{" "}
+              Règlement Sportif FFSA 2025 (circuit asphalte, tout-terrain, rallye, course de côte, karting) · FFSA Généralités 2024.{" "}
+              <span className="font-bold text-zinc-700">Sources moto :</span>{" "}
+              Règlement Sportif FFM 2025 · Dossier Candidat Commissaire de Piste FFM — Version janvier 2023.
+              Ces contenus sont fournis à titre pédagogique — consultez toujours le règlement particulier de l&apos;épreuve.
+            </p>
+          </div>
+
         </div>
       </section>
 

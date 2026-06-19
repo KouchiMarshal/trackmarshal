@@ -242,6 +242,16 @@ export default function RolesPage() {
             ))}
           </div>
 
+          {/* Sources */}
+          <div className="mt-14 flex items-start gap-3 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
+            <span className="shrink-0 text-lg">📄</span>
+            <p className="text-sm leading-relaxed text-zinc-500">
+              <span className="font-bold text-zinc-700">Sources :</span>{" "}
+              Règlement Général des Épreuves Automobile FFSA — Généralités 2024 (Art. 3 — Organisation et rôles des officiels) · Règlement Sportif FFSA 2025 · Dossier Candidat Commissaire de Piste FFM — Version janvier 2023.
+              Ces contenus sont fournis à titre pédagogique — les attributions peuvent varier selon les règlements particuliers de chaque épreuve.
+            </p>
+          </div>
+
           {/* CTA */}
           <div className="mt-14 flex flex-col gap-3 sm:flex-row">
             <Link

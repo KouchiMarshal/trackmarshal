@@ -159,6 +159,16 @@ export default function LexiquePage() {
             )}
           </div>
 
+          {/* Sources */}
+          <div className="mt-12 flex items-start gap-3 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
+            <span className="shrink-0 text-lg">📄</span>
+            <p className="text-sm leading-relaxed text-zinc-500">
+              <span className="font-bold text-zinc-700">Sources :</span>{" "}
+              Règlement Sportif FFSA 2025 · Code Sportif International FIA 2025 · Règlement Sportif FFM 2025 · Dossier Candidat Commissaire de Piste FFM — Version janvier 2023.
+              Ces contenus sont fournis à titre pédagogique — les règlements évoluent chaque saison, consultez toujours la version en vigueur sur ffsa.org ou ffmoto.org.
+            </p>
+          </div>
+
         </div>
       </section>
 
