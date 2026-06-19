@@ -49,6 +49,7 @@ const terms = [
   { letter: "S", term: "Stop and go", definition: "Pénalité obligeant le concurrent à s'arrêter dans sa boîte de stands pendant un temps défini (10 secondes, 30 secondes...). Plus sévère que le drive-through." },
   { letter: "T", term: "Tour de chauffe", definition: "Voir Formation lap." },
   { letter: "T", term: "Track limits", definition: "Voir Cut." },
+  { letter: "V", term: "Virtual Safety Car (VSC)", definition: "Procédure de neutralisation FIA utilisée en Formule 1 et sur certaines épreuves FIA internationales. Sans déploiement physique du Safety Car, un delta time est imposé aux pilotes via l'affichage de leur volant. Les commissaires présentent un drapeau jaune fixe. Non utilisé dans les compétitions FFSA nationales, où son équivalent est le FCY (Full Course Yellow) à 80 km/h." },
   { letter: "V", term: "Voie des stands (Pit lane)", definition: "Voie longeant la piste principale, à vitesse réglementée, permettant aux concurrents d'accéder aux stands pour ravitaillement, changement de pneus ou réparations. Son accès reste ouvert sous Safety Car et FCY sauf instruction contraire du DC." },
   { letter: "V", term: "Voiture de tête", definition: "Terme parfois utilisé pour désigner le Safety Car, notamment en rallye ou dans les épreuves où un véhicule ouvre la route avant les concurrents." },
   { letter: "Z", term: "Zone de dégagement", definition: "Espace aménagé en dehors de la piste pour arrêter les véhicules sortant de trajectoire. Peut être en asphalte, gravier ou herbe selon le niveau d'homologation du circuit." },
