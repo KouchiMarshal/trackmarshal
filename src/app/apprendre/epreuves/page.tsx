@@ -1,8 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 
-const disciplines = [
+const autoDisc = [
   {
     emoji: "🏁",
     name: "Circuit",
@@ -17,7 +20,7 @@ const disciplines = [
       "Rotation des équipes sur les longues épreuves.",
     ],
     tenue: "Combinaison en coton obligatoire",
-    tenueBadge: "bg-red-100 text-red-700 border-red-200",
+    tenueBadge: "bg-orange-100 text-orange-700 border-orange-200",
   },
   {
     emoji: "🌲",
@@ -86,7 +89,7 @@ const disciplines = [
   {
     emoji: "💨",
     name: "Drift",
-    borderColor: "border-red-200",
+    borderColor: "border-zinc-300",
     commissaires: "15 à 25",
     duree: "1 jour",
     specificites: [
@@ -97,26 +100,162 @@ const disciplines = [
       "Vigilance accrue sur les zones de sécurité.",
     ],
     tenue: "Combinaison recommandée",
-    tenueBadge: "bg-red-100 text-red-700 border-red-200",
+    tenueBadge: "bg-zinc-100 text-zinc-700 border-zinc-300",
   },
 ];
 
-const saviez = [
+const motoDisc = [
   {
-    emoji: "📊",
-    text: "Les 24 Heures du Mans 2026 ont mobilisé 2 053 commissaires de piste issus de 23 pays différents.",
+    emoji: "🏍️",
+    name: "Vitesse",
+    borderColor: "border-[#FF5A1F]/30",
+    commissaires: "40 à 120 selon le circuit",
+    duree: "1 à 2 jours (weekends d'épreuves)",
+    specificites: [
+      "Postes fixes tout autour du circuit, espacés selon la longueur.",
+      "Vitesses très élevées — réactivité maximale exigée.",
+      "Communication radio permanente avec le directeur de course.",
+      "Les drapeaux sont présentés simultanément à tous les postes.",
+      "Licence OFF (Officiel de Piste) FFM requise pour officier seul.",
+    ],
+    tenue: "Combinaison en coton obligatoire",
+    tenueBadge: "bg-orange-100 text-orange-700 border-orange-200",
   },
   {
-    emoji: "🗓️",
-    text: "Un commissaire actif participe en moyenne à 8 à 15 épreuves par saison.",
+    emoji: "🌿",
+    name: "Motocross",
+    borderColor: "border-yellow-200",
+    commissaires: "15 à 40",
+    duree: "1 jour (manches)",
+    specificites: [
+      "Piste en terre avec bosses, virages relevés et sauts.",
+      "Plusieurs pilotes simultanément sur la piste.",
+      "Chutes fréquentes — interventions rapides entre les vagues.",
+      "Projections importantes de terre et de boue.",
+      "Bonne mobilité physique indispensable.",
+    ],
+    tenue: "Combinaison ou tenue adaptée à la boue",
+    tenueBadge: "bg-yellow-100 text-yellow-700 border-yellow-200",
   },
   {
-    emoji: "🌍",
-    text: "Avec une licence EICOB, vous pouvez officier sur des épreuves FIA dans toute l'Europe.",
+    emoji: "🌲",
+    name: "Enduro",
+    borderColor: "border-green-200",
+    commissaires: "20 à 60 selon le parcours",
+    duree: "1 à 2 jours",
+    specificites: [
+      "Postes isolés en forêt, parfois sans radio.",
+      "Les pilotes passent un à un à intervalles réguliers.",
+      "Terrain accidenté, accès parfois difficile.",
+      "Longues périodes d'attente entre les passages.",
+      "Connaissance du terrain et autonomie essentielles.",
+    ],
+    tenue: "Tenue robuste, bottes imperméables recommandées",
+    tenueBadge: "bg-green-100 text-green-700 border-green-200",
+  },
+  {
+    emoji: "🔄",
+    name: "Supermotard",
+    borderColor: "border-blue-200",
+    commissaires: "20 à 50",
+    duree: "1 jour",
+    specificites: [
+      "Circuit mixte asphalte et section en terre.",
+      "Changement de surface rapide — vigilance sur les zones de transition.",
+      "Cadence élevée, pilotes très groupés.",
+      "La section terre génère des projections sur l'asphalte.",
+      "Drapeau jaune-rouge bandes utilisé pour signaler la piste glissante.",
+    ],
+    tenue: "Combinaison en coton recommandée",
+    tenueBadge: "bg-blue-100 text-blue-700 border-blue-200",
+  },
+  {
+    emoji: "⏱️",
+    name: "Endurance TT",
+    borderColor: "border-purple-200",
+    commissaires: "50 à 150 (Bol d'Or, etc.)",
+    duree: "8h à 24h en continu",
+    specificites: [
+      "Rotation des équipes de commissaires toutes les 2 à 4h.",
+      "Épreuves nocturnes — lampe frontale et chasuble réfléchissante obligatoires.",
+      "Fatigue accumulée — vigilance maintenue sur la durée.",
+      "Communication radio continue avec la salle de contrôle.",
+      "Les stands d'assistance sont intégrés au dispositif de sécurité.",
+    ],
+    tenue: "Combinaison en coton + chasuble réfléchissante (nuit)",
+    tenueBadge: "bg-purple-100 text-purple-700 border-purple-200",
+  },
+  {
+    emoji: "🏜️",
+    name: "Rallye-Raid",
+    borderColor: "border-zinc-300",
+    commissaires: "10 à 30 par zone de contrôle",
+    duree: "Plusieurs jours à plusieurs semaines",
+    specificites: [
+      "Postes très isolés, parfois en zones reculées.",
+      "Autonomie totale en eau, nourriture et matériel.",
+      "Les pilotes passent en navigation autonome.",
+      "Liaison radio souvent par satellite.",
+      "Formation secourisme recommandée.",
+    ],
+    tenue: "Tenue adaptée au terrain (désert, montagne, forêt)",
+    tenueBadge: "bg-zinc-100 text-zinc-700 border-zinc-300",
+  },
+  {
+    emoji: "🪨",
+    name: "Trial",
+    borderColor: "border-orange-200",
+    commissaires: "10 à 25",
+    duree: "1 jour",
+    specificites: [
+      "Discipline technique sans vitesse — juges de zones.",
+      "Chaque pilote réalise des sections balisées (zones).",
+      "Les commissaires comptent les pénalités (pieds à terre).",
+      "Terrain naturel ou artificiel avec obstacles.",
+      "Aucun contact avec le sol, sauf les pneus.",
+    ],
+    tenue: "Tenue confortable, chaussures de sécurité",
+    tenueBadge: "bg-orange-100 text-orange-700 border-orange-200",
   },
 ];
+
+const saviez = {
+  auto: [
+    {
+      emoji: "📊",
+      text: "Les 24 Heures du Mans 2026 ont mobilisé 2 053 commissaires de piste issus de 23 pays différents.",
+    },
+    {
+      emoji: "🗓️",
+      text: "Un commissaire actif participe en moyenne à 8 à 15 épreuves par saison.",
+    },
+    {
+      emoji: "🌍",
+      text: "Avec une licence EICOB, vous pouvez officier sur des épreuves FIA dans toute l'Europe.",
+    },
+  ],
+  moto: [
+    {
+      emoji: "📊",
+      text: "Le Bol d'Or (24h Moto) mobilise plus de 400 commissaires de piste sur le circuit de Nevers Magny-Cours.",
+    },
+    {
+      emoji: "🗓️",
+      text: "En motocross, une journée d'épreuve peut voir 6 à 8 manches se succéder — le commissaire intervient entre chaque passage.",
+    },
+    {
+      emoji: "🪪",
+      text: "La licence OFF (Officiel de Piste) FFM est requise pour officier en autonomie sur une épreuve de vitesse moto.",
+    },
+  ],
+};
 
 export default function EpreuvesPage() {
+  const [sportMode, setSportMode] = useState<"auto" | "moto">("auto");
+
+  const disciplines = sportMode === "auto" ? autoDisc : motoDisc;
+  const facts = saviez[sportMode];
+
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
@@ -133,12 +272,36 @@ export default function EpreuvesPage() {
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-[#FF5A1F]">Disciplines</p>
           <h1 className="mt-4 text-4xl font-black text-zinc-900 lg:text-6xl">Les types d&apos;épreuves</h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
-            Circuit, rallye, côte, karting... Chaque discipline a ses propres codes, procédures et
+            Circuit, rallye, côte, motocross... Chaque discipline a ses propres codes, procédures et
             exigences pour le commissaire.
           </p>
 
+          {/* Toggle Auto / Moto */}
+          <div className="mt-8 inline-flex rounded-2xl border border-zinc-200 bg-white p-1 shadow-sm">
+            <button
+              onClick={() => setSportMode("auto")}
+              className={`rounded-xl px-6 py-2.5 text-sm font-black transition ${
+                sportMode === "auto"
+                  ? "bg-[#FF5A1F] text-white shadow"
+                  : "text-zinc-500 hover:text-zinc-900"
+              }`}
+            >
+              🚗 Auto
+            </button>
+            <button
+              onClick={() => setSportMode("moto")}
+              className={`rounded-xl px-6 py-2.5 text-sm font-black transition ${
+                sportMode === "moto"
+                  ? "bg-[#FF5A1F] text-white shadow"
+                  : "text-zinc-500 hover:text-zinc-900"
+              }`}
+            >
+              🏍️ Moto
+            </button>
+          </div>
+
           {/* Discipline grid */}
-          <div className="mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {disciplines.map((d) => (
               <div
                 key={d.name}
@@ -193,7 +356,7 @@ export default function EpreuvesPage() {
           <div className="mt-20">
             <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Le saviez-vous ?</h2>
             <div className="mt-8 grid gap-5 sm:grid-cols-3">
-              {saviez.map((s) => (
+              {facts.map((s) => (
                 <div
                   key={s.emoji}
                   className="rounded-[24px] border border-zinc-200 bg-white shadow-sm p-6"
