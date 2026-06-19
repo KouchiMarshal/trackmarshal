@@ -173,7 +173,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-black text-white">
+    <main className="relative min-h-screen overflow-hidden bg-black">
 
       <Toast toast={toast} onClose={() => setToast(null)} />
 
@@ -207,7 +207,7 @@ export default function RegisterPage() {
 
             </p>
 
-            <h1 className="mt-8 text-7xl font-black uppercase leading-[0.9] tracking-[-0.05em]">
+            <h1 className="mt-8 text-7xl font-black uppercase leading-[0.9] tracking-[-0.05em] text-white">
 
               Commencez
               <br />
@@ -230,7 +230,7 @@ export default function RegisterPage() {
 
           <div className="flex items-center justify-center">
 
-            <div className="w-full max-w-xl rounded-[32px] border border-white/10 bg-black/40 p-6 backdrop-blur-2xl sm:p-8 lg:rounded-[40px] lg:p-10">
+            <div className="w-full max-w-xl rounded-[32px] border border-zinc-200 bg-white shadow-xl p-6 sm:p-8 lg:rounded-[40px] lg:p-10">
 
               <div>
 
@@ -240,13 +240,13 @@ export default function RegisterPage() {
 
                 </p>
 
-                <h2 className="mt-4 text-4xl font-black sm:text-5xl">
+                <h2 className="mt-4 text-4xl font-black text-zinc-900 sm:text-5xl">
 
                   Créer un compte
 
                 </h2>
 
-                <p className="mt-5 text-base leading-relaxed text-zinc-400 lg:text-lg">
+                <p className="mt-5 text-base leading-relaxed text-zinc-600 lg:text-lg">
 
                   Rejoignez TrackMarshal et accédez
                   aux événements motorsport.
@@ -262,7 +262,7 @@ export default function RegisterPage() {
 
                 <div>
 
-                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
 
                     Nom complet
 
@@ -277,7 +277,7 @@ export default function RegisterPage() {
                         e.target.value
                       )
                     }
-                    className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none backdrop-blur-xl placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                    className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                     placeholder="Jean Dupont"
                   />
 
@@ -285,7 +285,7 @@ export default function RegisterPage() {
 
                 <div>
 
-                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
 
                     Adresse Email
 
@@ -298,7 +298,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setEmail(e.target.value)
                     }
-                    className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none backdrop-blur-xl placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                    className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                     placeholder="contact@email.com"
                   />
 
@@ -306,7 +306,7 @@ export default function RegisterPage() {
 
                 <div>
 
-                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
 
                     Mot de Passe
 
@@ -321,7 +321,7 @@ export default function RegisterPage() {
                         e.target.value
                       )
                     }
-                    className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none backdrop-blur-xl placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                    className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                     placeholder="••••••••"
                   />
 
@@ -329,7 +329,7 @@ export default function RegisterPage() {
 
                 <div>
 
-                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
 
                     Type de compte
 
@@ -340,7 +340,7 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setRole(e.target.value)
                     }
-                    className="h-14 w-full rounded-2xl border border-white/10 bg-[#111111] px-5 text-white outline-none focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                    className="h-14 w-full rounded-2xl border border-zinc-300 bg-white px-5 text-zinc-900 outline-none focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                   >
 
                     <option value="marshal">Commissaire</option>
@@ -354,14 +354,14 @@ export default function RegisterPage() {
                 {role === "marshal" && (
                   <>
                     <div>
-                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
                         Type de licence <span className="text-[#FF5A1F]">*</span>
                       </p>
                       <select
                         required
                         value={licenseType}
                         onChange={(e) => setLicenseType(e.target.value)}
-                        className="h-14 w-full rounded-2xl border border-white/10 bg-[#111111] px-5 text-white outline-none focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                        className="h-14 w-full rounded-2xl border border-zinc-300 bg-white px-5 text-zinc-900 outline-none focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                       >
                         <option value="">Sélectionner un type</option>
                         <optgroup label="FFSA — Auto">
@@ -378,7 +378,7 @@ export default function RegisterPage() {
                     </div>
 
                     <div>
-                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
                         Numéro de licence <span className="text-[#FF5A1F]">*</span>
                       </p>
                       <input
@@ -387,12 +387,12 @@ export default function RegisterPage() {
                         value={licenseNumber}
                         onChange={(e) => setLicenseNumber(e.target.value)}
                         placeholder="ex : 2024-FFSA-00123"
-                        className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                        className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                       />
                     </div>
 
                     <div>
-                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
                         ASA (Association Sportive Automobile) <span className="text-[#FF5A1F]">*</span>
                       </p>
                       <input
@@ -401,16 +401,16 @@ export default function RegisterPage() {
                         value={asa}
                         onChange={(e) => setAsa(e.target.value)}
                         placeholder="ex : ASA Lyon, ASA Côte d'Azur..."
-                        className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                        className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                       />
                     </div>
 
                     <div>
-                      <p className="mb-1 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                      <p className="mb-1 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
                         Photo / scan de votre licence <span className="text-[#FF5A1F]">*</span>
                       </p>
                       <p className="mb-3 text-xs text-zinc-500">PDF ou image — recto de votre licence officielle.</p>
-                      <label className={`flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-6 text-center transition ${marshalLicenseFile ? "border-green-500/40 bg-green-500/5" : "border-white/10 bg-white/[0.03] hover:border-[#FF5A1F]/40"}`}>
+                      <label className={`flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-6 text-center transition ${marshalLicenseFile ? "border-green-500/40 bg-green-500/5" : "border-zinc-300 bg-zinc-50 hover:border-[#FF5A1F]/40"}`}>
                         {marshalLicenseFile ? (
                           <>
                             <p className="text-sm font-bold text-green-400">✔ {marshalLicenseFile.name}</p>
@@ -418,8 +418,8 @@ export default function RegisterPage() {
                           </>
                         ) : (
                           <>
-                            <p className="text-sm font-semibold text-zinc-400">Cliquer pour uploader</p>
-                            <p className="text-xs text-zinc-600">PDF, JPG, PNG</p>
+                            <p className="text-sm font-semibold text-zinc-600">Cliquer pour uploader</p>
+                            <p className="text-xs text-zinc-400">PDF, JPG, PNG</p>
                           </>
                         )}
                         <input
@@ -437,14 +437,14 @@ export default function RegisterPage() {
                   <>
                     <div className="rounded-2xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-4">
                       <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#FF5A1F]">Vérification organisateur</p>
-                      <p className="mt-1.5 text-xs text-zinc-400">
+                      <p className="mt-1.5 text-xs text-zinc-600">
                         Pour publier des événements, nous devons vérifier que vous représentez bien une ASA ou ASK agréée.
                         Votre compte sera validé par notre équipe sous 24h.
                       </p>
                     </div>
 
                     <div>
-                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
                         Nom de votre ASA / ASK <span className="text-[#FF5A1F]">*</span>
                       </p>
                       <input
@@ -453,12 +453,12 @@ export default function RegisterPage() {
                         value={organizerOrgName}
                         onChange={(e) => setOrganizerOrgName(e.target.value)}
                         placeholder="ex : ASA du Val de Loire"
-                        className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                        className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                       />
                     </div>
 
                     <div>
-                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                      <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
                         Justificatif officiel (agrément ASA/ASK) <span className="text-[#FF5A1F]">*</span>
                       </p>
                       <p className="mb-3 text-xs text-zinc-500">PDF, image — lettre d'agrément, statuts, ou carte de membre officielle.</p>
@@ -467,7 +467,7 @@ export default function RegisterPage() {
                         accept=".pdf,image/*"
                         onChange={(e) => setOrganizerDocFile(e.target.files?.[0] || null)}
                         required
-                        className="block w-full text-sm text-zinc-400 file:mr-4 file:rounded-xl file:border-0 file:bg-white/10 file:px-4 file:py-2 file:text-xs file:font-bold file:text-white"
+                        className="block w-full text-sm text-zinc-600 file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:text-xs file:font-bold file:text-zinc-800"
                       />
                       {organizerDocFile && <p className="mt-2 text-xs text-green-400">✔ {organizerDocFile.name} sélectionné</p>}
                     </div>
@@ -482,7 +482,7 @@ export default function RegisterPage() {
                     onChange={(e) => setConsentAccepted(e.target.checked)}
                     className="mt-0.5 h-4 w-4 shrink-0 accent-[#FF5A1F]"
                   />
-                  <span className="text-sm leading-relaxed text-zinc-400">
+                  <span className="text-sm leading-relaxed text-zinc-600">
                     J'ai lu et j'accepte la{" "}
                     <Link href="/confidentialite" target="_blank" className="text-[#FF5A1F] underline underline-offset-2">politique de confidentialité</Link>
                     {" "}et les{" "}
@@ -505,7 +505,7 @@ export default function RegisterPage() {
 
               </form>
 
-              <p className="mt-8 text-center text-sm text-zinc-400 lg:text-base">
+              <p className="mt-8 text-center text-sm text-zinc-600 lg:text-base">
 
                 Vous avez déjà un compte ?{" "}
 

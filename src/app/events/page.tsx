@@ -249,7 +249,7 @@ export default function EventsPage() {
 
       </section>
 
-      <section className="bg-black py-10 lg:py-20">
+      <section className="bg-zinc-50 py-10 lg:py-20">
 
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
 
@@ -265,7 +265,7 @@ export default function EventsPage() {
 
               <div
                 key={event.slug}
-                className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] backdrop-blur-xl transition hover:border-[#FF5A1F]/30"
+                className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm transition hover:border-[#FF5A1F]/40 hover:shadow-md"
               >
 
                 <div className="relative h-[260px]">
@@ -293,13 +293,13 @@ export default function EventsPage() {
 
                 <div className="p-6 lg:p-8">
 
-                  <h2 className="text-3xl font-black lg:text-5xl">
+                  <h2 className="text-3xl font-black text-zinc-900 lg:text-5xl">
 
                     {event.title}
 
                   </h2>
 
-                  <div className="mt-8 space-y-4 text-zinc-300">
+                  <div className="mt-8 space-y-4 text-zinc-600">
 
                     <div className="flex items-center gap-3">
 
@@ -356,7 +356,7 @@ export default function EventsPage() {
                       className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
                     >
 
-                      Voir l’événement
+                      Voir l'événement
 
                     </Link>
 
