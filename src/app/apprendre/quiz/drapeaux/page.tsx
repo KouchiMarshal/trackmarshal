@@ -1,11 +1,6 @@
-"use client";
+import QuizEngine, { QuizQuestion } from "@/components/quiz/QuizEngine";
 
-import { useState } from "react";
-import Link from "next/link";
-import PublicNavbar from "@/components/layout/public-navbar";
-import PublicFooter from "@/components/layout/public-footer";
-
-const questions = [
+const questions: QuizQuestion[] = [
   {
     id: 1,
     question: "Que signifie le drapeau rouge ?",
@@ -18,11 +13,11 @@ const questions = [
       "Avertissement pour conduite antisportive",
     ],
     correct: 0,
-    explanation: "Le drapeau rouge ordonne l'arrêt immédiat de la séance. Tous les concurrents doivent ralentir et rejoindre les stands ou la grille.",
+    explanation: "Le drapeau rouge ordonne l'arrêt immédiat de la séance. Tous les concurrents doivent ralentir progressivement et rejoindre les stands ou la grille selon les instructions du DC.",
   },
   {
     id: 2,
-    question: "Comment agite-t-on le drapeau jaune en cas de danger immédiat ?",
+    question: "Comment présente-t-on le drapeau jaune en cas de danger immédiat sur la piste ?",
     flagImg: "/flags/jaune.svg",
     flagAlt: "Drapeau jaune",
     options: [
@@ -32,24 +27,52 @@ const questions = [
       "Posé au sol",
     ],
     correct: 1,
-    explanation: "Le drapeau jaune agité (vigoureusement) signale un danger immédiat. Le jaune fixe annonce un danger moins immédiat en amont.",
+    explanation: "Le drapeau jaune AGITÉ (vigoureusement) signale un danger immédiat. Le jaune FIXE (bras tendu) annonce un danger moins immédiat en amont. Dans les deux cas, tout dépassement est interdit.",
   },
   {
     id: 3,
-    question: "Que signifie le drapeau vert ?",
+    question: "Le drapeau jaune FIXE (bras tendu, non agité) indique :",
+    flagImg: "/flags/jaune.svg",
+    flagAlt: "Drapeau jaune fixe",
+    options: [
+      "Un danger immédiat — prêt à s'arrêter",
+      "Un danger en amont — ralentir, pas de dépassement",
+      "La fin d'une zone de danger",
+      "Une pénalité pour un concurrent",
+    ],
+    correct: 1,
+    explanation: "Le jaune FIXE signale un danger en amont du poste. Pas de dépassement autorisé dans toute la zone jaune. Le jaune AGITÉ signale un danger plus immédiat et grave, pouvant nécessiter de s'arrêter.",
+  },
+  {
+    id: 4,
+    question: "Le double drapeau jaune agité signifie :",
+    flagImg: "/flags/jaune.svg",
+    flagAlt: "Double drapeau jaune",
+    options: [
+      "Deux zones de danger successives",
+      "Danger immédiat — voie totalement ou partiellement obstruée, prêt à s'arrêter",
+      "La piste est fermée à tous les concurrents",
+      "Une sortie de route vient de se produire",
+    ],
+    correct: 1,
+    explanation: "Le double drapeau jaune agité signale un danger immédiat grave, avec la voie totalement ou partiellement obstruée. Les concurrents doivent être prêts à s'arrêter si nécessaire. C'est le signal le plus grave avant le rouge.",
+  },
+  {
+    id: 5,
+    question: "Que signifie le drapeau vert en sortie de zone jaune ?",
     flagImg: "/flags/vert.svg",
     flagAlt: "Drapeau vert",
     options: [
       "Départ de la course",
-      "Zone de danger dégagée — reprendre le rythme normal",
-      "Voiture de sécurité rentrée aux stands",
-      "Autorisation de doubler",
+      "La zone de danger est dégagée — reprendre le rythme normal",
+      "La voiture de sécurité rentre aux stands",
+      "L'autorisation de doubler est accordée",
     ],
     correct: 1,
-    explanation: "Le drapeau vert indique que la zone de danger est dégagée. Les concurrents peuvent reprendre leur vitesse de course après une zone de drapeaux jaunes.",
+    explanation: "Le drapeau vert indique que la zone de danger est dégagée. Les concurrents peuvent reprendre leur vitesse de course. En fin de FCY ou Code 60, il est agité à TOUS les postes pendant 1 tour.",
   },
   {
-    id: 4,
+    id: 6,
     question: "À quel concurrent présente-t-on le drapeau bleu ?",
     flagImg: "/flags/bleu.svg",
     flagAlt: "Drapeau bleu",
@@ -60,38 +83,38 @@ const questions = [
       "Au dernier concurrent de la course",
     ],
     correct: 2,
-    explanation: "Le drapeau bleu est présenté au concurrent qui va être doublé par un pilote plus rapide. Il doit laisser passer sans retarder.",
+    explanation: "Le drapeau bleu est présenté au concurrent qui va être doublé par un pilote plus rapide. Il doit laisser passer sans retarder inutilement. En Karting, il est présenté AGITÉ uniquement par la DC.",
   },
   {
-    id: 5,
+    id: 7,
     question: "Que signifie le drapeau noir et orange (« meatball ») ?",
     flagImg: "/flags/meatball.svg",
     flagAlt: "Drapeau meatball",
     options: [
       "Exclusion immédiate du concurrent",
-      "Piste contaminée par de l'huile",
-      "Problème mécanique — le concurrent doit rejoindre les stands",
+      "La piste est contaminée par de l'huile",
+      "Problème mécanique apparent — le concurrent doit rejoindre les stands",
       "Avertissement pour conduite antisportive",
     ],
     correct: 2,
-    explanation: "Le drapeau noir et orange (meatball) est présenté avec le numéro du concurrent dont le véhicule présente un problème mécanique dangereux. Il doit rentrer aux stands.",
+    explanation: "Le drapeau meatball (noir et orange) est présenté avec le numéro du concurrent dont le véhicule présente un problème mécanique apparent dangereux. Il doit obligatoirement rentrer aux stands.",
   },
   {
-    id: 6,
+    id: 8,
     question: "Que signifie le drapeau jaune et rouge rayé ?",
     flagImg: "/flags/jaune-rouge.svg",
     flagAlt: "Drapeau jaune et rouge rayé",
     options: [
       "Fin de session sur piste mouillée",
-      "Piste glissante ou contaminée",
+      "La piste est rendue glissante (huile, eau, débris...)",
       "Danger immédiat — arrêt de séance",
-      "Véhicule lent, piste glissante",
+      "Véhicule lent sur la portion contrôlée",
     ],
     correct: 1,
-    explanation: "Le drapeau jaune et rouge rayé indique que la piste est rendue glissante par de l'huile, de l'eau ou des débris. Les concurrents doivent adapter leur conduite.",
+    explanation: "Le drapeau jaune et rouge rayé signale que la piste est rendue glissante par de l'huile, de l'eau ou des débris. Les concurrents doivent adapter leur conduite en conséquence.",
   },
   {
-    id: 7,
+    id: 9,
     question: "Avec quoi accompagne-t-on toujours le drapeau noir (exclusion) ?",
     flagImg: "/flags/noir.svg",
     flagAlt: "Drapeau noir",
@@ -102,299 +125,172 @@ const questions = [
       "Un signal sonore",
     ],
     correct: 1,
-    explanation: "Le drapeau noir est toujours présenté avec un panneau indiquant le numéro du concurrent exclu. Il ne concerne qu'un seul pilote, qui doit rejoindre immédiatement les stands.",
+    explanation: "Le drapeau noir est toujours accompagné d'un panneau portant le numéro du concurrent exclu. Ce signal ne concerne qu'un seul pilote à la fois, qui doit rejoindre immédiatement les stands.",
   },
   {
-    id: 8,
+    id: 10,
     question: "Que signifie le drapeau blanc ?",
     flagImg: "/flags/blanc.svg",
     flagAlt: "Drapeau blanc",
     options: [
       "Fin de session",
-      "Reddition / abandon",
-      "Véhicule lent sur la piste (SC, ambulance...)",
-      "Piste dégagée",
+      "Abandon / reddition",
+      "Présence d'un véhicule lent sur la piste (SC, ambulance, concurrent en difficulté...)",
+      "Piste complètement dégagée",
     ],
     correct: 2,
-    explanation: "Le drapeau blanc signale la présence d'un véhicule lent sur la piste : voiture de sécurité, ambulance, véhicule de service ou concurrent en grande difficulté.",
+    explanation: "Le drapeau blanc signale la présence d'un véhicule lent sur la piste : voiture de sécurité, ambulance, véhicule de service ou concurrent en grande difficulté. En Rallye, son utilisation est facultative.",
   },
   {
-    id: 9,
-    question: "Le drapeau noir et blanc diagonal signifie :",
+    id: 11,
+    question: "Que signifie le drapeau noir et blanc diagonal (coupé en deux) ?",
     flagImg: "/flags/noir-blanc.svg",
     flagAlt: "Drapeau noir et blanc diagonal",
     options: [
       "Exclusion définitive du concurrent",
       "Avertissement unique pour conduite antisportive",
-      "Problème mécanique détecté",
-      "Piste partiellement bloquée",
+      "Problème mécanique détecté sur le véhicule",
+      "La piste est partiellement bloquée",
     ],
     correct: 1,
-    explanation: "Le drapeau noir et blanc diagonal est un avertissement (présenté avec numéro). Il n'est présenté qu'une seule fois. La récidive entraîne le drapeau noir (exclusion).",
+    explanation: "Le drapeau noir et blanc diagonal est un avertissement (présenté avec numéro). Il n'est présenté qu'une seule fois. La récidive entraîne le drapeau noir (exclusion définitive).",
   },
   {
-    id: 10,
+    id: 12,
     question: "À quel moment agite-t-on le drapeau damier ?",
     flagImg: "/flags/damier.svg",
     flagAlt: "Drapeau damier",
     options: [
       "Au moment du départ de la course",
-      "Au passage de la voiture de sécurité",
-      "Au passage du vainqueur puis des concurrents suivants",
-      "Uniquement au vainqueur",
+      "Au passage de la voiture de sécurité en fin de course",
+      "Au passage du vainqueur, puis de tous les concurrents suivants",
+      "Uniquement au vainqueur, pas aux autres",
     ],
     correct: 2,
     explanation: "Le drapeau damier est agité vigoureusement au passage du vainqueur, puis présenté à tous les concurrents suivants. Il marque la fin officielle de l'épreuve.",
   },
+  {
+    id: 13,
+    question: "Quel drapeau/panneau signale le Code 60 en circuit asphalte FFSA ?",
+    flagImg: "/flags/code60.svg",
+    flagAlt: "Drapeau Code 60",
+    options: [
+      "Drapeau orange avec le chiffre « 60 »",
+      "Drapeau violet avec un cercle blanc portant le chiffre « 60 »",
+      "Drapeau rouge avec le chiffre « 60 »",
+      "Panneau lumineux uniquement, sans drapeau",
+    ],
+    correct: 1,
+    explanation: "Le Code 60 est signalé par un drapeau VIOLET avec un cercle blanc portant le chiffre 60. D'abord agité à tous les postes sur ordre du DC, puis tenu fixe jusqu'à la fin de la procédure.",
+  },
+  {
+    id: 14,
+    question: "En circuit asphalte FFSA, à quelle vitesse maximum les pilotes circulent-ils sous FCY (Full Course Yellow) ?",
+    options: [
+      "50 km/h",
+      "60 km/h",
+      "80 km/h",
+      "100 km/h",
+    ],
+    correct: 2,
+    explanation: "Sous FCY en circuit asphalte FFSA, la vitesse est limitée à 80 km/h, contrôlée par le chronométrage. Tout dépassement est interdit. C'est différent du Code 60 qui impose 60 km/h.",
+  },
+  {
+    id: 15,
+    question: "En circuit asphalte FFSA, après une neutralisation Safety Car, le drapeau vert est présenté :",
+    flagImg: "/flags/vert.svg",
+    flagAlt: "Drapeau vert",
+    options: [
+      "À tous les postes simultanément",
+      "Uniquement sur la ligne de relance",
+      "Au poste le plus proche de l'incident",
+      "Par le directeur de course en personne",
+    ],
+    correct: 1,
+    explanation: "Lors d'une relance après Safety Car, le drapeau vert est présenté UNIQUEMENT sur la ligne de relance — jamais à tous les postes. C'est différent de la fin de FCY ou Code 60 où il est agité à tous les postes.",
+  },
+  {
+    id: 16,
+    question: "En Karting, comment le drapeau bleu est-il présenté par la DC ?",
+    flagImg: "/flags/bleu.svg",
+    flagAlt: "Drapeau bleu",
+    options: [
+      "Tenu FIXE uniquement",
+      "AGITÉ uniquement",
+      "Au choix FIXE ou AGITÉ selon l'urgence",
+      "Non utilisé en Karting",
+    ],
+    correct: 1,
+    explanation: "En Karting, le drapeau bleu est présenté AGITÉ uniquement par la DC. Il signifie : « Gardez votre ligne, vous allez être doublé par un ou plusieurs pilotes. » Il n'existe pas de variante FIXE en Karting (contrairement à d'autres disciplines).",
+  },
+  {
+    id: 17,
+    question: "En Rallye, l'utilisation du drapeau blanc est :",
+    flagImg: "/flags/blanc.svg",
+    flagAlt: "Drapeau blanc",
+    options: [
+      "Obligatoire dès qu'un véhicule lent est sur la spéciale",
+      "Facultative",
+      "Réservée aux spéciales forestières uniquement",
+      "Interdite en rallye depuis 2024",
+    ],
+    correct: 1,
+    explanation: "Selon le règlement FFSA Rallye, l'utilisation du drapeau blanc est FACULTATIVE. Il signale un véhicule beaucoup plus lent sur la portion contrôlée par le poste.",
+  },
+  {
+    id: 18,
+    question: "En Tout-terrain, le double drapeau jaune est présenté de la manière suivante :",
+    flagImg: "/flags/jaune.svg",
+    flagAlt: "Drapeau jaune",
+    options: [
+      "Deux drapeaux agités simultanément",
+      "Un drapeau FIXE et un drapeau CROISÉ (bras croisés)",
+      "Deux drapeaux tenus fixes simultanément",
+      "Un drapeau agité et un drapeau fixe",
+    ],
+    correct: 1,
+    explanation: "En Tout-terrain, le double drapeau jaune est présenté en combinaison FIXE + CROISÉ (bras croisés). Ce mode de présentation est spécifique aux disciplines tout-terrain et diffère du circuit asphalte.",
+  },
+  {
+    id: 19,
+    question: "Le drapeau noir et blanc TRIANGULÉ est spécifiquement utilisé en :",
+    flagImg: "/flags/noir-blanc.svg",
+    flagAlt: "Drapeau noir et blanc",
+    options: [
+      "Circuit asphalte",
+      "Karting",
+      "Tout-terrain",
+      "Rallye",
+    ],
+    correct: 2,
+    explanation: "Le « drapeau triangulé noir & blanc » est propre aux disciplines tout-terrain (selon le règlement FFSA Tout-terrain). Il est l'équivalent du drapeau noir et blanc diagonal des autres disciplines.",
+  },
+  {
+    id: 20,
+    question: "À la fin d'une FCY (Full Course Yellow), le drapeau vert est agité à tous les postes pendant :",
+    flagImg: "/flags/vert.svg",
+    flagAlt: "Drapeau vert",
+    options: [
+      "Jusqu'à ce que le dernier concurrent soit passé",
+      "1 tour complet",
+      "2 tours complets",
+      "30 secondes",
+    ],
+    correct: 1,
+    explanation: "La fin de FCY est signalée par un drapeau vert AGITÉ pendant 1 tour à TOUS les postes. Après ce tour, la course reprend normalement et les dépassements sont de nouveau autorisés.",
+  },
 ];
 
 export default function QuizDrapeauxPage() {
-  const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
-  const [showResult, setShowResult] = useState(false);
-
-  const question = questions[current];
-  const isAnswered = selected !== null;
-  const score = answers.filter((a, i) => a === questions[i].correct).length;
-
-  function handleSelect(idx: number) {
-    if (isAnswered) return;
-    setSelected(idx);
-    const newAnswers = [...answers];
-    newAnswers[current] = idx;
-    setAnswers(newAnswers);
-  }
-
-  function handleNext() {
-    if (current < questions.length - 1) {
-      setCurrent(current + 1);
-      setSelected(answers[current + 1]);
-    } else {
-      setShowResult(true);
-    }
-  }
-
-  function handlePrev() {
-    if (current > 0) {
-      setCurrent(current - 1);
-      setSelected(answers[current - 1]);
-    }
-  }
-
-  function handleRestart() {
-    setCurrent(0);
-    setSelected(null);
-    setAnswers(Array(questions.length).fill(null));
-    setShowResult(false);
-  }
-
-  function getScoreLabel() {
-    if (score === questions.length) return { label: "Parfait !", color: "text-green-400", emoji: "🏆" };
-    if (score >= 8) return { label: "Excellent !", color: "text-green-400", emoji: "🎯" };
-    if (score >= 6) return { label: "Bien joué", color: "text-yellow-400", emoji: "👍" };
-    if (score >= 4) return { label: "À retravailler", color: "text-orange-400", emoji: "📚" };
-    return { label: "Insuffisant", color: "text-red-400", emoji: "🚩" };
-  }
-
-  if (showResult) {
-    const { label, color, emoji } = getScoreLabel();
-    return (
-      <main className="min-h-screen bg-[#050505] text-white">
-        <PublicNavbar />
-        <section className="relative pt-36 pb-24">
-          <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-green-500/5 blur-[160px] pointer-events-none" />
-          <div className="relative z-10 mx-auto max-w-[700px] px-6 lg:px-10">
-
-            <div className="text-center">
-              <span className="text-7xl">{emoji}</span>
-              <h1 className="mt-6 text-4xl font-black lg:text-5xl">{label}</h1>
-              <p className={`mt-3 text-2xl font-black ${color}`}>{score} / {questions.length}</p>
-              <p className="mt-3 text-zinc-400">
-                {score === questions.length
-                  ? "Vous connaissez tous les drapeaux sur le bout des doigts."
-                  : "Relisez les drapeaux que vous avez manqués et réessayez."}
-              </p>
-            </div>
-
-            <div className="mt-12 space-y-4">
-              {questions.map((q, i) => {
-                const userAnswer = answers[i];
-                const correct = userAnswer === q.correct;
-                return (
-                  <div
-                    key={q.id}
-                    className={`rounded-[24px] border p-5 ${correct ? "border-green-500/30 bg-green-500/5" : "border-red-500/30 bg-red-500/5"}`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <img src={q.flagImg} alt={q.flagAlt} className="mt-0.5 h-10 w-16 shrink-0 rounded-lg border border-white/10 object-cover" />
-                      <div className="min-w-0">
-                        <p className="font-bold text-sm text-zinc-300">{q.question}</p>
-                        {!correct && (
-                          <p className="mt-1 text-sm text-red-400">
-                            Votre réponse : {userAnswer !== null ? q.options[userAnswer] : "Pas de réponse"}
-                          </p>
-                        )}
-                        <p className="mt-1 text-sm font-bold text-green-400">
-                          Bonne réponse : {q.options[q.correct]}
-                        </p>
-                        {!correct && (
-                          <p className="mt-2 text-xs text-zinc-500 leading-relaxed">{q.explanation}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
-              <button
-                onClick={handleRestart}
-                className="rounded-2xl bg-[#FF5A1F] px-8 py-4 font-bold transition hover:opacity-90"
-              >
-                Recommencer
-              </button>
-              <Link
-                href="/apprendre/drapeaux"
-                className="rounded-2xl border border-white/10 px-8 py-4 font-bold text-center transition hover:bg-white/5"
-              >
-                Revoir les drapeaux
-              </Link>
-              <Link
-                href="/apprendre/quiz"
-                className="rounded-2xl border border-white/10 px-8 py-4 font-bold text-center transition hover:bg-white/5"
-              >
-                ← Retour aux quiz
-              </Link>
-            </div>
-          </div>
-        </section>
-        <PublicFooter />
-      </main>
-    );
-  }
-
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
-      <PublicNavbar />
-
-      <section className="relative pt-36 pb-24">
-        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-green-500/5 blur-[160px] pointer-events-none" />
-
-        <div className="relative z-10 mx-auto max-w-[700px] px-6 lg:px-10">
-
-          <div className="mb-6">
-            <Link href="/apprendre/quiz" className="text-sm text-zinc-500 transition hover:text-white">
-              ← Retour aux quiz
-            </Link>
-          </div>
-
-          {/* Progress */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF5A1F]">Quiz drapeaux</p>
-              <p className="text-sm text-zinc-500">{current + 1} / {questions.length}</p>
-            </div>
-            <div className="h-1.5 w-full rounded-full bg-white/10">
-              <div
-                className="h-1.5 rounded-full bg-[#FF5A1F] transition-all duration-300"
-                style={{ width: `${((current + 1) / questions.length) * 100}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Question card */}
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.02] p-6 lg:p-8">
-
-            {/* Flag image */}
-            <div className="flex justify-center mb-6">
-              <img
-                src={question.flagImg}
-                alt={question.flagAlt}
-                className="h-28 w-44 rounded-2xl border border-white/10 object-cover shadow-lg sm:h-36 sm:w-56"
-              />
-            </div>
-
-            <h2 className="text-xl font-black text-center lg:text-2xl">{question.question}</h2>
-
-            <div className="mt-6 space-y-3">
-              {question.options.map((option, idx) => {
-                let style = "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]";
-                if (isAnswered) {
-                  if (idx === question.correct) {
-                    style = "border-green-500/50 bg-green-500/10";
-                  } else if (idx === selected && idx !== question.correct) {
-                    style = "border-red-500/50 bg-red-500/10";
-                  } else {
-                    style = "border-white/5 bg-white/[0.01] opacity-50";
-                  }
-                }
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => handleSelect(idx)}
-                    disabled={isAnswered}
-                    className={`w-full rounded-2xl border px-5 py-4 text-left font-medium transition ${style} ${!isAnswered ? "cursor-pointer" : "cursor-default"}`}
-                  >
-                    <span className="text-sm text-zinc-300">{option}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Explanation */}
-            {isAnswered && (
-              <div className={`mt-5 rounded-2xl border px-4 py-3 ${selected === question.correct ? "border-green-500/30 bg-green-500/5" : "border-red-500/30 bg-red-500/5"}`}>
-                <p className={`text-sm font-bold ${selected === question.correct ? "text-green-400" : "text-red-400"}`}>
-                  {selected === question.correct ? "✓ Correct !" : "✗ Incorrect"}
-                </p>
-                <p className="mt-1 text-sm text-zinc-400 leading-relaxed">{question.explanation}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Navigation */}
-          <div className="mt-6 flex items-center justify-between gap-4">
-            <button
-              onClick={handlePrev}
-              disabled={current === 0}
-              className="rounded-2xl border border-white/10 px-5 py-3 text-sm font-bold transition hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              ← Précédent
-            </button>
-
-            <div className="flex gap-1.5 flex-wrap justify-center">
-              {questions.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => { setCurrent(i); setSelected(answers[i]); }}
-                  className={`h-2.5 w-2.5 rounded-full transition ${
-                    i === current
-                      ? "bg-[#FF5A1F]"
-                      : answers[i] !== null
-                        ? answers[i] === questions[i].correct
-                          ? "bg-green-500"
-                          : "bg-red-500"
-                        : "bg-white/20"
-                  }`}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={handleNext}
-              disabled={!isAnswered}
-              className="rounded-2xl bg-[#FF5A1F] px-5 py-3 text-sm font-bold transition hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              {current === questions.length - 1 ? "Voir le résultat" : "Suivant →"}
-            </button>
-          </div>
-
-        </div>
-      </section>
-
-      <PublicFooter />
-    </main>
+    <QuizEngine
+      title="Quiz drapeaux"
+      questions={questions}
+      backHref="/apprendre/quiz"
+      backLabel="Retour aux quiz"
+      reviewHref="/apprendre/drapeaux"
+      reviewLabel="Revoir les drapeaux"
+      glowColor="bg-[#FF5A1F]/5"
+    />
   );
 }
