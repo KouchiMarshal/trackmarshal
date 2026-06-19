@@ -21,6 +21,7 @@ type Flag = {
   category: string;
   categoryColor: string;
   disciplines?: Discipline[];
+  motoDisciplines?: Discipline[];
 };
 
 const PRES = {
@@ -32,13 +33,16 @@ const PRES = {
   dc: "border-purple-500/40 bg-purple-500/10 text-purple-400",
 };
 
+const AUTO_DISCIPLINES = ["Circuit asphalte", "Tout-terrain", "Rallye", "Course de côte", "Karting"];
+const MOTO_DISCIPLINES = ["Vitesse", "Motocross", "Enduro", "Endurance TT"];
+
 const flags: Flag[] = [
   {
     name: "Drapeau rouge",
     img: "/flags/rouge.svg",
     situation: "Arrêt immédiat de la séance",
-    description: "La session est interrompue : accident grave, obstruction de la piste ou conditions dangereuses. Tout dépassement est interdit. Dimensions : 100×80 cm (plus grand que les autres drapeaux).",
-    reaction: "Agiter vigoureusement. Maintenir jusqu'à ce qu'il n'y ait plus aucune voiture en piste.",
+    description: "La session est interrompue : accident grave, obstruction de la piste ou conditions dangereuses. Tout dépassement est interdit. En auto, dimensions : 100×80 cm (plus grand que les autres drapeaux).",
+    reaction: "Agiter vigoureusement. Maintenir jusqu'à ce qu'il n'y ait plus aucun concurrent en piste.",
     category: "Danger extrême",
     categoryColor: "bg-red-500/20 text-red-400 border-red-500/30",
     disciplines: [
@@ -73,12 +77,38 @@ const flags: Flag[] = [
         note: "Présenté par la DC sur la ligne de départ. Ralentir, ne plus se dépasser, rouler à allure réduite puis s'arrêter à l'endroit défini au briefing.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Sur ORDRE DC uniquement. Rejoindre les stands à vitesse réduite. Les commissaires reçoivent l'ordre et agitent le drapeau.",
+      },
+      {
+        name: "Motocross",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Interruption de course ou d'essais sur ORDRE DC. S'arrêter à l'endroit indiqué par les commissaires.",
+      },
+      {
+        name: "Enduro",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Sur ordre du DC adjoint de spéciale ou du DC central. Arrêt immédiat de la spéciale.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Arrêt course ou essais sur ORDRE DC. Même procédure qu'en motocross.",
+      },
+    ],
   },
   {
     name: "Drapeau jaune — 1 drapeau",
     img: "/flags/jaune.svg",
     situation: "Danger sur le bord ou une partie de la piste — ralentir, ne pas dépasser",
-    description: "Un danger est présent sur le bord ou sur une partie de la piste (véhicule accidenté, commissaire à proximité, débris). Tout dépassement est formellement interdit jusqu'à la fin de la zone de danger. Peut être présenté 2 tours consécutifs pour un obstacle non retiré.",
+    description: "Un danger est présent sur le bord ou sur une partie de la piste (véhicule accidenté, commissaire à proximité, débris). Tout dépassement est formellement interdit jusqu'à la fin de la zone de danger. En moto, règle supplémentaire : PAS DE SAUT en motocross et endurance TT.",
     reaction: "Agiter vigoureusement au poste précédant le danger.",
     category: "Danger",
     categoryColor: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
@@ -112,6 +142,32 @@ const flags: Flag[] = [
         presentation: "AGITÉ",
         presentationColor: PRES.agite,
         note: "Danger sur le bord ou une partie de la piste. Ne doublez pas.",
+      },
+    ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Danger, ralentir, pas de dépassement. En cas de chute de pilote/moto sur piste → présenter simultanément le drapeau jaune ET le drapeau jaune bandes rouges.",
+      },
+      {
+        name: "Motocross",
+        presentation: "FIXE ou AGITÉ",
+        presentationColor: PRES.agiteFixe,
+        note: "FIXE = danger sur bord de piste, ralentir, pas de dépassement, PAS DE SAUT — roues au sol. AGITÉ = danger immédiat, ralentir fortement, pas de dépassement, PAS DE SAUT.",
+      },
+      {
+        name: "Enduro",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Danger sur la portion. Ralentir, pas de dépassement. Présenté sur ordre du DC adjoint ou à l'appréciation du commissaire.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "FIXE ou AGITÉ",
+        presentationColor: PRES.agiteFixe,
+        note: "FIXE = danger sur bord de piste, pas de saut. AGITÉ = danger immédiat, pas de saut, être prêt à s'arrêter.",
       },
     ],
   },
@@ -155,6 +211,32 @@ const flags: Flag[] = [
         note: "Danger obstrue totalement ou partiellement la piste.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "2× AGITÉS",
+        presentationColor: PRES.agite,
+        note: "Pilote ou moto sur la piste. Les deux drapeaux sont agités simultanément par le commissaire.",
+      },
+      {
+        name: "Motocross",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "En motocross, la distinction jaune simple/double ne s'applique pas de la même façon. Le jaune AGITÉ couvre les situations de danger immédiat.",
+      },
+      {
+        name: "Enduro",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en enduro. Le jaune simple agité signale les situations de danger.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "2× AGITÉS",
+        presentationColor: PRES.agite,
+        note: "Pilote ou moto sur la piste — danger majeur. Même usage qu'en vitesse moto.",
+      },
+    ],
   },
   {
     name: "Drapeau vert",
@@ -194,6 +276,32 @@ const flags: Flag[] = [
         presentation: "AGITÉ",
         presentationColor: PRES.agite,
         note: "Fin de zone neutralisée, début d'une séance d'essais ou tours de formation. Présenté par les commissaires et la DC.",
+      },
+    ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Piste libre. Présenté lors du 1er tour d'essais, du tour de reconnaissance, du tour chauffe, et au poste suivant le dernier drapeau jaune.",
+      },
+      {
+        name: "Motocross",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Piste libre. Début ou reprise de course ou d'essais.",
+      },
+      {
+        name: "Enduro",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Piste libre sur cette portion de spéciale.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Piste libre. Même usage qu'en motocross.",
       },
     ],
   },
@@ -237,6 +345,32 @@ const flags: Flag[] = [
         note: "AGITÉ depuis la ligne d'arrivée. Signal de fin de séance d'entraînement, d'essais et/ou de courses.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Fin de course ou d'essais. Lorsque présenté depuis la voiture DC, indique aussi l'ouverture de la piste aux non-compétiteurs.",
+      },
+      {
+        name: "Motocross",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Fin de course ou d'essais. Présenté sur la ligne d'arrivée.",
+      },
+      {
+        name: "Enduro",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Fin de la spéciale ou de l'épreuve.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Fin de course ou d'essais. Présenté sur la ligne d'arrivée.",
+      },
+    ],
   },
   {
     name: "Drapeau bleu",
@@ -276,6 +410,32 @@ const flags: Flag[] = [
         presentation: "AGITÉ",
         presentationColor: PRES.agite,
         note: "AGITÉ par la D.C. : gardez votre ligne, vous allez être doublé par un ou plusieurs pilotes.",
+      },
+    ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Signal de dépassement — information, non obligatoire. Peut être présenté simultanément avec le damier si le leader rattrape un attardé.",
+      },
+      {
+        name: "Motocross",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Le concurrent de tête rattrape un attardé. Garder sa trajectoire et laisser passer.",
+      },
+      {
+        name: "Enduro",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en enduro.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Concurrent de tête rattrape un attardé. Même usage qu'en motocross.",
       },
     ],
   },
@@ -319,6 +479,32 @@ const flags: Flag[] = [
         note: "FIXE 4 tours maximum par la DC. Immobilisation du pilote à la prochaine approche du parc assistance.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "FIXE",
+        presentationColor: PRES.fixe,
+        note: "Rentrer aux stands, ne peut plus repartir. UNIQUEMENT sur ordre DC. Tenu FIXE avec panneau numéro.",
+      },
+      {
+        name: "Motocross",
+        presentation: "FIXE",
+        presentationColor: PRES.fixe,
+        note: "Rentrer aux stands immédiatement. UNIQUEMENT sur ordre DC. Tenu FIXE avec panneau numéro.",
+      },
+      {
+        name: "Enduro",
+        presentation: "FIXE",
+        presentationColor: PRES.fixe,
+        note: "Rentrer à l'assistance. Sur ordre du DC. Tenu FIXE avec panneau numéro.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "FIXE",
+        presentationColor: PRES.fixe,
+        note: "Rentrer aux stands. Sur ordre DC. Même usage qu'en motocross.",
+      },
+    ],
   },
   {
     name: "Drapeau noir et orange (meatball)",
@@ -360,12 +546,38 @@ const flags: Flag[] = [
         note: "FIXE 1 tour par la DC. Arrêt pour défectuosité technique ou vestimentaire. Le pilote peut repartir après réparation et mise en conformité.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "FIXE",
+        presentationColor: PRES.fixe,
+        note: "Drapeau noir + disque orange + numéro : quitter la piste le plus rapidement possible. UNIQUEMENT sur ordre DC. Numéro affiché.",
+      },
+      {
+        name: "Motocross",
+        presentation: "FIXE",
+        presentationColor: PRES.fixe,
+        note: "Drapeau noir + cercle orange + numéro : quitter la piste immédiatement. UNIQUEMENT sur ordre DC.",
+      },
+      {
+        name: "Enduro",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en enduro.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en endurance TT.",
+      },
+    ],
   },
   {
     name: "Drapeau jaune et rouge rayé",
     img: "/flags/jaune-rouge.svg",
     situation: "Piste glissante ou contaminée en aval du poste",
-    description: "Avertit les concurrents d'une détérioration de l'adhérence : huile, eau, débris ou autre substance glissante. Accompagné d'une main levée vers le ciel pour signaler le début d'une averse.",
+    description: "Avertit les concurrents d'une détérioration de l'adhérence : huile, eau, débris ou autre substance glissante. En moto vitesse, il est présenté simultanément avec le drapeau jaune en cas de chute avec moto tombée sur la piste.",
     reaction: "Tenir FIXE au poste. Aucun drapeau vert n'est présenté à la suite de ce drapeau (sauf en karting).",
     category: "Avertissement",
     categoryColor: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
@@ -401,13 +613,39 @@ const flags: Flag[] = [
         note: "FIXE par la DC au moins 4 tours ou jusqu'au retour à la normale. Si la piste revient à la normale, un drapeau vert est présenté.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "FIXE",
+        presentationColor: PRES.fixe,
+        note: "Changement d'adhérence (huile, eau, débris — autre que la pluie). Présenté SIMULTANÉMENT avec le drapeau jaune en cas de chute avec moto tombée sur la piste.",
+      },
+      {
+        name: "Motocross",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en motocross sauf pour les supermotards et courses mixtes asphalte/terre.",
+      },
+      {
+        name: "Enduro",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en enduro.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en endurance TT.",
+      },
+    ],
   },
   {
     name: "Drapeau blanc",
     img: "/flags/blanc.svg",
     situation: "Véhicule lent sur la piste",
-    description: "Signale la présence d'un véhicule circulant beaucoup plus lentement que les concurrents en piste : ambulance, véhicule de service, concurrent en panne roulant au ralenti. En circuit tout-terrain, présenté FIXE pour demander une assistance médicale.",
-    reaction: "Agiter. En secteur aveugle (circuit asphalte), peut dans ce cas précis remplacer le drapeau jaune.",
+    description: "Signale la présence d'un véhicule circulant beaucoup plus lentement que les concurrents en piste. Important : en moto vitesse, le dépassement reste AUTORISÉ sous drapeau blanc (contrairement à l'auto). En circuit tout-terrain auto, présenté FIXE pour demander une assistance médicale.",
+    reaction: "Agiter. En moto, le concurrent peut dépasser le véhicule lent sous ce drapeau.",
     category: "Information",
     categoryColor: "bg-zinc-500/20 text-zinc-300 border-zinc-500/30",
     disciplines: [
@@ -440,6 +678,32 @@ const flags: Flag[] = [
         presentation: "AGITÉ",
         presentationColor: PRES.agite,
         note: "Utilisation facultative. Signale la présence d'un kart au ralenti sur la piste.",
+      },
+    ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Véhicule au ralenti sur la piste. Le dépassement reste AUTORISÉ sous ce drapeau — différence majeure avec l'auto.",
+      },
+      {
+        name: "Motocross",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en motocross.",
+      },
+      {
+        name: "Enduro",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en enduro.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "NON UTILISÉ",
+        presentationColor: PRES.nonUtilise,
+        note: "Non utilisé en endurance TT.",
       },
     ],
   },
@@ -525,20 +789,65 @@ const flags: Flag[] = [
       },
     ],
   },
+  {
+    name: "Blanc avec croix de Saint-André rouge",
+    img: "/flags/blanc-croix-rouge.svg",
+    situation: "Signal météo (Vitesse) ou appel secours / médical sur piste (Motocross / Endurance TT)",
+    description: "Drapeau blanc barré d'une croix rouge diagonale (croix de Saint-André). En vitesse moto, signale que la pluie affecte l'adhérence sur cette section. En motocross et endurance TT, sert à appeler les secours (agité) ou indique la présence de personnel médical sur la piste (fixe). Ce drapeau est SPÉCIFIQUE à la moto — il n'est pas utilisé en auto.",
+    reaction: "AGITÉ = appel secours / pluie sur section. FIXE = personnel médical sur piste. En cas de croix rouge agitée, prudence extrême, pas de dépassement, pas de saut.",
+    category: "Moto uniquement",
+    categoryColor: "bg-red-500/20 text-red-400 border-red-500/30",
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Signale que la pluie affecte l'adhérence sur cette section de circuit. Signal météo d'alerte pour les concurrents.",
+      },
+      {
+        name: "Motocross",
+        presentation: "AGITÉ ou FIXE",
+        presentationColor: PRES.agiteFixe,
+        note: "AGITÉ = appel secours, prudence extrême, pas de dépassement, PAS DE SAUT. FIXE = personnel médical sur la piste, mêmes consignes de prudence.",
+      },
+      {
+        name: "Enduro",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "Appel secours sur la spéciale. Prudence extrême, ralentir immédiatement.",
+      },
+      {
+        name: "Endurance TT",
+        presentation: "AGITÉ ou FIXE",
+        presentationColor: PRES.agiteFixe,
+        note: "AGITÉ = appel secours, prudence, pas de saut. FIXE = personnel médical sur piste. Même usage qu'en motocross.",
+      },
+    ],
+  },
 ];
 
-const DISCIPLINES = ["Circuit asphalte", "Tout-terrain", "Rallye", "Course de côte", "Karting"];
-
 export default function DrapeauxPage() {
+  const [sportMode, setSportMode] = useState<"auto" | "moto">("auto");
   const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
 
+  const currentDisciplines = sportMode === "auto" ? AUTO_DISCIPLINES : MOTO_DISCIPLINES;
+
+  const modeFlags = sportMode === "auto"
+    ? flags.filter((f) => f.disciplines && f.disciplines.length > 0)
+    : flags.filter((f) => f.motoDisciplines && f.motoDisciplines.length > 0);
+
   const visibleFlags = selectedDiscipline
-    ? flags.filter((f) => {
-        if (!f.disciplines) return true;
-        const d = f.disciplines.find((d) => d.name === selectedDiscipline);
+    ? modeFlags.filter((f) => {
+        const discs = sportMode === "auto" ? f.disciplines : f.motoDisciplines;
+        const d = discs?.find((d) => d.name === selectedDiscipline);
         return d?.presentation !== "NON UTILISÉ";
       })
-    : flags;
+    : modeFlags;
+
+  function handleSportMode(mode: "auto" | "moto") {
+    setSportMode(mode);
+    setSelectedDiscipline(null);
+  }
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
@@ -562,8 +871,35 @@ export default function DrapeauxPage() {
             Un commissaire doit connaître les deux.
           </p>
 
-          {/* Discipline filter */}
+          {/* Sport mode toggle */}
           <div className="mt-8">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Sport</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleSportMode("auto")}
+                className={`rounded-xl px-4 py-2.5 text-sm font-black uppercase tracking-[0.06em] transition ${
+                  sportMode === "auto"
+                    ? "bg-[#FF5A1F] text-white"
+                    : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                }`}
+              >
+                🏎 Auto
+              </button>
+              <button
+                onClick={() => handleSportMode("moto")}
+                className={`rounded-xl px-4 py-2.5 text-sm font-black uppercase tracking-[0.06em] transition ${
+                  sportMode === "moto"
+                    ? "bg-[#FF5A1F] text-white"
+                    : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                }`}
+              >
+                🏍 Moto
+              </button>
+            </div>
+          </div>
+
+          {/* Discipline filter */}
+          <div className="mt-5">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Filtrer par discipline</p>
             <div className="flex flex-wrap gap-2">
               <button
@@ -576,7 +912,7 @@ export default function DrapeauxPage() {
               >
                 Toutes disciplines
               </button>
-              {DISCIPLINES.map((disc) => (
+              {currentDisciplines.map((disc) => (
                 <button
                   key={disc}
                   onClick={() => setSelectedDiscipline(selectedDiscipline === disc ? null : disc)}
@@ -594,17 +930,21 @@ export default function DrapeauxPage() {
 
           {/* Dimensions + légende */}
           <div className="mt-5 flex flex-wrap gap-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-2 text-sm text-zinc-400">
-              <span className="font-bold text-white">Drapeau rouge :</span> 100 × 80 cm
-              &nbsp;·&nbsp;
-              <span className="font-bold text-white">Autres :</span> 80 × 60 cm
-            </div>
+            {sportMode === "auto" && (
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-2 text-sm text-zinc-400">
+                <span className="font-bold text-white">Drapeau rouge :</span> 100 × 80 cm
+                &nbsp;·&nbsp;
+                <span className="font-bold text-white">Autres :</span> 80 × 60 cm
+              </div>
+            )}
             <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-2">
               <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.agite}`}>AGITÉ</span>
               <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.fixe}`}>FIXE</span>
               <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.agiteFixe}`}>AGITÉ+FIXE</span>
               <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.dc}`}>DC SEULEMENT</span>
-              <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.propre}`}>PROPRE INITIATIVE</span>
+              {sportMode === "auto" && (
+                <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.propre}`}>PROPRE INITIATIVE</span>
+              )}
               <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.nonUtilise}`}>NON UTILISÉ</span>
             </div>
           </div>
@@ -626,9 +966,10 @@ export default function DrapeauxPage() {
 
           <div className="mt-10 space-y-5">
             {visibleFlags.map((flag) => {
+              const allDiscs = sportMode === "auto" ? flag.disciplines : flag.motoDisciplines;
               const disciplinesToShow = selectedDiscipline
-                ? (flag.disciplines?.filter((d) => d.name === selectedDiscipline) ?? [])
-                : flag.disciplines;
+                ? (allDiscs?.filter((d) => d.name === selectedDiscipline) ?? [])
+                : allDiscs;
               return (
               <div
                 key={flag.name}
