@@ -5,15 +5,15 @@ import PublicFooter from "@/components/layout/public-footer";
 const steps = [
   {
     num: "01",
-    title: "Rejoindre une ASA",
-    description: "L'ASA (Association Sportive Automobile) est le club local affilié à la FFSA. C'est votre point d'entrée obligatoire. Elle vous accompagnera dans votre formation et vous permettra de participer à vos premières épreuves.",
-    tip: "Trouvez l'ASA la plus proche de chez vous sur le site de la FFSA. La plupart proposent des journées portes ouvertes.",
+    title: "Rejoindre une ASA ou une ASK",
+    description: "L'ASA (Association Sportive Automobile) est le club local affilié à la FFSA pour les épreuves auto. Pour le karting, rejoignez une ASK (Association Sportive Karting) affiliée à une Ligue de Karting. Ces clubs sont votre point d'entrée obligatoire pour obtenir votre licence et participer aux épreuves.",
+    tip: "Trouvez l'ASA ou l'ASK la plus proche sur le site de la FFSA (ffsa.org). La plupart proposent des journées portes ouvertes ou des réunions d'information.",
   },
   {
     num: "02",
     title: "Suivre la formation initiale",
-    description: "La FFSA impose une formation théorique avant d'obtenir votre première licence. Elle aborde le code de la route sportif, les drapeaux, les procédures de sécurité et le rôle du commissaire de piste.",
-    tip: "La formation dure généralement une journée. Elle est souvent organisée par l'ASA ou en regroupement régional.",
+    description: "La FFSA propose désormais une plateforme e-learning accessible sur ffsa.org pour les primo-licenciés (commissaire C). Les modules abordent les institutions du sport auto, les drapeaux, les procédures de sécurité et le rôle du commissaire. Des regroupements régionaux en présentiel complètent la formation théorique.",
+    tip: "La formation peut être suivie en ligne avant votre première épreuve. Consultez ffsa.org/divers/commissaires pour accéder aux ressources.",
   },
   {
     num: "03",
@@ -115,7 +115,7 @@ const faqs = [
   },
   {
     q: "Y a-t-il une tenue vestimentaire obligatoire ?",
-    a: "Oui. La combinaison ignifugée (orange ou rouge selon l'organisateur) est obligatoire sur circuit. Sur épreuves route, des gilets haute visibilité sont généralement fournis.",
+    a: "Oui. La combinaison en coton (orange ou rouge selon l'organisateur) est la tenue de référence sur circuit — elle protège du feu et identifie le commissaire. Sur épreuves route et karting, une chasuble facilement identifiable est souvent utilisée. L'organisateur précise la tenue attendue au briefing.",
   },
 ];
 

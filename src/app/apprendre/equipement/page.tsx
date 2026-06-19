@@ -5,54 +5,54 @@ import PublicFooter from "@/components/layout/public-footer";
 const circuitItems = [
   {
     emoji: "🦺",
-    name: "Combinaison ignifugée",
+    name: "Combinaison en coton",
     description:
-      "Homologuée FIA ou FFSA. Orange ou rouge selon l'organisateur. En aramide (Nomex). Protection contre les projections de carburant et d'huile enflammés. Certains organisateurs la fournissent ; renseignez-vous avant.",
+      "La combinaison en coton est votre premier élément de protection sur circuit (Art. 2.6 Annexe H). Sa couleur orange ou rouge permet aux pilotes de vous identifier immédiatement. Pour votre sécurité : manches baissées, zip fermé tant que les voitures évoluent. Pour les épreuves nocturnes, deux bandes de visibilité d'au moins 5 cm doivent être cousues au bas des jambes.",
   },
   {
     emoji: "👟",
     name: "Chaussures de sécurité montantes",
     description:
-      "Semelles antidérapantes, protection de la cheville. Les talons ouverts sont interdits sur circuit. Préférez des chaussures ignifugées.",
+      "Elles maintiennent bien la cheville et sont idéalement des chaussures de sécurité. Préférez des bottes lors des épreuves se déroulant sous la pluie. Les talons ouverts sont proscrits sur circuit.",
   },
   {
     emoji: "🧤",
-    name: "Gants de protection",
+    name: "Gants type soudeur",
     description:
-      "Résistants à la chaleur et aux projections. Les gants de jardinage ne suffisent pas. Des gants ignifugés fins permettent de garder de la dextérité.",
+      "À enfiler tant que les voitures évoluent sur la piste. Des pièces de véhicule peuvent être brûlantes et/ou coupantes lors d'une intervention. Des gants diélectriques ou composites sont recommandés si des véhicules électriques ou hybrides participent.",
   },
   {
-    emoji: "🩳",
-    name: "Sous-vêtements ignifugés",
+    emoji: "🎽",
+    name: "Chasuble réfléchissante (nuit)",
     description:
-      "Recommandés sous la combinaison. Chaussettes, cagoule, t-shirt en Nomex réduisent considérablement les brûlures en cas d'incident.",
+      "Lors des épreuves nocturnes, une chasuble réfléchissante est obligatoire pour être identifié rapidement par les pilotes en cas d'intervention sur la piste. Des plaques réfléchissantes remplacent les drapeaux dans l'obscurité.",
   },
 ];
 
 const routeItems = [
   {
     emoji: "🦺",
-    name: "Gilet haute visibilité",
+    name: "Combinaison en coton ou chasuble",
     description:
-      "Généralement fourni par l'organisateur. Obligatoire sur les épreuves route. Vérifiez toujours au briefing la couleur et le type attendu.",
+      "Sur les épreuves de route (rallye, course de côte), la combinaison en coton reste l'équipement de référence. Certains organisateurs fournissent une chasuble facilement identifiable. Vérifiez toujours au briefing le type attendu.",
   },
   {
     emoji: "👟",
-    name: "Chaussures de sécurité",
+    name: "Chaussures de sécurité montantes",
     description:
-      "Même exigence qu'en circuit. En forêt ou sur route ouverte, privilégiez des chaussures imperméables avec maintien de cheville.",
+      "En forêt ou sur route ouverte, privilégiez des chaussures imperméables avec un bon maintien de cheville. Des bottes s'imposent par temps pluvieux.",
   },
   {
     emoji: "🌧️",
     name: "Vêtements de pluie",
     description:
-      "Une météo capricieuse peut transformer une journée en course de survie. Imperméable léger, pantalon de pluie, et bonnet font partie du kit de base.",
+      "En deux parties (veste + pantalon) pour plus de confort. La météo peut évoluer rapidement sur une épreuve de route. Prévoyez systématiquement imperméable léger et bonnet.",
   },
   {
     emoji: "🧤",
     name: "Gants de travail",
     description:
-      "Pour manipuler les barrières, la signalisation ou les véhicules accidentés sans risque.",
+      "Pour manipuler les barrières, la signalisation ou les véhicules accidentés sans risque de brûlure ou de coupure.",
   },
 ];
 
@@ -61,13 +61,25 @@ const essentielsItems = [
     emoji: "🪪",
     name: "Licence FFSA ou FFM valide",
     description:
-      "À avoir sur soi à tout moment. Sans licence, vous ne pouvez pas officier. Renouvelez-la chaque saison avant janvier.",
+      "À avoir sur soi à tout moment et à présenter à toute demande. Sans licence, vous ne pouvez pas officier. Renouvelez-la chaque saison.",
+  },
+  {
+    emoji: "📢",
+    name: "Sifflet",
+    description:
+      "Pour se faire entendre lors d'une intervention ou pour signaler la venue d'une voiture à vos co-équipiers. Indispensable en poste, en complément de la radio.",
+  },
+  {
+    emoji: "✂️",
+    name: "Coupe-sangle",
+    description:
+      "Outil de sécurité permettant de couper rapidement les sangles ou ceintures d'un pilote coincé dans son véhicule. À emporter systématiquement en poste.",
   },
   {
     emoji: "💧",
     name: "Eau et alimentation",
     description:
-      "Les postes peuvent être isolés. Prévoyez 1,5L d'eau minimum par journée, plus des barres énergétiques. Les organisateurs offrent souvent les repas, mais pas toujours les en-cas.",
+      "Les postes peuvent être isolés plusieurs heures. Prévoyez 1,5L d'eau minimum par journée et des biscuits. Les organisateurs offrent souvent les repas — vérifiez au briefing.",
   },
   {
     emoji: "☀️",
@@ -79,7 +91,7 @@ const essentielsItems = [
     emoji: "🔦",
     name: "Lampe torche",
     description:
-      "Pour les épreuves nocturnes ou les fins de journée. Privilégiez un modèle à clip frontal pour garder les mains libres.",
+      "Pour les épreuves nocturnes ou les fins de journée. Privilégiez un modèle frontal pour garder les mains libres.",
   },
   {
     emoji: "📻",
@@ -91,7 +103,7 @@ const essentielsItems = [
     emoji: "📋",
     name: "Carnet et stylo",
     description:
-      "Pour noter le passage des voitures (numéros, incidents) et remplir les fiches de poste si demandé.",
+      "Pour noter le passage des voitures (numéros, incidents) et remplir les fiches de poste si demandé. Une montre synchronisée sur l'heure donnée par la DC est aussi précieuse.",
   },
 ];
 

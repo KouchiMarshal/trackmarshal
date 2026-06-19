@@ -7,27 +7,27 @@ const flags = [
     name: "Drapeau rouge",
     img: "/flags/rouge.svg",
     situation: "Arrêt immédiat de la séance",
-    description: "La session est interrompue en raison d'un accident grave, d'une obstruction sur la piste ou de conditions météo dangereuses. Tous les concurrents doivent ralentir immédiatement et rejoindre les stands ou la grille.",
-    reaction: "Agiter vigoureusement. Le commissaire reste en position jusqu'à la reprise ou la fin de session.",
+    description: "La session est interrompue en raison d'un accident grave, d'une obstruction sur la piste ou de conditions météo dangereuses. Tous les concurrents doivent ralentir immédiatement et rejoindre les stands ou la grille. Dimensions : 100×80 cm (plus grand que les autres drapeaux).",
+    reaction: "Agiter vigoureusement depuis la ligne de départ ET tous les postes sur ordre de la DC. Le commissaire reste en position jusqu'à ce qu'il n'y ait plus de voiture en piste.",
     category: "Danger extrême",
     categoryColor: "bg-red-500/20 text-red-400 border-red-500/30",
   },
   {
-    name: "Drapeau jaune (agité)",
+    name: "Drapeau jaune (1 drapeau agité)",
     img: "/flags/jaune.svg",
-    situation: "Danger immédiat — ralentir, ne pas dépasser",
-    description: "Un danger direct est présent sur la piste ou à ses abords immédiats : véhicule accidenté, commissaire sur la piste, débris importants. Les pilotes doivent ralentir et se tenir prêts à s'arrêter.",
-    reaction: "Agiter vigoureusement. Positionné sur la trajectoire du danger.",
+    situation: "Danger sur le bord ou une partie de la piste — ralentir, ne pas dépasser",
+    description: "Un danger est présent sur le bord ou sur une partie de la piste (véhicule accidenté, commissaire à proximité, débris). Les pilotes doivent réduire leur vitesse et être prêts à changer de direction. Tout dépassement est formellement interdit jusqu'à la fin de la zone de danger.",
+    reaction: "Agiter vigoureusement au poste précédant le danger. Peut être présenté 2 tours consécutifs pour un obstacle non retiré.",
     category: "Danger",
     categoryColor: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   },
   {
-    name: "Drapeau jaune (fixe)",
+    name: "Double drapeau jaune (2 drapeaux agités)",
     img: "/flags/jaune.svg",
-    situation: "Danger — ralentir, se préparer",
-    description: "Un danger est présent mais moins immédiat que le jaune agité. Présente en amont du danger pour avertir les concurrents de la zone à risque.",
-    reaction: "Tenir fixe, bras tendu. Annonce le jaune agité qui suit.",
-    category: "Avertissement",
+    situation: "Danger majeur sur la trajectoire — réduire considérablement la vitesse, prêt à s'arrêter",
+    description: "Danger qui obstrue partiellement ou totalement la piste, ou des commissaires interviennent directement sur ou en bord de piste. Les deux drapeaux sont agités par le même commissaire au poste précédant immédiatement le danger. Tout dépassement est strictement interdit.",
+    reaction: "Agiter les deux drapeaux simultanément. Présenté uniquement au poste immédiatement avant l'endroit dangereux.",
+    category: "Danger majeur",
     categoryColor: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   },
   {
@@ -78,9 +78,9 @@ const flags = [
   {
     name: "Drapeau jaune et rouge rayé",
     img: "/flags/jaune-rouge.svg",
-    situation: "Piste glissante ou contaminée",
-    description: "Indique que la piste est rendue glissante par de l'huile, de l'eau, des débris ou tout autre substance. Les concurrents doivent adapter leur conduite en conséquence.",
-    reaction: "Agiter. Présenté dans les zones concernées par la contamination.",
+    situation: "Piste glissante ou contaminée en aval du poste",
+    description: "Avertit les concurrents d'une détérioration de l'adhérence sur la piste en aval du poste : huile, eau, débris ou autre substance glissante. Sur circuit asphalte, présenté au maximum durant 4 tours ; sur circuits tout-terrain, uniquement sur les parties revêtues. Accompagné d'une main levée vers le ciel pour signaler le début d'une averse.",
+    reaction: "Tenir FIXE au poste. Aucun drapeau vert n'est présenté à la suite de ce drapeau.",
     category: "Avertissement",
     categoryColor: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
   },
@@ -101,6 +101,15 @@ const flags = [
     reaction: "Tenu fixe avec panneau numéro. Uniquement présenté une fois.",
     category: "Avertissement sportif",
     categoryColor: "bg-zinc-500/20 text-zinc-300 border-zinc-500/30",
+  },
+  {
+    name: "Drapeau Code 60 (violet)",
+    img: "/flags/code60.svg",
+    situation: "Limitation de vitesse à 60 km/h sur tout le circuit",
+    description: "Drapeau violet avec un cercle blanc contenant le chiffre « 60 ». Imposé par le directeur de course lorsque deux drapeaux jaunes sont présentés. Limite la vitesse à 60 km/h sur l'ensemble du circuit. Chaque tour sous Code 60 compte comme un tour de course.",
+    reaction: "Agiter sur la ligne de départ et à tous les postes simultanément, puis maintenir FIXE une fois les voitures ralenties. Retiré sur ordre DC et remplacé par le drapeau vert agité.",
+    category: "Neutralisation",
+    categoryColor: "bg-purple-500/20 text-purple-300 border-purple-500/30",
   },
 ];
 
@@ -126,6 +135,10 @@ export default function DrapeauxPage() {
             Chaque drapeau a une signification précise. Un commissaire doit les connaître
             par cœur — réagir au mauvais moment peut coûter des vies.
           </p>
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3 inline-flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-400">
+            <span><span className="font-bold text-white">Drapeau rouge :</span> 100 × 80 cm</span>
+            <span><span className="font-bold text-white">Autres drapeaux :</span> 80 × 60 cm</span>
+          </div>
 
           <div className="mt-4 flex items-center gap-3">
             <Link

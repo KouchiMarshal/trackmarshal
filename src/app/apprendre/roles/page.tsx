@@ -12,7 +12,7 @@ const roles = [
     license: "Grade international",
     description: "Autorité suprême sur la compétition. Le DC prend toutes les décisions relatives au déroulement de l'épreuve : déploiement du Safety Car, drapeaux rouges, interruptions, reprises. Il est en communication permanente avec tous les postes.",
     missions: [
-      "Décider du déploiement du Safety Car ou VSC",
+      "Décider du déploiement du Safety Car, FCY ou Code 60",
       "Ordonner l'arrêt de séance (drapeau rouge)",
       "Valider les procédures de départ et de reprise",
       "Coordonner les équipes d'intervention médicale et technique",

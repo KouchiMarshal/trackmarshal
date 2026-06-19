@@ -16,7 +16,7 @@ const disciplines = [
       "Interventions rapides en cas d'incident.",
       "Rotation des équipes sur les longues épreuves.",
     ],
-    tenue: "Combinaison ignifugée obligatoire",
+    tenue: "Combinaison en coton obligatoire",
     tenueBadge: "bg-red-500/10 text-red-400 border-red-500/30",
   },
   {
@@ -32,7 +32,7 @@ const disciplines = [
       "Pas toujours de liaison radio directe.",
       "Connaissance du carnet de route recommandée.",
     ],
-    tenue: "Gilet haute visibilité obligatoire",
+    tenue: "Combinaison en coton ou chasuble selon organisateur",
     tenueBadge: "bg-green-500/10 text-green-400 border-green-500/30",
   },
   {
@@ -48,7 +48,7 @@ const disciplines = [
       "Visibilité parfois limitée par les virages serrés.",
       "Descente des véhicules parfois à gérer.",
     ],
-    tenue: "Combinaison recommandée, gilet HV selon organisateur",
+    tenue: "Combinaison en coton ou chasuble selon organisateur",
     tenueBadge: "bg-blue-500/10 text-blue-400 border-blue-500/30",
   },
   {
