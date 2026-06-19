@@ -119,8 +119,78 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Fonctionnalités */}
+      {/* Espace pédagogique */}
       <section className="border-t border-zinc-200 bg-white py-20 lg:py-32">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+          <div className="lg:flex lg:items-end lg:justify-between mb-12">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Gratuit &amp; accessible à tous</p>
+              <h2 className="mt-4 text-4xl font-black lg:text-6xl">Maîtrisez le commissariat</h2>
+              <p className="mt-4 max-w-xl text-lg leading-relaxed text-zinc-600">
+                Drapeaux, procédures, licences, équipement — toutes les ressources pour devenir ou progresser en tant que commissaire motorsport.
+              </p>
+            </div>
+            <Link
+              href="/apprendre"
+              className="mt-6 inline-flex items-center gap-2 rounded-2xl border border-zinc-300 bg-zinc-50 px-6 py-3 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/50 hover:text-[#FF5A1F] lg:mt-0 lg:shrink-0"
+            >
+              Tout l&apos;espace pédagogique →
+            </Link>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                href: "/apprendre/drapeaux",
+                emoji: "🚩",
+                title: "Les drapeaux",
+                desc: "Signification de chaque drapeau — auto et moto. Avec filtres par discipline.",
+                badge: "Lexique visuel",
+              },
+              {
+                href: "/apprendre/procedures",
+                emoji: "📡",
+                title: "Les procédures",
+                desc: "Safety Car, FCY, Code 60, drapeau rouge, évacuation — étape par étape.",
+                badge: "Sécurité",
+              },
+              {
+                href: "/apprendre/epreuves",
+                emoji: "🏁",
+                title: "Types d'épreuves",
+                desc: "Circuit, rallye, côte, karting, motocross — les spécificités de chaque discipline.",
+                badge: "Disciplines",
+              },
+              {
+                href: "/apprendre/quiz",
+                emoji: "🎯",
+                title: "Quiz",
+                desc: "Testez vos connaissances avant de passer votre licence FFSA ou FFM.",
+                badge: "Entraînement",
+              },
+            ].map((card) => (
+              <Link
+                key={card.href}
+                href={card.href}
+                className="group rounded-[28px] border border-zinc-200 bg-zinc-50 p-6 transition hover:border-[#FF5A1F]/40 hover:bg-orange-50"
+              >
+                <span className="text-4xl">{card.emoji}</span>
+                <span className="mt-4 inline-block rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-700">
+                  {card.badge}
+                </span>
+                <h3 className="mt-3 text-lg font-black text-zinc-900">{card.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600">{card.desc}</p>
+                <p className="mt-5 text-sm font-bold text-zinc-500 transition group-hover:text-[#FF5A1F]">
+                  Commencer →
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Fonctionnalités */}
+      <section className="border-t border-zinc-200 bg-zinc-50 py-20 lg:py-32">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
             <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Tout ce qu'il vous faut</p>
