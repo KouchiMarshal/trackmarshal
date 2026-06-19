@@ -18,6 +18,9 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
   const [withdrawalPending, setWithdrawalPending] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const [discipline, setDiscipline] = useState(eventDiscipline);
+  const [staffRoles, setStaffRoles] = useState<{role:string,count:number}[]>([]);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [desiredRole, setDesiredRole] = useState<string | null>(null);
 
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [withdrawReason, setWithdrawReason] = useState("");
@@ -39,18 +42,17 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
 
     setProfile(profileData);
 
-    if (!discipline) {
-      const { data: eventData } = await supabase
-        .from("events")
-        .select("discipline")
-        .eq("id", eventId)
-        .single();
-      if (eventData?.discipline) setDiscipline(eventData.discipline);
-    }
+    const { data: eventData } = await supabase
+      .from("events")
+      .select("discipline, staff_roles")
+      .eq("id", eventId)
+      .single();
+    if (eventData?.discipline) setDiscipline(eventData.discipline);
+    if (eventData?.staff_roles?.length > 0) setStaffRoles(eventData.staff_roles);
 
     const { data } = await supabase
       .from("applications")
-      .select("id, status, withdrawal_reason")
+      .select("id, status, withdrawal_reason, desired_role")
       .eq("event_id", eventId)
       .eq("marshal_id", user.id)
       .maybeSingle();
@@ -59,6 +61,7 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
       setApplicationId(data.id);
       setApplicationStatus(data.status);
       setWithdrawalPending(!!data.withdrawal_reason);
+      if (data.desired_role) setDesiredRole(data.desired_role);
     }
   }
 
@@ -81,9 +84,20 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
       return;
     }
 
+    if (staffRoles.length > 1 && !selectedRole) {
+      setMessage({ text: "Veuillez choisir votre rôle avant de postuler.", type: "error" });
+      setLoading(false);
+      return;
+    }
+
     const { error, data } = await supabase
       .from("applications")
-      .insert({ event_id: eventId, marshal_id: user.id, status: isFull ? "waitlisted" : "pending" })
+      .insert({
+        event_id: eventId,
+        marshal_id: user.id,
+        status: isFull ? "waitlisted" : "pending",
+        desired_role: staffRoles.length > 1 ? selectedRole : (staffRoles[0]?.role || null)
+      })
       .select("id, status")
       .single();
 

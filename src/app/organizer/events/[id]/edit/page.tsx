@@ -17,6 +17,8 @@ import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
+const EXTRA_ROLES = ["Commissaire technique", "Commissaire chef de poste", "Chronomètreur", "Directeur de course"];
+
 export default function EditEventPage() {
   const params = useParams();
   const router = useRouter();
@@ -37,6 +39,9 @@ export default function EditEventPage() {
   const [imagePreview, setImagePreview] = useState("");
   const [currentImageUrl, setCurrentImageUrl] = useState("");
   const [marshalsNeeded, setMarshalsNeeded] = useState("");
+  const [extraRoles, setExtraRoles] = useState(
+    EXTRA_ROLES.map(role => ({ role, count: "", enabled: false }))
+  );
   const [discipline, setDiscipline] = useState("");
   const [passAccompagnant, setPassAccompagnant] = useState(false);
   const [passCount, setPassCount] = useState("");
@@ -79,6 +84,14 @@ export default function EditEventPage() {
     setCurrentImageUrl(data.image_url || "");
     setImagePreview(data.image_url || "");
     setMarshalsNeeded(data.marshals_needed?.toString() || "");
+    if (data.staff_roles && data.staff_roles.length > 0) {
+      const commRole = data.staff_roles.find((r: any) => r.role === "Commissaire de piste");
+      if (commRole) setMarshalsNeeded(String(commRole.count));
+      setExtraRoles(EXTRA_ROLES.map(role => {
+        const found = data.staff_roles.find((r: any) => r.role === role);
+        return { role, count: found ? String(found.count) : "", enabled: !!found };
+      }));
+    }
     setDiscipline(data.discipline || "");
     setPassAccompagnant(data.pass_accompagnant || false);
     setPassCount(data.pass_accompagnant_count?.toString() || "");
@@ -91,6 +104,13 @@ export default function EditEventPage() {
     setOrganizerContact(data.organizer_contact || "");
     setSchedule(data.schedule || "");
     setLoadingData(false);
+  }
+
+  function toggleExtraRole(index: number) {
+    setExtraRoles(prev => prev.map((r, i) => i === index ? { ...r, enabled: !r.enabled, count: r.enabled ? "" : r.count } : r));
+  }
+  function setExtraRoleCount(index: number, count: string) {
+    setExtraRoles(prev => prev.map((r, i) => i === index ? { ...r, count } : r));
   }
 
   async function uploadImage() {
