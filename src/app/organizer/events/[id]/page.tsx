@@ -858,6 +858,11 @@ export default function OrganizerEventDetailsPage() {
                                 }`}>
                                   {app.status === "accepted" ? "Accepté" : app.status === "rejected" ? "Refusé" : "En attente"}
                                 </span>
+                                {app.desired_role && (
+                                  <span className="rounded-full border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-3 py-1 text-xs font-bold text-[#FF5A1F] lg:text-sm">
+                                    {app.desired_role}
+                                  </span>
+                                )}
                                 {app.withdrawal_reason && (
                                   <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-600 lg:text-sm">
                                     ⚠ Demande d'annulation
