@@ -458,6 +458,10 @@ export default function ApplicationsPage() {
                               </div>
                             )}
 
+                            {app.desired_role && (
+                              <p className="text-xs text-zinc-500">Rôle postulé : <span className="font-semibold text-zinc-700">{app.desired_role}</span></p>
+                            )}
+
                           </div>
 
                           <div className="mt-8 flex flex-col gap-4 sm:flex-row">

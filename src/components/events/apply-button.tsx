@@ -180,15 +180,32 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
       )}
 
       {!applicationId ? (
-        <button
-          onClick={handleApply}
-          disabled={loading}
-          className={`h-16 w-full rounded-2xl text-lg font-bold text-white transition hover:scale-[1.02] hover:opacity-90 disabled:opacity-60 ${
-            isFull ? "bg-blue-600" : "bg-[#FF5A1F]"
-          }`}
-        >
-          {loading ? "Envoi en cours..." : isFull ? "Rejoindre la liste d'attente" : "Postuler comme commissaire"}
-        </button>
+        <>
+          {staffRoles.length > 1 && (
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Rôle souhaité</p>
+              <select
+                value={selectedRole}
+                onChange={(e) => setSelectedRole(e.target.value)}
+                className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none focus:border-[#FF5A1F]"
+              >
+                <option value="">Choisir votre rôle...</option>
+                {staffRoles.map(r => (
+                  <option key={r.role} value={r.role}>{r.role} ({r.count} poste{r.count > 1 ? "s" : ""})</option>
+                ))}
+              </select>
+            </div>
+          )}
+          <button
+            onClick={handleApply}
+            disabled={loading}
+            className={`h-16 w-full rounded-2xl text-lg font-bold text-white transition hover:scale-[1.02] hover:opacity-90 disabled:opacity-60 ${
+              isFull ? "bg-blue-600" : "bg-[#FF5A1F]"
+            }`}
+          >
+            {loading ? "Envoi en cours..." : isFull ? "Rejoindre la liste d'attente" : "Postuler comme commissaire"}
+          </button>
+        </>
       ) : (
         <div className="space-y-3">
           <div className={`flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-bold ${
@@ -204,6 +221,9 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
                 : "⏳ Candidature en attente de réponse"}
             </span>
           </div>
+          {desiredRole && (
+            <p className="text-xs text-zinc-500">Rôle : <span className="font-semibold text-zinc-700">{desiredRole}</span></p>
+          )}
 
           {withdrawalPending && (
             <div className="rounded-2xl bg-yellow-100 px-5 py-3 text-sm font-semibold text-yellow-700 border border-yellow-200">

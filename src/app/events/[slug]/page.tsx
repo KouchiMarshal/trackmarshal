@@ -344,6 +344,18 @@ export default async function EventPage({
                   />
                 </div>
 
+                {event.staff_roles && event.staff_roles.length > 1 && (
+                  <div className="mt-4 space-y-2">
+                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">Détail des postes</p>
+                    {event.staff_roles.map((r: {role:string,count:number}) => (
+                      <div key={r.role} className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2.5">
+                        <span className="text-sm font-medium text-zinc-700">{r.role}</span>
+                        <span className="text-sm font-bold text-zinc-900">{r.count} poste{r.count > 1 ? "s" : ""}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="mt-8">
                   <ApplyButton eventId={event.id} isFull={isFull} eventDiscipline={event.discipline} />
                 </div>
