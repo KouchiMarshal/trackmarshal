@@ -7,7 +7,7 @@ const quizzes = [
     href: "/apprendre/quiz/drapeaux",
     emoji: "🚩",
     title: "Les drapeaux",
-    description: "Signaux, couleurs, modes de présentation et spécificités par discipline. Maîtrisez chaque drapeau avant de prendre votre poste.",
+    description: "Signaux, couleurs, modes de présentation et spécificités par discipline.",
     questions: 20,
     difficulty: "Fondamental",
     difficultyColor: "bg-[#FF5A1F]/20 text-[#FF5A1F]",
@@ -17,7 +17,7 @@ const quizzes = [
     href: "/apprendre/quiz/procedures",
     emoji: "📡",
     title: "Les procédures",
-    description: "Safety Car, FCY, Code 60, drapeau rouge, départs — les procédures de neutralisation décortiquées étape par étape.",
+    description: "Safety Car, FCY, Code 60, drapeau rouge, départs — les neutralisations étape par étape.",
     questions: 20,
     difficulty: "Intermédiaire",
     difficultyColor: "bg-red-500/20 text-red-400",
@@ -27,7 +27,7 @@ const quizzes = [
     href: "/apprendre/quiz/formation",
     emoji: "📋",
     title: "Licences & institutions",
-    description: "FFSA, FIA, FFM, ASA, ENCOC, EICOB, tenue obligatoire, équipement, rôles, lexique réglementaire — tout sur le cadre du commissariat.",
+    description: "FFSA, FIA, FFM, ASA, ENCOC, EICOB, tenue obligatoire, équipement et rôles.",
     questions: 20,
     difficulty: "Fondamental",
     difficultyColor: "bg-purple-500/20 text-purple-400",
@@ -37,17 +37,47 @@ const quizzes = [
     href: "/apprendre/quiz/epreuves",
     emoji: "🏁",
     title: "Épreuves & rôles",
-    description: "Circuit, rallye, côte, karting, autocross, drift — spécificités de chaque discipline, rôles des officiels et lexique motorsport.",
+    description: "Circuit, rallye, côte, karting, autocross, drift — spécificités de chaque discipline et lexique.",
     questions: 20,
     difficulty: "Intermédiaire",
     difficultyColor: "bg-green-500/20 text-green-400",
     color: "border-green-500/30 hover:border-green-500/50",
   },
   {
+    href: "/apprendre/quiz/situations",
+    emoji: "⚡",
+    title: "Situations & réflexes",
+    description: "Que faites-vous si… ? Des scénarios concrets de bord de piste pour tester vos réflexes.",
+    questions: 20,
+    difficulty: "Avancé",
+    difficultyColor: "bg-yellow-500/20 text-yellow-400",
+    color: "border-yellow-500/30 hover:border-yellow-500/50",
+  },
+  {
+    href: "/apprendre/quiz/rallye",
+    emoji: "🌲",
+    title: "Spécial rallye",
+    description: "ES, reconnaissances, pace notes, road book, liaisons, organisation des spéciales et signaux propres au rallye.",
+    questions: 20,
+    difficulty: "Intermédiaire",
+    difficultyColor: "bg-emerald-500/20 text-emerald-400",
+    color: "border-emerald-500/30 hover:border-emerald-500/50",
+  },
+  {
+    href: "/apprendre/quiz/securite",
+    emoji: "🛡️",
+    title: "Sécurité & interventions",
+    description: "Approche d'un véhicule accidenté, incendie, extraction, coupe-sangle, zone de sécurité, gestes qui sauvent.",
+    questions: 20,
+    difficulty: "Avancé",
+    difficultyColor: "bg-orange-500/20 text-orange-400",
+    color: "border-orange-500/30 hover:border-orange-500/50",
+  },
+  {
     href: "/apprendre/quiz/general",
     emoji: "🎯",
     title: "Quiz général",
-    description: "Drapeaux, procédures, licences, institutions, épreuves, lexique — tout le programme commissaire en un seul quiz.",
+    description: "Drapeaux, procédures, licences, institutions, épreuves, lexique — tout le programme en un seul quiz.",
     questions: 40,
     difficulty: "Complet",
     difficultyColor: "bg-blue-500/20 text-blue-400",
@@ -103,9 +133,10 @@ export default function QuizPage() {
           <div className="mt-16 rounded-[24px] border border-white/10 bg-white/[0.02] p-6 lg:p-8">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Parcours recommandé</p>
             <p className="mt-3 leading-relaxed text-zinc-400">
-              Commencez par <span className="font-bold text-white">Drapeaux</span> et <span className="font-bold text-white">Licences & institutions</span> pour poser les bases,
-              puis enchaînez avec <span className="font-bold text-white">Procédures</span> et <span className="font-bold text-white">Épreuves & rôles</span>.
-              Le <span className="font-bold text-white">Quiz général (40 questions)</span> est idéal pour valider l&apos;ensemble de vos connaissances avant de passer votre licence ENCOC.
+              Commencez par <span className="font-bold text-white">Drapeaux</span> et <span className="font-bold text-white">Licences & institutions</span> pour les bases,
+              puis <span className="font-bold text-white">Procédures</span>, <span className="font-bold text-white">Épreuves & rôles</span> et <span className="font-bold text-white">Rallye</span> pour approfondir.
+              Les quiz <span className="font-bold text-white">Situations & réflexes</span> et <span className="font-bold text-white">Sécurité</span> sont les plus proches des questions
+              posées lors des épreuves de licence. Finissez par le <span className="font-bold text-white">Quiz général (40Q)</span> pour valider l&apos;ensemble.
             </p>
           </div>
 
