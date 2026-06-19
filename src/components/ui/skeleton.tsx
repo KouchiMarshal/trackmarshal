@@ -2,13 +2,13 @@
 
 export function Skeleton({ className = "" }: { className?: string }) {
   return (
-    <div className={`animate-pulse rounded-2xl bg-white/[0.06] ${className}`} />
+    <div className={`animate-pulse rounded-2xl bg-zinc-200 ${className}`} />
   );
 }
 
 export function SkeletonEventCard() {
   return (
-    <div className="overflow-hidden rounded-[32px] border border-white/[0.05] bg-white/[0.03]">
+    <div className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm">
       <Skeleton className="h-[260px] rounded-none" />
       <div className="p-6 lg:p-8 space-y-4">
         <Skeleton className="h-8 w-3/4" />
@@ -23,7 +23,7 @@ export function SkeletonEventCard() {
 
 export function SkeletonApplicationCard() {
   return (
-    <div className="overflow-hidden rounded-[32px] border border-white/[0.05] bg-white/[0.03]">
+    <div className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm">
       <div className="grid lg:grid-cols-[320px_1fr]">
         <Skeleton className="h-[240px] rounded-none" />
         <div className="p-6 lg:p-8 space-y-4">
@@ -43,7 +43,7 @@ export function SkeletonApplicationCard() {
 
 export function SkeletonStatCard() {
   return (
-    <div className="rounded-[28px] border border-white/[0.05] bg-white/[0.03] p-6 lg:p-8">
+    <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
       <Skeleton className="h-3 w-24" />
       <Skeleton className="h-12 w-20 mt-6" />
     </div>
@@ -52,7 +52,7 @@ export function SkeletonStatCard() {
 
 export function SkeletonListItem() {
   return (
-    <div className="flex items-center gap-4 rounded-[24px] border border-white/[0.05] bg-white/[0.03] p-5">
+    <div className="flex items-center gap-4 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
       <Skeleton className="h-14 w-14 shrink-0 rounded-2xl" />
       <div className="flex-1 space-y-2">
         <Skeleton className="h-4 w-1/2" />

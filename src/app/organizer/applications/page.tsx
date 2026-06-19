@@ -171,7 +171,7 @@ export default function OrganizerApplicationsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
 
       <Toast toast={toast} onClose={() => setToast(null)} />
 
@@ -181,29 +181,29 @@ export default function OrganizerApplicationsPage() {
 
         <div className="flex-1">
 
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
             <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">
                   Dashboard Organisateur
                 </p>
-                <h1 className="mt-2 text-2xl font-black lg:text-4xl">
+                <h1 className="mt-2 text-2xl font-black text-zinc-900 lg:text-4xl">
                   Candidatures reçues
                 </h1>
               </div>
               <div className="flex items-center gap-3">
                 <NotificationBell />
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-center">
+                <div className="rounded-2xl border border-zinc-200 bg-white shadow-sm px-5 py-3 text-center">
                   <p className="text-xs text-zinc-500">Total</p>
-                  <p className="text-2xl font-black">{counts.all}</p>
+                  <p className="text-2xl font-black text-zinc-900">{counts.all}</p>
                 </div>
-                <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 px-5 py-3 text-center">
+                <div className="rounded-2xl border border-yellow-200 bg-yellow-50 px-5 py-3 text-center">
                   <p className="text-xs text-zinc-500">En attente</p>
-                  <p className="text-2xl font-black text-yellow-400">{counts.pending}</p>
+                  <p className="text-2xl font-black text-yellow-700">{counts.pending}</p>
                 </div>
-                <div className="hidden rounded-2xl border border-green-500/20 bg-green-500/10 px-5 py-3 text-center sm:block">
+                <div className="hidden rounded-2xl border border-green-200 bg-green-50 px-5 py-3 text-center sm:block">
                   <p className="text-xs text-zinc-500">Acceptées</p>
-                  <p className="text-2xl font-black text-green-400">{counts.accepted}</p>
+                  <p className="text-2xl font-black text-green-700">{counts.accepted}</p>
                 </div>
               </div>
             </div>
@@ -211,26 +211,24 @@ export default function OrganizerApplicationsPage() {
 
           <div className="relative overflow-hidden">
 
-            <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px] pointer-events-none" />
-
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               <div className="mb-8 flex flex-wrap gap-3">
                 {[
-                  { key: "all", label: "Toutes", count: counts.all, active: "bg-[#FF5A1F]" },
-                  { key: "pending", label: "En attente", count: counts.pending, active: "bg-yellow-600" },
-                  { key: "accepted", label: "Acceptées", count: counts.accepted, active: "bg-green-600" },
-                  { key: "rejected", label: "Refusées", count: counts.rejected, active: "bg-red-600" },
+                  { key: "all", label: "Toutes", count: counts.all, active: "bg-[#FF5A1F] text-white" },
+                  { key: "pending", label: "En attente", count: counts.pending, active: "bg-yellow-500 text-white" },
+                  { key: "accepted", label: "Acceptées", count: counts.accepted, active: "bg-green-600 text-white" },
+                  { key: "rejected", label: "Refusées", count: counts.rejected, active: "bg-red-600 text-white" },
                 ].map((f) => (
                   <button
                     key={f.key}
                     onClick={() => setFilter(f.key)}
                     className={`flex items-center gap-2 rounded-2xl px-5 py-3 font-bold transition ${
-                      filter === f.key ? f.active : "bg-white/[0.05] text-zinc-400 hover:text-white"
+                      filter === f.key ? f.active : "bg-white border border-zinc-200 text-zinc-600 hover:text-zinc-900"
                     }`}
                   >
                     {f.label}
-                    <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">{f.count}</span>
+                    <span className="rounded-full bg-black/10 px-2 py-0.5 text-xs">{f.count}</span>
                   </button>
                 ))}
               </div>
@@ -240,8 +238,8 @@ export default function OrganizerApplicationsPage() {
               )}
 
               {!loading && filtered.length === 0 && (
-                <div className="rounded-[32px] border border-dashed border-white/10 p-16 text-center">
-                  <h2 className="text-3xl font-black">Aucune candidature</h2>
+                <div className="rounded-[32px] border border-dashed border-zinc-300 p-16 text-center">
+                  <h2 className="text-3xl font-black text-zinc-900">Aucune candidature</h2>
                   <p className="mt-4 text-zinc-500">
                     {filter === "all"
                       ? "Aucun commissaire n'a encore postulé à vos événements."
@@ -254,7 +252,7 @@ export default function OrganizerApplicationsPage() {
                 {filtered.map((app) => (
                   <div
                     key={app.id}
-                    className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03]"
+                    className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm"
                   >
                     <div className="grid lg:grid-cols-[280px_1fr]">
 
@@ -271,7 +269,7 @@ export default function OrganizerApplicationsPage() {
                           <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#FF5A1F]">
                             {app.events?.title}
                           </p>
-                          <div className="mt-1 flex items-center gap-2 text-xs text-zinc-400">
+                          <div className="mt-1 flex items-center gap-2 text-xs text-zinc-300">
                             <CalendarDays size={12} />
                             {formatDateRange(app.events?.event_date, app.events?.event_end_date)}
                           </div>
@@ -295,14 +293,14 @@ export default function OrganizerApplicationsPage() {
                             </Link>
                             <div>
                               <Link href={`/organizer/commissaires/${app.marshal_id}`} className="transition hover:text-[#FF5A1F]">
-                                <h3 className="text-2xl font-black">{app.profiles?.full_name}</h3>
+                                <h3 className="text-2xl font-black text-zinc-900">{app.profiles?.full_name}</h3>
                               </Link>
-                              <p className="mt-1 text-sm text-zinc-400">
+                              <p className="mt-1 text-sm text-zinc-600">
                                 📍 {app.profiles?.city || "Ville inconnue"}{app.profiles?.country ? `, ${app.profiles.country}` : ""}
                               </p>
-                              <p className="text-sm text-zinc-400">📧 {app.profiles?.email || "—"}</p>
+                              <p className="text-sm text-zinc-600">📧 {app.profiles?.email || "—"}</p>
                               {app.profiles?.years_experience && (
-                                <p className="mt-2 text-sm text-zinc-300">
+                                <p className="mt-2 text-sm text-zinc-700">
                                   ⏳ {app.profiles.years_experience} ans d'expérience
                                 </p>
                               )}
@@ -312,10 +310,10 @@ export default function OrganizerApplicationsPage() {
                           <div className="flex flex-col items-start gap-3 sm:items-end">
                             <span className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] ${
                               app.status === "accepted"
-                                ? "bg-green-500/20 text-green-400"
+                                ? "bg-green-100 text-green-700"
                                 : app.status === "rejected"
-                                ? "bg-red-500/20 text-red-400"
-                                : "bg-yellow-500/20 text-yellow-400"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-yellow-100 text-yellow-700"
                             }`}>
                               {app.status === "accepted" ? "Accepté" : app.status === "rejected" ? "Refusé" : "En attente"}
                             </span>
@@ -323,16 +321,16 @@ export default function OrganizerApplicationsPage() {
                             <div className="flex flex-wrap gap-3">
                               <Link
                                 href={`/organizer/commissaires/${app.marshal_id}`}
-                                className="rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                                className="rounded-2xl border border-zinc-200 bg-zinc-50 px-5 py-3 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
                               >
                                 Voir profil
                               </Link>
                               <button
                                 disabled={app.status === "accepted"}
                                 onClick={() => updateStatus(app.id, "accepted", app.marshal_id, app.events?.slug, app.events?.title, app.profiles?.full_name, app.profiles?.email, app.events?.event_date, app.events?.location)}
-                                className={`rounded-2xl px-5 py-3 text-sm font-bold transition ${
+                                className={`rounded-2xl px-5 py-3 text-sm font-bold text-white transition ${
                                   app.status === "accepted"
-                                    ? "cursor-not-allowed bg-zinc-800 text-zinc-600"
+                                    ? "cursor-not-allowed bg-zinc-200 text-zinc-400"
                                     : "bg-green-600 hover:scale-105"
                                 }`}
                               >
@@ -341,9 +339,9 @@ export default function OrganizerApplicationsPage() {
                               <button
                                 disabled={app.status === "rejected"}
                                 onClick={() => updateStatus(app.id, "rejected", app.marshal_id, app.events?.slug, app.events?.title, app.profiles?.full_name, app.profiles?.email, app.events?.event_date, app.events?.location)}
-                                className={`rounded-2xl px-5 py-3 text-sm font-bold transition ${
+                                className={`rounded-2xl px-5 py-3 text-sm font-bold text-white transition ${
                                   app.status === "rejected"
-                                    ? "cursor-not-allowed bg-zinc-800 text-zinc-600"
+                                    ? "cursor-not-allowed bg-zinc-200 text-zinc-400"
                                     : "bg-red-600 hover:scale-105"
                                 }`}
                               >
@@ -355,9 +353,9 @@ export default function OrganizerApplicationsPage() {
                         </div>
 
                         {app.profiles?.experience && (
-                          <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4">
+                          <div className="mt-6 rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
                             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Expérience</p>
-                            <p className="mt-2 whitespace-pre-line text-sm text-zinc-300">{app.profiles.experience}</p>
+                            <p className="mt-2 whitespace-pre-line text-sm text-zinc-700">{app.profiles.experience}</p>
                           </div>
                         )}
 

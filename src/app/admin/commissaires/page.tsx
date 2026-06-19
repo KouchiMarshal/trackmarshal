@@ -55,11 +55,11 @@ export default function AdminCommissairesPage() {
 
   return (
     <div>
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+      <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
         <div className="flex h-20 items-center justify-between px-6 lg:px-10">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Administration</p>
-            <h1 className="mt-1 text-2xl font-black lg:text-3xl">
+            <h1 className="mt-1 text-2xl font-black text-zinc-900 lg:text-3xl">
               Commissaires ({filtered.length}{filtered.length !== commissaires.length ? `/${commissaires.length}` : ""})
             </h1>
           </div>
@@ -69,29 +69,29 @@ export default function AdminCommissairesPage() {
       <div className="mx-auto max-w-[1400px] p-6 pb-24 lg:p-10 lg:pb-10">
 
         {urlFilter && (
-          <div className="mb-4 flex items-center gap-3 rounded-2xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-5 py-3">
+          <div className="mb-4 flex items-center gap-3 rounded-2xl border border-[#FF5A1F]/30 bg-orange-50 px-5 py-3">
             <span className="text-xs uppercase tracking-[0.15em] text-[#FF5A1F]">
               {urlFilter.type === "license_type" ? "Licence" : "ASA"}
             </span>
-            <span className="flex-1 text-sm font-black text-white">{urlFilter.value}</span>
+            <span className="flex-1 text-sm font-black text-zinc-900">{urlFilter.value}</span>
             <Link
               href="/admin/commissaires"
               onClick={() => setUrlFilter(null)}
-              className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-zinc-400 transition hover:text-white"
+              className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-xs font-bold text-zinc-600 transition hover:text-zinc-900"
             >
               <X size={12} /> Effacer
             </Link>
           </div>
         )}
 
-        <div className="mb-8 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3">
+        <div className="mb-8 flex items-center gap-3 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 py-3">
           <Search size={18} className="shrink-0 text-zinc-500" />
           <input
             type="text"
             placeholder="Rechercher par nom, email, numéro ou type de licence..."
             value={search}
             onChange={(e) => { setSearch(e.target.value); setUrlFilter(null); }}
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-600"
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400 text-zinc-900"
           />
         </div>
 
@@ -99,7 +99,7 @@ export default function AdminCommissairesPage() {
 
         <div className="space-y-4">
           {filtered.map((c) => (
-            <Link key={c.id} href={`/admin/commissaires/${c.id}`} className="flex flex-col gap-4 rounded-[24px] border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/20 hover:bg-white/[0.06] sm:flex-row sm:items-center">
+            <Link key={c.id} href={`/admin/commissaires/${c.id}`} className="flex flex-col gap-4 rounded-[24px] border border-zinc-200 bg-white shadow-sm p-5 transition hover:border-zinc-300 hover:bg-zinc-50 sm:flex-row sm:items-center">
 
               <div className="flex items-center gap-4 flex-1 min-w-0">
                 <img
@@ -111,8 +111,8 @@ export default function AdminCommissairesPage() {
                   className="h-14 w-14 shrink-0 rounded-2xl object-cover"
                 />
                 <div className="min-w-0">
-                  <p className="truncate font-black">{c.full_name || "Sans nom"}</p>
-                  <p className="truncate text-sm text-zinc-400">{c.email}</p>
+                  <p className="truncate font-black text-zinc-900">{c.full_name || "Sans nom"}</p>
+                  <p className="truncate text-sm text-zinc-600">{c.email}</p>
                   {(c.city || c.country) && (
                     <p className="text-xs text-zinc-500">{[c.city, c.country].filter(Boolean).join(", ")}</p>
                   )}
@@ -121,40 +121,40 @@ export default function AdminCommissairesPage() {
 
               <div className="flex flex-wrap items-center gap-3 sm:shrink-0 sm:ml-auto">
                 {c.license_type && (
-                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-xs">
+                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs">
                     <p className="text-zinc-500">Licence</p>
                     <p className="font-bold text-[#FF5A1F]">{c.license_type}</p>
-                    {c.license_number && <p className="text-zinc-400">N° {c.license_number}</p>}
+                    {c.license_number && <p className="text-zinc-600">N° {c.license_number}</p>}
                     {c.asa && <p className="mt-0.5 text-zinc-500">{c.asa}</p>}
                   </div>
                 )}
 
                 {c.years_experience && (
-                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-xs text-center">
+                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-center">
                     <p className="text-zinc-500">Exp.</p>
-                    <p className="font-black">{c.years_experience} ans</p>
+                    <p className="font-black text-zinc-900">{c.years_experience} ans</p>
                   </div>
                 )}
 
                 {c.license_url ? (
                   c.license_verified ? (
-                    <span className="flex items-center gap-1.5 rounded-full bg-green-500/20 px-3 py-1.5 text-xs font-bold text-green-400">
+                    <span className="flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700">
                       <CheckCircle2 size={12} /> Validée
                     </span>
                   ) : (
                     <Link
                       href="/admin/licenses"
-                      className="flex items-center gap-1.5 rounded-full bg-yellow-500/20 px-3 py-1.5 text-xs font-bold text-yellow-400 transition hover:bg-yellow-500/30"
+                      className="flex items-center gap-1.5 rounded-full bg-yellow-100 px-3 py-1.5 text-xs font-bold text-yellow-700 transition hover:bg-yellow-200"
                     >
                       <Clock3 size={12} /> À valider
                     </Link>
                   )
                 ) : (
-                  <span className="rounded-full bg-white/5 px-3 py-1.5 text-xs text-zinc-500">
+                  <span className="rounded-full bg-zinc-100 px-3 py-1.5 text-xs text-zinc-600">
                     Pas de licence
                   </span>
                 )}
-                <ChevronRight size={18} className="shrink-0 text-zinc-600" />
+                <ChevronRight size={18} className="shrink-0 text-zinc-400" />
               </div>
 
             </Link>

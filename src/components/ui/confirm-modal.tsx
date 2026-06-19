@@ -36,29 +36,29 @@ export function ConfirmModal({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/80 backdrop-blur-sm sm:items-center"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/50 backdrop-blur-sm sm:items-center"
       onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
     >
-      <div className="mx-0 w-full rounded-t-[32px] border border-white/10 bg-[#0A0A0A] p-8 sm:mx-4 sm:max-w-md sm:rounded-[32px]">
+      <div className="mx-0 w-full rounded-t-[32px] border border-zinc-200 bg-white p-8 shadow-xl sm:mx-4 sm:max-w-md sm:rounded-[32px]">
         {danger && (
-          <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/10">
-            <AlertTriangle size={24} className="text-red-400" />
+          <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-red-200 bg-red-100">
+            <AlertTriangle size={24} className="text-red-600" />
           </div>
         )}
-        <h2 className="text-2xl font-black">{title}</h2>
-        <p className="mt-4 leading-relaxed text-zinc-400">{message}</p>
+        <h2 className="text-2xl font-black text-zinc-900">{title}</h2>
+        <p className="mt-4 leading-relaxed text-zinc-600">{message}</p>
         <div className="mt-8 flex gap-4">
           <button
             onClick={onCancel}
             disabled={loading}
-            className="flex h-14 flex-1 items-center justify-center rounded-2xl border border-white/10 font-bold text-zinc-400 transition hover:border-white/20 hover:text-white disabled:opacity-50"
+            className="flex h-14 flex-1 items-center justify-center rounded-2xl border border-zinc-300 font-bold text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900 disabled:opacity-50"
           >
             {cancelText}
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            className={`flex h-14 flex-1 items-center justify-center rounded-2xl font-black transition hover:scale-[1.02] disabled:opacity-50 disabled:scale-100 ${
+            className={`flex h-14 flex-1 items-center justify-center rounded-2xl font-black text-white transition hover:scale-[1.02] disabled:opacity-50 disabled:scale-100 ${
               danger ? "bg-red-600 hover:bg-red-500" : "bg-[#FF5A1F] hover:bg-[#FF6A2F]"
             }`}
           >

@@ -72,7 +72,7 @@ export default async function MarshalPage({
   if (!profile) {
 
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#050505] text-white">
+      <main className="flex min-h-screen items-center justify-center bg-zinc-50 text-zinc-900">
 
         Profil introuvable
 
@@ -81,11 +81,11 @@ export default async function MarshalPage({
   }
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050505] text-white">
+    <main className="min-h-screen overflow-hidden bg-zinc-50 text-zinc-900">
 
       <PublicNavbar />
 
-      <section className="relative overflow-hidden border-b border-white/10 pt-40">
+      <section className="relative overflow-hidden border-b border-zinc-200 pt-40">
 
         <div className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/10 blur-[180px]" />
 
@@ -95,7 +95,7 @@ export default async function MarshalPage({
 
             <div>
 
-              <div className="overflow-hidden rounded-[40px] border border-white/10 bg-[#0A0A0A]">
+              <div className="overflow-hidden rounded-[40px] border border-zinc-200 bg-white shadow-sm">
 
                 <div className="relative h-[420px]">
 
@@ -117,7 +117,7 @@ export default async function MarshalPage({
 
                     <div className="h-3 w-3 rounded-full bg-[#FF5A1F]" />
 
-                    <p className="text-sm uppercase tracking-[0.2em] text-zinc-400">
+                    <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
 
                       Commissaire Motorsport
 
@@ -125,13 +125,13 @@ export default async function MarshalPage({
 
                   </div>
 
-                  <h1 className="mt-5 text-4xl font-black leading-none">
+                  <h1 className="mt-5 text-4xl font-black leading-none text-zinc-900">
 
                     {profile.full_name}
 
                   </h1>
 
-                  <p className="mt-5 text-lg text-zinc-400">
+                  <p className="mt-5 text-lg text-zinc-600">
 
                     {profile.country || "France"}
 
@@ -141,7 +141,7 @@ export default async function MarshalPage({
 
                     <div className="mt-6 rounded-3xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/10 p-5">
 
-                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
 
                         Licence Motorsport
 
@@ -154,14 +154,14 @@ export default async function MarshalPage({
                       </p>
 
                       {profile.asa && (
-                        <p className="mt-1 text-sm text-zinc-400">ASA : {profile.asa}</p>
+                        <p className="mt-1 text-sm text-zinc-600">ASA : {profile.asa}</p>
                       )}
 
                       <div className="mt-4 flex flex-wrap gap-3">
 
                         {profile.license_verified ? (
 
-                          <div className="rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-green-400">
+                          <div className="rounded-full border border-green-200 bg-green-100 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-green-700">
 
                             ✔ Licence Vérifiée
 
@@ -169,7 +169,7 @@ export default async function MarshalPage({
 
                         ) : (
 
-                          <div className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-yellow-400">
+                          <div className="rounded-full border border-yellow-200 bg-yellow-100 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-yellow-700">
 
                             ⏳ Vérification en attente
 
@@ -184,7 +184,7 @@ export default async function MarshalPage({
                         <a
                           href={profile.license_url}
                           target="_blank"
-                          className="mt-5 inline-flex rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10"
+                          className="mt-5 inline-flex rounded-2xl border border-zinc-300 bg-zinc-50 px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] text-zinc-900 transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10"
                         >
 
                           📄 Voir la licence
@@ -220,7 +220,7 @@ export default async function MarshalPage({
 
               <div className="grid gap-6 md:grid-cols-3">
 
-                <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+                <div className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm">
 
                   <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
 
@@ -237,19 +237,19 @@ export default async function MarshalPage({
                 </div>
 
                 {avgRating !== null && (
-                  <div className="rounded-[32px] border border-yellow-500/20 bg-yellow-500/5 p-8 backdrop-blur-xl">
+                  <div className="rounded-[32px] border border-yellow-200 bg-yellow-50 p-8 shadow-sm">
                     <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">Note moyenne</p>
-                    <h3 className="mt-4 text-5xl font-black text-yellow-400">{avgRating}/5</h3>
+                    <h3 className="mt-4 text-5xl font-black text-yellow-600">{avgRating}/5</h3>
                     <div className="mt-2 flex gap-1">
                       {[1,2,3,4,5].map((i) => (
-                        <span key={i} className={`text-xl ${i <= Math.round(avgRating) ? "text-yellow-400" : "text-zinc-700"}`}>★</span>
+                        <span key={i} className={`text-xl ${i <= Math.round(avgRating) ? "text-yellow-500" : "text-zinc-300"}`}>★</span>
                       ))}
                     </div>
                     <p className="mt-2 text-xs text-zinc-500">{reviews?.length} évaluation(s)</p>
                   </div>
                 )}
 
-                <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+                <div className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm">
 
                   <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
 
@@ -257,7 +257,7 @@ export default async function MarshalPage({
 
                   </p>
 
-                  <h3 className="mt-4 text-3xl font-black text-white">
+                  <h3 className="mt-4 text-3xl font-black text-zinc-900">
 
                     Motorsport
 
@@ -265,7 +265,7 @@ export default async function MarshalPage({
 
                 </div>
 
-                <div className={`rounded-[32px] border p-8 backdrop-blur-xl ${profile.available !== false ? "border-green-500/20 bg-green-500/5" : "border-red-500/20 bg-red-500/5"}`}>
+                <div className={`rounded-[32px] border p-8 shadow-sm ${profile.available !== false ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}>
 
                   <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
 
@@ -274,8 +274,8 @@ export default async function MarshalPage({
                   </p>
 
                   <div className="mt-3 flex items-center gap-3">
-                    <span className={`h-3 w-3 rounded-full ${profile.available !== false ? "bg-green-400" : "bg-red-400"}`} />
-                    <h3 className={`text-2xl font-black ${profile.available !== false ? "text-green-400" : "text-red-400"}`}>
+                    <span className={`h-3 w-3 rounded-full ${profile.available !== false ? "bg-green-500" : "bg-red-500"}`} />
+                    <h3 className={`text-2xl font-black ${profile.available !== false ? "text-green-700" : "text-red-700"}`}>
                       {profile.available !== false ? "Disponible" : "Indisponible"}
                     </h3>
                   </div>
@@ -287,7 +287,7 @@ export default async function MarshalPage({
               {profile.badges &&
                 profile.badges.length > 0 && (
 
-                <div className="mt-10 rounded-[40px] border border-white/10 bg-[#0A0A0A] p-10">
+                <div className="mt-10 rounded-[40px] border border-zinc-200 bg-white p-10 shadow-sm">
 
                   <p className="text-sm uppercase tracking-[0.3em] text-[#FF5A1F]">
 
@@ -318,7 +318,7 @@ export default async function MarshalPage({
 
               )}
 
-              <div className="mt-10 rounded-[40px] border border-white/10 bg-[#0A0A0A] p-10">
+              <div className="mt-10 rounded-[40px] border border-zinc-200 bg-white p-10 shadow-sm">
 
                 <p className="text-sm uppercase tracking-[0.3em] text-[#FF5A1F]">
 
@@ -326,7 +326,7 @@ export default async function MarshalPage({
 
                 </p>
 
-                <p className="mt-8 whitespace-pre-wrap text-xl leading-relaxed text-zinc-300">
+                <p className="mt-8 whitespace-pre-wrap text-xl leading-relaxed text-zinc-600">
 
                   {profile.bio ||
                     "Aucune biographie disponible."}
@@ -335,7 +335,7 @@ export default async function MarshalPage({
 
               </div>
 
-              <div className="mt-10 rounded-[40px] border border-white/10 bg-[#0A0A0A] p-10">
+              <div className="mt-10 rounded-[40px] border border-zinc-200 bg-white p-10 shadow-sm">
 
                 <p className="text-sm uppercase tracking-[0.3em] text-[#FF5A1F]">
 
@@ -343,7 +343,7 @@ export default async function MarshalPage({
 
                 </p>
 
-                <p className="mt-8 whitespace-pre-wrap text-xl leading-relaxed text-zinc-300">
+                <p className="mt-8 whitespace-pre-wrap text-xl leading-relaxed text-zinc-600">
 
                   {profile.experience ||
                     "Aucune expérience renseignée."}
@@ -352,7 +352,7 @@ export default async function MarshalPage({
 
               </div>
 
-              <div className="mt-10 rounded-[40px] border border-white/10 bg-[#0A0A0A] p-10">
+              <div className="mt-10 rounded-[40px] border border-zinc-200 bg-white p-10 shadow-sm">
 
                 <p className="text-sm uppercase tracking-[0.3em] text-[#FF5A1F]">
 
@@ -360,7 +360,7 @@ export default async function MarshalPage({
 
                 </p>
 
-                <p className="mt-8 whitespace-pre-wrap text-xl leading-relaxed text-zinc-300">
+                <p className="mt-8 whitespace-pre-wrap text-xl leading-relaxed text-zinc-600">
 
                   {profile.disciplines ||
                     "Aucune discipline renseignée."}
@@ -372,20 +372,20 @@ export default async function MarshalPage({
               <ParticipationHistory marshalId={profile.id} />
 
               {reviews && reviews.length > 0 && (
-                <div className="mt-10 rounded-[40px] border border-white/10 bg-[#0A0A0A] p-10">
+                <div className="mt-10 rounded-[40px] border border-zinc-200 bg-white p-10 shadow-sm">
                   <p className="text-sm uppercase tracking-[0.3em] text-[#FF5A1F]">Évaluations organisateurs</p>
                   <div className="mt-6 space-y-5">
                     {reviews.filter((r) => r.comment).map((r, i) => (
-                      <div key={i} className="rounded-[24px] border border-white/10 bg-white/[0.02] p-6">
+                      <div key={i} className="rounded-[24px] border border-zinc-200 bg-zinc-50 p-6">
                         <div className="flex items-center gap-2 mb-3">
                           {[1,2,3,4,5].map((s) => (
-                            <span key={s} className={`text-lg ${s <= (r.rating || 0) ? "text-yellow-400" : "text-zinc-700"}`}>★</span>
+                            <span key={s} className={`text-lg ${s <= (r.rating || 0) ? "text-yellow-500" : "text-zinc-300"}`}>★</span>
                           ))}
                           <span className="text-xs text-zinc-500 ml-2">
                             {new Date(r.created_at).toLocaleDateString("fr-FR")}
                           </span>
                         </div>
-                        <p className="whitespace-pre-wrap text-zinc-300 leading-relaxed">"{r.comment}"</p>
+                        <p className="whitespace-pre-wrap text-zinc-600 leading-relaxed">"{r.comment}"</p>
                       </div>
                     ))}
                   </div>

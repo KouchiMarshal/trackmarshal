@@ -225,7 +225,7 @@ export default function CreateEventPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
 
       <Toast toast={toast} onClose={() => setToast(null)} />
 
@@ -235,11 +235,9 @@ export default function CreateEventPage() {
 
         <div className="flex-1 overflow-hidden">
 
-          <header className="sticky top-0 z-40 flex h-16 items-center justify-end border-b border-white/10 bg-black/70 px-6 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 flex h-16 items-center justify-end border-b border-zinc-200 bg-white px-6">
             <NotificationBell />
           </header>
-
-      <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/10 blur-[160px] pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-[1200px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
@@ -249,7 +247,7 @@ export default function CreateEventPage() {
 
             <Link
               href="/organizer/events"
-              className="flex items-center gap-3 text-zinc-400 transition hover:text-white"
+              className="flex items-center gap-3 text-zinc-500 transition hover:text-zinc-900"
             >
 
               <ArrowLeft size={18} />
@@ -264,13 +262,13 @@ export default function CreateEventPage() {
 
             </p>
 
-            <h1 className="mt-3 text-4xl font-black lg:text-6xl">
+            <h1 className="mt-3 text-4xl font-black text-zinc-900 lg:text-6xl">
 
               Créer un événement
 
             </h1>
 
-            <p className="mt-5 max-w-2xl text-lg text-zinc-400">
+            <p className="mt-5 max-w-2xl text-lg text-zinc-600">
 
               Publiez votre événement motorsport
               et recrutez vos commissaires.
@@ -283,7 +281,7 @@ export default function CreateEventPage() {
 
         <div className="mt-10 grid gap-6 lg:grid-cols-[1fr_0.45fr]">
 
-          <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+          <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
 
             <div className="grid gap-6">
 
@@ -291,7 +289,7 @@ export default function CreateEventPage() {
 
                 <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
 
-                  Nom de l’événement
+                  Nom de l'événement
 
                 </p>
 
@@ -304,7 +302,7 @@ export default function CreateEventPage() {
                     )
                   }
                   placeholder="24H du Mans"
-                  className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 px-6 outline-none focus:border-[#FF5A1F]"
+                  className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                 />
 
               </div>
@@ -328,7 +326,7 @@ export default function CreateEventPage() {
                       )
                     }
                     placeholder="France"
-                    className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 px-6 outline-none focus:border-[#FF5A1F]"
+                    className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                   />
 
                 </div>
@@ -345,7 +343,7 @@ export default function CreateEventPage() {
 
                     <MapPin
                       size={18}
-                      className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500"
+                      className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400"
                     />
 
                     <input
@@ -357,7 +355,7 @@ export default function CreateEventPage() {
                         )
                       }
                       placeholder="Le Mans"
-                      className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 pl-14 pr-6 outline-none focus:border-[#FF5A1F]"
+                      className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 pl-14 pr-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                     />
 
                   </div>
@@ -380,7 +378,7 @@ export default function CreateEventPage() {
 
                     <CalendarDays
                       size={18}
-                      className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500"
+                      className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400"
                     />
 
                     <input
@@ -391,7 +389,7 @@ export default function CreateEventPage() {
                           e.target.value
                         )
                       }
-                      className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 pl-14 pr-6 outline-none focus:border-[#FF5A1F]"
+                      className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 pl-14 pr-6 text-zinc-900 outline-none focus:border-[#FF5A1F]"
                     />
 
                   </div>
@@ -402,7 +400,7 @@ export default function CreateEventPage() {
 
                   <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
 
-                    Date de fin <span className="text-zinc-600 normal-case">(optionnel)</span>
+                    Date de fin <span className="text-zinc-400 normal-case">(optionnel)</span>
 
                   </p>
 
@@ -410,7 +408,7 @@ export default function CreateEventPage() {
 
                     <CalendarDays
                       size={18}
-                      className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500"
+                      className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400"
                     />
 
                     <input
@@ -418,7 +416,7 @@ export default function CreateEventPage() {
                       value={endDate}
                       min={date || undefined}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 pl-14 pr-6 outline-none focus:border-[#FF5A1F]"
+                      className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 pl-14 pr-6 text-zinc-900 outline-none focus:border-[#FF5A1F]"
                     />
 
                   </div>
@@ -440,7 +438,7 @@ export default function CreateEventPage() {
                         e.target.value
                       )
                     }
-                    className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 px-6 outline-none focus:border-[#FF5A1F]"
+                    className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none focus:border-[#FF5A1F]"
                   >
 
                     <option value="">
@@ -481,7 +479,7 @@ export default function CreateEventPage() {
 
                   <Users
                     size={18}
-                    className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500"
+                    className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400"
                   />
 
                   <input
@@ -493,7 +491,7 @@ export default function CreateEventPage() {
                       )
                     }
                     placeholder="25"
-                    className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 pl-14 pr-6 outline-none focus:border-[#FF5A1F]"
+                    className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 pl-14 pr-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                   />
 
                 </div>
@@ -502,16 +500,16 @@ export default function CreateEventPage() {
 
               <div className="grid gap-5">
 
-                <div className={`rounded-2xl border p-5 transition ${passAccompagnant ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-white/10 bg-black/30"}`}>
+                <div className={`rounded-2xl border p-5 transition ${passAccompagnant ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-zinc-200 bg-zinc-50"}`}>
 
                   <div className="flex items-center justify-between">
 
-                    <span className="font-semibold">🎟️ Pass accompagnant</span>
+                    <span className="font-semibold text-zinc-900">🎟️ Pass accompagnant</span>
 
                     <button
                       type="button"
                       onClick={() => setPassAccompagnant(!passAccompagnant)}
-                      className={`relative h-7 w-12 rounded-full transition-colors ${passAccompagnant ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                      className={`relative h-7 w-12 rounded-full transition-colors ${passAccompagnant ? "bg-[#FF5A1F]" : "bg-zinc-300"}`}
                     >
                       <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${passAccompagnant ? "translate-x-6" : "translate-x-1"}`} />
                     </button>
@@ -525,23 +523,23 @@ export default function CreateEventPage() {
                       placeholder="Nombre de pass accompagnant"
                       value={passCount}
                       onChange={(e) => setPassCount(e.target.value)}
-                      className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
+                      className="mt-5 h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                     />
 
                   )}
 
                 </div>
 
-                <div className={`rounded-2xl border p-5 transition ${defraiement ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-white/10 bg-black/30"}`}>
+                <div className={`rounded-2xl border p-5 transition ${defraiement ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-zinc-200 bg-zinc-50"}`}>
 
                   <div className="flex items-center justify-between">
 
-                    <span className="font-semibold">💰 Défraiement</span>
+                    <span className="font-semibold text-zinc-900">💰 Défraiement</span>
 
                     <button
                       type="button"
                       onClick={() => setDefraiement(!defraiement)}
-                      className={`relative h-7 w-12 rounded-full transition-colors ${defraiement ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                      className={`relative h-7 w-12 rounded-full transition-colors ${defraiement ? "bg-[#FF5A1F]" : "bg-zinc-300"}`}
                     >
                       <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${defraiement ? "translate-x-6" : "translate-x-1"}`} />
                     </button>
@@ -555,23 +553,23 @@ export default function CreateEventPage() {
                       placeholder="Montant en € ou description (ex: 50€)"
                       value={defraiementAmount}
                       onChange={(e) => setDefraiementAmount(e.target.value)}
-                      className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
+                      className="mt-5 h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                     />
 
                   )}
 
                 </div>
 
-                <div className={`rounded-2xl border p-5 transition ${repas ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-white/10 bg-black/30"}`}>
+                <div className={`rounded-2xl border p-5 transition ${repas ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-zinc-200 bg-zinc-50"}`}>
 
                   <div className="flex items-center justify-between">
 
-                    <span className="font-semibold">🍽️ Repas fournis</span>
+                    <span className="font-semibold text-zinc-900">🍽️ Repas fournis</span>
 
                     <button
                       type="button"
                       onClick={() => setRepas(!repas)}
-                      className={`relative h-7 w-12 rounded-full transition-colors ${repas ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                      className={`relative h-7 w-12 rounded-full transition-colors ${repas ? "bg-[#FF5A1F]" : "bg-zinc-300"}`}
                     >
                       <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${repas ? "translate-x-6" : "translate-x-1"}`} />
                     </button>
@@ -585,23 +583,23 @@ export default function CreateEventPage() {
                       placeholder="ex : Déjeuner sam. + dim., dîner samedi soir"
                       value={repasType}
                       onChange={(e) => setRepasType(e.target.value)}
-                      className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
+                      className="mt-5 h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                     />
 
                   )}
 
                 </div>
 
-                <div className={`rounded-2xl border p-5 transition ${hotel ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-white/10 bg-black/30"}`}>
+                <div className={`rounded-2xl border p-5 transition ${hotel ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-zinc-200 bg-zinc-50"}`}>
 
                   <div className="flex items-center justify-between">
 
-                    <span className="font-semibold">🏨 Hébergement</span>
+                    <span className="font-semibold text-zinc-900">🏨 Hébergement</span>
 
                     <button
                       type="button"
                       onClick={() => setHotel(!hotel)}
-                      className={`relative h-7 w-12 rounded-full transition-colors ${hotel ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                      className={`relative h-7 w-12 rounded-full transition-colors ${hotel ? "bg-[#FF5A1F]" : "bg-zinc-300"}`}
                     >
                       <span className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition-transform ${hotel ? "translate-x-6" : "translate-x-1"}`} />
                     </button>
@@ -615,7 +613,7 @@ export default function CreateEventPage() {
                       placeholder="ex : Hôtel pris en charge vendredi et samedi soir"
                       value={hotelDetail}
                       onChange={(e) => setHotelDetail(e.target.value)}
-                      className="mt-5 h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
+                      className="mt-5 h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                     />
 
                   )}
@@ -636,7 +634,7 @@ export default function CreateEventPage() {
 
                   <ImageIcon
                     size={18}
-                    className="absolute left-5 top-5 text-zinc-500"
+                    className="absolute left-5 top-5 text-zinc-400"
                   />
 
                   <input
@@ -657,7 +655,7 @@ export default function CreateEventPage() {
                         )
                       );
                     }}
-                    className="w-full rounded-2xl border border-white/10 bg-black/40 p-5 pl-14"
+                    className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-5 pl-14 text-zinc-900"
                   />
 
                 </div>
@@ -677,7 +675,7 @@ export default function CreateEventPage() {
                   value={organizerContact}
                   onChange={(e) => setOrganizerContact(e.target.value)}
                   placeholder="email@organisation.com"
-                  className="h-16 w-full rounded-2xl border border-white/10 bg-black/40 px-6 outline-none focus:border-[#FF5A1F]"
+                  className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                 />
 
               </div>
@@ -699,7 +697,7 @@ export default function CreateEventPage() {
                     )
                   }
                   placeholder="Décrivez votre événement..."
-                  className="w-full rounded-2xl border border-white/10 bg-black/40 p-6 outline-none focus:border-[#FF5A1F]"
+                  className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                 />
 
               </div>
@@ -721,7 +719,7 @@ export default function CreateEventPage() {
                     )
                   }
                   placeholder={"Vendredi 14h : Accueil\nVendredi 16h : Briefing\nSamedi 08h : Départ épreuve..."}
-                  className="w-full rounded-2xl border border-white/10 bg-black/40 p-6 outline-none focus:border-[#FF5A1F]"
+                  className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                 />
 
               </div>
@@ -729,14 +727,14 @@ export default function CreateEventPage() {
               <button
                 onClick={createEvent}
                 disabled={loading}
-                className="flex h-16 items-center justify-center gap-3 rounded-2xl bg-[#FF5A1F] text-lg font-black transition hover:scale-[1.01]"
+                className="flex h-16 items-center justify-center gap-3 rounded-2xl bg-[#FF5A1F] text-lg font-black text-white transition hover:scale-[1.01]"
               >
 
                 <Save size={20} />
 
                 {loading
                   ? "Création..."
-                  : "Publier l’événement"}
+                  : "Publier l'événement"}
 
               </button>
 
@@ -744,7 +742,7 @@ export default function CreateEventPage() {
 
           </div>
 
-          <div className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] backdrop-blur-xl">
+          <div className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm">
 
             <div className="relative h-[280px]">
 
@@ -760,13 +758,13 @@ export default function CreateEventPage() {
 
               <div className="absolute bottom-0 left-0 p-6">
 
-                <div className="rounded-full bg-[#FF5A1F] px-4 py-2 text-xs font-black uppercase tracking-[0.15em]">
+                <div className="rounded-full bg-[#FF5A1F] px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-white">
 
                   Aperçu live
 
                 </div>
 
-                <h2 className="mt-5 text-4xl font-black">
+                <h2 className="mt-5 text-4xl font-black text-white">
 
                   {
                     title ||

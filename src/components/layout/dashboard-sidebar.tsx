@@ -71,11 +71,11 @@ export default function DashboardSidebar() {
   return (
     <>
       {/* Sidebar desktop */}
-      <aside className="hidden h-screen w-[280px] shrink-0 sticky top-0 border-r border-white/10 bg-[#050505] lg:flex lg:flex-col overflow-y-auto">
-        <div className="border-b border-white/10 p-8">
+      <aside className="hidden h-screen w-[280px] shrink-0 sticky top-0 border-r border-zinc-200 bg-white lg:flex lg:flex-col overflow-y-auto">
+        <div className="border-b border-zinc-200 p-8">
           <Link href="/" className="flex items-center gap-4">
             <img src="/logo.png" alt="TrackMarshal" className="h-12 w-12 rounded-full object-cover" />
-            <h1 className="text-xl font-black">
+            <h1 className="text-xl font-black text-zinc-900">
               Track<span className="text-[#FF5A1F]">Marshal</span>
             </h1>
           </Link>
@@ -93,7 +93,7 @@ export default function DashboardSidebar() {
                   className={`flex h-14 w-full items-center gap-4 rounded-2xl px-5 transition ${
                     active
                       ? "bg-[#FF5A1F] text-white"
-                      : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                      : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
                   }`}
                 >
                   <div className="relative">
@@ -117,7 +117,7 @@ export default function DashboardSidebar() {
         </div>
 
         {isAdmin && (
-          <div className="border-t border-white/10 p-6 pb-0">
+          <div className="border-t border-zinc-200 p-6 pb-0">
             <Link
               href="/admin"
               className={`flex h-14 w-full items-center gap-4 rounded-2xl px-5 transition ${
@@ -144,10 +144,10 @@ export default function DashboardSidebar() {
           </div>
         )}
 
-        <div className="border-t border-white/10 p-6">
+        <div className="border-t border-zinc-200 p-6">
           <button
             onClick={logout}
-            className="flex h-14 w-full items-center gap-4 rounded-2xl px-5 text-zinc-400 transition hover:bg-white/5 hover:text-white"
+            className="flex h-14 w-full items-center gap-4 rounded-2xl px-5 text-zinc-500 transition hover:bg-red-50 hover:text-red-500"
           >
             <LogOut size={20} />
             <span className="font-semibold">Déconnexion</span>
@@ -156,13 +156,13 @@ export default function DashboardSidebar() {
       </aside>
 
       {/* Bottom nav mobile */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/90 backdrop-blur-2xl lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-white lg:hidden">
         <div className="grid grid-cols-7">
 
           {/* Logo → accueil */}
           <Link
             href="/"
-            className="flex flex-col items-center gap-1.5 py-4 text-zinc-400 transition hover:text-[#FF5A1F]"
+            className="flex flex-col items-center gap-1.5 py-4 text-zinc-500 transition hover:text-[#FF5A1F]"
           >
             <img src="/logo.png" alt="Accueil" className="h-5 w-5 rounded-full object-cover" />
             <span className="text-[10px] font-semibold">Accueil</span>
@@ -182,7 +182,7 @@ export default function DashboardSidebar() {
                 key={item.href}
                 href={item.href}
                 className={`flex flex-col items-center gap-1.5 py-4 transition ${
-                  pathname === item.href ? "text-[#FF5A1F]" : "text-zinc-400 hover:text-[#FF5A1F]"
+                  pathname === item.href ? "text-[#FF5A1F]" : "text-zinc-500 hover:text-[#FF5A1F]"
                 }`}
               >
                 <div className="relative">

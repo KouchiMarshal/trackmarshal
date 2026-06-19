@@ -103,7 +103,7 @@ export default function OrganizerDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
 
       <div className="flex min-h-screen">
 
@@ -111,7 +111,7 @@ export default function OrganizerDashboard() {
 
         <div className="flex-1">
 
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
 
             <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
 
@@ -123,7 +123,7 @@ export default function OrganizerDashboard() {
 
                 </p>
 
-                <h1 className="mt-2 text-2xl font-black lg:text-4xl">
+                <h1 className="mt-2 text-2xl font-black text-zinc-900 lg:text-4xl">
 
                   Bonjour {
                     profile?.full_name ||
@@ -138,7 +138,7 @@ export default function OrganizerDashboard() {
                 <NotificationBell />
                 <Link
                   href="/organizer/events/create"
-                  className="hidden h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-105 lg:flex"
+                  className="hidden h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold text-white transition hover:scale-105 lg:flex"
                 >
                   <Plus size={20} />
                   Créer un événement
@@ -151,17 +151,15 @@ export default function OrganizerDashboard() {
 
           <div className="relative overflow-hidden">
 
-            <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
-
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               {/* Banner vérification en attente */}
               {profile && !profile.organizer_verified && (
-                <div className="mb-6 flex items-start gap-4 rounded-[24px] border border-yellow-500/30 bg-yellow-500/10 p-5">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-yellow-500/20 text-lg">⏳</div>
+                <div className="mb-6 flex items-start gap-4 rounded-[24px] border border-yellow-200 bg-yellow-50 p-5">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-yellow-100 text-lg">⏳</div>
                   <div>
-                    <p className="font-black text-yellow-400">Compte en attente de vérification</p>
-                    <p className="mt-1 text-sm text-zinc-400">
+                    <p className="font-black text-yellow-700">Compte en attente de vérification</p>
+                    <p className="mt-1 text-sm text-zinc-600">
                       Notre équipe vérifie votre compte organisateur. Vous pourrez publier des événements dès validation.
                       La vérification prend généralement moins de 24h.
                     </p>
@@ -171,7 +169,7 @@ export default function OrganizerDashboard() {
 
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-                <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+                <div className="rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6">
 
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
 
@@ -179,7 +177,7 @@ export default function OrganizerDashboard() {
 
                   </p>
 
-                  <h2 className="mt-6 text-5xl font-black">
+                  <h2 className="mt-6 text-5xl font-black text-zinc-900">
 
                     {events.length}
 
@@ -187,7 +185,7 @@ export default function OrganizerDashboard() {
 
                 </div>
 
-                <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+                <div className="rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6">
 
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
 
@@ -195,7 +193,7 @@ export default function OrganizerDashboard() {
 
                   </p>
 
-                  <h2 className="mt-6 text-5xl font-black">
+                  <h2 className="mt-6 text-5xl font-black text-zinc-900">
 
                     {
                       applications.length
@@ -205,7 +203,7 @@ export default function OrganizerDashboard() {
 
                 </div>
 
-                <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+                <div className="rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6">
 
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
 
@@ -213,7 +211,7 @@ export default function OrganizerDashboard() {
 
                   </p>
 
-                  <h2 className="mt-6 text-5xl font-black">
+                  <h2 className="mt-6 text-5xl font-black text-zinc-900">
 
                     {
                       applications.filter(
@@ -229,7 +227,7 @@ export default function OrganizerDashboard() {
 
                 </div>
 
-                <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+                <div className="rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6">
 
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
 
@@ -237,7 +235,7 @@ export default function OrganizerDashboard() {
 
                   </p>
 
-                  <h2 className="mt-6 text-3xl font-black text-green-400">
+                  <h2 className="mt-6 text-3xl font-black text-green-600">
 
                     Active
 
@@ -259,30 +257,30 @@ export default function OrganizerDashboard() {
                 })).sort((a, b) => b.count - a.count).slice(0, 3);
 
                 return (
-                  <div className="mt-6 rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                  <div className="mt-6 rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Analytics</p>
-                    <h2 className="mt-2 text-2xl font-black">Performance</h2>
+                    <h2 className="mt-2 text-2xl font-black text-zinc-900">Performance</h2>
 
                     <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                      <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                      <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
                         <p className="text-xs text-zinc-500 uppercase tracking-wider">Taux de remplissage</p>
                         <p className="mt-3 text-4xl font-black text-[#FF5A1F]">{fillRate}%</p>
-                        <div className="mt-3 h-2 rounded-full bg-white/10">
+                        <div className="mt-3 h-2 rounded-full bg-zinc-200">
                           <div className="h-2 rounded-full bg-[#FF5A1F] transition-all" style={{ width: `${fillRate}%` }} />
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                      <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
                         <p className="text-xs text-zinc-500 uppercase tracking-wider">Taux d'acceptation</p>
-                        <p className="mt-3 text-4xl font-black text-green-400">{conversionRate}%</p>
-                        <div className="mt-3 h-2 rounded-full bg-white/10">
+                        <p className="mt-3 text-4xl font-black text-green-600">{conversionRate}%</p>
+                        <div className="mt-3 h-2 rounded-full bg-zinc-200">
                           <div className="h-2 rounded-full bg-green-500 transition-all" style={{ width: `${conversionRate}%` }} />
                         </div>
                       </div>
-                      <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                      <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
                         <p className="text-xs text-zinc-500 uppercase tracking-wider mb-3">Événements populaires</p>
                         {byEvent.map((e) => (
                           <div key={e.title} className="flex items-center justify-between py-1">
-                            <p className="text-sm truncate text-zinc-300">{e.title}</p>
+                            <p className="text-sm truncate text-zinc-700">{e.title}</p>
                             <span className="ml-2 text-sm font-black text-[#FF5A1F]">{e.count}</span>
                           </div>
                         ))}
@@ -294,7 +292,7 @@ export default function OrganizerDashboard() {
 
               <div className="mt-6 grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
 
-                <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
 
                   <div className="flex items-center justify-between">
 
@@ -306,7 +304,7 @@ export default function OrganizerDashboard() {
 
                       </p>
 
-                      <h2 className="mt-3 text-3xl font-black">
+                      <h2 className="mt-3 text-3xl font-black text-zinc-900">
 
                         Gestion événements
 
@@ -331,12 +329,12 @@ export default function OrganizerDashboard() {
 
                       <div
                         key={event.id}
-                        className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/30 p-5"
+                        className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-zinc-50 p-5"
                       >
 
                         <div>
 
-                          <h3 className="text-xl font-bold">
+                          <h3 className="text-xl font-bold text-zinc-900">
 
                             {event.title}
 
@@ -354,7 +352,7 @@ export default function OrganizerDashboard() {
 
                         <Link
                           href={`/organizer/events/${event.id}`}
-                          className="rounded-2xl bg-[#FF5A1F] px-5 py-3 text-sm font-bold transition hover:scale-105"
+                          className="rounded-2xl bg-[#FF5A1F] px-5 py-3 text-sm font-bold text-white transition hover:scale-105"
                         >
 
                           Gérer
@@ -369,7 +367,7 @@ export default function OrganizerDashboard() {
 
                 </div>
 
-                <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
 
                   <div className="flex items-center gap-4">
 
@@ -386,7 +384,7 @@ export default function OrganizerDashboard() {
 
                       </p>
 
-                      <h2 className="mt-2 text-3xl font-black">
+                      <h2 className="mt-2 text-3xl font-black text-zinc-900">
 
                         Commissaires
 
@@ -404,14 +402,14 @@ export default function OrganizerDashboard() {
 
                         <div
                           key={app.id}
-                          className="rounded-2xl border border-white/10 bg-black/30 p-5"
+                          className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5"
                         >
 
                           <div className="flex items-center justify-between">
 
                             <div>
 
-                              <h3 className="text-lg font-bold">
+                              <h3 className="text-lg font-bold text-zinc-900">
 
                                 {
                                   app
@@ -437,11 +435,11 @@ export default function OrganizerDashboard() {
                               className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] ${
                                 app.status ===
                                 "accepted"
-                                  ? "bg-green-500/20 text-green-400"
+                                  ? "bg-green-100 text-green-700"
                                   : app.status ===
                                     "rejected"
-                                  ? "bg-red-500/20 text-red-400"
-                                  : "bg-yellow-500/20 text-yellow-400"
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-yellow-100 text-yellow-700"
                               }`}
                             >
 

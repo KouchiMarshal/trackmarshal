@@ -109,9 +109,9 @@ setProfile(profileData);
   if (loading) {
 
     return (
-      <main className="flex min-h-screen items-center justify-center bg-black text-white">
+      <main className="flex min-h-screen items-center justify-center bg-zinc-50 text-zinc-900">
 
-        <p className="text-xl text-zinc-400">
+        <p className="text-xl text-zinc-500">
 
           Chargement du dashboard...
 
@@ -122,7 +122,7 @@ setProfile(profileData);
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
 
       <div className="flex min-h-screen">
 
@@ -130,7 +130,7 @@ setProfile(profileData);
 
         <div className="flex-1">
 
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
 
             <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
 
@@ -142,7 +142,7 @@ setProfile(profileData);
 
                 </p>
 
-                <h1 className="mt-2 text-2xl font-black lg:text-4xl">
+                <h1 className="mt-2 text-2xl font-black text-zinc-900 lg:text-4xl">
 
                   Bonjour {
                     profile?.full_name ||
@@ -157,7 +157,7 @@ setProfile(profileData);
                 <NotificationBell />
                 <Link
                   href="/dashboard/profile"
-                  className="hidden h-14 items-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-105 lg:flex"
+                  className="hidden h-14 items-center rounded-2xl bg-[#FF5A1F] px-8 font-bold text-white transition hover:scale-105 lg:flex"
                 >
                   Modifier mon profil
                 </Link>
@@ -169,8 +169,6 @@ setProfile(profileData);
 
           <div className="relative overflow-hidden">
 
-            <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
-
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               {(() => {
@@ -180,35 +178,35 @@ setProfile(profileData);
                 return (
                   <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
-                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                    <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Candidatures</p>
-                      <h2 className="mt-6 text-5xl font-black">{applications.length}</h2>
-                      <p className="mt-2 text-xs text-zinc-600">{accepted} acceptées · {pending} en attente</p>
+                      <h2 className="mt-6 text-5xl font-black text-zinc-900">{applications.length}</h2>
+                      <p className="mt-2 text-xs text-zinc-500">{accepted} acceptées · {pending} en attente</p>
                     </div>
 
-                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                    <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Taux d'acceptation</p>
-                      <h2 className={`mt-6 text-5xl font-black ${acceptRate >= 50 ? "text-green-400" : acceptRate > 0 ? "text-yellow-400" : ""}`}>
+                      <h2 className={`mt-6 text-5xl font-black ${acceptRate >= 50 ? "text-green-600" : acceptRate > 0 ? "text-yellow-600" : "text-zinc-900"}`}>
                         {acceptRate}%
                       </h2>
-                      <p className="mt-2 text-xs text-zinc-600">{accepted} sur {applications.length}</p>
+                      <p className="mt-2 text-xs text-zinc-500">{accepted} sur {applications.length}</p>
                     </div>
 
-                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                    <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Licence</p>
-                      <h2 className={`mt-6 text-3xl font-black ${profile?.license_verified ? "text-green-400" : "text-yellow-400"}`}>
+                      <h2 className={`mt-6 text-3xl font-black ${profile?.license_verified ? "text-green-600" : "text-yellow-600"}`}>
                         {profile?.license_verified ? "Vérifiée ✔" : "En attente"}
                       </h2>
-                      {profile?.license_type && <p className="mt-2 text-xs text-zinc-600">{profile.license_type}</p>}
+                      {profile?.license_type && <p className="mt-2 text-xs text-zinc-500">{profile.license_type}</p>}
                     </div>
 
-                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                    <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Événements à venir</p>
                       <h2 className="mt-6 text-5xl font-black text-[#FF5A1F]">{events.length}</h2>
                       {profile?.available !== false ? (
-                        <p className="mt-2 flex items-center gap-1.5 text-xs text-green-400"><span className="h-2 w-2 rounded-full bg-green-400" />Disponible</p>
+                        <p className="mt-2 flex items-center gap-1.5 text-xs text-green-600"><span className="h-2 w-2 rounded-full bg-green-500" />Disponible</p>
                       ) : (
-                        <p className="mt-2 flex items-center gap-1.5 text-xs text-red-400"><span className="h-2 w-2 rounded-full bg-red-400" />Indisponible</p>
+                        <p className="mt-2 flex items-center gap-1.5 text-xs text-red-600"><span className="h-2 w-2 rounded-full bg-red-500" />Indisponible</p>
                       )}
                     </div>
 
@@ -218,7 +216,7 @@ setProfile(profileData);
 
               {events.length > 0 && (
 
-                <div className="mt-6 overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03]">
+                <div className="mt-6 overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm">
 
                   <div className="relative h-[260px] lg:h-[340px]">
 
@@ -234,13 +232,13 @@ setProfile(profileData);
 
                     <div className="absolute bottom-0 left-0 p-6 lg:p-10">
 
-                      <div className="rounded-full bg-[#FF5A1F] px-4 py-2 text-xs font-black uppercase tracking-[0.15em] w-fit">
+                      <div className="rounded-full bg-[#FF5A1F] px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-white w-fit">
 
                         Événement accepté
 
                       </div>
 
-                      <h2 className="mt-5 text-4xl font-black leading-none lg:text-6xl">
+                      <h2 className="mt-5 text-4xl font-black leading-none text-white lg:text-6xl">
 
                         {events[0]?.title}
 
@@ -252,7 +250,7 @@ setProfile(profileData);
 
                   <div className="p-6 lg:p-10">
 
-                    <div className="space-y-4 text-zinc-300">
+                    <div className="space-y-4 text-zinc-600">
 
                       <div className="flex items-center gap-3">
 
@@ -287,10 +285,10 @@ setProfile(profileData);
 
                       <Link
                         href={`/events/${events[0]?.slug}`}
-                        className="flex h-14 w-fit items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
+                        className="flex h-14 w-fit items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold text-white transition hover:scale-[1.01]"
                       >
 
-                        Voir l’événement
+                        Voir l'événement
 
                       </Link>
 
@@ -304,7 +302,7 @@ setProfile(profileData);
 
               <div className="mt-6 grid gap-6 xl:grid-cols-[1fr_1fr]">
 
-                <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                <div className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
 
                   <div className="flex items-center justify-between">
 
@@ -316,7 +314,7 @@ setProfile(profileData);
 
                       </p>
 
-                      <h2 className="mt-3 text-3xl font-black">
+                      <h2 className="mt-3 text-3xl font-black text-zinc-900">
 
                         Récentes
 
@@ -343,7 +341,7 @@ setProfile(profileData);
 
                         <div
                           key={application.id}
-                          className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/30 p-5"
+                          className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-zinc-50 p-5"
                         >
 
                           <div>
@@ -351,12 +349,12 @@ setProfile(profileData);
                             {application.events?.slug ? (
                               <Link
                                 href={`/events/${application.events.slug}`}
-                                className="text-lg font-bold transition hover:text-[#FF5A1F]"
+                                className="text-lg font-bold text-zinc-900 transition hover:text-[#FF5A1F]"
                               >
                                 {application.events?.title}
                               </Link>
                             ) : (
-                              <h3 className="text-lg font-bold">
+                              <h3 className="text-lg font-bold text-zinc-900">
                                 {application.events?.title}
                               </h3>
                             )}
@@ -371,11 +369,11 @@ setProfile(profileData);
                             className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] ${
                               application.status ===
                               "accepted"
-                                ? "bg-green-500/20 text-green-400"
+                                ? "bg-green-100 text-green-700"
                                 : application.status ===
                                   "rejected"
-                                ? "bg-red-500/20 text-red-400"
-                                : "bg-yellow-500/20 text-yellow-400"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-yellow-100 text-yellow-700"
                             }`}
                           >
 
@@ -396,7 +394,7 @@ setProfile(profileData);
 
                 </div>
 
-                <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+                <div className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
 
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
 
@@ -416,7 +414,7 @@ setProfile(profileData);
 
                     <div className="flex-1">
 
-                      <h2 className="text-4xl font-black">
+                      <h2 className="text-4xl font-black text-zinc-900">
 
                         {
                           profile?.full_name
@@ -424,7 +422,7 @@ setProfile(profileData);
 
                       </h2>
 
-                      <p className="mt-3 text-zinc-400">
+                      <p className="mt-3 text-zinc-600">
 
                         {
                           profile?.bio ||
@@ -458,7 +456,7 @@ setProfile(profileData);
 
                       <Link
                         href="/dashboard/profile"
-                        className="mt-8 flex h-14 w-fit items-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
+                        className="mt-8 flex h-14 w-fit items-center rounded-2xl bg-[#FF5A1F] px-8 font-bold text-white transition hover:scale-[1.01]"
                       >
 
                         Modifier mon profil

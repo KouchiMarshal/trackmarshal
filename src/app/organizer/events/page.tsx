@@ -11,9 +11,9 @@ import { formatDateRange } from "@/lib/formatDate";
 function getEventStatus(event: any): { label: string; color: string } {
   const now = new Date();
   const date = event.event_end_date ? new Date(event.event_end_date) : new Date(event.event_date);
-  if (date < now) return { label: "Terminé", color: "bg-zinc-700 text-zinc-300" };
+  if (date < now) return { label: "Terminé", color: "bg-zinc-100 text-zinc-600" };
   if ((event.accepted_count || 0) >= (event.marshals_needed || 0))
-    return { label: "Complet", color: "bg-green-700 text-green-200" };
+    return { label: "Complet", color: "bg-green-100 text-green-700" };
   return { label: "Ouvert", color: "bg-[#FF5A1F] text-white" };
 }
 
@@ -62,7 +62,7 @@ export default function OrganizerEventsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
 
       <div className="flex min-h-screen">
 
@@ -70,13 +70,13 @@ export default function OrganizerEventsPage() {
 
         <div className="flex-1">
 
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
             <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">
                   Dashboard Organisateur
                 </p>
-                <h1 className="mt-2 text-2xl font-black lg:text-4xl">
+                <h1 className="mt-2 text-2xl font-black text-zinc-900 lg:text-4xl">
                   Mes événements
                 </h1>
               </div>
@@ -84,7 +84,7 @@ export default function OrganizerEventsPage() {
                 <NotificationBell />
                 <Link
                   href="/organizer/events/create"
-                  className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.02]"
+                  className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold text-white transition hover:scale-[1.02]"
                 >
                   <Plus size={20} />
                   <span className="hidden sm:inline">Créer un événement</span>
@@ -94,8 +94,6 @@ export default function OrganizerEventsPage() {
             </div>
           </header>
 
-          <div className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/10 blur-[180px] pointer-events-none" />
-
           <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
             {loading && (
@@ -103,8 +101,8 @@ export default function OrganizerEventsPage() {
             )}
 
             {!loading && events.length === 0 && (
-              <div className="mt-12 rounded-[36px] border border-dashed border-white/10 p-16 text-center">
-                <h2 className="text-4xl font-black">Aucun événement</h2>
+              <div className="mt-12 rounded-[36px] border border-dashed border-zinc-300 p-16 text-center">
+                <h2 className="text-4xl font-black text-zinc-900">Aucun événement</h2>
                 <p className="mt-4 text-zinc-500">
                   Créez votre premier événement TrackMarshal.
                 </p>
@@ -117,7 +115,7 @@ export default function OrganizerEventsPage() {
                   key={s}
                   onClick={() => setStatusFilter(s)}
                   className={`rounded-full px-5 py-2 text-sm font-bold transition ${
-                    statusFilter === s ? "bg-[#FF5A1F] text-white" : "border border-white/10 text-zinc-400 hover:text-white"
+                    statusFilter === s ? "bg-[#FF5A1F] text-white" : "border border-zinc-200 bg-white text-zinc-600 hover:text-zinc-900"
                   }`}
                 >
                   {s === "all" ? "Tous" : s === "open" ? "Ouverts" : s === "full" ? "Complets" : "Terminés"}
@@ -136,7 +134,7 @@ export default function OrganizerEventsPage() {
               }).map((event) => (
                 <div
                   key={event.id}
-                  className="overflow-hidden rounded-[36px] border border-white/10 bg-white/[0.03]"
+                  className="overflow-hidden rounded-[36px] border border-zinc-200 bg-white shadow-sm"
                 >
                   <div className="relative h-[240px]">
                     <img
@@ -149,7 +147,7 @@ export default function OrganizerEventsPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                     <div className="absolute bottom-6 left-6 flex gap-2">
-                      <div className="rounded-full bg-[#FF5A1F] px-4 py-2 text-xs font-black uppercase tracking-[0.15em]">
+                      <div className="rounded-full bg-[#FF5A1F] px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-white">
                         {event.discipline}
                       </div>
                       <div className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.15em] ${getEventStatus(event).color}`}>
@@ -159,8 +157,8 @@ export default function OrganizerEventsPage() {
                   </div>
 
                   <div className="p-6">
-                    <h2 className="text-3xl font-black">{event.title}</h2>
-                    <div className="mt-5 space-y-3 text-zinc-400">
+                    <h2 className="text-3xl font-black text-zinc-900">{event.title}</h2>
+                    <div className="mt-5 space-y-3 text-zinc-600">
                       <div className="flex items-center gap-3">
                         <CalendarDays size={16} />
                         {formatDateRange(event.event_date, event.event_end_date)}
@@ -177,7 +175,7 @@ export default function OrganizerEventsPage() {
                     <div className="mt-8">
                       <Link
                         href={`/organizer/events/${event.id}`}
-                        className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#FF5A1F] font-bold transition hover:scale-[1.01]"
+                        className="flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#FF5A1F] font-bold text-white transition hover:scale-[1.01]"
                       >
                         <Eye size={18} />
                         Gérer

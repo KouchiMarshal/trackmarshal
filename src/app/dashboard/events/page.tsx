@@ -98,7 +98,7 @@ export default function DashboardEventsPage() {
   });
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
 
       <Toast toast={toast} onClose={() => setToast(null)} />
 
@@ -108,49 +108,48 @@ export default function DashboardEventsPage() {
 
         <div className="flex-1">
 
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
             <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Commissaire</p>
-                <h1 className="mt-2 text-2xl font-black lg:text-4xl">Événements</h1>
+                <h1 className="mt-2 text-2xl font-black text-zinc-900 lg:text-4xl">Événements</h1>
               </div>
               <NotificationBell />
             </div>
           </header>
 
           <div className="relative overflow-hidden">
-            <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px] pointer-events-none" />
 
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               {/* Barre de recherche + toggle vue */}
               <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-14 flex-1 items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.04] px-5 backdrop-blur-xl">
+                <div className="flex h-14 flex-1 items-center gap-4 rounded-[20px] border border-zinc-300 bg-zinc-50 px-5">
                   <Search size={20} className="shrink-0 text-[#FF5A1F]" />
                   <input
                     type="text"
                     placeholder="Rechercher par nom, ville, pays..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full bg-transparent text-white outline-none placeholder:text-zinc-500"
+                    className="w-full bg-transparent text-zinc-900 outline-none placeholder:text-zinc-400"
                   />
                   {search && (
-                    <button onClick={() => setSearch("")} className="shrink-0 text-xs text-zinc-500 hover:text-white">
+                    <button onClick={() => setSearch("")} className="shrink-0 text-xs text-zinc-500 hover:text-zinc-900">
                       Effacer
                     </button>
                   )}
                 </div>
-                <div className="flex h-14 shrink-0 items-center gap-1 rounded-[20px] border border-white/10 bg-white/[0.04] p-1.5">
+                <div className="flex h-14 shrink-0 items-center gap-1 rounded-[20px] border border-zinc-200 bg-white p-1.5">
                   <button
                     onClick={() => setViewMode("grid")}
-                    className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${viewMode === "grid" ? "bg-[#FF5A1F] text-white" : "text-zinc-500 hover:text-white"}`}
+                    className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${viewMode === "grid" ? "bg-[#FF5A1F] text-white" : "text-zinc-500 hover:text-zinc-900"}`}
                     title="Vue grille"
                   >
                     <LayoutGrid size={18} />
                   </button>
                   <button
                     onClick={() => setViewMode("calendar")}
-                    className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${viewMode === "calendar" ? "bg-[#FF5A1F] text-white" : "text-zinc-500 hover:text-white"}`}
+                    className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${viewMode === "calendar" ? "bg-[#FF5A1F] text-white" : "text-zinc-500 hover:text-zinc-900"}`}
                     title="Vue calendrier"
                   >
                     <CalendarDays size={18} />
@@ -163,7 +162,7 @@ export default function DashboardEventsPage() {
                 <button
                   onClick={() => setDiscipline("")}
                   className={`rounded-full px-4 py-2 text-sm font-bold uppercase tracking-[0.1em] transition ${
-                    discipline === "" ? "bg-[#FF5A1F] text-white" : "border border-white/10 text-zinc-400 hover:text-white"
+                    discipline === "" ? "bg-[#FF5A1F] text-white" : "border border-zinc-200 text-zinc-600 hover:text-zinc-900"
                   }`}
                 >
                   Toutes
@@ -173,7 +172,7 @@ export default function DashboardEventsPage() {
                     key={d}
                     onClick={() => setDiscipline(discipline === d ? "" : d)}
                     className={`rounded-full px-4 py-2 text-sm font-bold uppercase tracking-[0.1em] transition ${
-                      discipline === d ? "bg-[#FF5A1F] text-white" : "border border-white/10 text-zinc-400 hover:text-white"
+                      discipline === d ? "bg-[#FF5A1F] text-white" : "border border-zinc-200 text-zinc-600 hover:text-zinc-900"
                     }`}
                   >
                     {d}
@@ -194,8 +193,8 @@ export default function DashboardEventsPage() {
                     onClick={() => setDateFilter(f.key)}
                     className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition ${
                       dateFilter === f.key
-                        ? "bg-white/15 text-white"
-                        : "border border-white/10 text-zinc-500 hover:text-white"
+                        ? "bg-zinc-200 text-zinc-900"
+                        : "border border-zinc-200 text-zinc-500 hover:text-zinc-900"
                     }`}
                   >
                     <CalendarDays size={14} />
@@ -206,20 +205,20 @@ export default function DashboardEventsPage() {
 
               {/* Vue Calendrier */}
               {viewMode === "calendar" && !loading && (
-                <div className="mb-8 rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                <div className="mb-8 rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
                   <div className="mb-6 flex items-center justify-between">
                     <button
                       onClick={() => setCalendarDate((d) => { const n = new Date(d); n.setMonth(n.getMonth() - 1); return n; })}
-                      className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 transition hover:bg-white/10"
+                      className="flex h-10 w-10 items-center justify-center rounded-2xl border border-zinc-200 text-zinc-600 transition hover:bg-zinc-100"
                     >
                       <ChevronLeft size={18} />
                     </button>
-                    <h3 className="text-xl font-black capitalize">
+                    <h3 className="text-xl font-black capitalize text-zinc-900">
                       {calendarDate.toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
                     </h3>
                     <button
                       onClick={() => setCalendarDate((d) => { const n = new Date(d); n.setMonth(n.getMonth() + 1); return n; })}
-                      className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 transition hover:bg-white/10"
+                      className="flex h-10 w-10 items-center justify-center rounded-2xl border border-zinc-200 text-zinc-600 transition hover:bg-zinc-100"
                     >
                       <ChevronRight size={18} />
                     </button>
@@ -228,7 +227,7 @@ export default function DashboardEventsPage() {
                   <div className="min-w-[320px]">
                   <div className="grid grid-cols-7 gap-1 text-center">
                     {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map((d) => (
-                      <div key={d} className="py-2 text-xs font-bold uppercase tracking-[0.1em] text-zinc-600">{d}</div>
+                      <div key={d} className="py-2 text-xs font-bold uppercase tracking-[0.1em] text-zinc-500">{d}</div>
                     ))}
                     {(() => {
                       const year = calendarDate.getFullYear();
@@ -251,8 +250,8 @@ export default function DashboardEventsPage() {
                         const hasApp = eventsOnDay.some((ev) => applications.find((a) => a.event_id === ev.id));
                         const isToday = date.toDateString() === new Date().toDateString();
                         cells.push(
-                          <div key={day} className={`relative min-h-[52px] rounded-xl p-1.5 transition ${isToday ? "border border-[#FF5A1F]/40 bg-[#FF5A1F]/5" : "hover:bg-white/5"}`}>
-                            <p className={`text-xs font-bold ${isToday ? "text-[#FF5A1F]" : "text-zinc-400"}`}>{day}</p>
+                          <div key={day} className={`relative min-h-[52px] rounded-xl p-1.5 transition ${isToday ? "border border-[#FF5A1F]/40 bg-[#FF5A1F]/5" : "hover:bg-zinc-50"}`}>
+                            <p className={`text-xs font-bold ${isToday ? "text-[#FF5A1F]" : "text-zinc-500"}`}>{day}</p>
                             {eventsOnDay.map((ev) => {
                               const app = applications.find((a) => a.event_id === ev.id);
                               return (
@@ -260,9 +259,9 @@ export default function DashboardEventsPage() {
                                   key={ev.id}
                                   href={`/events/${ev.slug}`}
                                   className={`mt-0.5 block truncate rounded px-1 py-0.5 text-[10px] font-bold leading-tight ${
-                                    app?.status === "accepted" ? "bg-green-500/30 text-green-300" :
-                                    app?.status === "rejected" ? "bg-red-500/20 text-red-400" :
-                                    app ? "bg-yellow-500/20 text-yellow-300" :
+                                    app?.status === "accepted" ? "bg-green-100 text-green-700" :
+                                    app?.status === "rejected" ? "bg-red-100 text-red-700" :
+                                    app ? "bg-yellow-100 text-yellow-700" :
                                     "bg-[#FF5A1F]/20 text-[#FF5A1F]"
                                   }`}
                                   title={ev.title}
@@ -281,8 +280,8 @@ export default function DashboardEventsPage() {
                   </div>
                   <div className="mt-4 flex flex-wrap gap-4 text-xs text-zinc-500">
                     <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-[#FF5A1F]/40" /> Événement disponible</span>
-                    <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-yellow-500/30" /> En attente</span>
-                    <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-green-500/30" /> Accepté</span>
+                    <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-yellow-200" /> En attente</span>
+                    <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded bg-green-200" /> Accepté</span>
                   </div>
                 </div>
               )}
@@ -293,8 +292,8 @@ export default function DashboardEventsPage() {
                   {[1, 2, 3, 4].map((i) => <SkeletonEventCard key={i} />)}
                 </div>
               ) : filtered.length === 0 ? (
-                <div className="rounded-[32px] border border-dashed border-white/10 p-16 text-center">
-                  <h2 className="text-3xl font-black">Aucun événement trouvé</h2>
+                <div className="rounded-[32px] border border-dashed border-zinc-300 p-16 text-center">
+                  <h2 className="text-3xl font-black text-zinc-900">Aucun événement trouvé</h2>
                   <p className="mt-4 text-zinc-500">Modifiez vos filtres ou revenez plus tard.</p>
                 </div>
               ) : (
@@ -305,7 +304,7 @@ export default function DashboardEventsPage() {
                     return (
                       <div
                         key={event.id}
-                        className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] backdrop-blur-xl transition hover:border-white/20"
+                        className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm transition hover:border-zinc-300"
                       >
                         <div className="relative h-[200px]">
                           <img
@@ -318,7 +317,7 @@ export default function DashboardEventsPage() {
                           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
                           <div className="absolute bottom-4 left-4 flex gap-2">
                             {event.discipline && (
-                              <span className="rounded-full bg-[#FF5A1F] px-3 py-1 text-xs font-black uppercase tracking-[0.1em]">
+                              <span className="rounded-full bg-[#FF5A1F] px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-white">
                                 {event.discipline}
                               </span>
                             )}
@@ -335,9 +334,9 @@ export default function DashboardEventsPage() {
                         </div>
 
                         <div className="p-6">
-                          <h2 className="text-2xl font-black lg:text-3xl">{event.title}</h2>
+                          <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">{event.title}</h2>
 
-                          <div className="mt-4 space-y-2 text-sm text-zinc-400">
+                          <div className="mt-4 space-y-2 text-sm text-zinc-600">
                             <div className="flex items-center gap-2">
                               <CalendarDays size={16} className="text-[#FF5A1F]" />
                               <span>{formatDateRange(event.event_date, event.event_end_date)}</span>
@@ -355,7 +354,7 @@ export default function DashboardEventsPage() {
                           <div className="mt-6 flex gap-3">
                             <Link
                               href={`/events/${event.slug}`}
-                              className="flex h-12 flex-1 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-sm font-bold transition hover:border-[#FF5A1F]/40"
+                              className="flex h-12 flex-1 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40"
                             >
                               Voir détails
                             </Link>
@@ -363,15 +362,15 @@ export default function DashboardEventsPage() {
                             {!app ? (
                               <button
                                 onClick={() => applyToEvent(event.id, event.discipline)}
-                                className="flex h-12 flex-1 items-center justify-center rounded-2xl bg-[#FF5A1F] text-sm font-bold transition hover:scale-[1.01]"
+                                className="flex h-12 flex-1 items-center justify-center rounded-2xl bg-[#FF5A1F] text-sm font-bold text-white transition hover:scale-[1.01]"
                               >
                                 Postuler
                               </button>
                             ) : (
                               <div className={`flex h-12 flex-1 items-center justify-center rounded-2xl text-sm font-bold ${
-                                app.status === "accepted" ? "bg-green-500/20 text-green-400" :
-                                app.status === "rejected" ? "bg-red-500/20 text-red-400" :
-                                "bg-yellow-500/20 text-yellow-400"
+                                app.status === "accepted" ? "bg-green-100 text-green-700" :
+                                app.status === "rejected" ? "bg-red-100 text-red-700" :
+                                "bg-yellow-100 text-yellow-700"
                               }`}>
                                 {app.status === "accepted" ? "✓ Accepté" : app.status === "rejected" ? "✗ Refusé" : "⏳ En attente"}
                               </div>

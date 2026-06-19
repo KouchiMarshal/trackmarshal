@@ -272,7 +272,7 @@ export default function ApplicationsPage() {
       case "accepted":
         return {
           color:
-            "bg-green-500/20 text-green-400",
+            "bg-green-100 text-green-700",
           text:
             "Accepté",
           icon:
@@ -282,7 +282,7 @@ export default function ApplicationsPage() {
       case "rejected":
         return {
           color:
-            "bg-red-500/20 text-red-400",
+            "bg-red-100 text-red-700",
           text:
             "Refusé",
           icon:
@@ -290,15 +290,15 @@ export default function ApplicationsPage() {
         };
 
       case "waitlisted":
-        return { color: "bg-blue-500/20 text-blue-400", text: "Liste d'attente", icon: Hourglass };
+        return { color: "bg-blue-100 text-blue-700", text: "Liste d'attente", icon: Hourglass };
 
       default:
-        return { color: "bg-yellow-500/20 text-yellow-400", text: "En attente", icon: Clock3 };
+        return { color: "bg-yellow-100 text-yellow-700", text: "En attente", icon: Clock3 };
     }
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
 
       <div className="flex min-h-screen">
 
@@ -306,7 +306,7 @@ export default function ApplicationsPage() {
 
         <div className="flex-1">
 
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
 
             <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
 
@@ -318,7 +318,7 @@ export default function ApplicationsPage() {
 
                 </p>
 
-                <h1 className="mt-2 text-2xl font-black lg:text-4xl">
+                <h1 className="mt-2 text-2xl font-black text-zinc-900 lg:text-4xl">
 
                   Mes candidatures
 
@@ -334,8 +334,6 @@ export default function ApplicationsPage() {
 
           <div className="relative overflow-hidden">
 
-            <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
-
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
               {loading && (
@@ -345,7 +343,7 @@ export default function ApplicationsPage() {
               )}
 
               {error && (
-                <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-6 text-red-400">
+                <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700">
                   Erreur Supabase : {error}
                 </div>
               )}
@@ -354,17 +352,17 @@ export default function ApplicationsPage() {
                !error &&
                applications.length === 0 && (
 
-                <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-10 text-center">
+                <div className="rounded-[32px] border border-zinc-200 bg-white p-10 text-center shadow-sm">
 
-                  <h2 className="text-4xl font-black">
+                  <h2 className="text-4xl font-black text-zinc-900">
 
                     Aucune candidature
 
                   </h2>
 
-                  <p className="mt-5 text-zinc-400">
+                  <p className="mt-5 text-zinc-500">
 
-                    Vous n’avez pas encore postulé
+                    Vous n'avez pas encore postulé
                     à un événement.
 
                   </p>
@@ -384,7 +382,7 @@ export default function ApplicationsPage() {
 
                     <div
                       key={app.id}
-                      className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] backdrop-blur-xl"
+                      className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm"
                     >
 
                       <div className="grid lg:grid-cols-[320px_1fr]">
@@ -414,7 +412,7 @@ export default function ApplicationsPage() {
 
                           </div>
 
-                          <h2 className="mt-6 text-3xl font-black lg:text-5xl">
+                          <h2 className="mt-6 text-3xl font-black text-zinc-900 lg:text-5xl">
 
                             {
                               app.events?.title
@@ -422,7 +420,7 @@ export default function ApplicationsPage() {
 
                           </h2>
 
-                          <div className="mt-8 space-y-4 text-zinc-300">
+                          <div className="mt-8 space-y-4 text-zinc-600">
 
                             <div className="flex items-center gap-3">
 
@@ -455,7 +453,7 @@ export default function ApplicationsPage() {
                                 <span className="text-lg">📍</span>
                                 <p>
                                   <span className="text-zinc-500">Poste assigné : </span>
-                                  <span className="font-bold text-white">{app.post}</span>
+                                  <span className="font-bold text-zinc-900">{app.post}</span>
                                 </p>
                               </div>
                             )}
@@ -466,29 +464,29 @@ export default function ApplicationsPage() {
 
                             <Link
                               href={`/events/${app.events?.slug}`}
-                              className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 font-bold transition hover:border-[#FF5A1F]/40"
+                              className="flex h-14 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 px-8 font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40"
                             >
-                              Voir l’événement
+                              Voir l'événement
                             </Link>
 
                             {app.status === "accepted" && (
                               <>
                                 <Link
                                   href={`/events/${app.events?.slug}`}
-                                  className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
+                                  className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold text-white transition hover:scale-[1.01]"
                                 >
                                   Voir briefing
                                 </Link>
                                 <button
                                   onClick={() => printBriefing(app)}
-                                  className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 font-bold transition hover:border-[#FF5A1F]/40"
+                                  className="flex h-14 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 px-5 font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40"
                                   title="Télécharger le briefing PDF"
                                 >
                                   📄 PDF
                                 </button>
                                 <button
                                   onClick={() => downloadICS(app.events)}
-                                  className="flex h-14 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 font-bold transition hover:border-[#FF5A1F]/40"
+                                  className="flex h-14 items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-zinc-50 px-5 font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40"
                                   title="Ajouter à mon agenda"
                                 >
                                   <CalendarPlus size={18} />
@@ -499,7 +497,7 @@ export default function ApplicationsPage() {
                                     href={googleCalUrl(app.events)}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex h-14 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 font-bold transition hover:border-[#FF5A1F]/40"
+                                    className="flex h-14 items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-zinc-50 px-5 font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40"
                                     title="Ajouter à Google Calendar"
                                   >
                                     <img src="https://calendar.google.com/googlecalendar/images/favicon_v2018_96.png" alt="Google" className="h-4 w-4" />
@@ -513,7 +511,7 @@ export default function ApplicationsPage() {
                               <button
                                 onClick={() => cancelApplication(app)}
                                 disabled={cancelling === app.id}
-                                className="flex h-14 items-center justify-center rounded-2xl border border-red-500/30 bg-red-500/10 px-8 font-bold text-red-400 transition hover:bg-red-500/20 disabled:opacity-60"
+                                className="flex h-14 items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-8 font-bold text-red-600 transition hover:bg-red-100 disabled:opacity-60"
                               >
                                 {cancelling === app.id ? "Annulation..."
                                   : app.status === "accepted" ? "Demander l'annulation"
@@ -521,7 +519,7 @@ export default function ApplicationsPage() {
                               </button>
                             )}
                             {app.withdrawal_reason && (
-                              <div className="flex h-14 items-center justify-center rounded-2xl border border-orange-500/20 bg-orange-500/10 px-6 text-sm font-bold text-orange-400">
+                              <div className="flex h-14 items-center justify-center rounded-2xl border border-orange-200 bg-orange-50 px-6 text-sm font-bold text-orange-600">
                                 ⏳ Annulation en attente
                               </div>
                             )}
@@ -549,38 +547,38 @@ export default function ApplicationsPage() {
 
       {/* Modal demande d'annulation */}
       {withdrawModal && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center" style={{ backgroundColor: "rgba(0,0,0,0.8)" }}>
-          <div className="w-full max-w-lg rounded-[28px] border border-white/10 bg-[#111] p-6 space-y-5">
+        <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <div className="w-full max-w-lg rounded-[28px] border border-zinc-200 bg-white p-6 space-y-5 shadow-xl">
             <div>
-              <h3 className="text-xl font-black">Demander l'annulation</h3>
+              <h3 className="text-xl font-black text-zinc-900">Demander l'annulation</h3>
               <p className="mt-1 text-sm text-zinc-500">{withdrawModal.eventTitle}</p>
-              <p className="mt-3 text-sm text-zinc-400">
+              <p className="mt-3 text-sm text-zinc-600">
                 Votre participation reste active jusqu'à confirmation de l'organisateur.
               </p>
             </div>
             <div>
               <label className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
-                Raison de l'annulation <span className="text-red-400">*</span>
+                Raison de l'annulation <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={withdrawReason}
                 onChange={(e) => setWithdrawReason(e.target.value)}
                 placeholder="Expliquez pourquoi vous ne pouvez plus participer..."
                 rows={4}
-                className="mt-2 w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm outline-none placeholder:text-zinc-600 transition focus:border-[#FF5A1F]/40"
+                className="mt-2 w-full resize-none rounded-2xl border border-zinc-300 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-[#FF5A1F]"
               />
             </div>
             <div className="flex gap-3">
               <button
                 onClick={() => { setWithdrawModal(null); setWithdrawReason(""); }}
-                className="flex h-12 flex-1 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-sm font-bold transition hover:bg-white/10"
+                className="flex h-12 flex-1 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 text-sm font-bold text-zinc-700 transition hover:bg-zinc-100"
               >
                 Retour
               </button>
               <button
                 onClick={sendWithdrawRequest}
                 disabled={!withdrawReason.trim() || withdrawSending}
-                className="flex h-12 flex-1 items-center justify-center rounded-2xl bg-[#FF5A1F] text-sm font-bold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex h-12 flex-1 items-center justify-center rounded-2xl bg-[#FF5A1F] text-sm font-bold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {withdrawSending ? "Envoi..." : "Envoyer la demande"}
               </button>
