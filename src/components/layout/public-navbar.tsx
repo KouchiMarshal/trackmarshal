@@ -60,6 +60,16 @@ export default function PublicNavbar() {
                 Devenir commissaire
               </Link>
             )}
+            {isAdmin && (
+              <Link
+                href="/apprendre"
+                className={`text-sm font-bold uppercase tracking-[0.15em] transition hover:text-[#FF5A1F] ${
+                  pathname.startsWith("/apprendre") ? "text-[#FF5A1F]" : "text-white"
+                }`}
+              >
+                Apprendre
+              </Link>
+            )}
           </nav>
 
           <div className="flex items-center gap-3">
@@ -154,6 +164,19 @@ export default function PublicNavbar() {
                   }`}
                 >
                   Devenir commissaire
+                </Link>
+              )}
+              {isAdmin && (
+                <Link
+                  href="/apprendre"
+                  onClick={() => setOpen(false)}
+                  className={`flex h-16 items-center rounded-2xl px-6 text-xl font-black transition ${
+                    pathname.startsWith("/apprendre")
+                      ? "bg-[#FF5A1F] text-white"
+                      : "text-zinc-300 hover:bg-white/5"
+                  }`}
+                >
+                  📚 Apprendre
                 </Link>
               )}
             </nav>
