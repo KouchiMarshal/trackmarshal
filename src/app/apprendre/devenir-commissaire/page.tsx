@@ -1,0 +1,230 @@
+import Link from "next/link";
+import PublicNavbar from "@/components/layout/public-navbar";
+import PublicFooter from "@/components/layout/public-footer";
+
+const steps = [
+  {
+    num: "01",
+    title: "Rejoindre une ASA",
+    description: "L'ASA (Association Sportive Automobile) est le club local affilié à la FFSA. C'est votre point d'entrée obligatoire. Elle vous accompagnera dans votre formation et vous permettra de participer à vos premières épreuves.",
+    tip: "Trouvez l'ASA la plus proche de chez vous sur le site de la FFSA. La plupart proposent des journées portes ouvertes.",
+  },
+  {
+    num: "02",
+    title: "Suivre la formation initiale",
+    description: "La FFSA impose une formation théorique avant d'obtenir votre première licence. Elle aborde le code de la route sportif, les drapeaux, les procédures de sécurité et le rôle du commissaire de piste.",
+    tip: "La formation dure généralement une journée. Elle est souvent organisée par l'ASA ou en regroupement régional.",
+  },
+  {
+    num: "03",
+    title: "Participer à des épreuves en observateur",
+    description: "Avant d'officier seul, vous participez à plusieurs épreuves en tant qu'observateur aux côtés de commissaires expérimentés. C'est la phase pratique indispensable : vous apprenez les gestes, les positionnements et les procédures réelles.",
+    tip: "Comptez 2 à 3 épreuves minimum en observation avant de pouvoir postuler à une licence.",
+  },
+  {
+    num: "04",
+    title: "Obtenir la licence ENCOC",
+    description: "L'ENCOC (Commissaire C) est la première licence FFSA. Elle vous permet d'officier sur les épreuves nationales sous la supervision d'un commissaire de grade supérieur. C'est le point de départ de votre carrière.",
+    tip: "La licence est annuelle et se renouvelle chaque saison. Son coût est modique, souvent inclus dans la cotisation ASA.",
+  },
+  {
+    num: "05",
+    title: "Évoluer vers les grades supérieurs",
+    description: "Avec l'expérience et les formations complémentaires, vous pouvez progresser vers l'EICOB (Commissaire international B), puis les grades de Chef de Poste (EICOACPC pour le circuit, EICOACPR pour la route).",
+    tip: "Chaque grade ouvre de nouvelles épreuves et responsabilités. Le niveau international B permet d'officier sur des courses FIA.",
+  },
+];
+
+const licenses = [
+  {
+    code: "ENCOC",
+    name: "Commissaire C",
+    federation: "FFSA",
+    color: "border-[#FF5A1F]/30 bg-[#FF5A1F]/5",
+    badgeColor: "bg-[#FF5A1F]/20 text-[#FF5A1F]",
+    description: "Première licence commissaire. Permet d'officier sur les épreuves nationales.",
+    access: "Épreuves régionales et nationales",
+  },
+  {
+    code: "EICOB",
+    name: "Commissaire international B",
+    federation: "FFSA",
+    color: "border-blue-500/30 bg-blue-500/5",
+    badgeColor: "bg-blue-500/20 text-blue-400",
+    description: "Grade intermédiaire permettant d'officier sur des épreuves de niveau international.",
+    access: "Épreuves nationales et internationales",
+  },
+  {
+    code: "EICOACPC",
+    name: "Chef de Poste Circuit",
+    federation: "FFSA",
+    color: "border-purple-500/30 bg-purple-500/5",
+    badgeColor: "bg-purple-500/20 text-purple-400",
+    description: "Responsable d'un poste de commissaires sur les épreuves de circuit.",
+    access: "Toutes épreuves de circuit",
+  },
+  {
+    code: "EICOACPR",
+    name: "Chef de Poste Route",
+    federation: "FFSA",
+    color: "border-green-500/30 bg-green-500/5",
+    badgeColor: "bg-green-500/20 text-green-400",
+    description: "Responsable d'un poste sur les épreuves de route (rallye, course de côte).",
+    access: "Toutes épreuves sur route",
+  },
+  {
+    code: "OFS",
+    name: "Officiel Stagiaire",
+    federation: "FFM",
+    color: "border-yellow-500/30 bg-yellow-500/5",
+    badgeColor: "bg-yellow-500/20 text-yellow-400",
+    description: "Première licence officiel FFM pour les épreuves moto.",
+    access: "Épreuves moto régionales",
+  },
+  {
+    code: "OFF",
+    name: "Officiel",
+    federation: "FFM",
+    color: "border-orange-500/30 bg-orange-500/5",
+    badgeColor: "bg-orange-500/20 text-orange-400",
+    description: "Licence officiel FFM confirmé, toutes épreuves moto.",
+    access: "Toutes épreuves moto",
+  },
+];
+
+const faqs = [
+  {
+    q: "Quel âge minimum pour être commissaire ?",
+    a: "16 ans pour commencer en tant qu'observateur, 18 ans pour officier avec une licence.",
+  },
+  {
+    q: "Faut-il avoir un permis de conduire ?",
+    a: "Non, le permis de conduire n'est pas obligatoire pour être commissaire de piste.",
+  },
+  {
+    q: "Est-ce que c'est payant ?",
+    a: "La formation initiale et la licence ont un coût modique (cotisation ASA + licence FFSA, généralement entre 50 et 150€/an). Sur les épreuves, les organisateurs prennent en charge les repas et parfois l'hébergement.",
+  },
+  {
+    q: "Combien de temps faut-il pour obtenir sa première licence ?",
+    a: "Comptez une saison complète : formation théorique, participations en observateur, puis demande de licence. La majorité des commissaires obtiennent leur ENCOC dans leur première année.",
+  },
+  {
+    q: "Peut-on officier sur plusieurs disciplines ?",
+    a: "Oui. Avec une licence FFSA, vous pouvez officier sur circuit, rallye, course de côte et karting. Pour les épreuves moto, il faut une licence FFM distincte.",
+  },
+  {
+    q: "Y a-t-il une tenue vestimentaire obligatoire ?",
+    a: "Oui. La combinaison ignifugée (orange ou rouge selon l'organisateur) est obligatoire sur circuit. Sur épreuves route, des gilets haute visibilité sont généralement fournis.",
+  },
+];
+
+export default function DevenirCommissairePage() {
+  return (
+    <main className="min-h-screen bg-[#050505] text-white">
+      <PublicNavbar />
+
+      <section className="relative pt-36 pb-24">
+        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/8 blur-[180px] pointer-events-none" />
+
+        <div className="relative z-10 mx-auto max-w-[1100px] px-6 lg:px-10">
+
+          <div className="mb-4">
+            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-white">
+              ← Espace pédagogique
+            </Link>
+          </div>
+
+          <p className="text-xs font-bold uppercase tracking-[0.4em] text-[#FF5A1F]">Guide</p>
+          <h1 className="mt-4 text-4xl font-black lg:text-6xl">Devenir commissaire</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-400">
+            Le commissaire de piste est un acteur essentiel de la sécurité en compétition motorsport.
+            Voici le chemin pour obtenir votre licence et rejoindre cette communauté.
+          </p>
+
+          {/* Étapes */}
+          <div className="mt-16">
+            <h2 className="text-2xl font-black lg:text-3xl">Les étapes</h2>
+            <div className="mt-8 space-y-4">
+              {steps.map((step) => (
+                <div key={step.num} className="flex gap-5 rounded-[28px] border border-white/10 bg-white/[0.02] p-6 lg:gap-8 lg:p-8">
+                  <div className="shrink-0">
+                    <span className="text-4xl font-black text-[#FF5A1F]/30 lg:text-5xl">{step.num}</span>
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-xl font-black">{step.title}</h3>
+                    <p className="mt-2 leading-relaxed text-zinc-400">{step.description}</p>
+                    <div className="mt-4 flex items-start gap-2 rounded-2xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 px-4 py-3">
+                      <span className="shrink-0 text-sm">💡</span>
+                      <p className="text-sm text-zinc-300">{step.tip}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Licences */}
+          <div className="mt-20">
+            <h2 className="text-2xl font-black lg:text-3xl">Les types de licences</h2>
+            <p className="mt-3 text-zinc-400">FFSA pour l'automobile, FFM pour la moto — deux fédérations, deux parcours.</p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {licenses.map((lic) => (
+                <div key={lic.code} className={`rounded-[24px] border p-6 ${lic.color}`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.1em] ${lic.badgeColor}`}>
+                      {lic.federation}
+                    </span>
+                    <span className="text-xs text-zinc-500">{lic.code}</span>
+                  </div>
+                  <h3 className="mt-4 text-lg font-black">{lic.name}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-400">{lic.description}</p>
+                  <div className="mt-4 rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                    <p className="text-xs text-zinc-500">Accès</p>
+                    <p className="mt-0.5 text-sm font-bold">{lic.access}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* FAQ */}
+          <div className="mt-20">
+            <h2 className="text-2xl font-black lg:text-3xl">Questions fréquentes</h2>
+            <div className="mt-8 space-y-3">
+              {faqs.map((faq) => (
+                <div key={faq.q} className="rounded-[24px] border border-white/10 bg-white/[0.02] p-6">
+                  <p className="font-black text-white">{faq.q}</p>
+                  <p className="mt-2 leading-relaxed text-zinc-400">{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="mt-16 rounded-[32px] border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-8 text-center lg:p-12">
+            <h2 className="text-2xl font-black lg:text-3xl">Prêt à vous lancer ?</h2>
+            <p className="mt-3 text-zinc-400">Inscrivez-vous sur TrackMarshal et rejoignez la communauté des commissaires motorsport.</p>
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <Link
+                href="/register"
+                className="rounded-2xl bg-[#FF5A1F] px-8 py-4 font-bold transition hover:opacity-90"
+              >
+                Créer mon compte
+              </Link>
+              <Link
+                href="/apprendre/quiz/drapeaux"
+                className="rounded-2xl border border-white/10 px-8 py-4 font-bold transition hover:bg-white/5"
+              >
+                🎯 Tester mes connaissances
+              </Link>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <PublicFooter />
+    </main>
+  );
+}
