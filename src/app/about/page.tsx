@@ -11,23 +11,16 @@ export default function AboutPage() {
 
       <PublicNavbar />
 
-      <section className="relative flex min-h-[60vh] items-center overflow-hidden pt-32 lg:pt-40">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/85" />
-        </div>
-        <div className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/10 blur-[180px]" />
+      <section className="relative overflow-hidden bg-zinc-50 pt-32 lg:pt-40">
+        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/6 blur-[160px] pointer-events-none" />
 
         <div className="relative z-10 mx-auto max-w-[1600px] px-4 pb-20 sm:px-6 lg:px-8">
           <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">À propos</p>
-          <h1 className="mt-6 text-5xl font-black leading-[0.92] tracking-[-0.05em] sm:text-6xl lg:text-[7rem]">
+          <h1 className="mt-6 text-5xl font-black leading-[0.92] tracking-[-0.05em] text-zinc-900 sm:text-6xl lg:text-[7rem]">
             Notre<br />
             <span className="text-[#FF5A1F]">mission.</span>
           </h1>
-          <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-300 lg:text-2xl">
+          <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-600 lg:text-2xl">
             TrackMarshal connecte organisateurs et commissaires motorsport
             à travers une plateforme moderne, fiable et pensée pour le terrain.
           </p>

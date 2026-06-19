@@ -94,88 +94,54 @@ export default function EventsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
 
       <PublicNavbar />
 
-      <section className="relative overflow-hidden pt-32 lg:pt-40">
+      <section className="relative overflow-hidden bg-zinc-50 pt-32 lg:pt-40">
 
-        <div className="absolute inset-0">
+        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/6 blur-[160px] pointer-events-none" />
 
-          <img
-            src="https://images.unsplash.com/photo-1541773367336-d14e1d89924f?q=80&w=2070&auto=format&fit=crop"
-            alt="Événements motorsport en France"
-            className="h-full w-full object-cover"
-          />
-
-          <div className="absolute inset-0 bg-black/85" />
-
-        </div>
-
-        <div className="absolute left-0 top-0 h-[350px] w-[350px] rounded-full bg-[#FF5A1F]/10 blur-[120px] lg:h-[700px] lg:w-[700px] lg:blur-[220px]" />
-
-        <div className="relative z-10 mx-auto max-w-[1600px] px-4 pb-20 sm:px-6 lg:px-8 lg:pb-28">
+        <div className="relative z-10 mx-auto max-w-[1600px] px-4 pb-12 sm:px-6 lg:px-8 lg:pb-16">
 
           <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">
-
             Événements Motorsport
-
           </p>
 
-          <h1 className="mt-6 text-5xl font-black leading-[0.92] tracking-[-0.05em] sm:text-6xl lg:text-[8rem]">
-
-            Trouvez votre
-            <br />
-
-            prochain
-            <br />
-
+          <h1 className="mt-6 text-5xl font-black leading-[0.92] tracking-[-0.05em] text-zinc-900 sm:text-6xl lg:text-[8rem]">
+            Trouvez votre<br />
+            prochain<br />
             événement.
-
           </h1>
 
-          <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-300 lg:text-2xl">
-
-            Découvrez les événements publiés
-            par les organisateurs motorsport
-            et postulez directement.
-
+          <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-600 lg:text-2xl">
+            Découvrez les événements publiés par les organisateurs motorsport et postulez directement.
           </p>
 
           <div className="mt-10 max-w-2xl">
 
-            <div className="flex h-16 items-center gap-4 rounded-[24px] border border-white/10 bg-white/[0.04] px-6 backdrop-blur-xl">
-
-              <Search
-                size={22}
-                className="text-[#FF5A1F]"
-              />
-
+            <div className="flex h-16 items-center gap-4 rounded-[24px] border border-zinc-300 bg-white px-6 shadow-sm">
+              <Search size={22} className="text-[#FF5A1F]" />
               <input
                 type="text"
                 placeholder="Rechercher un événement, une ville..."
                 value={search}
-                onChange={(e) =>
-                  setSearch(
-                    e.target.value
-                  )
-                }
-                className="w-full bg-transparent text-white outline-none placeholder:text-zinc-500"
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full bg-transparent text-zinc-900 outline-none placeholder:text-zinc-400"
               />
-
             </div>
 
             <div className="mt-5 space-y-2">
               <div className="flex flex-wrap gap-2">
-                <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-zinc-600 pr-1">Auto</span>
-                {["Rallye", "Circuit", "Karting", "Drift", "Endurance"].map((disc) => (
+                <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-zinc-400 pr-1">Auto</span>
+                {["Rallye", "Circuit", "Karting", "Drift", "Endurance", "Course de côtes", "Slalom", "Montée de démonstration", "Montée historique"].map((disc) => (
                   <button
                     key={disc}
                     onClick={() => setDisciplineFilter(disciplineFilter === disc ? "" : disc)}
-                    className={`rounded-full px-4 py-1.5 text-sm font-bold uppercase tracking-[0.15em] transition ${
+                    className={`rounded-full px-4 py-1.5 text-sm font-bold transition ${
                       disciplineFilter === disc
                         ? "bg-[#FF5A1F] text-white"
-                        : "border border-white/10 bg-white/[0.04] text-zinc-400 hover:border-[#FF5A1F]/40 hover:text-white"
+                        : "border border-zinc-300 bg-white text-zinc-600 hover:border-[#FF5A1F]/50 hover:text-[#FF5A1F]"
                     }`}
                   >
                     {disc}
@@ -183,15 +149,15 @@ export default function EventsPage() {
                 ))}
               </div>
               <div className="flex flex-wrap gap-2">
-                <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-zinc-600 pr-1">Moto</span>
+                <span className="flex items-center text-[10px] font-bold uppercase tracking-widest text-zinc-400 pr-1">Moto</span>
                 {["Moto Cross", "Enduro", "Trial", "Road Racing", "Supermoto", "Rallye Moto"].map((disc) => (
                   <button
                     key={disc}
                     onClick={() => setDisciplineFilter(disciplineFilter === disc ? "" : disc)}
-                    className={`rounded-full px-4 py-1.5 text-sm font-bold uppercase tracking-[0.15em] transition ${
+                    className={`rounded-full px-4 py-1.5 text-sm font-bold transition ${
                       disciplineFilter === disc
                         ? "bg-[#FF5A1F] text-white"
-                        : "border border-white/10 bg-white/[0.04] text-zinc-400 hover:border-[#FF5A1F]/40 hover:text-white"
+                        : "border border-zinc-300 bg-white text-zinc-600 hover:border-[#FF5A1F]/50 hover:text-[#FF5A1F]"
                     }`}
                   >
                     {disc}
@@ -199,20 +165,20 @@ export default function EventsPage() {
                 ))}
               </div>
               {disciplineFilter && (
-                <button onClick={() => setDisciplineFilter("")} className="text-xs text-zinc-500 hover:text-white transition">
+                <button onClick={() => setDisciplineFilter("")} className="text-xs text-zinc-500 hover:text-[#FF5A1F] transition">
                   ✕ Effacer le filtre
                 </button>
               )}
             </div>
 
             <div className="mt-4 flex flex-wrap gap-3">
-              <div className="flex overflow-hidden rounded-2xl border border-white/10">
+              <div className="flex overflow-hidden rounded-2xl border border-zinc-300 bg-white shadow-sm">
                 {(["upcoming", "all", "past"] as const).map((d) => (
                   <button
                     key={d}
                     onClick={() => setDateFilter(d)}
                     className={`px-5 py-2 text-sm font-bold transition ${
-                      dateFilter === d ? "bg-[#FF5A1F] text-white" : "bg-white/[0.04] text-zinc-400 hover:text-white"
+                      dateFilter === d ? "bg-[#FF5A1F] text-white" : "text-zinc-600 hover:text-[#FF5A1F]"
                     }`}
                   >
                     {d === "upcoming" ? "À venir" : d === "all" ? "Tous" : "Passés"}
@@ -224,7 +190,7 @@ export default function EventsPage() {
                 <select
                   value={countryFilter}
                   onChange={(e) => setCountryFilter(e.target.value)}
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-2 text-sm font-bold text-zinc-400 outline-none focus:border-[#FF5A1F]"
+                  className="rounded-2xl border border-zinc-300 bg-white px-5 py-2 text-sm font-bold text-zinc-700 outline-none focus:border-[#FF5A1F]"
                 >
                   <option value="">Tous les pays</option>
                   {countries.map((c) => (
@@ -236,7 +202,7 @@ export default function EventsPage() {
               {(disciplineFilter || countryFilter || dateFilter !== "upcoming") && (
                 <button
                   onClick={() => { setDisciplineFilter(""); setCountryFilter(""); setDateFilter("upcoming"); setSearch(""); }}
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-2 text-sm font-bold text-zinc-400 hover:text-red-400 transition"
+                  className="rounded-2xl border border-zinc-300 bg-white px-5 py-2 text-sm font-bold text-zinc-600 hover:text-red-500 transition"
                 >
                   Réinitialiser
                 </button>
@@ -353,7 +319,7 @@ export default function EventsPage() {
 
                     <Link
                       href={`/events/${event.slug}`}
-                      className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
+                      className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold text-white transition hover:scale-[1.01]"
                     >
 
                       Voir l'événement
