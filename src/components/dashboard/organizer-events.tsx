@@ -152,7 +152,7 @@ export default function OrganizerEvents() {
 
   return (
     <>
-      <div className="mt-10 rounded-[32px] border border-white/10 bg-[#0A0A0A] p-8">
+      <div className="mt-10 rounded-[32px] border border-zinc-200 bg-white shadow-sm p-8">
 
         <div className="mb-8 flex items-center justify-between">
 
@@ -164,7 +164,7 @@ export default function OrganizerEvents() {
 
             </p>
 
-            <h2 className="mt-4 text-5xl font-black">
+            <h2 className="mt-4 text-5xl font-black text-zinc-900">
               Mes Événements
             </h2>
 
@@ -176,7 +176,7 @@ export default function OrganizerEvents() {
 
           {events.length === 0 && (
 
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-zinc-400">
+            <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6 text-zinc-500">
 
               Aucun événement créé pour le moment.
 
@@ -188,7 +188,7 @@ export default function OrganizerEvents() {
 
             <div
               key={event.id}
-              className="flex flex-col gap-6 rounded-2xl border border-white/10 bg-white/[0.03] p-6 lg:flex-row lg:items-center lg:justify-between"
+              className="flex flex-col gap-6 rounded-2xl border border-zinc-200 bg-zinc-50 p-6 lg:flex-row lg:items-center lg:justify-between"
             >
 
               <div>
@@ -201,7 +201,7 @@ export default function OrganizerEvents() {
 
                   </div>
 
-                  <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.15em] text-zinc-300">
+                  <div className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-xs uppercase tracking-[0.15em] text-zinc-600">
 
                     {event.country || "France"}
 
@@ -209,11 +209,11 @@ export default function OrganizerEvents() {
 
                 </div>
 
-                <h3 className="mt-5 text-3xl font-black">
+                <h3 className="mt-5 text-3xl font-black text-zinc-900">
                   {event.title}
                 </h3>
 
-                <p className="mt-3 text-zinc-400">
+                <p className="mt-3 text-zinc-600">
                   {event.location}
                 </p>
 
@@ -230,7 +230,7 @@ export default function OrganizerEvents() {
 
                 <button
                   onClick={() => deleteEvent(event.id)}
-                  className="rounded-2xl border border-red-500/20 bg-red-500/10 px-6 py-3 font-bold text-red-400 transition hover:bg-red-500/20"
+                  className="rounded-2xl border border-red-200 bg-red-50 px-6 py-3 font-bold text-red-600 transition hover:bg-red-100"
                 >
                   Supprimer
                 </button>
@@ -247,9 +247,9 @@ export default function OrganizerEvents() {
 
       {isMounted && selectedEvent && createPortal(
 
-        <div className="fixed inset-0 z-[999999] overflow-y-auto bg-black/90 p-6">
+        <div className="fixed inset-0 z-[999999] overflow-y-auto bg-black/50 p-6">
 
-          <div className="mx-auto w-full max-w-5xl rounded-[36px] border border-white/10 bg-[#111111] p-10 text-white">
+          <div className="mx-auto w-full max-w-5xl rounded-[36px] border border-zinc-200 bg-white shadow-xl p-10 text-zinc-900">
 
             <div className="mb-10">
 
@@ -259,7 +259,7 @@ export default function OrganizerEvents() {
 
               </p>
 
-              <h2 className="mt-4 text-5xl font-black">
+              <h2 className="mt-4 text-5xl font-black text-zinc-900">
                 Modifier l'Événement
               </h2>
 
@@ -271,56 +271,56 @@ export default function OrganizerEvents() {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Nom de l'événement"
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
               />
 
               <input
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="Circuit / Lieu"
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
               />
 
               <input
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
                 placeholder="Pays"
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
               />
 
               <input
                 value={discipline}
                 onChange={(e) => setDiscipline(e.target.value)}
                 placeholder="Discipline"
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
               />
 
               <input
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="URL de l'image"
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
               />
 
               <input
                 type="date"
                 value={eventDate}
                 onChange={(e) => setEventDate(e.target.value)}
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none focus:border-[#FF5A1F]"
               />
 
               <input
                 value={marshalsNeeded}
                 onChange={(e) => setMarshalsNeeded(e.target.value)}
                 placeholder="Commissaires recherchés"
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
               />
 
               <input
                 value={organizerContact}
                 onChange={(e) => setOrganizerContact(e.target.value)}
                 placeholder="Contact organisateur"
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
               />
 
             </div>
@@ -329,14 +329,14 @@ export default function OrganizerEvents() {
               value={briefing}
               onChange={(e) => setBriefing(e.target.value)}
               placeholder="Briefing de l'événement"
-              className="mt-5 min-h-[160px] w-full rounded-2xl border border-white/10 bg-black p-5"
+              className="mt-5 min-h-[160px] w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
             />
 
             <textarea
               value={schedule}
               onChange={(e) => setSchedule(e.target.value)}
               placeholder="Planning de l'événement"
-              className="mt-5 min-h-[160px] w-full rounded-2xl border border-white/10 bg-black p-5"
+              className="mt-5 min-h-[160px] w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
             />
 
             <div className="mt-5 grid gap-5 md:grid-cols-2">
@@ -345,28 +345,28 @@ export default function OrganizerEvents() {
                 value={accommodation}
                 onChange={(e) => setAccommodation(e.target.value)}
                 placeholder="Hébergement"
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
               />
 
               <input
                 value={meals}
                 onChange={(e) => setMeals(e.target.value)}
                 placeholder="Repas"
-                className="h-14 rounded-2xl border border-white/10 bg-black px-5"
+                className="h-14 rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
               />
 
             </div>
 
             <button
               onClick={handleUpdate}
-              className="mt-8 h-14 w-full rounded-2xl bg-[#FF5A1F] text-lg font-bold transition hover:opacity-90"
+              className="mt-8 h-14 w-full rounded-2xl bg-[#FF5A1F] text-lg font-bold text-white transition hover:opacity-90"
             >
               Enregistrer les Modifications
             </button>
 
             <button
               onClick={() => setSelectedEvent(null)}
-              className="mt-4 h-14 w-full rounded-2xl border border-white/10 transition hover:bg-white/5"
+              className="mt-4 h-14 w-full rounded-2xl border border-zinc-200 text-zinc-700 transition hover:bg-zinc-50"
             >
               Fermer
             </button>
