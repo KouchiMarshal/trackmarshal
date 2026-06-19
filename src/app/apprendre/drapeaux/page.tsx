@@ -5,7 +5,7 @@ import PublicFooter from "@/components/layout/public-footer";
 const flags = [
   {
     name: "Drapeau rouge",
-    visual: "bg-red-600",
+    img: "/flags/rouge.svg",
     situation: "Arrêt immédiat de la séance",
     description: "La session est interrompue en raison d'un accident grave, d'une obstruction sur la piste ou de conditions météo dangereuses. Tous les concurrents doivent ralentir immédiatement et rejoindre les stands ou la grille.",
     reaction: "Agiter vigoureusement. Le commissaire reste en position jusqu'à la reprise ou la fin de session.",
@@ -14,7 +14,7 @@ const flags = [
   },
   {
     name: "Drapeau jaune (agité)",
-    visual: "bg-yellow-400",
+    img: "/flags/jaune.svg",
     situation: "Danger immédiat — ralentir, ne pas dépasser",
     description: "Un danger direct est présent sur la piste ou à ses abords immédiats : véhicule accidenté, commissaire sur la piste, débris importants. Les pilotes doivent ralentir et se tenir prêts à s'arrêter.",
     reaction: "Agiter vigoureusement. Positionné sur la trajectoire du danger.",
@@ -23,7 +23,7 @@ const flags = [
   },
   {
     name: "Drapeau jaune (fixe)",
-    visual: "bg-yellow-400",
+    img: "/flags/jaune.svg",
     situation: "Danger — ralentir, se préparer",
     description: "Un danger est présent mais moins immédiat que le jaune agité. Présente en amont du danger pour avertir les concurrents de la zone à risque.",
     reaction: "Tenir fixe, bras tendu. Annonce le jaune agité qui suit.",
@@ -32,7 +32,7 @@ const flags = [
   },
   {
     name: "Drapeau vert",
-    visual: "bg-green-500",
+    img: "/flags/vert.svg",
     situation: "Voie libre — reprendre la vitesse normale",
     description: "La zone de danger est dégagée. Les concurrents peuvent reprendre leur rythme normal de course après une zone de drapeaux jaunes.",
     reaction: "Agiter à l'entrée de la zone dégagée, après la fin du danger.",
@@ -41,8 +41,7 @@ const flags = [
   },
   {
     name: "Drapeau damier",
-    visual: "bg-[length:20px_20px]",
-    visualClass: "bg-[conic-gradient(#000_90deg,#fff_90deg_180deg,#000_180deg_270deg,#fff_270deg)]",
+    img: "/flags/damier.svg",
     situation: "Fin de course ou de session",
     description: "Présenté au vainqueur lors du passage sous le drapeau, puis à tous les concurrents suivants. Marque la fin officielle de l'épreuve.",
     reaction: "Agiter vigoureusement au passage du premier concurrent, puis des suivants.",
@@ -51,7 +50,7 @@ const flags = [
   },
   {
     name: "Drapeau bleu",
-    visual: "bg-blue-600",
+    img: "/flags/bleu.svg",
     situation: "Laisser passer un concurrent plus rapide",
     description: "Présenté à un concurrent qui est sur le point d'être doublé par un pilote plus rapide (généralement un leader en train de doubler). Le pilote doit laisser passage sans retarder le concurrent plus rapide.",
     reaction: "Agiter. Le pilote doit céder le passage à l'épreuve suivante.",
@@ -60,7 +59,7 @@ const flags = [
   },
   {
     name: "Drapeau noir (avec numéro)",
-    visual: "bg-black border border-white/20",
+    img: "/flags/noir.svg",
     situation: "Exclusion du concurrent désigné",
     description: "Présenté avec un panneau indiquant le numéro du concurrent exclu. Le pilote doit rejoindre immédiatement les stands. L'exclusion peut être due à une infraction au règlement sportif.",
     reaction: "Tenu fixe avec le panneau numéro. Ne concerne qu'un seul concurrent.",
@@ -69,7 +68,7 @@ const flags = [
   },
   {
     name: "Drapeau noir et orange",
-    visual: "from-black to-orange-500 bg-gradient-to-r",
+    img: "/flags/meatball.svg",
     situation: "Problème mécanique — rejoindre les stands",
     description: "Également appelé 'drapeau meatball'. Présenté avec le numéro du concurrent dont le véhicule présente un problème mécanique apparent susceptible de constituer un danger (fuite d'huile, pièce détachée...).",
     reaction: "Tenu fixe avec panneau numéro. Le pilote doit rejoindre les stands au tour suivant.",
@@ -78,7 +77,7 @@ const flags = [
   },
   {
     name: "Drapeau jaune et rouge rayé",
-    visual: "from-yellow-400 to-red-600 bg-gradient-to-b",
+    img: "/flags/jaune-rouge.svg",
     situation: "Piste glissante ou contaminée",
     description: "Indique que la piste est rendue glissante par de l'huile, de l'eau, des débris ou tout autre substance. Les concurrents doivent adapter leur conduite en conséquence.",
     reaction: "Agiter. Présenté dans les zones concernées par la contamination.",
@@ -87,7 +86,7 @@ const flags = [
   },
   {
     name: "Drapeau blanc",
-    visual: "bg-white",
+    img: "/flags/blanc.svg",
     situation: "Véhicule lent sur la piste",
     description: "Signale la présence d'un véhicule lent sur la piste : voiture de sécurité, véhicule de service, ambulance ou concurrent en difficulté roulant très lentement.",
     reaction: "Tenu fixe. Les concurrents doivent être vigilants au véhicule lent.",
@@ -96,7 +95,7 @@ const flags = [
   },
   {
     name: "Drapeau noir et blanc diagonal",
-    visual: "from-white to-black bg-gradient-to-br",
+    img: "/flags/noir-blanc.svg",
     situation: "Avertissement pour conduite antisportive",
     description: "Présenté avec le numéro du concurrent. Premier et unique avertissement pour comportement contraire à l'esprit sportif. La répétition de l'infraction entraîne le drapeau noir.",
     reaction: "Tenu fixe avec panneau numéro. Uniquement présenté une fois.",
@@ -145,9 +144,13 @@ export default function DrapeauxPage() {
               >
                 <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-start lg:p-8">
 
-                  {/* Flag visual */}
+                  {/* Flag image */}
                   <div className="shrink-0">
-                    <div className={`h-20 w-32 rounded-2xl border border-white/10 ${flag.visualClass || flag.visual} sm:h-24 sm:w-36`} />
+                    <img
+                      src={flag.img}
+                      alt={flag.name}
+                      className="h-20 w-32 rounded-2xl border border-white/10 object-cover sm:h-24 sm:w-36"
+                    />
                   </div>
 
                   {/* Content */}

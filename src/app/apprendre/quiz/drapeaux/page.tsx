@@ -9,7 +9,8 @@ const questions = [
   {
     id: 1,
     question: "Que signifie le drapeau rouge ?",
-    flag: { visual: "bg-red-600" },
+    flagImg: "/flags/rouge.svg",
+    flagAlt: "Drapeau rouge",
     options: [
       "Arrêt immédiat de la séance",
       "Danger — ralentir sans dépasser",
@@ -22,7 +23,8 @@ const questions = [
   {
     id: 2,
     question: "Comment agite-t-on le drapeau jaune en cas de danger immédiat ?",
-    flag: { visual: "bg-yellow-400" },
+    flagImg: "/flags/jaune.svg",
+    flagAlt: "Drapeau jaune",
     options: [
       "Tenu fixe, bras tendu",
       "Agité vigoureusement",
@@ -35,7 +37,8 @@ const questions = [
   {
     id: 3,
     question: "Que signifie le drapeau vert ?",
-    flag: { visual: "bg-green-500" },
+    flagImg: "/flags/vert.svg",
+    flagAlt: "Drapeau vert",
     options: [
       "Départ de la course",
       "Zone de danger dégagée — reprendre le rythme normal",
@@ -48,7 +51,8 @@ const questions = [
   {
     id: 4,
     question: "À quel concurrent présente-t-on le drapeau bleu ?",
-    flag: { visual: "bg-blue-600" },
+    flagImg: "/flags/bleu.svg",
+    flagAlt: "Drapeau bleu",
     options: [
       "Au leader en tête de course",
       "À un concurrent en difficulté mécanique",
@@ -61,7 +65,8 @@ const questions = [
   {
     id: 5,
     question: "Que signifie le drapeau noir et orange (« meatball ») ?",
-    flag: { visual: "from-black to-orange-500 bg-gradient-to-r" },
+    flagImg: "/flags/meatball.svg",
+    flagAlt: "Drapeau meatball",
     options: [
       "Exclusion immédiate du concurrent",
       "Piste contaminée par de l'huile",
@@ -74,7 +79,8 @@ const questions = [
   {
     id: 6,
     question: "Que signifie le drapeau jaune et rouge rayé ?",
-    flag: { visual: "from-yellow-400 to-red-600 bg-gradient-to-b" },
+    flagImg: "/flags/jaune-rouge.svg",
+    flagAlt: "Drapeau jaune et rouge rayé",
     options: [
       "Fin de session sur piste mouillée",
       "Piste glissante ou contaminée",
@@ -87,7 +93,8 @@ const questions = [
   {
     id: 7,
     question: "Avec quoi accompagne-t-on toujours le drapeau noir (exclusion) ?",
-    flag: { visual: "bg-black border border-white/20" },
+    flagImg: "/flags/noir.svg",
+    flagAlt: "Drapeau noir",
     options: [
       "Un drapeau rouge simultané",
       "Un panneau indiquant le numéro du concurrent exclu",
@@ -100,7 +107,8 @@ const questions = [
   {
     id: 8,
     question: "Que signifie le drapeau blanc ?",
-    flag: { visual: "bg-white" },
+    flagImg: "/flags/blanc.svg",
+    flagAlt: "Drapeau blanc",
     options: [
       "Fin de session",
       "Reddition / abandon",
@@ -113,7 +121,8 @@ const questions = [
   {
     id: 9,
     question: "Le drapeau noir et blanc diagonal signifie :",
-    flag: { visual: "from-white to-black bg-gradient-to-br" },
+    flagImg: "/flags/noir-blanc.svg",
+    flagAlt: "Drapeau noir et blanc diagonal",
     options: [
       "Exclusion définitive du concurrent",
       "Avertissement unique pour conduite antisportive",
@@ -126,7 +135,8 @@ const questions = [
   {
     id: 10,
     question: "À quel moment agite-t-on le drapeau damier ?",
-    flag: { visual: "bg-[conic-gradient(#000_90deg,#fff_90deg_180deg,#000_180deg_270deg,#fff_270deg)] bg-[length:20px_20px]" },
+    flagImg: "/flags/damier.svg",
+    flagAlt: "Drapeau damier",
     options: [
       "Au moment du départ de la course",
       "Au passage de la voiture de sécurité",
@@ -207,7 +217,6 @@ export default function QuizDrapeauxPage() {
               </p>
             </div>
 
-            {/* Review des réponses */}
             <div className="mt-12 space-y-4">
               {questions.map((q, i) => {
                 const userAnswer = answers[i];
@@ -218,7 +227,7 @@ export default function QuizDrapeauxPage() {
                     className={`rounded-[24px] border p-5 ${correct ? "border-green-500/30 bg-green-500/5" : "border-red-500/30 bg-red-500/5"}`}
                   >
                     <div className="flex items-start gap-3">
-                      <span className="mt-0.5 shrink-0 text-lg">{correct ? "✅" : "❌"}</span>
+                      <img src={q.flagImg} alt={q.flagAlt} className="mt-0.5 h-10 w-16 shrink-0 rounded-lg border border-white/10 object-cover" />
                       <div className="min-w-0">
                         <p className="font-bold text-sm text-zinc-300">{q.question}</p>
                         {!correct && (
@@ -226,7 +235,7 @@ export default function QuizDrapeauxPage() {
                             Votre réponse : {userAnswer !== null ? q.options[userAnswer] : "Pas de réponse"}
                           </p>
                         )}
-                        <p className={`mt-1 text-sm font-bold ${correct ? "text-green-400" : "text-green-400"}`}>
+                        <p className="mt-1 text-sm font-bold text-green-400">
                           Bonne réponse : {q.options[q.correct]}
                         </p>
                         {!correct && (
@@ -298,9 +307,13 @@ export default function QuizDrapeauxPage() {
           {/* Question card */}
           <div className="rounded-[28px] border border-white/10 bg-white/[0.02] p-6 lg:p-8">
 
-            {/* Flag visual */}
+            {/* Flag image */}
             <div className="flex justify-center mb-6">
-              <div className={`h-20 w-32 rounded-2xl border border-white/10 ${question.flag.visual} sm:h-24 sm:w-40`} />
+              <img
+                src={question.flagImg}
+                alt={question.flagAlt}
+                className="h-28 w-44 rounded-2xl border border-white/10 object-cover shadow-lg sm:h-36 sm:w-56"
+              />
             </div>
 
             <h2 className="text-xl font-black text-center lg:text-2xl">{question.question}</h2>
