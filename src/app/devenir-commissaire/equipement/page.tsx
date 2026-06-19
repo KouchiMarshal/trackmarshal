@@ -1,6 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
+
+export const metadata: Metadata = {
+  title: "Équipement du commissaire de piste — Matériel obligatoire",
+  description:
+    "Combinaison en coton orange, gants soudeur, sifflet, coupe-sangle, radio, lampe frontale — tout le matériel obligatoire et recommandé pour officier sur circuit, rallye, karting.",
+  alternates: { canonical: "/devenir-commissaire/equipement" },
+  openGraph: {
+    title: "Équipement du commissaire de piste — Ce qu'il faut prévoir",
+    description:
+      "Le matériel complet du commissaire motorsport : tenue obligatoire sur circuit (FFSA), équipement route et essentiels à emporter sur chaque épreuve.",
+  },
+};
 
 const circuitItems = [
   {

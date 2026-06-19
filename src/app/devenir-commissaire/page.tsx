@@ -1,6 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
+
+export const metadata: Metadata = {
+  title: "Espace pédagogique — Devenir commissaire motorsport",
+  description:
+    "Toutes les ressources pour devenir commissaire de piste : drapeaux, procédures FFSA/FFM, licences, équipement, rôles et quiz interactifs. Gratuit et accessible à tous.",
+  alternates: { canonical: "/devenir-commissaire" },
+  openGraph: {
+    title: "Espace pédagogique — Devenir commissaire motorsport",
+    description:
+      "Drapeaux, procédures, licences, équipement, rôles — toutes les ressources pour devenir commissaire de piste motorsport en France.",
+  },
+};
 
 const sections = [
   {

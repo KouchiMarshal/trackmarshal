@@ -1,6 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
+
+export const metadata: Metadata = {
+  title: "Les rôles sur une épreuve motorsport — Commissaire, Chef de poste, DC",
+  description:
+    "Directeur de course, chef de poste, commissaire de piste, délégué technique, médecin de course — missions, licences requises et hiérarchie de chaque officiel sur une compétition motorsport.",
+  alternates: { canonical: "/devenir-commissaire/roles" },
+  openGraph: {
+    title: "Les rôles sur une épreuve motorsport",
+    description:
+      "Qui fait quoi sur une compétition motorsport ? DC, chef de poste, commissaire de piste, délégué technique — guide complet des officiels FFSA et FFM.",
+  },
+};
 
 const roles = [
   {
