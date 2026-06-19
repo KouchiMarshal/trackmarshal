@@ -6,16 +6,16 @@ import { CalendarDays, MapPin } from "lucide-react";
 import { formatDateRange } from "@/lib/formatDate";
 
 const DISC_STYLE: Record<string, string> = {
-  "Circuit":        "text-blue-400 border-blue-500/30 bg-blue-500/10",
+  "Circuit":        "text-blue-700 border-blue-200 bg-blue-100",
   "Rallye":         "text-[#FF5A1F] border-[#FF5A1F]/30 bg-[#FF5A1F]/10",
-  "Course de côte": "text-purple-400 border-purple-500/30 bg-purple-500/10",
-  "Karting":        "text-green-400 border-green-500/30 bg-green-500/10",
-  "Tout-terrain":   "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
-  "Endurance":      "text-red-400 border-red-500/30 bg-red-500/10",
-  "Drift":          "text-pink-400 border-pink-500/30 bg-pink-500/10",
-  "Moto Cross":     "text-cyan-400 border-cyan-500/30 bg-cyan-500/10",
-  "Enduro":         "text-lime-400 border-lime-500/30 bg-lime-500/10",
-  "Road Racing":    "text-orange-400 border-orange-500/30 bg-orange-500/10",
+  "Course de côte": "text-purple-700 border-purple-200 bg-purple-100",
+  "Karting":        "text-green-700 border-green-200 bg-green-100",
+  "Tout-terrain":   "text-yellow-700 border-yellow-200 bg-yellow-100",
+  "Endurance":      "text-red-700 border-red-200 bg-red-100",
+  "Drift":          "text-pink-700 border-pink-200 bg-pink-100",
+  "Moto Cross":     "text-cyan-700 border-cyan-200 bg-cyan-100",
+  "Enduro":         "text-lime-700 border-lime-200 bg-lime-100",
+  "Road Racing":    "text-orange-700 border-orange-200 bg-orange-100",
 };
 
 export default function ParticipationHistory({ marshalId, forceShow = false }: { marshalId: string; forceShow?: boolean }) {
@@ -74,7 +74,7 @@ export default function ParticipationHistory({ marshalId, forceShow = false }: {
   });
 
   return (
-    <div className="mt-10 rounded-[40px] border border-white/10 bg-[#0A0A0A] p-8 lg:p-10">
+    <div className="mt-10 rounded-[40px] border border-zinc-200 bg-white p-8 shadow-sm lg:p-10">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm uppercase tracking-[0.3em] text-[#FF5A1F]">
@@ -91,7 +91,7 @@ export default function ParticipationHistory({ marshalId, forceShow = false }: {
       {Object.keys(statsByDiscipline).length > 0 && (
         <div className="mt-6 flex flex-wrap gap-2">
           {Object.entries(statsByDiscipline).sort((a, b) => b[1] - a[1]).map(([disc, count]) => (
-            <div key={disc} className={`rounded-2xl border px-4 py-2 text-sm font-bold ${DISC_STYLE[disc] || "border-white/10 bg-white/5 text-zinc-300"}`}>
+            <div key={disc} className={`rounded-2xl border px-4 py-2 text-sm font-bold ${DISC_STYLE[disc] || "border-zinc-200 bg-zinc-50 text-zinc-600"}`}>
               {count} {disc}
             </div>
           ))}
@@ -109,12 +109,12 @@ export default function ParticipationHistory({ marshalId, forceShow = false }: {
               </p>
               <div className="space-y-2">
                 {byYear[year].map((p) => (
-                  <div key={p.id} className="flex flex-wrap items-center gap-3 rounded-[20px] border border-white/10 bg-white/[0.02] p-4">
+                  <div key={p.id} className="flex flex-wrap items-center gap-3 rounded-[20px] border border-zinc-200 bg-zinc-50 p-4 hover:bg-white">
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-bold text-white">{p.events?.title}</span>
+                        <span className="font-bold text-zinc-900">{p.events?.title}</span>
                         {p.events?.discipline && (
-                          <span className={`rounded-full border px-2 py-0.5 text-xs font-bold ${DISC_STYLE[p.events.discipline] || "border-white/10 text-zinc-400"}`}>
+                          <span className={`rounded-full border px-2 py-0.5 text-xs font-bold ${DISC_STYLE[p.events.discipline] || "border-zinc-200 text-zinc-600"}`}>
                             {p.events.discipline}
                           </span>
                         )}
@@ -135,7 +135,7 @@ export default function ParticipationHistory({ marshalId, forceShow = false }: {
                         )}
                       </div>
                     </div>
-                    <span className="shrink-0 rounded-full border border-green-500/30 bg-green-500/10 px-3 py-1 text-xs font-bold text-green-400">
+                    <span className="shrink-0 rounded-full border border-green-200 bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
                       ✔ Présent
                     </span>
                   </div>

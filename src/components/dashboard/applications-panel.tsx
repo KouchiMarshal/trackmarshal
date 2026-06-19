@@ -177,7 +177,7 @@ export default function ApplicationsPanel() {
   }
 
   return (
-    <section className="rounded-[40px] border border-white/10 bg-[#0A0A0A] p-10">
+    <section className="rounded-[40px] border border-zinc-200 bg-white p-10 shadow-sm">
 
       <div className="flex items-center justify-between">
 
@@ -189,7 +189,7 @@ export default function ApplicationsPanel() {
 
           </p>
 
-          <h2 className="mt-4 text-5xl font-black">
+          <h2 className="mt-4 text-5xl font-black text-zinc-900">
 
             Demandes Commissaires
 
@@ -203,7 +203,7 @@ export default function ApplicationsPanel() {
 
         {applications.length === 0 && (
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-zinc-400">
+          <div className="rounded-3xl border border-zinc-200 bg-zinc-50 p-8 text-zinc-500">
 
             Aucune candidature pour le moment.
 
@@ -216,7 +216,7 @@ export default function ApplicationsPanel() {
 
             <div
               key={application.id}
-              className="overflow-hidden rounded-[36px] border border-white/10 bg-white/5 backdrop-blur-xl"
+              className="overflow-hidden rounded-[36px] border border-zinc-200 bg-zinc-50"
             >
 
               <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
@@ -237,11 +237,11 @@ export default function ApplicationsPanel() {
                       className={`rounded-full px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] ${
                         application.status ===
                         "accepted"
-                          ? "bg-green-500/20 text-green-400"
+                          ? "bg-green-100 text-green-700"
                           : application.status ===
                             "rejected"
-                          ? "bg-red-500/20 text-red-400"
-                          : "bg-yellow-500/20 text-yellow-400"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
                       }`}
                     >
 
@@ -272,7 +272,7 @@ export default function ApplicationsPanel() {
 
                     <div>
 
-                      <h3 className="text-4xl font-black">
+                      <h3 className="text-4xl font-black text-zinc-900">
 
                         {application
                           .marshalProfile
@@ -289,9 +289,9 @@ export default function ApplicationsPanel() {
                     .marshalProfile
                     ?.license_type && (
 
-                    <div className="mt-8 rounded-3xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/10 p-6">
+                    <div className="mt-8 rounded-3xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-6">
 
-                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
 
                         Licence Motorsport
 
@@ -313,7 +313,7 @@ export default function ApplicationsPanel() {
                           .marshalProfile
                           ?.license_verified ? (
 
-                          <div className="rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-green-400">
+                          <div className="rounded-full border border-green-200 bg-green-100 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-green-700">
 
                             ✔ Licence Vérifiée
 
@@ -321,7 +321,7 @@ export default function ApplicationsPanel() {
 
                         ) : (
 
-                          <div className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-yellow-400">
+                          <div className="rounded-full border border-yellow-200 bg-yellow-100 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-yellow-700">
 
                             ⏳ Vérification en attente
 
@@ -341,7 +341,7 @@ export default function ApplicationsPanel() {
                                   .marshalProfile.id
                               )
                             }
-                            className="rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-green-400 transition hover:bg-green-500/20"
+                            className="rounded-full border border-green-200 bg-green-100 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-green-700 transition hover:bg-green-200"
                           >
 
                             ✔ Vérifier la Licence
@@ -363,7 +363,7 @@ export default function ApplicationsPanel() {
                               ?.license_url
                           }
                           target="_blank"
-                          className="mt-5 inline-flex rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] text-white transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10"
+                          className="mt-5 inline-flex rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/5"
                         >
 
                           📄 Voir la licence
@@ -389,9 +389,9 @@ export default function ApplicationsPanel() {
 
       {verifyProfileId && (
 
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-6 backdrop-blur-md">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-6">
 
-          <div className="w-full max-w-2xl rounded-[40px] border border-white/10 bg-[#0A0A0A] p-10">
+          <div className="w-full max-w-2xl rounded-[40px] border border-zinc-200 bg-white p-10 shadow-xl">
 
             <p className="text-sm uppercase tracking-[0.3em] text-[#FF5A1F]">
 
@@ -399,7 +399,7 @@ export default function ApplicationsPanel() {
 
             </p>
 
-            <h3 className="mt-4 text-4xl font-black text-white">
+            <h3 className="mt-4 text-4xl font-black text-zinc-900">
 
               Vérifiez la licence FFSA/FIA
 
@@ -414,7 +414,7 @@ export default function ApplicationsPanel() {
               ?.marshalProfile
               ?.license_url && (
 
-              <div className="mt-8 overflow-hidden rounded-[32px] border border-white/10 bg-black/30">
+              <div className="mt-8 overflow-hidden rounded-[32px] border border-zinc-200 bg-zinc-50">
 
                 <div className="p-6">
 
@@ -443,7 +443,7 @@ export default function ApplicationsPanel() {
                 onClick={() =>
                   setVerifyProfileId(null)
                 }
-                className="h-14 flex-1 rounded-2xl border border-white/10 bg-white/5 font-bold text-white transition hover:bg-white/10"
+                className="h-14 flex-1 rounded-2xl border border-zinc-200 bg-zinc-50 font-bold text-zinc-700 transition hover:bg-zinc-100"
               >
 
                 Annuler

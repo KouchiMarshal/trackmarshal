@@ -40,8 +40,8 @@ const licenses = [
     code: "ENCOC",
     name: "Commissaire C",
     federation: "FFSA",
-    color: "border-[#FF5A1F]/30 bg-[#FF5A1F]/5",
-    badgeColor: "bg-[#FF5A1F]/20 text-[#FF5A1F]",
+    color: "border-[#FF5A1F]/30 bg-orange-50",
+    badgeColor: "bg-orange-100 text-orange-700",
     description: "Première licence commissaire. Permet d'officier sur les épreuves nationales.",
     access: "Épreuves régionales et nationales",
   },
@@ -49,8 +49,8 @@ const licenses = [
     code: "EICOB",
     name: "Commissaire international B",
     federation: "FFSA",
-    color: "border-blue-500/30 bg-blue-500/5",
-    badgeColor: "bg-blue-500/20 text-blue-400",
+    color: "border-blue-200 bg-blue-50",
+    badgeColor: "bg-blue-100 text-blue-700",
     description: "Grade intermédiaire permettant d'officier sur des épreuves de niveau international.",
     access: "Épreuves nationales et internationales",
   },
@@ -58,8 +58,8 @@ const licenses = [
     code: "EICOACPC",
     name: "Chef de Poste Circuit",
     federation: "FFSA",
-    color: "border-purple-500/30 bg-purple-500/5",
-    badgeColor: "bg-purple-500/20 text-purple-400",
+    color: "border-purple-200 bg-purple-50",
+    badgeColor: "bg-purple-100 text-purple-700",
     description: "Responsable d'un poste de commissaires sur les épreuves de circuit.",
     access: "Toutes épreuves de circuit",
   },
@@ -67,8 +67,8 @@ const licenses = [
     code: "EICOACPR",
     name: "Chef de Poste Route",
     federation: "FFSA",
-    color: "border-green-500/30 bg-green-500/5",
-    badgeColor: "bg-green-500/20 text-green-400",
+    color: "border-green-200 bg-green-50",
+    badgeColor: "bg-green-100 text-green-700",
     description: "Responsable d'un poste sur les épreuves de route (rallye, course de côte).",
     access: "Toutes épreuves sur route",
   },
@@ -76,8 +76,8 @@ const licenses = [
     code: "OFS",
     name: "Officiel Stagiaire",
     federation: "FFM",
-    color: "border-yellow-500/30 bg-yellow-500/5",
-    badgeColor: "bg-yellow-500/20 text-yellow-400",
+    color: "border-yellow-200 bg-yellow-50",
+    badgeColor: "bg-yellow-100 text-yellow-700",
     description: "Première licence officiel FFM pour les épreuves moto.",
     access: "Épreuves moto régionales",
   },
@@ -85,8 +85,8 @@ const licenses = [
     code: "OFF",
     name: "Officiel",
     federation: "FFM",
-    color: "border-orange-500/30 bg-orange-500/5",
-    badgeColor: "bg-orange-500/20 text-orange-400",
+    color: "border-orange-200 bg-orange-50",
+    badgeColor: "bg-orange-100 text-orange-700",
     description: "Licence officiel FFM confirmé, toutes épreuves moto.",
     access: "Toutes épreuves moto",
   },
@@ -121,42 +121,40 @@ const faqs = [
 
 export default function DevenirCommissairePage() {
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
 
       <section className="relative pt-36 pb-24">
-        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/8 blur-[180px] pointer-events-none" />
-
         <div className="relative z-10 mx-auto max-w-[1100px] px-6 lg:px-10">
 
           <div className="mb-4">
-            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-white">
+            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-zinc-900">
               ← Espace pédagogique
             </Link>
           </div>
 
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-[#FF5A1F]">Guide</p>
-          <h1 className="mt-4 text-4xl font-black lg:text-6xl">Devenir commissaire</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-400">
+          <h1 className="mt-4 text-4xl font-black text-zinc-900 lg:text-6xl">Devenir commissaire</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
             Le commissaire de piste est un acteur essentiel de la sécurité en compétition motorsport.
             Voici le chemin pour obtenir votre licence et rejoindre cette communauté.
           </p>
 
           {/* Étapes */}
           <div className="mt-16">
-            <h2 className="text-2xl font-black lg:text-3xl">Les étapes</h2>
+            <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Les étapes</h2>
             <div className="mt-8 space-y-4">
               {steps.map((step) => (
-                <div key={step.num} className="flex gap-5 rounded-[28px] border border-white/10 bg-white/[0.02] p-6 lg:gap-8 lg:p-8">
+                <div key={step.num} className="flex gap-5 rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6 lg:gap-8 lg:p-8">
                   <div className="shrink-0">
                     <span className="text-4xl font-black text-[#FF5A1F]/30 lg:text-5xl">{step.num}</span>
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-xl font-black">{step.title}</h3>
-                    <p className="mt-2 leading-relaxed text-zinc-400">{step.description}</p>
-                    <div className="mt-4 flex items-start gap-2 rounded-2xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 px-4 py-3">
+                    <h3 className="text-xl font-black text-zinc-900">{step.title}</h3>
+                    <p className="mt-2 leading-relaxed text-zinc-600">{step.description}</p>
+                    <div className="mt-4 flex items-start gap-2 rounded-2xl border border-[#FF5A1F]/20 bg-orange-50 px-4 py-3">
                       <span className="shrink-0 text-sm">💡</span>
-                      <p className="text-sm text-zinc-300">{step.tip}</p>
+                      <p className="text-sm text-zinc-700">{step.tip}</p>
                     </div>
                   </div>
                 </div>
@@ -166,8 +164,8 @@ export default function DevenirCommissairePage() {
 
           {/* Licences */}
           <div className="mt-20">
-            <h2 className="text-2xl font-black lg:text-3xl">Les types de licences</h2>
-            <p className="mt-3 text-zinc-400">FFSA pour l'automobile, FFM pour la moto — deux fédérations, deux parcours.</p>
+            <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Les types de licences</h2>
+            <p className="mt-3 text-zinc-600">FFSA pour l'automobile, FFM pour la moto — deux fédérations, deux parcours.</p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {licenses.map((lic) => (
                 <div key={lic.code} className={`rounded-[24px] border p-6 ${lic.color}`}>
@@ -177,11 +175,11 @@ export default function DevenirCommissairePage() {
                     </span>
                     <span className="text-xs text-zinc-500">{lic.code}</span>
                   </div>
-                  <h3 className="mt-4 text-lg font-black">{lic.name}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-400">{lic.description}</p>
-                  <div className="mt-4 rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                  <h3 className="mt-4 text-lg font-black text-zinc-900">{lic.name}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-600">{lic.description}</p>
+                  <div className="mt-4 rounded-xl border border-zinc-200 bg-white px-3 py-2">
                     <p className="text-xs text-zinc-500">Accès</p>
-                    <p className="mt-0.5 text-sm font-bold">{lic.access}</p>
+                    <p className="mt-0.5 text-sm font-bold text-zinc-900">{lic.access}</p>
                   </div>
                 </div>
               ))}
@@ -190,31 +188,31 @@ export default function DevenirCommissairePage() {
 
           {/* FAQ */}
           <div className="mt-20">
-            <h2 className="text-2xl font-black lg:text-3xl">Questions fréquentes</h2>
+            <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Questions fréquentes</h2>
             <div className="mt-8 space-y-3">
               {faqs.map((faq) => (
-                <div key={faq.q} className="rounded-[24px] border border-white/10 bg-white/[0.02] p-6">
-                  <p className="font-black text-white">{faq.q}</p>
-                  <p className="mt-2 leading-relaxed text-zinc-400">{faq.a}</p>
+                <div key={faq.q} className="rounded-[24px] border border-zinc-200 bg-white shadow-sm p-6">
+                  <p className="font-black text-zinc-900">{faq.q}</p>
+                  <p className="mt-2 leading-relaxed text-zinc-600">{faq.a}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* CTA */}
-          <div className="mt-16 rounded-[32px] border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-8 text-center lg:p-12">
-            <h2 className="text-2xl font-black lg:text-3xl">Prêt à vous lancer ?</h2>
-            <p className="mt-3 text-zinc-400">Inscrivez-vous sur TrackMarshal et rejoignez la communauté des commissaires motorsport.</p>
+          <div className="mt-16 rounded-[32px] border border-[#FF5A1F]/20 bg-orange-50 p-8 text-center lg:p-12">
+            <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Prêt à vous lancer ?</h2>
+            <p className="mt-3 text-zinc-600">Inscrivez-vous sur TrackMarshal et rejoignez la communauté des commissaires motorsport.</p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link
                 href="/register"
-                className="rounded-2xl bg-[#FF5A1F] px-8 py-4 font-bold transition hover:opacity-90"
+                className="rounded-2xl bg-[#FF5A1F] px-8 py-4 font-bold text-white transition hover:opacity-90"
               >
                 Créer mon compte
               </Link>
               <Link
                 href="/apprendre/quiz/drapeaux"
-                className="rounded-2xl border border-white/10 px-8 py-4 font-bold transition hover:bg-white/5"
+                className="rounded-2xl border border-zinc-200 bg-white px-8 py-4 font-bold text-zinc-700 transition hover:bg-zinc-50"
               >
                 🎯 Tester mes connaissances
               </Link>

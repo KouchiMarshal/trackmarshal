@@ -268,7 +268,7 @@ export default function MarshalProfileForm() {
   }
 
   return (
-    <section className="rounded-[40px] border border-white/10 bg-[#0A0A0A] p-6 md:p-10">
+    <section className="rounded-[40px] border border-zinc-200 bg-white p-6 shadow-sm md:p-10">
 
       <div>
 
@@ -278,16 +278,16 @@ export default function MarshalProfileForm() {
 
         </p>
 
-        <h2 className="mt-4 text-4xl font-black md:text-5xl">
+        <h2 className="mt-4 text-4xl font-black text-zinc-900 md:text-5xl">
 
           Mon Profil
 
         </h2>
 
-        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-400">
+        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-600">
 
           Complétez votre profil professionnel motorsport
-          afin d’être visible et recruté par les organisateurs.
+          afin d'être visible et recruté par les organisateurs.
 
         </p>
 
@@ -300,9 +300,9 @@ export default function MarshalProfileForm() {
 
         <div className="grid gap-10 lg:grid-cols-[320px_1fr]">
 
-          <div className="rounded-[32px] border border-white/10 bg-white/5 p-8">
+          <div className="rounded-[32px] border border-zinc-200 bg-zinc-50 p-8">
 
-            <p className="text-sm uppercase tracking-[0.2em] text-zinc-400">
+            <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">
 
               Photo de Profil
 
@@ -316,7 +316,7 @@ export default function MarshalProfileForm() {
                   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop"
                 }
                 alt="Avatar"
-                className="h-52 w-52 rounded-[32px] border border-white/10 object-cover"
+                className="h-52 w-52 rounded-[32px] border border-zinc-200 object-cover"
               />
 
             </div>
@@ -325,7 +325,7 @@ export default function MarshalProfileForm() {
               type="file"
               accept="image/*"
               onChange={uploadAvatar}
-              className="mt-8 block w-full text-sm text-zinc-400"
+              className="mt-8 block w-full text-sm text-zinc-500"
             />
 
             {uploadingAvatar && (
@@ -346,7 +346,7 @@ export default function MarshalProfileForm() {
 
               <div>
 
-                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
                   Nom complet
 
@@ -364,14 +364,14 @@ export default function MarshalProfileForm() {
                         e.target.value,
                     })
                   }
-                  className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none"
+                  className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
                 />
 
               </div>
 
               <div>
 
-                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
                   Téléphone
 
@@ -390,7 +390,7 @@ export default function MarshalProfileForm() {
                     })
                   }
                   placeholder="+33 6 00 00 00 00"
-                  className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none"
+                  className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
                 />
 
               </div>
@@ -401,7 +401,7 @@ export default function MarshalProfileForm() {
 
               <div>
 
-                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
                   Pays
 
@@ -420,14 +420,14 @@ export default function MarshalProfileForm() {
                     })
                   }
                   placeholder="France"
-                  className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none"
+                  className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
                 />
 
               </div>
 
               <div>
 
-                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
                   Ville
 
@@ -446,7 +446,7 @@ export default function MarshalProfileForm() {
                     })
                   }
                   placeholder="Le Mans"
-                  className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none"
+                  className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
                 />
 
               </div>
@@ -455,7 +455,7 @@ export default function MarshalProfileForm() {
 
             <div>
 
-              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
                 Biographie
 
@@ -473,7 +473,7 @@ export default function MarshalProfileForm() {
                   })
                 }
                 rows={6}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 p-6 text-white outline-none"
+                className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
               />
 
             </div>
@@ -486,7 +486,7 @@ export default function MarshalProfileForm() {
 
           <div>
 
-            <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+            <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
               Disciplines
 
@@ -505,14 +505,14 @@ export default function MarshalProfileForm() {
                 })
               }
               placeholder="Ex: Rallye, Circuit, Moto Cross, Enduro..."
-              className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none"
+              className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
             />
 
           </div>
 
           <div>
 
-            <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+            <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
               Langues
 
@@ -531,7 +531,7 @@ export default function MarshalProfileForm() {
                 })
               }
               placeholder="Français, Anglais"
-              className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none"
+              className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
             />
 
           </div>
@@ -542,7 +542,7 @@ export default function MarshalProfileForm() {
 
           <div>
 
-            <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+            <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
               Expérience
 
@@ -560,16 +560,16 @@ export default function MarshalProfileForm() {
                 })
               }
               rows={5}
-              className="w-full rounded-2xl border border-white/10 bg-white/5 p-6 text-white outline-none"
+              className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
             />
 
           </div>
 
           <div>
 
-            <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+            <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
-              Années d’expérience
+              Années d'expérience
 
             </label>
 
@@ -586,10 +586,10 @@ export default function MarshalProfileForm() {
                 })
               }
               placeholder="8 ans"
-              className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none"
+              className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
             />
 
-            <label className="mb-3 mt-8 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+            <label className="mb-3 mt-8 block text-sm uppercase tracking-[0.2em] text-zinc-500">
 
               Spécialités
 
@@ -608,7 +608,7 @@ export default function MarshalProfileForm() {
                 })
               }
               placeholder="FFSA, FIA, Endurance..."
-              className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none"
+              className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
             />
 
           </div>
@@ -629,7 +629,7 @@ export default function MarshalProfileForm() {
 
               <div>
 
-                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
                   Type de Licence <span className="text-[#FF5A1F]">*</span>
                 </label>
 
@@ -639,7 +639,7 @@ export default function MarshalProfileForm() {
                   onChange={(e) =>
                     setFormData({ ...formData, license_type: e.target.value })
                   }
-                  className="h-16 w-full rounded-2xl border border-white/10 bg-[#111111] px-6 text-white outline-none focus:border-[#FF5A1F]"
+                  className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none focus:border-[#FF5A1F]"
                 >
                   <option value="">Sélectionner un type</option>
                   <optgroup label="FFSA — Auto">
@@ -658,7 +658,7 @@ export default function MarshalProfileForm() {
 
               <div>
 
-                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
                   Numéro de Licence <span className="text-[#FF5A1F]">*</span>
                 </label>
 
@@ -670,14 +670,14 @@ export default function MarshalProfileForm() {
                     setFormData({ ...formData, license_number: e.target.value })
                   }
                   placeholder="ex : 2024-FFSA-00123"
-                  className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]"
+                  className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
                 />
 
               </div>
 
               <div>
 
-                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+                <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
                   ASA (Association Sportive Automobile)
                 </label>
 
@@ -686,7 +686,7 @@ export default function MarshalProfileForm() {
                   value={formData.asa}
                   onChange={(e) => setFormData({ ...formData, asa: e.target.value })}
                   placeholder="ex : ASA Lyon, ASA Côte d'Azur..."
-                  className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]"
+                  className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
                 />
 
               </div>
@@ -695,43 +695,43 @@ export default function MarshalProfileForm() {
 
             <div>
 
-              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">
+              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">
                 Upload Licence
               </label>
 
               {/* Aucune licence */}
               {!formData.license_url && !uploadingLicense && (
-                <label className="flex cursor-pointer flex-col items-center gap-3 rounded-2xl border border-dashed border-white/10 bg-black/20 p-8 text-center hover:border-[#FF5A1F]/40 transition">
-                  <Upload size={24} className="text-zinc-600" />
-                  <span className="text-sm text-zinc-400">Cliquez pour uploader votre licence</span>
-                  <span className="text-xs text-zinc-600">PDF ou image acceptés</span>
+                <label className="flex cursor-pointer flex-col items-center gap-3 rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-8 text-center hover:border-[#FF5A1F]/40 transition">
+                  <Upload size={24} className="text-zinc-400" />
+                  <span className="text-sm text-zinc-600">Cliquez pour uploader votre licence</span>
+                  <span className="text-xs text-zinc-400">PDF ou image acceptés</span>
                   <input type="file" accept=".pdf,image/*" onChange={uploadLicense} className="hidden" />
                 </label>
               )}
 
               {/* Upload en cours */}
               {uploadingLicense && (
-                <div className="flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-8">
+                <div className="flex items-center justify-center gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 p-8">
                   <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#FF5A1F] border-t-transparent" />
-                  <span className="text-sm text-zinc-400">Envoi en cours...</span>
+                  <span className="text-sm text-zinc-600">Envoi en cours...</span>
                 </div>
               )}
 
               {/* En attente de validation */}
               {formData.license_url && !uploadingLicense && (
-                <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/5 p-5">
+                <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
                   <div className="flex items-center gap-2">
-                    <Clock size={18} className="text-yellow-400" />
-                    <p className="font-bold text-yellow-400">En attente de validation</p>
+                    <Clock size={18} className="text-yellow-600" />
+                    <p className="font-bold text-yellow-700">En attente de validation</p>
                   </div>
-                  <p className="mt-1 text-xs text-zinc-400">
+                  <p className="mt-1 text-xs text-zinc-600">
                     Votre licence a bien été reçue et sera vérifiée par notre équipe.
                   </p>
                   <div className="mt-3 flex items-center justify-between">
                     <a href={formData.license_url} target="_blank" className="text-xs font-bold text-[#FF5A1F] underline underline-offset-2">
                       Voir le fichier envoyé
                     </a>
-                    <label className="cursor-pointer text-xs text-zinc-500 hover:text-white transition">
+                    <label className="cursor-pointer text-xs text-zinc-500 hover:text-zinc-900 transition">
                       Remplacer
                       <input type="file" accept=".pdf,image/*" onChange={uploadLicense} className="hidden" />
                     </label>
@@ -746,17 +746,17 @@ export default function MarshalProfileForm() {
         </div>
 
         {/* Deuxième licence (optionnelle) */}
-        <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+        <div className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm uppercase tracking-[0.3em] text-zinc-400">2ème Licence (optionnelle)</p>
-              <p className="mt-1 text-xs text-zinc-600">Si vous avez une licence auto ET moto, ajoutez la seconde ici.</p>
+              <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">2ème Licence (optionnelle)</p>
+              <p className="mt-1 text-xs text-zinc-400">Si vous avez une licence auto ET moto, ajoutez la seconde ici.</p>
             </div>
             {formData.license_type_2 && (
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, license_type_2: "", license_number_2: "" })}
-                className="text-xs text-zinc-500 hover:text-red-400 transition"
+                className="text-xs text-zinc-500 hover:text-red-500 transition"
               >
                 Supprimer
               </button>
@@ -765,11 +765,11 @@ export default function MarshalProfileForm() {
 
           <div className="mt-6 grid gap-6 md:grid-cols-2">
             <div>
-              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">Type de licence</label>
+              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">Type de licence</label>
               <select
                 value={formData.license_type_2}
                 onChange={(e) => setFormData({ ...formData, license_type_2: e.target.value })}
-                className="h-16 w-full rounded-2xl border border-white/10 bg-[#111111] px-6 text-white outline-none focus:border-[#FF5A1F]"
+                className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none focus:border-[#FF5A1F]"
               >
                 <option value="">— Aucune 2ème licence —</option>
                 <optgroup label="FFSA — Auto">
@@ -784,13 +784,13 @@ export default function MarshalProfileForm() {
               </select>
             </div>
             <div>
-              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-400">Numéro de licence</label>
+              <label className="mb-3 block text-sm uppercase tracking-[0.2em] text-zinc-500">Numéro de licence</label>
               <input
                 type="text"
                 value={formData.license_number_2}
                 onChange={(e) => setFormData({ ...formData, license_number_2: e.target.value })}
                 placeholder="ex : 2024-FFM-00456"
-                className="h-16 w-full rounded-2xl border border-white/10 bg-white/5 px-6 text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]"
+                className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-6 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
               />
             </div>
           </div>
@@ -801,20 +801,20 @@ export default function MarshalProfileForm() {
           )}
         </div>
 
-        <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
-          <p className="text-sm uppercase tracking-[0.3em] text-zinc-400">Statut de disponibilité</p>
-          <p className="mt-2 text-xs text-zinc-600">Visible sur votre profil public. Les organisateurs filtrent par disponibilité.</p>
+        <div className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
+          <p className="text-sm uppercase tracking-[0.3em] text-zinc-500">Statut de disponibilité</p>
+          <p className="mt-2 text-xs text-zinc-400">Visible sur votre profil public. Les organisateurs filtrent par disponibilité.</p>
           <div className="mt-5 flex items-center gap-5">
             <button
               type="button"
               onClick={() => setAvailable(true)}
               className={`flex h-14 flex-1 items-center justify-center gap-3 rounded-2xl font-bold transition ${
                 available
-                  ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                  : "border border-white/10 text-zinc-500 hover:text-white"
+                  ? "bg-green-100 text-green-700 border border-green-200"
+                  : "border border-zinc-200 text-zinc-500 hover:text-zinc-900"
               }`}
             >
-              <span className={`h-3 w-3 rounded-full ${available ? "bg-green-400" : "bg-zinc-700"}`} />
+              <span className={`h-3 w-3 rounded-full ${available ? "bg-green-500" : "bg-zinc-300"}`} />
               Disponible
             </button>
             <button
@@ -822,11 +822,11 @@ export default function MarshalProfileForm() {
               onClick={() => setAvailable(false)}
               className={`flex h-14 flex-1 items-center justify-center gap-3 rounded-2xl font-bold transition ${
                 !available
-                  ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                  : "border border-white/10 text-zinc-500 hover:text-white"
+                  ? "bg-red-100 text-red-700 border border-red-200"
+                  : "border border-zinc-200 text-zinc-500 hover:text-zinc-900"
               }`}
             >
-              <span className={`h-3 w-3 rounded-full ${!available ? "bg-red-400" : "bg-zinc-700"}`} />
+              <span className={`h-3 w-3 rounded-full ${!available ? "bg-red-500" : "bg-zinc-300"}`} />
               Indisponible
             </button>
           </div>

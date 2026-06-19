@@ -6,8 +6,8 @@ const roles = [
   {
     title: "Directeur de course",
     code: "DC",
-    color: "border-[#FF5A1F]/30 bg-[#FF5A1F]/5",
-    badgeColor: "bg-[#FF5A1F]/20 text-[#FF5A1F]",
+    color: "border-[#FF5A1F]/30 bg-orange-50",
+    badgeColor: "bg-orange-100 text-orange-700",
     icon: "👑",
     license: "Grade international",
     description: "Autorité suprême sur la compétition. Le DC prend toutes les décisions relatives au déroulement de l'épreuve : déploiement du Safety Car, drapeaux rouges, interruptions, reprises. Il est en communication permanente avec tous les postes.",
@@ -23,8 +23,8 @@ const roles = [
   {
     title: "Chef de poste",
     code: "EICOACPC / EICOACPR",
-    color: "border-purple-500/30 bg-purple-500/5",
-    badgeColor: "bg-purple-500/20 text-purple-400",
+    color: "border-purple-200 bg-purple-50",
+    badgeColor: "bg-purple-100 text-purple-700",
     icon: "📡",
     license: "EICOACPC (circuit) / EICOACPR (route)",
     description: "Responsable d'un poste de commissaires. Il encadre son équipe, maintient la liaison radio avec la direction de course, décide des interventions sur son secteur et rend compte de tous les incidents.",
@@ -40,8 +40,8 @@ const roles = [
   {
     title: "Commissaire de piste",
     code: "ENCOC / EICOB",
-    color: "border-blue-500/30 bg-blue-500/5",
-    badgeColor: "bg-blue-500/20 text-blue-400",
+    color: "border-blue-200 bg-blue-50",
+    badgeColor: "bg-blue-100 text-blue-700",
     icon: "🚩",
     license: "ENCOC (débutant) → EICOB (confirmé)",
     description: "Officier de base positionné en bord de piste. Il présente les signaux réglementaires, surveille sa zone de responsabilité et intervient physiquement en cas d'incident sous les ordres du chef de poste.",
@@ -57,8 +57,8 @@ const roles = [
   {
     title: "Commissaire au départ",
     code: "Spécialiste départ",
-    color: "border-green-500/30 bg-green-500/5",
-    badgeColor: "bg-green-500/20 text-green-400",
+    color: "border-green-200 bg-green-50",
+    badgeColor: "bg-green-100 text-green-700",
     icon: "🚦",
     license: "ENCOC minimum",
     description: "Responsable des procédures de grille et de départ. Il s'assure que les concurrents sont correctement positionnés, que la grille est dégagée avant l'extinction des feux, et gère les incidents de départ.",
@@ -74,8 +74,8 @@ const roles = [
   {
     title: "Commissaire au pesage",
     code: "Pesage",
-    color: "border-yellow-500/30 bg-yellow-500/5",
-    badgeColor: "bg-yellow-500/20 text-yellow-400",
+    color: "border-yellow-200 bg-yellow-50",
+    badgeColor: "bg-yellow-100 text-yellow-700",
     icon: "⚖️",
     license: "ENCOC minimum",
     description: "Contrôle le poids des véhicules et de l'équipage avant, pendant ou après l'épreuve. Travaille en étroite collaboration avec les délégués techniques pour valider la conformité réglementaire.",
@@ -91,8 +91,8 @@ const roles = [
   {
     title: "Commissaire au parc fermé",
     code: "Parc fermé",
-    color: "border-orange-500/30 bg-orange-500/5",
-    badgeColor: "bg-orange-500/20 text-orange-400",
+    color: "border-orange-200 bg-orange-50",
+    badgeColor: "bg-orange-100 text-orange-700",
     icon: "🔒",
     license: "ENCOC minimum",
     description: "Contrôle l'accès au parc fermé après la course ou les qualifications. Aucune intervention mécanique n'est autorisée sans accord des commissaires techniques. Il garantit l'intégrité des véhicules pour les contrôles.",
@@ -108,8 +108,8 @@ const roles = [
   {
     title: "Délégué technique",
     code: "DT",
-    color: "border-red-500/30 bg-red-500/5",
-    badgeColor: "bg-red-500/20 text-red-400",
+    color: "border-red-200 bg-red-50",
+    badgeColor: "bg-red-100 text-red-700",
     icon: "🔧",
     license: "Formation technique spécifique",
     description: "Contrôle la conformité technique des véhicules au règlement sportif et technique. Intervient avant, pendant et après l'épreuve pour vérifier les jauges de carburant, les dimensions, les équipements de sécurité.",
@@ -125,8 +125,8 @@ const roles = [
   {
     title: "Médecin de course",
     code: "Medical",
-    color: "border-pink-500/30 bg-pink-500/5",
-    badgeColor: "bg-pink-500/20 text-pink-400",
+    color: "border-pink-200 bg-pink-50",
+    badgeColor: "bg-pink-100 text-pink-700",
     icon: "🏥",
     license: "Docteur en médecine + formation FIA/FFSA",
     description: "Responsable médical de l'épreuve. Il est présent dès l'arrivée en piste et reste disponible pendant toute la durée de la compétition. Intervient sur tout incident impliquant un pilote blessé ou potentiellement blessé.",
@@ -143,63 +143,61 @@ const roles = [
 
 export default function RolesPage() {
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
 
       <section className="relative pt-36 pb-24">
-        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-purple-500/5 blur-[160px] pointer-events-none" />
-
         <div className="relative z-10 mx-auto max-w-[1100px] px-6 lg:px-10">
 
           <div className="mb-4">
-            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-white">
+            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-zinc-900">
               ← Espace pédagogique
             </Link>
           </div>
 
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-[#FF5A1F]">Organisation</p>
-          <h1 className="mt-4 text-4xl font-black lg:text-6xl">Les rôles</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-400">
+          <h1 className="mt-4 text-4xl font-black text-zinc-900 lg:text-6xl">Les rôles</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
             Sur une épreuve motorsport, chaque officiel a un rôle précis. Comprendre
             la hiérarchie et les missions de chacun est essentiel pour travailler efficacement en équipe.
           </p>
 
           {/* Hierarchy banner */}
           <div className="mt-10 overflow-x-auto">
-            <div className="flex min-w-max items-center gap-3 rounded-[24px] border border-white/10 bg-white/[0.02] px-6 py-4">
+            <div className="flex min-w-max items-center gap-3 rounded-[24px] border border-zinc-200 bg-white shadow-sm px-6 py-4">
               <div className="text-center">
                 <p className="text-lg">👑</p>
                 <p className="mt-1 text-xs font-black text-[#FF5A1F]">Directeur</p>
                 <p className="text-xs text-zinc-500">de course</p>
               </div>
-              <div className="h-px w-6 bg-white/20" />
+              <div className="h-px w-6 bg-zinc-300" />
               <div className="text-center">
                 <p className="text-lg">📡</p>
-                <p className="mt-1 text-xs font-black text-purple-400">Chef</p>
+                <p className="mt-1 text-xs font-black text-purple-600">Chef</p>
                 <p className="text-xs text-zinc-500">de poste</p>
               </div>
-              <div className="h-px w-6 bg-white/20" />
+              <div className="h-px w-6 bg-zinc-300" />
               <div className="text-center">
                 <p className="text-lg">🚩</p>
-                <p className="mt-1 text-xs font-black text-blue-400">Commissaire</p>
+                <p className="mt-1 text-xs font-black text-blue-600">Commissaire</p>
                 <p className="text-xs text-zinc-500">de piste</p>
               </div>
-              <div className="mx-2 h-8 w-px bg-white/10" />
+              <div className="mx-2 h-8 w-px bg-zinc-200" />
               <div className="text-center">
                 <p className="text-lg">⚖️</p>
-                <p className="mt-1 text-xs font-black text-yellow-400">Pesage</p>
+                <p className="mt-1 text-xs font-black text-yellow-600">Pesage</p>
                 <p className="text-xs text-zinc-500">/ Parc fermé</p>
               </div>
-              <div className="h-px w-6 bg-white/20" />
+              <div className="h-px w-6 bg-zinc-300" />
               <div className="text-center">
                 <p className="text-lg">🔧</p>
-                <p className="mt-1 text-xs font-black text-red-400">Délégué</p>
+                <p className="mt-1 text-xs font-black text-red-600">Délégué</p>
                 <p className="text-xs text-zinc-500">technique</p>
               </div>
-              <div className="h-px w-6 bg-white/20" />
+              <div className="h-px w-6 bg-zinc-300" />
               <div className="text-center">
                 <p className="text-lg">🏥</p>
-                <p className="mt-1 text-xs font-black text-pink-400">Médecin</p>
+                <p className="mt-1 text-xs font-black text-pink-600">Médecin</p>
                 <p className="text-xs text-zinc-500">de course</p>
               </div>
             </div>
@@ -213,7 +211,7 @@ export default function RolesPage() {
                   <div className="flex items-center gap-4">
                     <span className="text-4xl">{role.icon}</span>
                     <div>
-                      <h2 className="text-xl font-black lg:text-2xl">{role.title}</h2>
+                      <h2 className="text-xl font-black text-zinc-900 lg:text-2xl">{role.title}</h2>
                       <p className="mt-0.5 text-sm text-zinc-500">{role.license}</p>
                     </div>
                   </div>
@@ -222,13 +220,13 @@ export default function RolesPage() {
                   </span>
                 </div>
 
-                <p className="mt-4 leading-relaxed text-zinc-400">{role.description}</p>
+                <p className="mt-4 leading-relaxed text-zinc-600">{role.description}</p>
 
                 <div className="mt-5">
                   <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">Missions principales</p>
                   <ul className="mt-3 space-y-2">
                     {role.missions.map((m) => (
-                      <li key={m} className="flex items-start gap-2 text-sm text-zinc-300">
+                      <li key={m} className="flex items-start gap-2 text-sm text-zinc-700">
                         <span className="mt-1 shrink-0 text-[#FF5A1F]">→</span>
                         {m}
                       </li>
@@ -236,9 +234,9 @@ export default function RolesPage() {
                   </ul>
                 </div>
 
-                <div className="mt-5 flex items-start gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <div className="mt-5 flex items-start gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-3">
                   <span className="shrink-0 text-sm">💡</span>
-                  <p className="text-sm text-zinc-400">{role.tip}</p>
+                  <p className="text-sm text-zinc-600">{role.tip}</p>
                 </div>
               </div>
             ))}
@@ -248,13 +246,13 @@ export default function RolesPage() {
           <div className="mt-14 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/apprendre/procedures"
-              className="flex-1 rounded-2xl border border-white/10 px-6 py-4 text-center font-bold transition hover:bg-white/5"
+              className="flex-1 rounded-2xl border border-zinc-200 bg-white px-6 py-4 text-center font-bold text-zinc-700 transition hover:bg-zinc-50"
             >
               📋 Les procédures →
             </Link>
             <Link
               href="/apprendre/devenir-commissaire"
-              className="flex-1 rounded-2xl bg-[#FF5A1F] px-6 py-4 text-center font-bold transition hover:opacity-90"
+              className="flex-1 rounded-2xl bg-[#FF5A1F] px-6 py-4 text-center font-bold text-white transition hover:opacity-90"
             >
               Obtenir ma licence →
             </Link>
