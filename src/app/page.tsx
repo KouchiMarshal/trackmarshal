@@ -44,17 +44,9 @@ export default function HomePage() {
       <PublicNavbar />
 
       {/* Hero */}
-      <section className="relative flex min-h-screen items-center overflow-hidden pt-28 lg:pt-32">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1541773367336-d14e1d89924f?q=80&w=2070&auto=format&fit=crop"
-            alt="Course motorsport en piste"
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
-        </div>
-        <div className="absolute left-0 top-0 h-[350px] w-[350px] rounded-full bg-[#FF5A1F]/10 blur-[120px] lg:h-[700px] lg:w-[700px] lg:blur-[220px]" />
+      <section className="relative flex min-h-screen items-center overflow-hidden bg-zinc-50 pt-28 lg:pt-32">
+        <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/8 blur-[180px] pointer-events-none" />
+        <div className="absolute left-0 bottom-0 h-[350px] w-[350px] rounded-full bg-[#FF5A1F]/5 blur-[140px] pointer-events-none" />
 
         <div className="relative z-10 mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl">
@@ -62,28 +54,28 @@ export default function HomePage() {
               <img
                 src="/logo.png"
                 alt="TrackMarshal"
-                className="h-20 w-20 rounded-full object-cover shadow-xl shadow-[#FF5A1F]/30 ring-2 ring-[#FF5A1F]/40 lg:h-28 lg:w-28"
+                className="h-20 w-20 rounded-full object-cover shadow-xl shadow-[#FF5A1F]/20 ring-2 ring-[#FF5A1F]/30 lg:h-28 lg:w-28"
               />
               <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">
                 Plateforme Motorsport Premium
               </p>
             </div>
 
-            <h1 className="mt-6 text-5xl font-black uppercase leading-[0.92] tracking-[-0.05em] sm:text-6xl lg:text-[9rem]">
+            <h1 className="mt-6 text-5xl font-black uppercase leading-[0.92] tracking-[-0.05em] text-zinc-900 sm:text-6xl lg:text-[9rem]">
               Connecter.<br />
               Recruter.<br />
               <span className="text-[#FF5A1F]">Sécuriser.</span>
             </h1>
 
-            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-300 sm:text-xl lg:text-2xl">
+            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-600 sm:text-xl lg:text-2xl">
               La plateforme moderne qui connecte organisateurs et commissaires motorsport partout en France.
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link href="/events" className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 text-base font-black transition hover:scale-[1.02] lg:h-16 lg:px-10 lg:text-lg">
+              <Link href="/events" className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 text-base font-black text-white transition hover:scale-[1.02] lg:h-16 lg:px-10 lg:text-lg">
                 Voir les événements
               </Link>
-              <Link href="/register" className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 text-base font-black transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10 lg:h-16 lg:px-10 lg:text-lg">
+              <Link href="/register" className="flex h-14 items-center justify-center rounded-2xl border border-zinc-300 bg-white px-8 text-base font-black text-zinc-900 transition hover:border-[#FF5A1F]/50 hover:text-[#FF5A1F] lg:h-16 lg:px-10 lg:text-lg">
                 Créer un compte
               </Link>
             </div>
