@@ -40,11 +40,11 @@ interface QuizEngineProps {
 
 function getScoreInfo(score: number, total: number) {
   const pct = score / total;
-  if (score === total) return { label: "Parfait !", color: "text-green-400", emoji: "🏆" };
-  if (pct >= 0.85) return { label: "Excellent !", color: "text-green-400", emoji: "🎯" };
-  if (pct >= 0.70) return { label: "Bien joué", color: "text-yellow-400", emoji: "👍" };
-  if (pct >= 0.50) return { label: "À retravailler", color: "text-orange-400", emoji: "📚" };
-  return { label: "Insuffisant", color: "text-red-400", emoji: "🚩" };
+  if (score === total) return { label: "Parfait !", color: "text-green-600", emoji: "🏆" };
+  if (pct >= 0.85) return { label: "Excellent !", color: "text-green-600", emoji: "🎯" };
+  if (pct >= 0.70) return { label: "Bien joué", color: "text-yellow-600", emoji: "👍" };
+  if (pct >= 0.50) return { label: "À retravailler", color: "text-orange-600", emoji: "📚" };
+  return { label: "Insuffisant", color: "text-red-600", emoji: "🚩" };
 }
 
 export default function QuizEngine({
@@ -54,7 +54,7 @@ export default function QuizEngine({
   backLabel,
   reviewHref,
   reviewLabel,
-  glowColor = "bg-green-500/5",
+  glowColor,
 }: QuizEngineProps) {
   const [shuffled] = useState<QuizQuestion[]>(() => questions.map(shuffleQuestion));
   const [current, setCurrent] = useState(0);
@@ -100,17 +100,16 @@ export default function QuizEngine({
   if (showResult) {
     const { label, color, emoji } = getScoreInfo(score, questions.length);
     return (
-      <main className="min-h-screen bg-[#050505] text-white">
+      <main className="min-h-screen bg-zinc-50 text-zinc-900">
         <PublicNavbar />
         <section className="relative pt-36 pb-24">
-          <div className={`absolute right-0 top-0 h-[400px] w-[400px] rounded-full ${glowColor} blur-[160px] pointer-events-none`} />
           <div className="relative z-10 mx-auto max-w-[700px] px-6 lg:px-10">
 
-            <div className="text-center">
+            <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-8 text-center">
               <span className="text-7xl">{emoji}</span>
-              <h1 className="mt-6 text-4xl font-black lg:text-5xl">{label}</h1>
+              <h1 className="mt-6 text-4xl font-black text-zinc-900 lg:text-5xl">{label}</h1>
               <p className={`mt-3 text-2xl font-black ${color}`}>{score} / {questions.length}</p>
-              <p className="mt-3 text-zinc-400">
+              <p className="mt-3 text-zinc-600">
                 {score === questions.length
                   ? "Résultat parfait ! Vous maîtrisez totalement ce sujet."
                   : "Relisez les points que vous avez manqués et réessayez."}
@@ -124,28 +123,28 @@ export default function QuizEngine({
                 return (
                   <div
                     key={q.id}
-                    className={`rounded-[24px] border p-5 ${correct ? "border-green-500/30 bg-green-500/5" : "border-red-500/30 bg-red-500/5"}`}
+                    className={`rounded-[24px] border p-5 ${correct ? "border-green-400 bg-green-100" : "border-red-400 bg-red-100"}`}
                   >
                     <div className="flex items-start gap-3">
                       {q.flagImg && (
                         <img
                           src={q.flagImg}
                           alt={q.flagAlt ?? ""}
-                          className="mt-0.5 h-10 w-16 shrink-0 rounded-lg border border-white/10 object-cover"
+                          className="mt-0.5 h-10 w-16 shrink-0 rounded-lg border border-zinc-200 object-cover"
                         />
                       )}
                       <div className="min-w-0">
-                        <p className="font-bold text-sm text-zinc-300">{q.question}</p>
+                        <p className="font-bold text-sm text-zinc-800">{q.question}</p>
                         {!correct && (
-                          <p className="mt-1 text-sm text-red-400">
+                          <p className="mt-1 text-sm text-red-700">
                             Votre réponse : {userAnswer !== null ? q.options[userAnswer] : "Pas de réponse"}
                           </p>
                         )}
-                        <p className="mt-1 text-sm font-bold text-green-400">
+                        <p className="mt-1 text-sm font-bold text-green-700">
                           Bonne réponse : {q.options[q.correct]}
                         </p>
                         {!correct && (
-                          <p className="mt-2 text-xs text-zinc-500 leading-relaxed">{q.explanation}</p>
+                          <p className="mt-2 text-xs text-zinc-600 leading-relaxed">{q.explanation}</p>
                         )}
                       </div>
                     </div>
@@ -157,21 +156,21 @@ export default function QuizEngine({
             <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <button
                 onClick={handleRestart}
-                className="rounded-2xl bg-[#FF5A1F] px-8 py-4 font-bold transition hover:opacity-90"
+                className="rounded-2xl bg-[#FF5A1F] px-8 py-4 font-bold text-white transition hover:opacity-90"
               >
                 Recommencer
               </button>
               {reviewHref && reviewLabel && (
                 <Link
                   href={reviewHref}
-                  className="rounded-2xl border border-white/10 px-8 py-4 font-bold text-center transition hover:bg-white/5"
+                  className="rounded-2xl border border-zinc-200 bg-white px-8 py-4 font-bold text-zinc-700 text-center transition hover:bg-zinc-50"
                 >
                   {reviewLabel}
                 </Link>
               )}
               <Link
                 href="/apprendre/quiz"
-                className="rounded-2xl border border-white/10 px-8 py-4 font-bold text-center transition hover:bg-white/5"
+                className="rounded-2xl border border-zinc-200 bg-white px-8 py-4 font-bold text-zinc-700 text-center transition hover:bg-zinc-50"
               >
                 ← Retour aux quiz
               </Link>
@@ -186,15 +185,13 @@ export default function QuizEngine({
   const dotSize = questions.length > 20 ? "h-2 w-2" : "h-2.5 w-2.5";
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
       <section className="relative pt-36 pb-24">
-        <div className={`absolute right-0 top-0 h-[400px] w-[400px] rounded-full ${glowColor} blur-[160px] pointer-events-none`} />
-
         <div className="relative z-10 mx-auto max-w-[700px] px-6 lg:px-10">
 
           <div className="mb-6">
-            <Link href={backHref} className="text-sm text-zinc-500 transition hover:text-white">
+            <Link href={backHref} className="text-sm text-zinc-500 transition hover:text-zinc-900">
               ← {backLabel}
             </Link>
           </div>
@@ -205,7 +202,7 @@ export default function QuizEngine({
               <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF5A1F]">{title}</p>
               <p className="text-sm text-zinc-500">{current + 1} / {questions.length}</p>
             </div>
-            <div className="h-1.5 w-full rounded-full bg-white/10">
+            <div className="h-1.5 w-full rounded-full bg-zinc-200">
               <div
                 className="h-1.5 rounded-full bg-[#FF5A1F] transition-all duration-300"
                 style={{ width: `${((current + 1) / questions.length) * 100}%` }}
@@ -214,27 +211,29 @@ export default function QuizEngine({
           </div>
 
           {/* Question card */}
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.02] p-6 lg:p-8">
+          <div className="rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
 
             {question.flagImg && (
               <div className="flex justify-center mb-6">
                 <img
                   src={question.flagImg}
                   alt={question.flagAlt ?? ""}
-                  className="h-28 w-44 rounded-2xl border border-white/10 object-cover shadow-lg sm:h-36 sm:w-56"
+                  className="h-28 w-44 rounded-2xl border border-zinc-200 object-cover shadow-lg sm:h-36 sm:w-56"
                 />
               </div>
             )}
 
-            <h2 className="text-xl font-black text-center lg:text-2xl">{question.question}</h2>
+            <h2 className="text-xl font-black text-zinc-900 text-center lg:text-2xl">{question.question}</h2>
 
             <div className="mt-6 space-y-3">
               {question.options.map((option, idx) => {
-                let style = "border-white/10 bg-white/[0.02] hover:border-white/20 hover:bg-white/[0.04]";
+                let style = "border-zinc-200 bg-white text-zinc-900 hover:border-zinc-400";
                 if (isAnswered) {
-                  if (idx === question.correct) style = "border-green-500/50 bg-green-500/10";
-                  else if (idx === selected) style = "border-red-500/50 bg-red-500/10";
-                  else style = "border-white/5 bg-white/[0.01] opacity-50";
+                  if (idx === question.correct) style = "border-green-400 bg-green-100 text-green-800";
+                  else if (idx === selected) style = "border-red-400 bg-red-100 text-red-800";
+                  else style = "border-zinc-200 bg-zinc-50 text-zinc-500 opacity-60";
+                } else if (idx === selected) {
+                  style = "border-[#FF5A1F] bg-orange-50 text-zinc-900";
                 }
                 return (
                   <button
@@ -243,18 +242,18 @@ export default function QuizEngine({
                     disabled={isAnswered}
                     className={`w-full rounded-2xl border px-5 py-4 text-left font-medium transition ${style} ${!isAnswered ? "cursor-pointer" : "cursor-default"}`}
                   >
-                    <span className="text-sm text-zinc-300">{option}</span>
+                    <span className="text-sm">{option}</span>
                   </button>
                 );
               })}
             </div>
 
             {isAnswered && (
-              <div className={`mt-5 rounded-2xl border px-4 py-3 ${selected === question.correct ? "border-green-500/30 bg-green-500/5" : "border-red-500/30 bg-red-500/5"}`}>
-                <p className={`text-sm font-bold ${selected === question.correct ? "text-green-400" : "text-red-400"}`}>
+              <div className={`mt-5 rounded-2xl border px-4 py-3 ${selected === question.correct ? "border-green-400 bg-green-100" : "border-red-400 bg-red-100"}`}>
+                <p className={`text-sm font-bold ${selected === question.correct ? "text-green-700" : "text-red-700"}`}>
                   {selected === question.correct ? "✓ Correct !" : "✗ Incorrect"}
                 </p>
-                <p className="mt-1 text-sm text-zinc-400 leading-relaxed">{question.explanation}</p>
+                <p className="mt-1 text-sm text-zinc-600 leading-relaxed">{question.explanation}</p>
               </div>
             )}
           </div>
@@ -264,7 +263,7 @@ export default function QuizEngine({
             <button
               onClick={handlePrev}
               disabled={current === 0}
-              className="shrink-0 rounded-2xl border border-white/10 px-4 py-3 text-sm font-bold transition hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed sm:px-5"
+              className="shrink-0 rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm font-bold text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-30 disabled:cursor-not-allowed sm:px-5"
             >
               ← Précédent
             </button>
@@ -281,7 +280,7 @@ export default function QuizEngine({
                         ? answers[i] === q.correct
                           ? "bg-green-500"
                           : "bg-red-500"
-                        : "bg-white/20"
+                        : "bg-zinc-300"
                   }`}
                 />
               ))}
@@ -290,7 +289,7 @@ export default function QuizEngine({
             <button
               onClick={handleNext}
               disabled={!isAnswered}
-              className="shrink-0 rounded-2xl bg-[#FF5A1F] px-4 py-3 text-sm font-bold transition hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed sm:px-5"
+              className="shrink-0 rounded-2xl bg-[#FF5A1F] px-4 py-3 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed sm:px-5"
             >
               {current === questions.length - 1 ? "Résultat →" : "Suivant →"}
             </button>

@@ -25,19 +25,19 @@ type Procedure = {
 };
 
 const STATUS = {
-  oui: "border-green-500/40 bg-green-500/10 text-green-400",
-  non: "border-zinc-600/40 bg-zinc-800/30 text-zinc-500",
-  equivalent: "border-blue-500/40 bg-blue-500/10 text-blue-400",
-  specifique: "border-[#FF5A1F]/40 bg-[#FF5A1F]/10 text-[#FF5A1F]",
-  adapte: "border-yellow-500/40 bg-yellow-500/10 text-yellow-400",
+  oui: "border-green-400 bg-green-100 text-green-800",
+  non: "border-zinc-300 bg-zinc-100 text-zinc-600",
+  equivalent: "border-blue-400 bg-blue-100 text-blue-800",
+  specifique: "border-[#FF5A1F] bg-orange-100 text-orange-800",
+  adapte: "border-yellow-400 bg-yellow-100 text-yellow-800",
 };
 
 const procedures: Procedure[] = [
   {
     emoji: "🚗",
     title: "Safety Car (SC)",
-    headerBg: "bg-yellow-500/10 border-yellow-500/30",
-    headerText: "text-yellow-400",
+    headerBg: "bg-yellow-50 border-yellow-200",
+    headerText: "text-yellow-700",
     contexte:
       "Incident ou danger grave nécessitant une neutralisation de la course, sans justifier l'arrêt complet.",
     role: "Présenter le drapeau jaune agité + panneau SC sur TOUS les postes. Le drapeau vert n'est montré qu'à la ligne de relance.",
@@ -88,8 +88,8 @@ const procedures: Procedure[] = [
   {
     emoji: "📋",
     title: "FCY — Full Course Yellow (Jaune Total)",
-    headerBg: "bg-blue-500/10 border-blue-500/30",
-    headerText: "text-blue-400",
+    headerBg: "bg-blue-50 border-blue-200",
+    headerText: "text-blue-700",
     contexte:
       "Incident nécessitant une intervention sur la piste, sans justifier l'arrêt de la course ni le déploiement du SC.",
     role: "Sur ordre DC : agiter le drapeau jaune + présenter le panneau « FCY » sur TOUS les postes pendant toute la durée de l'intervention.",
@@ -140,8 +140,8 @@ const procedures: Procedure[] = [
   {
     emoji: "🟣",
     title: "Code 60",
-    headerBg: "bg-purple-500/10 border-purple-500/30",
-    headerText: "text-purple-400",
+    headerBg: "bg-purple-50 border-purple-200",
+    headerText: "text-purple-700",
     contexte:
       "Limitation de vitesse unique de 60 km/h imposée sur tout le circuit, alternative ou complément au FCY.",
     role: "Agiter le drapeau violet (cercle blanc « 60 ») sur ordre DC, simultanément à tous les postes — puis le maintenir fixe une fois les voitures ralenties.",
@@ -192,8 +192,8 @@ const procedures: Procedure[] = [
   {
     emoji: "🔴",
     title: "Drapeau rouge — Arrêt de séance",
-    headerBg: "bg-red-500/10 border-red-500/30",
-    headerText: "text-red-400",
+    headerBg: "bg-red-50 border-red-200",
+    headerText: "text-red-700",
     contexte:
       "Incident grave, obstacle majeur ou conditions dangereuses rendant impossible la poursuite de la course.",
     role: "Agiter vigoureusement le drapeau rouge et rester en position jusqu'à ordre de la direction.",
@@ -244,8 +244,8 @@ const procedures: Procedure[] = [
   {
     emoji: "🚑",
     title: "Évacuation d'un véhicule",
-    headerBg: "bg-orange-500/10 border-orange-500/30",
-    headerText: "text-orange-400",
+    headerBg: "bg-orange-50 border-orange-200",
+    headerText: "text-orange-700",
     contexte:
       "Véhicule immobilisé sur la piste ou dans une zone dangereuse, nécessitant une intervention des commissaires.",
     role: "Protéger la zone par drapeaux jaunes et coordonner l'intervention en sécurité.",
@@ -297,8 +297,8 @@ const procedures: Procedure[] = [
   {
     emoji: "🚦",
     title: "Procédure de départ",
-    headerBg: "bg-green-500/10 border-green-500/30",
-    headerText: "text-green-400",
+    headerBg: "bg-green-50 border-green-200",
+    headerText: "text-green-700",
     contexte:
       "Démarrage d'une session d'essais ou d'une course. La procédure varie sensiblement selon la discipline.",
     role: "Selon votre poste : vérifier le positionnement, présenter les drapeaux appropriés et quitter la piste avant le départ.",
@@ -349,8 +349,8 @@ const procedures: Procedure[] = [
   {
     emoji: "🏁",
     title: "Arrivée et parc fermé",
-    headerBg: "bg-zinc-700/30 border-zinc-600/30",
-    headerText: "text-zinc-300",
+    headerBg: "bg-zinc-100 border-zinc-200",
+    headerText: "text-zinc-700",
     contexte:
       "Fin de la course ou de la session et gestion des véhicules à l'arrivée.",
     role: "Présenter le drapeau damier au vainqueur puis aux suivants. Orienter les concurrents vers le parc fermé.",
@@ -413,23 +413,21 @@ export default function ProceduresPage() {
     : procedures;
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
 
       <section className="relative pt-36 pb-24">
-        <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/8 blur-[160px] pointer-events-none" />
-
         <div className="relative z-10 mx-auto max-w-[1100px] px-6 lg:px-10">
 
           <div className="mb-4">
-            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-white">
+            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-zinc-900">
               ← Espace pédagogique
             </Link>
           </div>
 
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-[#FF5A1F]">Sécurité</p>
-          <h1 className="mt-4 text-4xl font-black lg:text-6xl">Les procédures</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-400">
+          <h1 className="mt-4 text-4xl font-black text-zinc-900 lg:text-6xl">Les procédures</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
             Les procédures varient selon la discipline. Chaque carte détaille le fonctionnement
             général, puis les spécificités par type d&apos;épreuve.
           </p>
@@ -443,7 +441,7 @@ export default function ProceduresPage() {
                 className={`rounded-xl px-3 py-2 text-xs font-black uppercase tracking-[0.08em] transition ${
                   selectedDiscipline === null
                     ? "bg-[#FF5A1F] text-white"
-                    : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                    : "border border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400 hover:text-zinc-900"
                 }`}
               >
                 Toutes disciplines
@@ -455,7 +453,7 @@ export default function ProceduresPage() {
                   className={`rounded-xl px-3 py-2 text-xs font-black tracking-[0.04em] transition ${
                     selectedDiscipline === disc
                       ? "bg-[#FF5A1F] text-white"
-                      : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                      : "border border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400 hover:text-zinc-900"
                   }`}
                 >
                   {disc}
@@ -466,12 +464,12 @@ export default function ProceduresPage() {
 
           {selectedDiscipline && (
             <p className="mt-4 text-sm text-zinc-500">
-              {visibleProcedures.length} procédure{visibleProcedures.length !== 1 ? "s" : ""} applicable{visibleProcedures.length !== 1 ? "s" : ""} en <span className="font-bold text-white">{selectedDiscipline}</span>
+              {visibleProcedures.length} procédure{visibleProcedures.length !== 1 ? "s" : ""} applicable{visibleProcedures.length !== 1 ? "s" : ""} en <span className="font-bold text-zinc-900">{selectedDiscipline}</span>
             </p>
           )}
 
           {/* Légende */}
-          <div className="mt-5 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3">
+          <div className="mt-5 flex flex-wrap items-center gap-2 rounded-2xl border border-zinc-200 bg-white shadow-sm px-4 py-3">
             <span className={`rounded border px-2 py-0.5 text-xs font-bold ${STATUS.oui}`}>OUI / STANDARD</span>
             <span className={`rounded border px-2 py-0.5 text-xs font-bold ${STATUS.adapte}`}>ADAPTÉ</span>
             <span className={`rounded border px-2 py-0.5 text-xs font-bold ${STATUS.specifique}`}>SPÉCIFIQUE</span>
@@ -488,7 +486,7 @@ export default function ProceduresPage() {
               return (
               <div
                 key={proc.title}
-                className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.02]"
+                className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-sm"
               >
                 {/* Header band */}
                 <div className={`flex items-center gap-4 border-b px-6 py-5 lg:px-8 ${proc.headerBg}`}>
@@ -506,27 +504,27 @@ export default function ProceduresPage() {
                 <div className="p-6 lg:p-8">
                   {/* Discipline highlight when filtered */}
                   {disciplineToShow && (
-                    <div className="mb-6 rounded-2xl border border-white/20 bg-white/[0.05] px-4 py-4">
+                    <div className="mb-6 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-4">
                       <div className="mb-1.5 flex flex-wrap items-center gap-2">
-                        <p className="text-xs font-bold uppercase tracking-[0.1em] text-zinc-200">{disciplineToShow.name}</p>
+                        <p className="text-xs font-bold uppercase tracking-[0.1em] text-zinc-700">{disciplineToShow.name}</p>
                         <span className={`rounded border px-2 py-0.5 text-[10px] font-black uppercase tracking-wide ${disciplineToShow.statusColor}`}>
                           {disciplineToShow.status}
                         </span>
                       </div>
-                      <p className="text-sm text-zinc-300">{disciplineToShow.note}</p>
+                      <p className="text-sm text-zinc-600">{disciplineToShow.note}</p>
                     </div>
                   )}
 
                   {/* Contexte */}
-                  <div className="mb-6 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                  <div className="mb-6 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
                     <p className="text-xs font-bold uppercase tracking-[0.1em] text-zinc-500">Contexte</p>
-                    <p className="mt-1 text-sm text-zinc-300">{proc.contexte}</p>
+                    <p className="mt-1 text-sm text-zinc-700">{proc.contexte}</p>
                   </div>
 
                   {/* Role du commissaire */}
-                  <div className="mb-6 rounded-2xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 px-4 py-3">
+                  <div className="mb-6 rounded-2xl border border-[#FF5A1F]/20 bg-orange-50 px-4 py-3">
                     <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#FF5A1F]">Rôle du commissaire</p>
-                    <p className="mt-1 text-sm text-zinc-300">{proc.role}</p>
+                    <p className="mt-1 text-sm text-zinc-700">{proc.role}</p>
                   </div>
 
                   {/* Etapes */}
@@ -537,21 +535,21 @@ export default function ProceduresPage() {
                     <ol className="space-y-3">
                       {proc.etapes.map((etape, i) => (
                         <li key={i} className="flex items-start gap-4">
-                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/5 text-xs font-black text-zinc-400">
+                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-xs font-black text-zinc-600">
                             {i + 1}
                           </span>
-                          <p className="text-zinc-400">{etape}</p>
+                          <p className="text-zinc-600">{etape}</p>
                         </li>
                       ))}
                     </ol>
                   </div>
 
                   {/* Point critique */}
-                  <div className="mt-6 flex items-start gap-3 rounded-2xl border border-red-500/30 bg-red-500/5 px-4 py-4">
+                  <div className="mt-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-4">
                     <span className="shrink-0 text-lg">⚠️</span>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-[0.1em] text-red-400">Point critique</p>
-                      <p className="mt-1 text-sm font-bold text-white">{proc.pointCritique}</p>
+                      <p className="text-xs font-bold uppercase tracking-[0.1em] text-red-700">Point critique</p>
+                      <p className="mt-1 text-sm font-bold text-zinc-900">{proc.pointCritique}</p>
                     </div>
                   </div>
 
@@ -563,10 +561,10 @@ export default function ProceduresPage() {
                         {proc.disciplines.map((d) => (
                           <div
                             key={d.name}
-                            className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3"
+                            className="rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-3"
                           >
                             <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-xs font-black text-white">{d.name}</span>
+                              <span className="text-xs font-black text-zinc-900">{d.name}</span>
                               <span className={`rounded border px-2 py-0.5 text-[10px] font-black uppercase tracking-wide ${d.statusColor}`}>
                                 {d.status}
                               </span>
@@ -584,9 +582,9 @@ export default function ProceduresPage() {
           </div>
 
           {/* Avertissement réglementaire */}
-          <div className="mt-12 flex items-start gap-3 rounded-[24px] border border-yellow-500/30 bg-yellow-500/5 p-6 lg:p-8">
+          <div className="mt-12 flex items-start gap-3 rounded-[24px] border border-yellow-200 bg-yellow-50 p-6 lg:p-8">
             <span className="shrink-0 text-2xl">⚠️</span>
-            <p className="leading-relaxed text-zinc-300">
+            <p className="leading-relaxed text-zinc-700">
               Ces procédures sont basées sur les règlements standard FFSA 2025. Certaines épreuves ou
               championnats peuvent avoir des spécificités additionnelles. Consultez toujours le règlement
               particulier et écoutez attentivement le briefing de la direction de course.
