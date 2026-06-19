@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
@@ -396,7 +399,19 @@ const procedures: Procedure[] = [
   },
 ];
 
+const DISCIPLINES = ["Circuit asphalte", "Tout-terrain", "Rallye", "Course de côte", "Karting"];
+
 export default function ProceduresPage() {
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
+
+  const visibleProcedures = selectedDiscipline
+    ? procedures.filter((p) => {
+        if (!p.disciplines) return true;
+        const d = p.disciplines.find((d) => d.name === selectedDiscipline);
+        return d?.status !== "NON";
+      })
+    : procedures;
+
   return (
     <main className="min-h-screen bg-[#050505] text-white">
       <PublicNavbar />
@@ -419,6 +434,42 @@ export default function ProceduresPage() {
             général, puis les spécificités par type d&apos;épreuve.
           </p>
 
+          {/* Discipline filter */}
+          <div className="mt-8">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Filtrer par discipline</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedDiscipline(null)}
+                className={`rounded-xl px-3 py-2 text-xs font-black uppercase tracking-[0.08em] transition ${
+                  selectedDiscipline === null
+                    ? "bg-[#FF5A1F] text-white"
+                    : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                }`}
+              >
+                Toutes disciplines
+              </button>
+              {DISCIPLINES.map((disc) => (
+                <button
+                  key={disc}
+                  onClick={() => setSelectedDiscipline(selectedDiscipline === disc ? null : disc)}
+                  className={`rounded-xl px-3 py-2 text-xs font-black tracking-[0.04em] transition ${
+                    selectedDiscipline === disc
+                      ? "bg-[#FF5A1F] text-white"
+                      : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                  }`}
+                >
+                  {disc}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {selectedDiscipline && (
+            <p className="mt-4 text-sm text-zinc-500">
+              {visibleProcedures.length} procédure{visibleProcedures.length !== 1 ? "s" : ""} applicable{visibleProcedures.length !== 1 ? "s" : ""} en <span className="font-bold text-white">{selectedDiscipline}</span>
+            </p>
+          )}
+
           {/* Légende */}
           <div className="mt-5 flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3">
             <span className={`rounded border px-2 py-0.5 text-xs font-bold ${STATUS.oui}`}>OUI / STANDARD</span>
@@ -430,7 +481,11 @@ export default function ProceduresPage() {
 
           {/* Procedure cards */}
           <div className="mt-10 space-y-6">
-            {procedures.map((proc, idx) => (
+            {visibleProcedures.map((proc, idx) => {
+              const disciplineToShow = selectedDiscipline
+                ? proc.disciplines?.find((d) => d.name === selectedDiscipline)
+                : null;
+              return (
               <div
                 key={proc.title}
                 className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.02]"
@@ -449,6 +504,19 @@ export default function ProceduresPage() {
                 </div>
 
                 <div className="p-6 lg:p-8">
+                  {/* Discipline highlight when filtered */}
+                  {disciplineToShow && (
+                    <div className="mb-6 rounded-2xl border border-white/20 bg-white/[0.05] px-4 py-4">
+                      <div className="mb-1.5 flex flex-wrap items-center gap-2">
+                        <p className="text-xs font-bold uppercase tracking-[0.1em] text-zinc-200">{disciplineToShow.name}</p>
+                        <span className={`rounded border px-2 py-0.5 text-[10px] font-black uppercase tracking-wide ${disciplineToShow.statusColor}`}>
+                          {disciplineToShow.status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-zinc-300">{disciplineToShow.note}</p>
+                    </div>
+                  )}
+
                   {/* Contexte */}
                   <div className="mb-6 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
                     <p className="text-xs font-bold uppercase tracking-[0.1em] text-zinc-500">Contexte</p>
@@ -488,7 +556,7 @@ export default function ProceduresPage() {
                   </div>
 
                   {/* Par discipline */}
-                  {proc.disciplines && (
+                  {!selectedDiscipline && proc.disciplines && (
                     <div className="mt-6">
                       <p className="mb-3 text-xs font-bold uppercase tracking-[0.1em] text-zinc-500">Par type d&apos;épreuve</p>
                       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -511,7 +579,8 @@ export default function ProceduresPage() {
                   )}
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Avertissement réglementaire */}

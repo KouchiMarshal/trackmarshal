@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
@@ -524,7 +527,19 @@ const flags: Flag[] = [
   },
 ];
 
+const DISCIPLINES = ["Circuit asphalte", "Tout-terrain", "Rallye", "Course de côte", "Karting"];
+
 export default function DrapeauxPage() {
+  const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
+
+  const visibleFlags = selectedDiscipline
+    ? flags.filter((f) => {
+        if (!f.disciplines) return true;
+        const d = f.disciplines.find((d) => d.name === selectedDiscipline);
+        return d?.presentation !== "NON UTILISÉ";
+      })
+    : flags;
+
   return (
     <main className="min-h-screen bg-[#050505] text-white">
       <PublicNavbar />
@@ -546,6 +561,36 @@ export default function DrapeauxPage() {
             Chaque drapeau a une signification précise — et son usage varie selon la discipline.
             Un commissaire doit connaître les deux.
           </p>
+
+          {/* Discipline filter */}
+          <div className="mt-8">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Filtrer par discipline</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setSelectedDiscipline(null)}
+                className={`rounded-xl px-3 py-2 text-xs font-black uppercase tracking-[0.08em] transition ${
+                  selectedDiscipline === null
+                    ? "bg-[#FF5A1F] text-white"
+                    : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                }`}
+              >
+                Toutes disciplines
+              </button>
+              {DISCIPLINES.map((disc) => (
+                <button
+                  key={disc}
+                  onClick={() => setSelectedDiscipline(selectedDiscipline === disc ? null : disc)}
+                  className={`rounded-xl px-3 py-2 text-xs font-black tracking-[0.04em] transition ${
+                    selectedDiscipline === disc
+                      ? "bg-[#FF5A1F] text-white"
+                      : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                  }`}
+                >
+                  {disc}
+                </button>
+              ))}
+            </div>
+          </div>
 
           {/* Dimensions + légende */}
           <div className="mt-5 flex flex-wrap gap-3">
@@ -573,8 +618,18 @@ export default function DrapeauxPage() {
             </Link>
           </div>
 
-          <div className="mt-14 space-y-5">
-            {flags.map((flag) => (
+          {selectedDiscipline && (
+            <p className="mt-4 text-sm text-zinc-500">
+              {visibleFlags.length} drapeau{visibleFlags.length > 1 ? "x" : ""} utilisé{visibleFlags.length !== 1 ? "s" : ""} en <span className="font-bold text-white">{selectedDiscipline}</span>
+            </p>
+          )}
+
+          <div className="mt-10 space-y-5">
+            {visibleFlags.map((flag) => {
+              const disciplinesToShow = selectedDiscipline
+                ? (flag.disciplines?.filter((d) => d.name === selectedDiscipline) ?? [])
+                : flag.disciplines;
+              return (
               <div
                 key={flag.name}
                 className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.02] transition hover:border-white/20"
@@ -608,14 +663,18 @@ export default function DrapeauxPage() {
                     </div>
 
                     {/* Par discipline */}
-                    {flag.disciplines && (
+                    {disciplinesToShow && disciplinesToShow.length > 0 && (
                       <div className="mt-5">
                         <p className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">Par type d&apos;épreuve</p>
-                        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                          {flag.disciplines.map((d) => (
+                        <div className={`grid gap-2 ${selectedDiscipline ? "" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
+                          {disciplinesToShow.map((d) => (
                             <div
                               key={d.name}
-                              className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3"
+                              className={`rounded-2xl border px-3 py-3 ${
+                                selectedDiscipline
+                                  ? "border-[#FF5A1F]/20 bg-[#FF5A1F]/5"
+                                  : "border-white/10 bg-black/20"
+                              }`}
                             >
                               <div className="flex flex-wrap items-center gap-2">
                                 <span className="text-xs font-black text-white">{d.name}</span>
@@ -633,7 +692,8 @@ export default function DrapeauxPage() {
 
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
         </div>
