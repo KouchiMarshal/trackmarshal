@@ -104,7 +104,7 @@ const disciplines = [
 const saviez = [
   {
     emoji: "📊",
-    text: "Un circuit comme Le Mans mobilise plus de 400 commissaires de piste pour les 24 Heures.",
+    text: "Les 24 Heures du Mans 2026 ont mobilisé 2 053 commissaires de piste issus de 23 pays différents.",
   },
   {
     emoji: "🗓️",
