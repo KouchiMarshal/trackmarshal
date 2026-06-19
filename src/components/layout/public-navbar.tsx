@@ -10,7 +10,7 @@ import NotificationBell from "@/components/notifications/notification-bell";
 const links = [
   { href: "/", label: "Accueil" },
   { href: "/events", label: "Événements" },
-  { href: "/apprendre", label: "Apprendre" },
+  { href: "/apprendre", label: "Espace pédagogique" },
   { href: "/about", label: "À propos" },
 ];
 
@@ -51,16 +51,6 @@ export default function PublicNavbar() {
                 {link.label}
               </Link>
             ))}
-            {!user && (
-              <Link
-                href="/devenir-commissaire"
-                className={`text-sm font-bold uppercase tracking-[0.12em] transition hover:text-[#FF5A1F] ${
-                  pathname === "/devenir-commissaire" ? "text-[#FF5A1F]" : "text-zinc-600"
-                }`}
-              >
-                Devenir commissaire
-              </Link>
-            )}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -144,19 +134,6 @@ export default function PublicNavbar() {
                   {link.label}
                 </Link>
               ))}
-              {!user && (
-                <Link
-                  href="/devenir-commissaire"
-                  onClick={() => setOpen(false)}
-                  className={`flex h-14 items-center rounded-2xl px-5 text-lg font-black transition ${
-                    pathname === "/devenir-commissaire"
-                      ? "bg-[#FF5A1F] text-white"
-                      : "text-zinc-700 hover:bg-zinc-100"
-                  }`}
-                >
-                  Devenir commissaire
-                </Link>
-              )}
             </nav>
 
             <div className="space-y-3">
