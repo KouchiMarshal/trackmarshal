@@ -22,6 +22,7 @@ type Procedure = {
   etapes: string[];
   pointCritique: string;
   disciplines?: DisciplineRow[];
+  motoDisciplines?: DisciplineRow[];
 };
 
 const STATUS = {
@@ -31,6 +32,9 @@ const STATUS = {
   specifique: "border-[#FF5A1F] bg-orange-100 text-orange-800",
   adapte: "border-yellow-400 bg-yellow-100 text-yellow-800",
 };
+
+const AUTO_DISCIPLINES = ["Circuit asphalte", "Tout-terrain", "Rallye", "Course de côte", "Karting"];
+const MOTO_DISCIPLINES = ["Vitesse", "Motocross", "Enduro", "Endurance TT"];
 
 const procedures: Procedure[] = [
   {
@@ -82,6 +86,32 @@ const procedures: Procedure[] = [
         status: "ÉQUIVALENT",
         statusColor: STATUS.equivalent,
         note: "Le karting utilise la procédure « SLOW » à la place du SC : panneau SLOW + jaune agité + feux orange clignotants sur la ligne. Vert agité à la reprise.",
+      },
+    ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        status: "ÉQUIVALENT",
+        statusColor: STATUS.equivalent,
+        note: "En championnat de France (Superbike/Supersport), une Safety Bike ou voiture SC peut être déployée sur ordre DC. Non systématique en régional. Les commissaires présentent jaune agité + panneau SC. Vert uniquement à la ligne de relance.",
+      },
+      {
+        name: "Motocross",
+        status: "NON",
+        statusColor: STATUS.non,
+        note: "Pas de Safety Car en motocross. Le drapeau rouge gère les arrêts de course ou d'essais.",
+      },
+      {
+        name: "Enduro",
+        status: "NON",
+        statusColor: STATUS.non,
+        note: "Pas de Safety Car en enduro. La spéciale est neutralisée par drapeau rouge sur ordre DC si nécessaire.",
+      },
+      {
+        name: "Endurance TT",
+        status: "ÉQUIVALENT",
+        statusColor: STATUS.equivalent,
+        note: "Possible selon le règlement particulier. Procédure identique à la vitesse moto : jaune agité + panneau SC, vert uniquement sur la ligne de relance.",
       },
     ],
   },
@@ -136,6 +166,32 @@ const procedures: Procedure[] = [
         note: "Le karting utilise la procédure « SLOW » avec son propre panneau. Pas de FCY au sens circuit asphalte.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        status: "OUI",
+        statusColor: STATUS.oui,
+        note: "Utilisé en Championnat de France Superbike/Supersport. Jaune agité + panneau FCY sur tous les postes. Limite 80 km/h contrôlée par chronométrage. Fin = vert agité 1 tour à tous les postes.",
+      },
+      {
+        name: "Motocross",
+        status: "NON",
+        statusColor: STATUS.non,
+        note: "Non utilisé. Le drapeau jaune agité gère les incidents poste par poste.",
+      },
+      {
+        name: "Enduro",
+        status: "NON",
+        statusColor: STATUS.non,
+        note: "Non utilisé. Le drapeau jaune agité sur la portion concernée gère les incidents.",
+      },
+      {
+        name: "Endurance TT",
+        status: "NON",
+        statusColor: STATUS.non,
+        note: "Non utilisé. Le drapeau rouge est la procédure d'arrêt si nécessaire.",
+      },
+    ],
   },
   {
     emoji: "🟣",
@@ -188,6 +244,32 @@ const procedures: Procedure[] = [
         note: "Non utilisé. Le karting utilise la procédure « SLOW » avec feux clignotants oranges.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        status: "ADAPTÉ",
+        statusColor: STATUS.adapte,
+        note: "Non standardisé en FFM régional. En compétitions FIM internationales, une procédure de slow-down zone peut exister. Vérifier le règlement particulier.",
+      },
+      {
+        name: "Motocross",
+        status: "NON",
+        statusColor: STATUS.non,
+        note: "Non utilisé en motocross.",
+      },
+      {
+        name: "Enduro",
+        status: "NON",
+        statusColor: STATUS.non,
+        note: "Non utilisé en enduro.",
+      },
+      {
+        name: "Endurance TT",
+        status: "NON",
+        statusColor: STATUS.non,
+        note: "Non utilisé en Endurance TT.",
+      },
+    ],
   },
   {
     emoji: "🔴",
@@ -238,6 +320,32 @@ const procedures: Procedure[] = [
         status: "DC SEULEMENT",
         statusColor: STATUS.adapte,
         note: "Présenté AGITÉ sur la ligne de départ par la DC. Signal d'interruption : ralentir, ne plus se dépasser, rouler à allure réduite et s'arrêter à l'endroit défini au briefing. Les commissaires agitent leurs drapeaux jaunes.",
+      },
+    ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        status: "ORDRE DC",
+        statusColor: STATUS.adapte,
+        note: "Sur ORDRE DC. Tous les commissaires agitent vigoureusement le rouge. Les motos rejoignent les stands à vitesse réduite. Aucun dépassement.",
+      },
+      {
+        name: "Motocross",
+        status: "ORDRE DC",
+        statusColor: STATUS.adapte,
+        note: "Sur ORDRE DC. Les commissaires agitent le rouge à tous les postes. Arrêt immédiat de la manche ou des essais. Les pilotes s'arrêtent à l'endroit indiqué par les commissaires.",
+      },
+      {
+        name: "Enduro",
+        status: "ORDRE DC",
+        statusColor: STATUS.adapte,
+        note: "Sur ordre du DC adjoint de spéciale ou DC central. Arrêt immédiat de la spéciale. Les pilotes s'immobilisent là où ils se trouvent et attendent les instructions.",
+      },
+      {
+        name: "Endurance TT",
+        status: "ORDRE DC",
+        statusColor: STATUS.adapte,
+        note: "Sur ORDRE DC. Arrêt de course ou d'essais. Procédure identique au motocross. Tous les commissaires agitent le rouge simultanément.",
       },
     ],
   },
@@ -293,6 +401,32 @@ const procedures: Procedure[] = [
         note: "Postes positionnés à l'intérieur et à l'extérieur du circuit. Le karting passe rapidement — intervention rapide mais hors trajectoire. Même règle : ne jamais bouger un pilote inconscient.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        status: "ADAPTÉ",
+        statusColor: STATUS.adapte,
+        note: "Mêmes principes qu'en circuit auto. Jaune agité pour protéger la zone. Commissaires de sécurité accèdent sur ordre DC après ralentissement effectif. Gants diélectriques si moto électrique.",
+      },
+      {
+        name: "Motocross",
+        status: "ADAPTÉ",
+        statusColor: STATUS.adapte,
+        note: "Zone protégée par drapeaux jaunes agités (PAS DE SAUT dans la zone). Commissaires d'angle évaluent depuis le bord. Intervention sur ordre DC après ralentissement. Ne jamais déplacer un pilote inconscient.",
+      },
+      {
+        name: "Enduro",
+        status: "ADAPTÉ",
+        statusColor: STATUS.adapte,
+        note: "Sur spéciale étroite, signalisation cascade vers l'arrière par drapeaux jaunes. Intervention limitée — attendre les secours pour tout pilote inconscient. Coordonner avec le commissaire de spéciale.",
+      },
+      {
+        name: "Endurance TT",
+        status: "ADAPTÉ",
+        statusColor: STATUS.adapte,
+        note: "Identique au motocross. Zone protégée par jaunes — PAS DE SAUT. Intervention des commissaires d'angle sur ordre DC uniquement.",
+      },
+    ],
   },
   {
     emoji: "🚦",
@@ -343,6 +477,32 @@ const procedures: Procedure[] = [
         status: "DÉPART ARRÊTÉ",
         statusColor: STATUS.oui,
         note: "Feux de départ sur la ligne. La DC présente les drapeaux de procédure (vert, rouge...). Commissaires à l'intérieur et à l'extérieur du circuit, en position avant l'extinction des feux.",
+      },
+    ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        status: "DÉPART ARRÊTÉ",
+        statusColor: STATUS.oui,
+        note: "Tour de chauffe (warm-up lap) puis départ arrêté sur la ligne. Feux de départ identiques au circuit auto. Les commissaires quittent la piste AVANT l'extinction des feux.",
+      },
+      {
+        name: "Motocross",
+        status: "DÉPART DE MASSE",
+        statusColor: STATUS.adapte,
+        note: "Départ de masse depuis la ligne — portillon ou câble relevé simultanément. Les commissaires se positionnent hors de la zone de départ avant le signal. Aucun commissaire sur la piste au moment du départ.",
+      },
+      {
+        name: "Enduro",
+        status: "DÉPART À LA MONTRE",
+        statusColor: STATUS.specifique,
+        note: "Chaque pilote part à son heure selon son numéro de départ. Pas de signal collectif. Les commissaires de départ vérifient les heures et la conformité de chaque pilote.",
+      },
+      {
+        name: "Endurance TT",
+        status: "DÉPART DE MASSE",
+        statusColor: STATUS.adapte,
+        note: "Départ de masse comme en motocross. Portillon ou câble relevé. Les commissaires se positionnent aux angles avant le signal DC.",
       },
     ],
   },
@@ -396,18 +556,51 @@ const procedures: Procedure[] = [
         note: "Damier AGITÉ depuis la ligne d'arrivée. Signal de fin de séance d'entraînement, d'essais et/ou de courses.",
       },
     ],
+    motoDisciplines: [
+      {
+        name: "Vitesse",
+        status: "STANDARD",
+        statusColor: STATUS.oui,
+        note: "Drapeau damier agité depuis la ligne d'arrivée. Les motos sont sous régime de parc fermé dès le passage sous le damier. Aucune intervention mécanique autorisée.",
+      },
+      {
+        name: "Motocross",
+        status: "STANDARD",
+        statusColor: STATUS.oui,
+        note: "Damier agité sur la ligne d'arrivée. Fin de manche ou d'essais. Les pilotes se dirigent vers la zone de parc fermé désignée au briefing.",
+      },
+      {
+        name: "Enduro",
+        status: "ADAPTÉ",
+        statusColor: STATUS.adapte,
+        note: "Fin de la spéciale ou de l'épreuve selon le règlement. Les pilotes passent sous le damier à leur dernier passage. Parc fermé à l'arrivée.",
+      },
+      {
+        name: "Endurance TT",
+        status: "STANDARD",
+        statusColor: STATUS.oui,
+        note: "Damier agité sur la ligne d'arrivée. Procédure identique au motocross. Parc fermé dès le passage sous le damier.",
+      },
+    ],
   },
 ];
 
-const DISCIPLINES = ["Circuit asphalte", "Tout-terrain", "Rallye", "Course de côte", "Karting"];
-
 export default function ProceduresPage() {
+  const [sportMode, setSportMode] = useState<"auto" | "moto">("auto");
   const [selectedDiscipline, setSelectedDiscipline] = useState<string | null>(null);
+
+  const currentDisciplines = sportMode === "auto" ? AUTO_DISCIPLINES : MOTO_DISCIPLINES;
+
+  function handleSportMode(mode: "auto" | "moto") {
+    setSportMode(mode);
+    setSelectedDiscipline(null);
+  }
 
   const visibleProcedures = selectedDiscipline
     ? procedures.filter((p) => {
-        if (!p.disciplines) return true;
-        const d = p.disciplines.find((d) => d.name === selectedDiscipline);
+        const discs = sportMode === "auto" ? p.disciplines : p.motoDisciplines;
+        if (!discs) return true;
+        const d = discs.find((d) => d.name === selectedDiscipline);
         return d?.status !== "NON";
       })
     : procedures;
@@ -432,8 +625,35 @@ export default function ProceduresPage() {
             général, puis les spécificités par type d&apos;épreuve.
           </p>
 
-          {/* Discipline filter */}
+          {/* Sport mode toggle */}
           <div className="mt-8">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Sport</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleSportMode("auto")}
+                className={`rounded-xl px-4 py-2.5 text-sm font-black uppercase tracking-[0.06em] transition ${
+                  sportMode === "auto"
+                    ? "bg-[#FF5A1F] text-white shadow-sm"
+                    : "border border-zinc-300 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"
+                }`}
+              >
+                🏎 Auto
+              </button>
+              <button
+                onClick={() => handleSportMode("moto")}
+                className={`rounded-xl px-4 py-2.5 text-sm font-black uppercase tracking-[0.06em] transition ${
+                  sportMode === "moto"
+                    ? "bg-[#FF5A1F] text-white shadow-sm"
+                    : "border border-zinc-300 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"
+                }`}
+              >
+                🏍 Moto
+              </button>
+            </div>
+          </div>
+
+          {/* Discipline filter */}
+          <div className="mt-5">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Filtrer par discipline</p>
             <div className="flex flex-wrap gap-2">
               <button
@@ -446,7 +666,7 @@ export default function ProceduresPage() {
               >
                 Toutes disciplines
               </button>
-              {DISCIPLINES.map((disc) => (
+              {currentDisciplines.map((disc) => (
                 <button
                   key={disc}
                   onClick={() => setSelectedDiscipline(selectedDiscipline === disc ? null : disc)}
@@ -480,8 +700,9 @@ export default function ProceduresPage() {
           {/* Procedure cards */}
           <div className="mt-10 space-y-6">
             {visibleProcedures.map((proc, idx) => {
+              const currentDiscs = sportMode === "auto" ? proc.disciplines : proc.motoDisciplines;
               const disciplineToShow = selectedDiscipline
-                ? proc.disciplines?.find((d) => d.name === selectedDiscipline)
+                ? currentDiscs?.find((d) => d.name === selectedDiscipline)
                 : null;
               return (
               <div
@@ -530,7 +751,9 @@ export default function ProceduresPage() {
                   {/* Etapes */}
                   <div>
                     <p className="mb-4 text-xs font-bold uppercase tracking-[0.1em] text-zinc-500">
-                      Étapes — Circuit asphalte (procédure de référence)
+                      {sportMode === "auto"
+                        ? "Étapes — Circuit asphalte (procédure de référence)"
+                        : "Étapes — procédure de référence"}
                     </p>
                     <ol className="space-y-3">
                       {proc.etapes.map((etape, i) => (
@@ -554,11 +777,11 @@ export default function ProceduresPage() {
                   </div>
 
                   {/* Par discipline */}
-                  {!selectedDiscipline && proc.disciplines && (
+                  {!selectedDiscipline && currentDiscs && (
                     <div className="mt-6">
                       <p className="mb-3 text-xs font-bold uppercase tracking-[0.1em] text-zinc-500">Par type d&apos;épreuve</p>
                       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                        {proc.disciplines.map((d) => (
+                        {currentDiscs.map((d) => (
                           <div
                             key={d.name}
                             className="rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-3"
