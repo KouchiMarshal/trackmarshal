@@ -22,13 +22,58 @@ const sections = [
     badgeColor: "bg-blue-500/20 text-blue-400",
   },
   {
+    href: "/apprendre/procedures",
+    emoji: "📡",
+    title: "Les procédures",
+    description: "Safety Car, VSC, drapeau rouge, départ arrêté, évacuation d'un véhicule — le déroulé étape par étape.",
+    badge: "Sécurité",
+    color: "border-red-500/30 bg-red-500/5 hover:border-red-500/50 hover:bg-red-500/10",
+    badgeColor: "bg-red-500/20 text-red-400",
+  },
+  {
+    href: "/apprendre/roles",
+    emoji: "👥",
+    title: "Les rôles",
+    description: "Directeur de course, chef de poste, commissaire de piste, délégué technique — qui fait quoi sur une épreuve.",
+    badge: "Organisation",
+    color: "border-purple-500/30 bg-purple-500/5 hover:border-purple-500/50 hover:bg-purple-500/10",
+    badgeColor: "bg-purple-500/20 text-purple-400",
+  },
+  {
+    href: "/apprendre/epreuves",
+    emoji: "🏁",
+    title: "Les types d'épreuves",
+    description: "Circuit, rallye, course de côte, karting, autocross, drift — les spécificités de chaque discipline pour le commissaire.",
+    badge: "Disciplines",
+    color: "border-green-500/30 bg-green-500/5 hover:border-green-500/50 hover:bg-green-500/10",
+    badgeColor: "bg-green-500/20 text-green-400",
+  },
+  {
+    href: "/apprendre/equipement",
+    emoji: "🦺",
+    title: "L'équipement",
+    description: "Combinaison ignifugée, chaussures, gants, licence — tout ce qu'il faut prévoir avant de se présenter sur une épreuve.",
+    badge: "Matériel",
+    color: "border-yellow-500/30 bg-yellow-500/5 hover:border-yellow-500/50 hover:bg-yellow-500/10",
+    badgeColor: "bg-yellow-500/20 text-yellow-400",
+  },
+  {
+    href: "/apprendre/lexique",
+    emoji: "📖",
+    title: "Lexique motorsport",
+    description: "Safety Car, VSC, parc fermé, scratch, steward... Le glossaire de A à Z des termes indispensables pour comprendre les briefings.",
+    badge: "Glossaire",
+    color: "border-cyan-500/30 bg-cyan-500/5 hover:border-cyan-500/50 hover:bg-cyan-500/10",
+    badgeColor: "bg-cyan-500/20 text-cyan-400",
+  },
+  {
     href: "/apprendre/quiz",
     emoji: "🎯",
     title: "Quiz",
     description: "Testez vos connaissances sur les drapeaux, les procédures de sécurité et le règlement sportif avant de passer votre licence.",
     badge: "Entraînement",
-    color: "border-green-500/30 bg-green-500/5 hover:border-green-500/50 hover:bg-green-500/10",
-    badgeColor: "bg-green-500/20 text-green-400",
+    color: "border-pink-500/30 bg-pink-500/5 hover:border-pink-500/50 hover:bg-pink-500/10",
+    badgeColor: "bg-pink-500/20 text-pink-400",
   },
 ];
 
@@ -53,26 +98,26 @@ export default function ApprendrePage() {
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-400 lg:text-xl">
               Tout ce qu'il faut savoir pour devenir commissaire de piste motorsport —
-              licences, drapeaux, procédures et entraînement.
+              licences, drapeaux, procédures, rôles, équipement et entraînement.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {sections.map((s) => (
               <Link
                 key={s.href}
                 href={s.href}
-                className={`group rounded-[32px] border p-8 transition lg:p-10 ${s.color}`}
+                className={`group rounded-[28px] border p-6 transition lg:p-8 ${s.color}`}
               >
-                <span className="text-5xl">{s.emoji}</span>
-                <div className="mt-6">
+                <span className="text-4xl">{s.emoji}</span>
+                <div className="mt-4">
                   <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.1em] ${s.badgeColor}`}>
                     {s.badge}
                   </span>
                 </div>
-                <h2 className="mt-4 text-2xl font-black lg:text-3xl">{s.title}</h2>
-                <p className="mt-3 leading-relaxed text-zinc-400">{s.description}</p>
-                <p className="mt-8 text-sm font-bold text-zinc-300 group-hover:text-white transition">
+                <h2 className="mt-3 text-lg font-black lg:text-xl">{s.title}</h2>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-400">{s.description}</p>
+                <p className="mt-6 text-sm font-bold text-zinc-300 transition group-hover:text-white">
                   Commencer →
                 </p>
               </Link>
