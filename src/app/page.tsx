@@ -84,7 +84,7 @@ export default function HomePage() {
               className="mt-5 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-[#FF5A1F]"
             >
               <span>Pas encore commissaire ?</span>
-              <span className="font-bold text-[#FF5A1F]">Découvrez comment le devenir →</span>
+              <span className="font-bold text-[#FF5A1F]">Comment devenir commissaire de piste →</span>
             </Link>
           </div>
         </div>

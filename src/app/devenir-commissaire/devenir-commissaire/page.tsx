@@ -179,7 +179,7 @@ export default function DevenirCommissairePage() {
           </div>
 
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-[#FF5A1F]">Guide</p>
-          <h1 className="mt-4 text-4xl font-black text-zinc-900 lg:text-6xl">Devenir commissaire</h1>
+          <h1 className="mt-4 text-4xl font-black text-zinc-900 lg:text-6xl">Comment devenir commissaire de piste</h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
             FFSA pour l&apos;automobile, FFM pour la moto — deux parcours pour rejoindre la communauté.
           </p>
