@@ -85,12 +85,12 @@ export default function RegisterPage() {
     }
 
     if (role === "organizer" && !organizerOrgName.trim()) {
-      setToast({ message: "Veuillez renseigner le nom de votre ASA / ASK.", type: "error" });
+      setToast({ message: "Veuillez renseigner le nom de votre structure (ASA, club FFM…).", type: "error" });
       return;
     }
 
     if (role === "organizer" && !organizerDocFile) {
-      setToast({ message: "Veuillez uploader un justificatif (document ASA / ASK).", type: "error" });
+      setToast({ message: "Veuillez uploader un justificatif d'affiliation (FFSA / FFM).", type: "error" });
       return;
     }
 
@@ -438,30 +438,30 @@ export default function RegisterPage() {
                     <div className="rounded-2xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-4">
                       <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#FF5A1F]">Vérification organisateur</p>
                       <p className="mt-1.5 text-xs text-zinc-600">
-                        Pour publier des événements, nous devons vérifier que vous représentez bien une ASA ou ASK agréée.
+                        Pour publier des événements, nous devons vérifier votre affiliation fédérale — FFSA (auto) ou FFM (moto).
                         Votre compte sera validé par notre équipe sous 24h.
                       </p>
                     </div>
 
                     <div>
                       <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
-                        Nom de votre ASA / ASK <span className="text-[#FF5A1F]">*</span>
+                        Nom de votre structure (ASA, club FFM…) <span className="text-[#FF5A1F]">*</span>
                       </p>
                       <input
                         type="text"
                         required
                         value={organizerOrgName}
                         onChange={(e) => setOrganizerOrgName(e.target.value)}
-                        placeholder="ex : ASA du Val de Loire"
+                        placeholder="ex : ASA du Val de Loire, Club Moto Normandie…"
                         className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                       />
                     </div>
 
                     <div>
                       <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
-                        Justificatif officiel (agrément ASA/ASK) <span className="text-[#FF5A1F]">*</span>
+                        Justificatif d'affiliation FFSA / FFM <span className="text-[#FF5A1F]">*</span>
                       </p>
-                      <p className="mb-3 text-xs text-zinc-500">PDF, image — lettre d'agrément, statuts, ou carte de membre officielle.</p>
+                      <p className="mb-3 text-xs text-zinc-500">PDF ou image — agrément ASA, licence organisateur FFSA, ou document d'affiliation FFM.</p>
                       <input
                         type="file"
                         accept=".pdf,image/*"
