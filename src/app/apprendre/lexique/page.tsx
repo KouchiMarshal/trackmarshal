@@ -74,23 +74,21 @@ export default function LexiquePage() {
   }, {});
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
 
       <section className="relative pt-36 pb-24">
-        <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-blue-500/5 blur-[160px] pointer-events-none" />
-
         <div className="relative z-10 mx-auto max-w-[1000px] px-6 lg:px-10">
 
           <div className="mb-4">
-            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-white">
+            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-zinc-900">
               ← Espace pédagogique
             </Link>
           </div>
 
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-[#FF5A1F]">Glossaire</p>
-          <h1 className="mt-4 text-4xl font-black lg:text-6xl">Lexique motorsport</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-400">
+          <h1 className="mt-4 text-4xl font-black text-zinc-900 lg:text-6xl">Lexique motorsport</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
             Les termes essentiels du sport automobile et moto — de A à Z.
             Indispensable pour comprendre les briefings et communiquer avec les équipes.
           </p>
@@ -102,7 +100,7 @@ export default function LexiquePage() {
               placeholder="Rechercher un terme..."
               value={search}
               onChange={(e) => { setSearch(e.target.value); setActiveLetter(null); }}
-              className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-white placeholder-zinc-500 outline-none transition focus:border-[#FF5A1F]/50 focus:bg-white/[0.05] lg:text-lg"
+              className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 py-4 text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-[#FF5A1F] lg:text-lg"
             />
           </div>
 
@@ -111,7 +109,7 @@ export default function LexiquePage() {
             <div className="mt-4 flex flex-wrap gap-2">
               <button
                 onClick={() => setActiveLetter(null)}
-                className={`rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-[0.1em] transition ${activeLetter === null ? "bg-[#FF5A1F] text-white" : "border border-white/10 text-zinc-400 hover:border-white/20"}`}
+                className={`rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-[0.1em] transition ${activeLetter === null ? "bg-[#FF5A1F] text-white" : "border border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400"}`}
               >
                 Tout
               </button>
@@ -119,7 +117,7 @@ export default function LexiquePage() {
                 <button
                   key={l}
                   onClick={() => setActiveLetter(activeLetter === l ? null : l)}
-                  className={`rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-[0.1em] transition ${activeLetter === l ? "bg-[#FF5A1F] text-white" : "border border-white/10 text-zinc-400 hover:border-white/20"}`}
+                  className={`rounded-xl px-3 py-1.5 text-xs font-black uppercase tracking-[0.1em] transition ${activeLetter === l ? "bg-[#FF5A1F] text-white" : "border border-zinc-300 bg-white text-zinc-600 hover:border-zinc-400"}`}
                 >
                   {l}
                 </button>
@@ -139,14 +137,14 @@ export default function LexiquePage() {
             {Object.entries(groupedFiltered).map(([letter, group]) => (
               <div key={letter}>
                 <div className="mb-4 flex items-center gap-4">
-                  <span className="text-4xl font-black text-[#FF5A1F]/30 lg:text-5xl">{letter}</span>
-                  <div className="h-px flex-1 bg-white/10" />
+                  <span className="text-4xl font-black text-[#FF5A1F]/40 lg:text-5xl">{letter}</span>
+                  <div className="h-px flex-1 bg-zinc-200" />
                 </div>
                 <div className="space-y-3">
                   {group.map((t) => (
-                    <div key={t.term} className="rounded-[24px] border border-white/10 bg-white/[0.02] px-6 py-4 transition hover:border-white/20">
-                      <p className="font-black text-white">{t.term}</p>
-                      <p className="mt-1.5 text-sm leading-relaxed text-zinc-400">{t.definition}</p>
+                    <div key={t.term} className="rounded-[24px] border border-zinc-200 bg-white shadow-sm px-6 py-4 transition hover:border-zinc-300">
+                      <p className="font-black text-zinc-900">{t.term}</p>
+                      <p className="mt-1.5 text-sm leading-relaxed text-zinc-600">{t.definition}</p>
                     </div>
                   ))}
                 </div>

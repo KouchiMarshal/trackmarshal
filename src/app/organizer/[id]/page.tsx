@@ -18,7 +18,7 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
 
   if (!profile) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-black text-white">
+      <main className="flex min-h-screen items-center justify-center bg-zinc-50 text-zinc-900">
         Organisateur introuvable
       </main>
     );
@@ -42,10 +42,8 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
     .in("event_id", (events || []).map((e) => e.id));
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
-
-      <div className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/10 blur-[180px] pointer-events-none" />
 
       <section className="relative pt-40 pb-20">
         <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
@@ -53,10 +51,10 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
 
             {/* Sidebar profil */}
             <div>
-              <div className="sticky top-32 overflow-hidden rounded-[40px] border border-white/10 bg-[#0A0A0A]">
+              <div className="sticky top-32 overflow-hidden rounded-[40px] border border-zinc-200 bg-white shadow-sm">
                 <div className="relative h-48 bg-gradient-to-br from-[#FF5A1F]/20 to-transparent">
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
-                    <div className="h-24 w-24 overflow-hidden rounded-full border-4 border-[#0A0A0A] bg-zinc-800">
+                    <div className="h-24 w-24 overflow-hidden rounded-full border-4 border-white bg-zinc-100">
                       {profile.avatar_url ? (
                         <img src={profile.avatar_url} alt={profile.full_name} className="h-full w-full object-cover" />
                       ) : (
@@ -69,21 +67,21 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
                 </div>
 
                 <div className="px-8 pb-8 pt-16 text-center">
-                  <h1 className="text-3xl font-black">{profile.full_name}</h1>
-                  <p className="mt-2 text-zinc-400">{profile.city}{profile.country ? `, ${profile.country}` : ""}</p>
+                  <h1 className="text-3xl font-black text-zinc-900">{profile.full_name}</h1>
+                  <p className="mt-2 text-zinc-600">{profile.city}{profile.country ? `, ${profile.country}` : ""}</p>
 
                   {profile.organizer_verified && (
-                    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-2 text-sm font-bold text-green-700">
                       ✔ Organisateur vérifié
                     </div>
                   )}
 
                   <div className="mt-8 grid grid-cols-2 gap-4 text-center">
-                    <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                    <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
                       <p className="text-3xl font-black text-[#FF5A1F]">{totalEvents || 0}</p>
                       <p className="mt-1 text-xs text-zinc-500">Événements</p>
                     </div>
-                    <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                    <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
                       <p className="text-3xl font-black text-[#FF5A1F]">{totalApplications || 0}</p>
                       <p className="mt-1 text-xs text-zinc-500">Candidatures</p>
                     </div>
@@ -92,7 +90,7 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
                   {profile.email && (
                     <a
                       href={`mailto:${profile.email}`}
-                      className="mt-6 flex h-12 w-full items-center justify-center rounded-2xl bg-[#FF5A1F] font-bold transition hover:scale-[1.01]"
+                      className="mt-6 flex h-12 w-full items-center justify-center rounded-2xl bg-[#FF5A1F] font-bold text-white transition hover:scale-[1.01]"
                     >
                       Contacter
                     </a>
@@ -104,14 +102,14 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
             {/* Événements */}
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Organisateur</p>
-              <h2 className="mt-3 text-4xl font-black lg:text-6xl">Événements publiés</h2>
-              <p className="mt-4 text-zinc-400">
+              <h2 className="mt-3 text-4xl font-black text-zinc-900 lg:text-6xl">Événements publiés</h2>
+              <p className="mt-4 text-zinc-600">
                 Retrouvez tous les événements organisés par {profile.full_name}.
               </p>
 
               <div className="mt-10 grid gap-6 xl:grid-cols-2">
                 {(events || []).length === 0 && (
-                  <div className="col-span-2 rounded-[32px] border border-dashed border-white/10 p-12 text-center text-zinc-500">
+                  <div className="col-span-2 rounded-[32px] border border-dashed border-zinc-300 p-12 text-center text-zinc-500">
                     Aucun événement publié pour le moment.
                   </div>
                 )}
@@ -120,7 +118,7 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
                   <a
                     key={event.id}
                     href={`/events/${event.slug}`}
-                    className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03] transition hover:border-[#FF5A1F]/30"
+                    className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm transition hover:border-[#FF5A1F]/30"
                   >
                     <div className="relative h-[200px]">
                       <img
@@ -129,12 +127,12 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
                       <div className="absolute bottom-4 left-4">
-                        <span className="rounded-full bg-[#FF5A1F] px-3 py-1 text-xs font-black uppercase">{event.discipline}</span>
+                        <span className="rounded-full bg-[#FF5A1F] px-3 py-1 text-xs font-black uppercase text-white">{event.discipline}</span>
                       </div>
                     </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-black">{event.title}</h3>
-                      <div className="mt-3 space-y-2 text-sm text-zinc-400">
+                      <h3 className="text-xl font-black text-zinc-900">{event.title}</h3>
+                      <div className="mt-3 space-y-2 text-sm text-zinc-600">
                         <div className="flex items-center gap-2"><CalendarDays size={14} />{formatDateRange(event.event_date, event.event_end_date)}</div>
                         <div className="flex items-center gap-2"><MapPin size={14} />{event.location}{event.country ? `, ${event.country}` : ""}</div>
                         <div className="flex items-center gap-2"><Users size={14} />{event.marshals_needed} commissaires</div>
