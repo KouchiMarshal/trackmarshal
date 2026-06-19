@@ -225,7 +225,7 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
             <p className="text-xs text-zinc-500">Rôle : <span className="font-semibold text-zinc-700">{desiredRole}</span></p>
           )}
 
-          {withdrawalPending && (
+          {withdrawalPending && applicationStatus !== "rejected" && (
             <div className="rounded-2xl bg-yellow-100 px-5 py-3 text-sm font-semibold text-yellow-700 border border-yellow-200">
               ⏳ Demande d'annulation envoyée — en attente de l'organisateur
             </div>

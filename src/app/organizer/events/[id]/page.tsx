@@ -866,6 +866,38 @@ export default function OrganizerEventDetailsPage() {
                                 <div className="mt-3 rounded-2xl border border-orange-200 bg-orange-50 p-3">
                                   <p className="text-xs font-bold uppercase tracking-[0.15em] text-orange-600">Raison de l'annulation</p>
                                   <p className="mt-1 whitespace-pre-wrap text-sm text-zinc-700">{app.withdrawal_reason}</p>
+                                  <div className="mt-3 flex gap-2">
+                                    <button
+                                      onClick={async () => {
+                                        await supabase.from("applications").delete().eq("id", app.id);
+                                        await supabase.from("notifications").insert({
+                                          user_id: app.marshal_id,
+                                          title: "Votre demande d'annulation a été approuvée",
+                                          type: "application_rejected",
+                                          link: `/events/${event.slug}`,
+                                        });
+                                        loadEvent();
+                                      }}
+                                      className="rounded-xl bg-orange-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-orange-600"
+                                    >
+                                      ✓ Approuver l'annulation
+                                    </button>
+                                    <button
+                                      onClick={async () => {
+                                        await supabase.from("applications").update({ withdrawal_reason: null, withdrawal_requested_at: null }).eq("id", app.id);
+                                        await supabase.from("notifications").insert({
+                                          user_id: app.marshal_id,
+                                          title: "Votre demande d'annulation a été refusée",
+                                          type: "application_accepted",
+                                          link: `/events/${event.slug}`,
+                                        });
+                                        loadEvent();
+                                      }}
+                                      className="rounded-xl border border-orange-200 bg-white px-3 py-2 text-xs font-bold text-orange-600 transition hover:bg-orange-50"
+                                    >
+                                      ✗ Refuser la demande
+                                    </button>
+                                  </div>
                                 </div>
                               )}
 
@@ -905,7 +937,7 @@ export default function OrganizerEventDetailsPage() {
                             </Link>
                             <div className="flex gap-2">
                               <button
-                                disabled={app.status === "accepted"}
+                                disabled={app.status === "accepted" || !!app.withdrawal_reason}
                                 onClick={async () => {
                                   if (acceptedCount >= event.marshals_needed) {
                                     setToast({ message: "Le nombre maximum de commissaires a été atteint.", type: "error" });
@@ -956,25 +988,27 @@ export default function OrganizerEventDetailsPage() {
                               >
                                 Accepter
                               </button>
-                              <button
-                                disabled={app.status === "rejected"}
-                                onClick={async () => {
-                                  await supabase.from("applications").update({ status: "rejected" }).eq("id", app.id);
-                                  await supabase.from("notifications").insert({
-                                    user_id: app.marshal_id,
-                                    title: "Votre candidature a été refusée",
-                                    type: "application_rejected",
-                                    link: `/events/${event.slug}`,
-                                  });
-                                  if (app.profiles?.email) {
-                                    sendEmail(app.profiles.email, "application_rejected", { eventTitle: event.title });
-                                  }
-                                  loadEvent();
-                                }}
-                                className={`rounded-2xl px-4 py-2 text-sm font-bold text-white transition ${app.status === "rejected" ? "cursor-not-allowed bg-zinc-200 text-zinc-400" : "bg-red-600 hover:bg-red-500"}`}
-                              >
-                                Refuser
-                              </button>
+                              {!app.withdrawal_reason && (
+                                <button
+                                  disabled={app.status === "rejected"}
+                                  onClick={async () => {
+                                    await supabase.from("applications").update({ status: "rejected" }).eq("id", app.id);
+                                    await supabase.from("notifications").insert({
+                                      user_id: app.marshal_id,
+                                      title: "Votre candidature a été refusée",
+                                      type: "application_rejected",
+                                      link: `/events/${event.slug}`,
+                                    });
+                                    if (app.profiles?.email) {
+                                      sendEmail(app.profiles.email, "application_rejected", { eventTitle: event.title });
+                                    }
+                                    loadEvent();
+                                  }}
+                                  className={`rounded-2xl px-4 py-2 text-sm font-bold text-white transition ${app.status === "rejected" ? "cursor-not-allowed bg-zinc-200 text-zinc-400" : "bg-red-600 hover:bg-red-500"}`}
+                                >
+                                  Refuser
+                                </button>
+                              )}
                             </div>
                           </div>
 
