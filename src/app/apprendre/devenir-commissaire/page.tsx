@@ -1,8 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 
-const steps = [
+const stepsFFSA = [
   {
     num: "01",
     title: "Rejoindre une ASA ou une ASK",
@@ -32,6 +35,39 @@ const steps = [
     title: "Évoluer vers les grades supérieurs",
     description: "Avec l'expérience et les formations complémentaires, vous pouvez progresser vers l'EICOB (Commissaire international B), puis les grades de Chef de Poste (EICOACPC pour le circuit, EICOACPR pour la route).",
     tip: "Chaque grade ouvre de nouvelles épreuves et responsabilités. Le niveau international B permet d'officier sur des courses FIA.",
+  },
+];
+
+const stepsFFM = [
+  {
+    num: "01",
+    title: "Rejoindre un club FFM affilié",
+    description: "La FFM (Fédération Française de Motocyclisme) fédère les clubs moto en France. Votre premier pas est de rejoindre un club FFM proche de chez vous. Ces clubs organisent des épreuves locales et sont votre point d'entrée obligatoire pour accéder aux formations et aux licences officiels.",
+    tip: "Trouvez votre club FFM sur ffmoto.org. Beaucoup de clubs organisent des journées d'initiation sur leurs épreuves — l'occasion parfaite pour découvrir le rôle de commissaire.",
+  },
+  {
+    num: "02",
+    title: "Se former aux bases FFM",
+    description: "La FFM propose des formations pour ses officiels via les Ligues régionales. Les modules couvrent les drapeaux FFM, les procédures de sécurité, le règlement sportif FFM et les spécificités de chaque discipline (motocross, vitesse, enduro, endurance TT, trial, supermoto).",
+    tip: "Les sessions de formation sont organisées par les Ligues FFM de chaque région. Renseignez-vous auprès de votre club pour les dates et les modalités d'inscription.",
+  },
+  {
+    num: "03",
+    title: "Participer en observateur",
+    description: "Avant d'officier seul, vous accompagnez des officiels expérimentés sur 2 à 3 épreuves. Vous apprenez les positionnements sur chaque discipline, les gestes spécifiques (drapeaux FFM) et les réflexes de sécurité propres aux épreuves moto (PAS DE SAUT en zone jaune, croix rouge…).",
+    tip: "Chaque discipline moto a ses particularités. Si possible, participez à différents types d'épreuves (motocross, vitesse, enduro) pour avoir une vision complète du métier.",
+  },
+  {
+    num: "04",
+    title: "Obtenir la licence OFS",
+    description: "L'OFS (Officiel Stagiaire FFM) est la première licence officiel moto. Elle vous permet d'officier sur les épreuves moto sous supervision d'un officiel expérimenté. La licence est annuelle et se renouvelle chaque saison.",
+    tip: "La demande de licence se fait via votre club FFM affilié. Comptez une saison complète entre la formation initiale et l'obtention de la licence OFS.",
+  },
+  {
+    num: "05",
+    title: "Évoluer vers la licence OFF",
+    description: "Avec l'expérience accumulée et les formations complémentaires, vous accédez à la licence OFF (Officiel FFM). Cette licence vous permet d'officier en autonomie sur toutes les épreuves FFM, quelle que soit la discipline, et d'encadrer des officiels stagiaires.",
+    tip: "Chaque épreuve validée renforce votre dossier. Notez vos participations pour faciliter la demande de promotion vers la licence OFF.",
   },
 ];
 
@@ -120,6 +156,15 @@ const faqs = [
 ];
 
 export default function DevenirCommissairePage() {
+  const [sportMode, setSportMode] = useState<"auto" | "moto">("auto");
+
+  const currentSteps = sportMode === "auto" ? stepsFFSA : stepsFFM;
+  const currentLicenses = licenses.filter((lic) => lic.federation === (sportMode === "auto" ? "FFSA" : "FFM"));
+  const licensesSubtitle =
+    sportMode === "auto"
+      ? "FFSA — cinq grades du commissaire C au Chef de Poste."
+      : "FFM — deux niveaux pour officier sur toutes les épreuves moto.";
+
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
@@ -136,15 +181,41 @@ export default function DevenirCommissairePage() {
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-[#FF5A1F]">Guide</p>
           <h1 className="mt-4 text-4xl font-black text-zinc-900 lg:text-6xl">Devenir commissaire</h1>
           <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
-            Le commissaire de piste est un acteur essentiel de la sécurité en compétition motorsport.
-            Voici le chemin pour obtenir votre licence et rejoindre cette communauté.
+            FFSA pour l&apos;automobile, FFM pour la moto — deux parcours pour rejoindre la communauté.
           </p>
+
+          {/* Sport mode toggle */}
+          <div className="mt-8">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Sport</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setSportMode("auto")}
+                className={`rounded-xl px-4 py-2.5 text-sm font-black uppercase tracking-[0.06em] transition ${
+                  sportMode === "auto"
+                    ? "bg-[#FF5A1F] text-white shadow-sm"
+                    : "border border-zinc-300 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"
+                }`}
+              >
+                🏎 Auto
+              </button>
+              <button
+                onClick={() => setSportMode("moto")}
+                className={`rounded-xl px-4 py-2.5 text-sm font-black uppercase tracking-[0.06em] transition ${
+                  sportMode === "moto"
+                    ? "bg-[#FF5A1F] text-white shadow-sm"
+                    : "border border-zinc-300 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"
+                }`}
+              >
+                🏍 Moto
+              </button>
+            </div>
+          </div>
 
           {/* Étapes */}
           <div className="mt-16">
             <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Les étapes</h2>
             <div className="mt-8 space-y-4">
-              {steps.map((step) => (
+              {currentSteps.map((step) => (
                 <div key={step.num} className="flex gap-5 rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6 lg:gap-8 lg:p-8">
                   <div className="shrink-0">
                     <span className="text-4xl font-black text-[#FF5A1F]/30 lg:text-5xl">{step.num}</span>
@@ -165,9 +236,9 @@ export default function DevenirCommissairePage() {
           {/* Licences */}
           <div className="mt-20">
             <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Les types de licences</h2>
-            <p className="mt-3 text-zinc-600">FFSA pour l'automobile, FFM pour la moto — deux fédérations, deux parcours.</p>
+            <p className="mt-3 text-zinc-600">{licensesSubtitle}</p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {licenses.map((lic) => (
+              {currentLicenses.map((lic) => (
                 <div key={lic.code} className={`rounded-[24px] border p-6 ${lic.color}`}>
                   <div className="flex items-center justify-between">
                     <span className={`rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.1em] ${lic.badgeColor}`}>
