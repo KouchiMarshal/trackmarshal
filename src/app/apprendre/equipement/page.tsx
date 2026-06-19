@@ -7,7 +7,7 @@ const circuitItems = [
     emoji: "🦺",
     name: "Combinaison en coton",
     description:
-      "La combinaison en coton est votre premier élément de protection sur circuit (Art. 2.6 Annexe H). Sa couleur orange ou rouge permet aux pilotes de vous identifier immédiatement. Pour votre sécurité : manches baissées, zip fermé tant que les voitures évoluent. Pour les épreuves nocturnes, deux bandes de visibilité d'au moins 5 cm doivent être cousues au bas des jambes.",
+      "La combinaison en coton est votre premier élément de protection sur circuit (Art. 2.6 Annexe H). Sa couleur orange permet aux pilotes de vous identifier immédiatement. Pour votre sécurité : manches baissées, zip fermé tant que les voitures évoluent. Pour les épreuves nocturnes, deux bandes de visibilité d'au moins 5 cm doivent être cousues au bas des jambes.",
   },
   {
     emoji: "👟",
