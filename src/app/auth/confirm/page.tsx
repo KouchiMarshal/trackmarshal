@@ -95,16 +95,16 @@ export default function AuthConfirmPage() {
   }, []);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-black text-white">
+    <main className="flex min-h-screen items-center justify-center bg-zinc-50 text-zinc-900">
       <div className="text-center px-6">
         {!isError ? (
-          <div className="mx-auto mb-6 h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-[#FF5A1F]" />
+          <div className="mx-auto mb-6 h-10 w-10 animate-spin rounded-full border-2 border-zinc-200 border-t-[#FF5A1F]" />
         ) : (
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-red-500/30 bg-red-500/10">
-            <span className="text-2xl">✕</span>
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-red-200 bg-red-50">
+            <span className="text-2xl text-red-500">✕</span>
           </div>
         )}
-        <p className={`text-lg font-semibold ${isError ? "text-red-400" : "text-zinc-300"}`}>
+        <p className={`text-lg font-semibold ${isError ? "text-red-500" : "text-zinc-600"}`}>
           {message}
         </p>
         {isError && (

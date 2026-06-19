@@ -173,25 +173,11 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-black">
+    <main className="relative min-h-screen overflow-hidden bg-zinc-50 text-zinc-900">
 
       <Toast toast={toast} onClose={() => setToast(null)} />
 
-      <div className="absolute inset-0">
-
-        <img
-          src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=2070&auto=format&fit=crop"
-          alt="Motorsport"
-          className="h-full w-full object-cover"
-        />
-
-        <div className="absolute inset-0 bg-black/80" />
-
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/40" />
-
-      </div>
-
-      <div className="absolute right-0 top-0 h-[350px] w-[350px] rounded-full bg-[#FF5A1F]/10 blur-[120px] lg:h-[700px] lg:w-[700px] lg:blur-[220px]" />
+      <div className="pointer-events-none absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/6 blur-[180px]" />
 
       <PublicNavbar />
 
@@ -207,7 +193,7 @@ export default function RegisterPage() {
 
             </p>
 
-            <h1 className="mt-8 text-7xl font-black uppercase leading-[0.9] tracking-[-0.05em] text-white">
+            <h1 className="mt-8 text-7xl font-black uppercase leading-[0.9] tracking-[-0.05em] text-zinc-900">
 
               Commencez
               <br />
@@ -219,7 +205,7 @@ export default function RegisterPage() {
 
             </h1>
 
-            <p className="mt-10 max-w-2xl text-2xl leading-relaxed text-zinc-300">
+            <p className="mt-10 max-w-2xl text-2xl leading-relaxed text-zinc-600">
 
               Rejoignez une plateforme moderne
               dédiée aux organisateurs et commissaires motorsport.
