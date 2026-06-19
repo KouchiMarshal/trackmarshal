@@ -44,7 +44,7 @@ export default function HomePage() {
       <PublicNavbar />
 
       {/* Hero */}
-      <section className="relative flex min-h-screen items-center overflow-hidden bg-zinc-50 pt-28 lg:pt-32">
+      <section className="relative overflow-hidden bg-zinc-50 pt-28 pb-16 lg:flex lg:min-h-screen lg:items-center lg:pt-32 lg:pb-0">
         <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-[#FF5A1F]/8 blur-[180px] pointer-events-none" />
         <div className="absolute left-0 bottom-0 h-[350px] w-[350px] rounded-full bg-[#FF5A1F]/5 blur-[140px] pointer-events-none" />
 
@@ -80,7 +80,7 @@ export default function HomePage() {
               </Link>
             </div>
             <Link
-              href="/devenir-commissaire"
+              href="/apprendre/devenir-commissaire"
               className="mt-5 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-[#FF5A1F]"
             >
               <span>Pas encore commissaire ?</span>
