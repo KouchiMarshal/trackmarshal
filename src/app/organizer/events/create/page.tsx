@@ -20,6 +20,8 @@ import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
+const EXTRA_ROLES = ["Commissaire technique", "Commissaire chef de poste", "Chronomètreur", "Directeur de course"];
+
 export default function CreateEventPage() {
 
   const router = useRouter();
@@ -50,6 +52,10 @@ export default function CreateEventPage() {
 
   const [marshalsNeeded, setMarshalsNeeded] =
     useState("");
+
+  const [extraRoles, setExtraRoles] = useState(
+    EXTRA_ROLES.map(role => ({ role, count: "", enabled: false }))
+  );
 
   const [discipline, setDiscipline] =
     useState("");
@@ -89,6 +95,13 @@ export default function CreateEventPage() {
 
   const [toast, setToast] =
     useState<ToastData>(null);
+
+  function toggleExtraRole(index: number) {
+    setExtraRoles(prev => prev.map((r, i) => i === index ? { ...r, enabled: !r.enabled, count: r.enabled ? "" : r.count } : r));
+  }
+  function setExtraRoleCount(index: number, count: string) {
+    setExtraRoles(prev => prev.map((r, i) => i === index ? { ...r, count } : r));
+  }
 
   async function uploadImage() {
 
@@ -150,6 +163,12 @@ export default function CreateEventPage() {
     const uploadedImage =
       await uploadImage();
 
+    const staffRolesData = [
+      ...(marshalsNeeded ? [{ role: "Commissaire de piste", count: parseInt(marshalsNeeded) }] : []),
+      ...extraRoles.filter(r => r.enabled && r.count).map(r => ({ role: r.role, count: parseInt(r.count) }))
+    ];
+    const totalNeeded = staffRolesData.reduce((sum, r) => sum + r.count, 0) || parseInt(marshalsNeeded) || 0;
+
     const baseSlug =
       title
         .toLowerCase()
@@ -177,10 +196,9 @@ export default function CreateEventPage() {
           image_url:
             uploadedImage,
 
-          marshals_needed:
-            Number(
-              marshalsNeeded
-            ),
+          marshals_needed: totalNeeded,
+
+          staff_roles: staffRolesData,
 
           discipline,
 
@@ -468,34 +486,51 @@ export default function CreateEventPage() {
               </div>
 
               <div>
-
-                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
-
-                  Commissaires recherchés
-
+                <p className="mb-4 text-xs uppercase tracking-[0.2em] text-zinc-500">
+                  Personnel recherché
                 </p>
 
-                <div className="relative">
+                <div className="space-y-3">
+                  {/* Commissaire de piste — always shown */}
+                  <div className="flex items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-5 py-4">
+                    <Users size={18} className="shrink-0 text-[#FF5A1F]" />
+                    <span className="flex-1 font-semibold text-zinc-900">Commissaire de piste</span>
+                    <input
+                      type="number"
+                      min="0"
+                      value={marshalsNeeded}
+                      onChange={(e) => setMarshalsNeeded(e.target.value)}
+                      placeholder="0"
+                      className="h-10 w-20 rounded-xl border border-zinc-300 bg-zinc-50 px-3 text-center text-zinc-900 outline-none focus:border-[#FF5A1F]"
+                    />
+                  </div>
 
-                  <Users
-                    size={18}
-                    className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-400"
-                  />
-
-                  <input
-                    type="number"
-                    value={marshalsNeeded}
-                    onChange={(e) =>
-                      setMarshalsNeeded(
-                        e.target.value
-                      )
-                    }
-                    placeholder="25"
-                    className="h-16 w-full rounded-2xl border border-zinc-300 bg-zinc-50 pl-14 pr-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
-                  />
-
+                  {/* Extra roles */}
+                  {extraRoles.map((r, i) => (
+                    <div key={r.role} className={`rounded-2xl border px-5 py-4 transition ${r.enabled ? "border-[#FF5A1F]/30 bg-[#FF5A1F]/5" : "border-zinc-200 bg-white"}`}>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => toggleExtraRole(i)}
+                          className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${r.enabled ? "bg-[#FF5A1F]" : "bg-zinc-300"}`}
+                        >
+                          <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${r.enabled ? "translate-x-5" : "translate-x-0.5"}`} />
+                        </button>
+                        <span className="flex-1 font-semibold text-zinc-900">{r.role}</span>
+                        {r.enabled && (
+                          <input
+                            type="number"
+                            min="1"
+                            value={r.count}
+                            onChange={(e) => setExtraRoleCount(i, e.target.value)}
+                            placeholder="0"
+                            className="h-10 w-20 rounded-xl border border-zinc-300 bg-white px-3 text-center text-zinc-900 outline-none focus:border-[#FF5A1F]"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-
               </div>
 
               <div className="grid gap-5">
