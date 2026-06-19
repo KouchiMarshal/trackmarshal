@@ -10,18 +10,38 @@ const quizzes = [
     description: "Signaux, couleurs, modes de présentation et spécificités par discipline. Maîtrisez chaque drapeau avant de prendre votre poste.",
     questions: 20,
     difficulty: "Fondamental",
-    difficultyColor: "bg-green-500/20 text-green-400",
+    difficultyColor: "bg-[#FF5A1F]/20 text-[#FF5A1F]",
     color: "border-[#FF5A1F]/30 hover:border-[#FF5A1F]/50",
   },
   {
     href: "/apprendre/quiz/procedures",
     emoji: "📡",
     title: "Les procédures",
-    description: "Safety Car, FCY, Code 60, drapeau rouge, départs — les procédures de neutralisation étape par étape.",
+    description: "Safety Car, FCY, Code 60, drapeau rouge, départs — les procédures de neutralisation décortiquées étape par étape.",
     questions: 20,
     difficulty: "Intermédiaire",
-    difficultyColor: "bg-yellow-500/20 text-yellow-400",
+    difficultyColor: "bg-red-500/20 text-red-400",
     color: "border-red-500/30 hover:border-red-500/50",
+  },
+  {
+    href: "/apprendre/quiz/formation",
+    emoji: "📋",
+    title: "Licences & institutions",
+    description: "FFSA, FIA, FFM, ASA, ENCOC, EICOB, tenue obligatoire, équipement, rôles, lexique réglementaire — tout sur le cadre du commissariat.",
+    questions: 20,
+    difficulty: "Fondamental",
+    difficultyColor: "bg-purple-500/20 text-purple-400",
+    color: "border-purple-500/30 hover:border-purple-500/50",
+  },
+  {
+    href: "/apprendre/quiz/epreuves",
+    emoji: "🏁",
+    title: "Épreuves & rôles",
+    description: "Circuit, rallye, côte, karting, autocross, drift — spécificités de chaque discipline, rôles des officiels et lexique motorsport.",
+    questions: 20,
+    difficulty: "Intermédiaire",
+    difficultyColor: "bg-green-500/20 text-green-400",
+    color: "border-green-500/30 hover:border-green-500/50",
   },
   {
     href: "/apprendre/quiz/general",
@@ -73,7 +93,7 @@ export default function QuizPage() {
                   <p className="mt-1 text-zinc-400">{q.description}</p>
                   <p className="mt-2 text-sm text-zinc-500">{q.questions} questions</p>
                 </div>
-                <span className="shrink-0 rounded-2xl bg-[#FF5A1F] px-5 py-3 text-sm font-bold transition group-hover:opacity-90 text-center">
+                <span className="shrink-0 rounded-2xl bg-[#FF5A1F] px-5 py-3 text-sm font-bold transition group-hover:opacity-90 text-center sm:self-center">
                   Commencer →
                 </span>
               </Link>
@@ -81,12 +101,11 @@ export default function QuizPage() {
           </div>
 
           <div className="mt-16 rounded-[24px] border border-white/10 bg-white/[0.02] p-6 lg:p-8">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Conseil</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Parcours recommandé</p>
             <p className="mt-3 leading-relaxed text-zinc-400">
-              Commencez par le quiz <span className="font-bold text-white">Drapeaux</span> pour maîtriser les bases,
-              puis enchaînez avec le quiz <span className="font-bold text-white">Procédures</span>.
-              Le quiz <span className="font-bold text-white">Général</span> est idéal pour valider l&apos;ensemble
-              de vos connaissances avant de passer votre licence ENCOC.
+              Commencez par <span className="font-bold text-white">Drapeaux</span> et <span className="font-bold text-white">Licences & institutions</span> pour poser les bases,
+              puis enchaînez avec <span className="font-bold text-white">Procédures</span> et <span className="font-bold text-white">Épreuves & rôles</span>.
+              Le <span className="font-bold text-white">Quiz général (40 questions)</span> est idéal pour valider l&apos;ensemble de vos connaissances avant de passer votre licence ENCOC.
             </p>
           </div>
 
