@@ -183,23 +183,32 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
         <>
           {staffRoles.length > 1 && (
             <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Rôle souhaité</p>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
+                Rôle souhaité <span className="text-red-500">*</span>
+              </p>
               <select
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
-                className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none focus:border-[#FF5A1F]"
+                className={`h-14 w-full rounded-2xl border px-5 text-zinc-900 outline-none transition ${
+                  !selectedRole
+                    ? "border-red-300 bg-red-50 focus:border-red-400"
+                    : "border-zinc-300 bg-zinc-50 focus:border-[#FF5A1F]"
+                }`}
               >
-                <option value="">Choisir votre rôle...</option>
+                <option value="">Choisir votre rôle avant de postuler...</option>
                 {staffRoles.map(r => (
                   <option key={r.role} value={r.role}>{r.role} ({r.count} poste{r.count > 1 ? "s" : ""})</option>
                 ))}
               </select>
+              {!selectedRole && (
+                <p className="mt-1.5 text-xs text-red-500">Vous devez choisir un rôle pour postuler.</p>
+              )}
             </div>
           )}
           <button
             onClick={handleApply}
-            disabled={loading}
-            className={`h-16 w-full rounded-2xl text-lg font-bold text-white transition hover:scale-[1.02] hover:opacity-90 disabled:opacity-60 ${
+            disabled={loading || (staffRoles.length > 1 && !selectedRole)}
+            className={`h-16 w-full rounded-2xl text-lg font-bold text-white transition hover:scale-[1.02] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 ${
               isFull ? "bg-blue-600" : "bg-[#FF5A1F]"
             }`}
           >
