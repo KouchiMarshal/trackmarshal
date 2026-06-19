@@ -80,7 +80,7 @@ export default function HomePage() {
               </Link>
             </div>
             <Link
-              href="/apprendre/devenir-commissaire"
+              href="/devenir-commissaire/devenir-commissaire"
               className="mt-5 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-[#FF5A1F]"
             >
               <span>Pas encore commissaire ?</span>
@@ -131,7 +131,7 @@ export default function HomePage() {
               </p>
             </div>
             <Link
-              href="/apprendre"
+              href="/devenir-commissaire"
               className="mt-6 inline-flex items-center gap-2 rounded-2xl border border-zinc-300 bg-zinc-50 px-6 py-3 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/50 hover:text-[#FF5A1F] lg:mt-0 lg:shrink-0"
             >
               Tout l&apos;espace pédagogique →
@@ -141,28 +141,28 @@ export default function HomePage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
-                href: "/apprendre/drapeaux",
+                href: "/devenir-commissaire/drapeaux",
                 emoji: "🚩",
                 title: "Les drapeaux",
                 desc: "Signification de chaque drapeau — auto et moto. Avec filtres par discipline.",
                 badge: "Lexique visuel",
               },
               {
-                href: "/apprendre/procedures",
+                href: "/devenir-commissaire/procedures",
                 emoji: "📡",
                 title: "Les procédures",
                 desc: "Safety Car, FCY, Code 60, drapeau rouge, évacuation — étape par étape.",
                 badge: "Sécurité",
               },
               {
-                href: "/apprendre/epreuves",
+                href: "/devenir-commissaire/epreuves",
                 emoji: "🏁",
                 title: "Types d'épreuves",
                 desc: "Circuit, rallye, côte, karting, motocross — les spécificités de chaque discipline.",
                 badge: "Disciplines",
               },
               {
-                href: "/apprendre/quiz",
+                href: "/devenir-commissaire/quiz",
                 emoji: "🎯",
                 title: "Quiz",
                 desc: "Testez vos connaissances avant de passer votre licence FFSA ou FFM.",

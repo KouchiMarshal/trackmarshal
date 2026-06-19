@@ -10,7 +10,7 @@ import NotificationBell from "@/components/notifications/notification-bell";
 const links = [
   { href: "/", label: "Accueil" },
   { href: "/events", label: "Événements" },
-  { href: "/apprendre", label: "Espace pédagogique" },
+  { href: "/devenir-commissaire", label: "Espace pédagogique" },
   { href: "/about", label: "À propos" },
 ];
 
@@ -45,7 +45,7 @@ export default function PublicNavbar() {
                 key={link.href}
                 href={link.href}
                 className={`text-sm font-bold uppercase tracking-[0.12em] transition hover:text-[#FF5A1F] ${
-                  pathname === link.href ? "text-[#FF5A1F]" : "text-zinc-600"
+                  (link.href === "/" ? pathname === link.href : pathname.startsWith(link.href)) ? "text-[#FF5A1F]" : "text-zinc-600"
                 }`}
               >
                 {link.label}
@@ -126,7 +126,7 @@ export default function PublicNavbar() {
                   href={link.href}
                   onClick={() => setOpen(false)}
                   className={`flex h-14 items-center rounded-2xl px-5 text-lg font-black transition ${
-                    pathname === link.href
+                    (link.href === "/" ? pathname === link.href : pathname.startsWith(link.href))
                       ? "bg-[#FF5A1F] text-white"
                       : "text-zinc-700 hover:bg-zinc-100"
                   }`}

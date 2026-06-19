@@ -1,0 +1,296 @@
+import QuizEngine, { QuizQuestion } from "@/components/quiz/QuizEngine";
+
+const questions: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "Que signifie le drapeau rouge ?",
+    flagImg: "/flags/rouge.svg",
+    flagAlt: "Drapeau rouge",
+    options: [
+      "Arrêt immédiat de la séance",
+      "Danger — ralentir sans dépasser",
+      "Véhicule lent sur la piste",
+      "Avertissement pour conduite antisportive",
+    ],
+    correct: 0,
+    explanation: "Le drapeau rouge ordonne l'arrêt immédiat de la séance. Tous les concurrents doivent ralentir progressivement et rejoindre les stands ou la grille selon les instructions du DC.",
+  },
+  {
+    id: 2,
+    question: "Comment présente-t-on le drapeau jaune en cas de danger immédiat sur la piste ?",
+    flagImg: "/flags/jaune.svg",
+    flagAlt: "Drapeau jaune",
+    options: [
+      "Tenu fixe, bras tendu",
+      "Agité vigoureusement",
+      "Agité lentement",
+      "Posé au sol",
+    ],
+    correct: 1,
+    explanation: "Le drapeau jaune AGITÉ (vigoureusement) signale un danger immédiat. Le jaune FIXE (bras tendu) annonce un danger moins immédiat en amont. Dans les deux cas, tout dépassement est interdit.",
+  },
+  {
+    id: 3,
+    question: "Le drapeau jaune FIXE (bras tendu, non agité) indique :",
+    flagImg: "/flags/jaune.svg",
+    flagAlt: "Drapeau jaune fixe",
+    options: [
+      "Un danger immédiat — prêt à s'arrêter",
+      "Un danger en amont — ralentir, pas de dépassement",
+      "La fin d'une zone de danger",
+      "Une pénalité pour un concurrent",
+    ],
+    correct: 1,
+    explanation: "Le jaune FIXE signale un danger en amont du poste. Pas de dépassement autorisé dans toute la zone jaune. Le jaune AGITÉ signale un danger plus immédiat et grave, pouvant nécessiter de s'arrêter.",
+  },
+  {
+    id: 4,
+    question: "Le double drapeau jaune agité signifie :",
+    flagImg: "/flags/jaune.svg",
+    flagAlt: "Double drapeau jaune",
+    options: [
+      "Deux zones de danger successives",
+      "Danger immédiat — voie totalement ou partiellement obstruée, prêt à s'arrêter",
+      "La piste est fermée à tous les concurrents",
+      "Une sortie de route vient de se produire",
+    ],
+    correct: 1,
+    explanation: "Le double drapeau jaune agité signale un danger immédiat grave, avec la voie totalement ou partiellement obstruée. Les concurrents doivent être prêts à s'arrêter si nécessaire. C'est le signal le plus grave avant le rouge.",
+  },
+  {
+    id: 5,
+    question: "Que signifie le drapeau vert en sortie de zone jaune ?",
+    flagImg: "/flags/vert.svg",
+    flagAlt: "Drapeau vert",
+    options: [
+      "Départ de la course",
+      "La zone de danger est dégagée — reprendre le rythme normal",
+      "La voiture de sécurité rentre aux stands",
+      "L'autorisation de doubler est accordée",
+    ],
+    correct: 1,
+    explanation: "Le drapeau vert indique que la zone de danger est dégagée. Les concurrents peuvent reprendre leur vitesse de course. En fin de FCY ou Code 60, il est agité à TOUS les postes pendant 1 tour.",
+  },
+  {
+    id: 6,
+    question: "À quel concurrent présente-t-on le drapeau bleu ?",
+    flagImg: "/flags/bleu.svg",
+    flagAlt: "Drapeau bleu",
+    options: [
+      "Au leader en tête de course",
+      "À un concurrent en difficulté mécanique",
+      "À un concurrent sur le point d'être doublé par un pilote plus rapide",
+      "Au dernier concurrent de la course",
+    ],
+    correct: 2,
+    explanation: "Le drapeau bleu est présenté au concurrent qui va être doublé par un pilote plus rapide. Il doit laisser passer sans retarder inutilement. En Karting, il est présenté AGITÉ uniquement par la DC.",
+  },
+  {
+    id: 7,
+    question: "Que signifie le drapeau noir et orange (« meatball ») ?",
+    flagImg: "/flags/meatball.svg",
+    flagAlt: "Drapeau meatball",
+    options: [
+      "Exclusion immédiate du concurrent",
+      "La piste est contaminée par de l'huile",
+      "Problème mécanique apparent — le concurrent doit rejoindre les stands",
+      "Avertissement pour conduite antisportive",
+    ],
+    correct: 2,
+    explanation: "Le drapeau meatball (noir et orange) est présenté avec le numéro du concurrent dont le véhicule présente un problème mécanique apparent dangereux. Il doit obligatoirement rentrer aux stands.",
+  },
+  {
+    id: 8,
+    question: "Que signifie le drapeau jaune et rouge rayé ?",
+    flagImg: "/flags/jaune-rouge.svg",
+    flagAlt: "Drapeau jaune et rouge rayé",
+    options: [
+      "Fin de session sur piste mouillée",
+      "La piste est rendue glissante (huile, eau, débris...)",
+      "Danger immédiat — arrêt de séance",
+      "Véhicule lent sur la portion contrôlée",
+    ],
+    correct: 1,
+    explanation: "Le drapeau jaune et rouge rayé signale que la piste est rendue glissante par de l'huile, de l'eau ou des débris. Les concurrents doivent adapter leur conduite en conséquence.",
+  },
+  {
+    id: 9,
+    question: "Avec quoi accompagne-t-on toujours le drapeau noir (exclusion) ?",
+    flagImg: "/flags/noir.svg",
+    flagAlt: "Drapeau noir",
+    options: [
+      "Un drapeau rouge simultané",
+      "Un panneau indiquant le numéro du concurrent exclu",
+      "Un panneau « STOP »",
+      "Un signal sonore",
+    ],
+    correct: 1,
+    explanation: "Le drapeau noir est toujours accompagné d'un panneau portant le numéro du concurrent exclu. Ce signal ne concerne qu'un seul pilote à la fois, qui doit rejoindre immédiatement les stands.",
+  },
+  {
+    id: 10,
+    question: "Que signifie le drapeau blanc ?",
+    flagImg: "/flags/blanc.svg",
+    flagAlt: "Drapeau blanc",
+    options: [
+      "Fin de session",
+      "Abandon / reddition",
+      "Présence d'un véhicule lent sur la piste (SC, ambulance, concurrent en difficulté...)",
+      "Piste complètement dégagée",
+    ],
+    correct: 2,
+    explanation: "Le drapeau blanc signale la présence d'un véhicule lent sur la piste : voiture de sécurité, ambulance, véhicule de service ou concurrent en grande difficulté. En Rallye, son utilisation est facultative.",
+  },
+  {
+    id: 11,
+    question: "Que signifie le drapeau noir et blanc diagonal (coupé en deux) ?",
+    flagImg: "/flags/noir-blanc.svg",
+    flagAlt: "Drapeau noir et blanc diagonal",
+    options: [
+      "Exclusion définitive du concurrent",
+      "Avertissement unique pour conduite antisportive",
+      "Problème mécanique détecté sur le véhicule",
+      "La piste est partiellement bloquée",
+    ],
+    correct: 1,
+    explanation: "Le drapeau noir et blanc diagonal est un avertissement (présenté avec numéro). Il n'est présenté qu'une seule fois. La récidive entraîne le drapeau noir (exclusion définitive).",
+  },
+  {
+    id: 12,
+    question: "À quel moment agite-t-on le drapeau damier ?",
+    flagImg: "/flags/damier.svg",
+    flagAlt: "Drapeau damier",
+    options: [
+      "Au moment du départ de la course",
+      "Au passage de la voiture de sécurité en fin de course",
+      "Au passage du vainqueur, puis de tous les concurrents suivants",
+      "Uniquement au vainqueur, pas aux autres",
+    ],
+    correct: 2,
+    explanation: "Le drapeau damier est agité vigoureusement au passage du vainqueur, puis présenté à tous les concurrents suivants. Il marque la fin officielle de l'épreuve.",
+  },
+  {
+    id: 13,
+    question: "Quel drapeau/panneau signale le Code 60 en circuit asphalte FFSA ?",
+    flagImg: "/flags/code60.svg",
+    flagAlt: "Drapeau Code 60",
+    options: [
+      "Drapeau orange avec le chiffre « 60 »",
+      "Drapeau violet avec un cercle blanc portant le chiffre « 60 »",
+      "Drapeau rouge avec le chiffre « 60 »",
+      "Panneau lumineux uniquement, sans drapeau",
+    ],
+    correct: 1,
+    explanation: "Le Code 60 est signalé par un drapeau VIOLET avec un cercle blanc portant le chiffre 60. D'abord agité à tous les postes sur ordre du DC, puis tenu fixe jusqu'à la fin de la procédure.",
+  },
+  {
+    id: 14,
+    question: "En circuit asphalte FFSA, à quelle vitesse maximum les pilotes circulent-ils sous FCY (Full Course Yellow) ?",
+    options: [
+      "50 km/h",
+      "60 km/h",
+      "80 km/h",
+      "100 km/h",
+    ],
+    correct: 2,
+    explanation: "Sous FCY en circuit asphalte FFSA, la vitesse est limitée à 80 km/h, contrôlée par le chronométrage. Tout dépassement est interdit. C'est différent du Code 60 qui impose 60 km/h.",
+  },
+  {
+    id: 15,
+    question: "En circuit asphalte FFSA, après une neutralisation Safety Car, le drapeau vert est présenté :",
+    flagImg: "/flags/vert.svg",
+    flagAlt: "Drapeau vert",
+    options: [
+      "À tous les postes simultanément",
+      "Uniquement sur la ligne de relance",
+      "Au poste le plus proche de l'incident",
+      "Par le directeur de course en personne",
+    ],
+    correct: 1,
+    explanation: "Lors d'une relance après Safety Car, le drapeau vert est présenté UNIQUEMENT sur la ligne de relance — jamais à tous les postes. C'est différent de la fin de FCY ou Code 60 où il est agité à tous les postes.",
+  },
+  {
+    id: 16,
+    question: "En Karting, comment le drapeau bleu est-il présenté par la DC ?",
+    flagImg: "/flags/bleu.svg",
+    flagAlt: "Drapeau bleu",
+    options: [
+      "Tenu FIXE uniquement",
+      "AGITÉ uniquement",
+      "Au choix FIXE ou AGITÉ selon l'urgence",
+      "Non utilisé en Karting",
+    ],
+    correct: 1,
+    explanation: "En Karting, le drapeau bleu est présenté AGITÉ uniquement par la DC. Il signifie : « Gardez votre ligne, vous allez être doublé par un ou plusieurs pilotes. » Il n'existe pas de variante FIXE en Karting (contrairement à d'autres disciplines).",
+  },
+  {
+    id: 17,
+    question: "En Rallye, l'utilisation du drapeau blanc est :",
+    flagImg: "/flags/blanc.svg",
+    flagAlt: "Drapeau blanc",
+    options: [
+      "Obligatoire dès qu'un véhicule lent est sur la spéciale",
+      "Facultative",
+      "Réservée aux spéciales forestières uniquement",
+      "Interdite en rallye depuis 2024",
+    ],
+    correct: 1,
+    explanation: "Selon le règlement FFSA Rallye, l'utilisation du drapeau blanc est FACULTATIVE. Il signale un véhicule beaucoup plus lent sur la portion contrôlée par le poste.",
+  },
+  {
+    id: 18,
+    question: "En Tout-terrain, le double drapeau jaune est présenté de la manière suivante :",
+    flagImg: "/flags/jaune.svg",
+    flagAlt: "Drapeau jaune",
+    options: [
+      "Deux drapeaux agités simultanément",
+      "Un drapeau FIXE et un drapeau CROISÉ (bras croisés)",
+      "Deux drapeaux tenus fixes simultanément",
+      "Un drapeau agité et un drapeau fixe",
+    ],
+    correct: 1,
+    explanation: "En Tout-terrain, le double drapeau jaune est présenté en combinaison FIXE + CROISÉ (bras croisés). Ce mode de présentation est spécifique aux disciplines tout-terrain et diffère du circuit asphalte.",
+  },
+  {
+    id: 19,
+    question: "Le drapeau noir et blanc TRIANGULÉ est spécifiquement utilisé en :",
+    flagImg: "/flags/noir-blanc.svg",
+    flagAlt: "Drapeau noir et blanc",
+    options: [
+      "Circuit asphalte",
+      "Karting",
+      "Tout-terrain",
+      "Rallye",
+    ],
+    correct: 2,
+    explanation: "Le « drapeau triangulé noir & blanc » est propre aux disciplines tout-terrain (selon le règlement FFSA Tout-terrain). Il est l'équivalent du drapeau noir et blanc diagonal des autres disciplines.",
+  },
+  {
+    id: 20,
+    question: "À la fin d'une FCY (Full Course Yellow), le drapeau vert est agité à tous les postes pendant :",
+    flagImg: "/flags/vert.svg",
+    flagAlt: "Drapeau vert",
+    options: [
+      "Jusqu'à ce que le dernier concurrent soit passé",
+      "1 tour complet",
+      "2 tours complets",
+      "30 secondes",
+    ],
+    correct: 1,
+    explanation: "La fin de FCY est signalée par un drapeau vert AGITÉ pendant 1 tour à TOUS les postes. Après ce tour, la course reprend normalement et les dépassements sont de nouveau autorisés.",
+  },
+];
+
+export default function QuizDrapeauxPage() {
+  return (
+    <QuizEngine
+      title="Quiz drapeaux"
+      questions={questions}
+      backHref="/devenir-commissaire/quiz"
+      backLabel="Retour aux quiz"
+      reviewHref="/devenir-commissaire/drapeaux"
+      reviewLabel="Revoir les drapeaux"
+      glowColor="bg-[#FF5A1F]/5"
+    />
+  );
+}

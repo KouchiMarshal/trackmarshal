@@ -169,7 +169,7 @@ export default function QuizEngine({
                 </Link>
               )}
               <Link
-                href="/apprendre/quiz"
+                href="/devenir-commissaire/quiz"
                 className="rounded-2xl border border-zinc-200 bg-white px-8 py-4 font-bold text-zinc-700 text-center transition hover:bg-zinc-50"
               >
                 ← Retour aux quiz
