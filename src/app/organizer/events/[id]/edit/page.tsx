@@ -294,11 +294,15 @@ export default function EditEventPage() {
                       >
                         <option value="">Choisir</option>
                         <optgroup label="Auto">
-                          <option value="Rallye">Rallye</option>
                           <option value="Circuit">Circuit</option>
+                          <option value="Rallye">Rallye</option>
                           <option value="Karting">Karting</option>
-                          <option value="Drift">Drift</option>
                           <option value="Endurance">Endurance</option>
+                          <option value="Drift">Drift</option>
+                          <option value="Course de côtes">Course de côtes</option>
+                          <option value="Montée de démonstration">Montée de démonstration</option>
+                          <option value="Slalom">Slalom</option>
+                          <option value="Montée historique">Montée historique</option>
                         </optgroup>
                         <optgroup label="Moto">
                           <option value="Moto Cross">Moto Cross</option>

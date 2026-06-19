@@ -6,16 +6,23 @@ import { CalendarDays, MapPin } from "lucide-react";
 import { formatDateRange } from "@/lib/formatDate";
 
 const DISC_STYLE: Record<string, string> = {
-  "Circuit":        "text-blue-700 border-blue-200 bg-blue-100",
-  "Rallye":         "text-[#FF5A1F] border-[#FF5A1F]/30 bg-[#FF5A1F]/10",
-  "Course de côte": "text-purple-700 border-purple-200 bg-purple-100",
-  "Karting":        "text-green-700 border-green-200 bg-green-100",
-  "Tout-terrain":   "text-yellow-700 border-yellow-200 bg-yellow-100",
-  "Endurance":      "text-red-700 border-red-200 bg-red-100",
-  "Drift":          "text-pink-700 border-pink-200 bg-pink-100",
-  "Moto Cross":     "text-cyan-700 border-cyan-200 bg-cyan-100",
-  "Enduro":         "text-lime-700 border-lime-200 bg-lime-100",
-  "Road Racing":    "text-orange-700 border-orange-200 bg-orange-100",
+  "Circuit":                  "text-blue-700 border-blue-200 bg-blue-100",
+  "Rallye":                   "text-[#FF5A1F] border-[#FF5A1F]/30 bg-[#FF5A1F]/10",
+  "Course de côte":           "text-purple-700 border-purple-200 bg-purple-100",
+  "Course de côtes":          "text-purple-700 border-purple-200 bg-purple-100",
+  "Montée de démonstration":  "text-violet-700 border-violet-200 bg-violet-100",
+  "Slalom":                   "text-teal-700 border-teal-200 bg-teal-100",
+  "Montée historique":        "text-amber-700 border-amber-200 bg-amber-100",
+  "Karting":                  "text-green-700 border-green-200 bg-green-100",
+  "Tout-terrain":             "text-yellow-700 border-yellow-200 bg-yellow-100",
+  "Endurance":                "text-red-700 border-red-200 bg-red-100",
+  "Drift":                    "text-pink-700 border-pink-200 bg-pink-100",
+  "Moto Cross":               "text-cyan-700 border-cyan-200 bg-cyan-100",
+  "Enduro":                   "text-lime-700 border-lime-200 bg-lime-100",
+  "Road Racing":              "text-orange-700 border-orange-200 bg-orange-100",
+  "Trial":                    "text-sky-700 border-sky-200 bg-sky-100",
+  "Supermoto":                "text-indigo-700 border-indigo-200 bg-indigo-100",
+  "Rallye Moto":              "text-rose-700 border-rose-200 bg-rose-100",
 };
 
 export default function ParticipationHistory({ marshalId, forceShow = false }: { marshalId: string; forceShow?: boolean }) {

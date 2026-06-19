@@ -19,10 +19,21 @@ export default function EventsList({
 
   const categories = [
     "Tous",
-    "Formule",
-    "Endurance",
+    "Circuit",
     "Rallye",
     "Karting",
+    "Endurance",
+    "Drift",
+    "Course de côtes",
+    "Slalom",
+    "Montée de démonstration",
+    "Montée historique",
+    "Moto Cross",
+    "Enduro",
+    "Road Racing",
+    "Trial",
+    "Supermoto",
+    "Rallye Moto",
   ];
 
   const filteredEvents = useMemo(() => {
@@ -46,11 +57,7 @@ export default function EventsList({
       const matchesCategory =
         selectedCategory === "Tous"
           ? true
-          : event.discipline
-              ?.toLowerCase()
-              .includes(
-                selectedCategory.toLowerCase()
-              );
+          : event.discipline?.toLowerCase() === selectedCategory.toLowerCase();
 
       return (
         matchesSearch && matchesCategory
@@ -63,7 +70,7 @@ export default function EventsList({
     <>
       <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_220px]">
 
-        <div className="flex h-16 items-center rounded-2xl border border-white/10 bg-white/5 px-6 backdrop-blur-xl">
+        <div className="flex h-16 items-center rounded-2xl border border-zinc-300 bg-white px-6 shadow-sm">
 
           <input
             value={search}
@@ -71,12 +78,12 @@ export default function EventsList({
               setSearch(e.target.value)
             }
             placeholder="Rechercher un événement, un circuit..."
-            className="w-full bg-transparent text-base text-white outline-none placeholder:text-zinc-500 sm:text-lg"
+            className="w-full bg-transparent text-base text-zinc-900 outline-none placeholder:text-zinc-400 sm:text-lg"
           />
 
         </div>
 
-        <button className="h-16 rounded-2xl bg-[#FF5A1F] px-10 text-base font-black transition duration-300 hover:scale-[1.02] hover:opacity-90 sm:text-lg">
+        <button className="h-16 rounded-2xl bg-[#FF5A1F] px-10 text-base font-black text-white transition duration-300 hover:scale-[1.02] hover:opacity-90 sm:text-lg">
 
           {filteredEvents.length} résultat{filteredEvents.length > 1 ? "s" : ""}
 
@@ -84,7 +91,7 @@ export default function EventsList({
 
       </div>
 
-      <div className="mt-16 flex flex-wrap items-center gap-4">
+      <div className="mt-16 flex flex-wrap items-center gap-3">
 
         {categories.map((category) => (
 
@@ -93,10 +100,10 @@ export default function EventsList({
             onClick={() =>
               setSelectedCategory(category)
             }
-            className={`rounded-full px-6 py-3 text-sm uppercase tracking-[0.15em] transition ${
+            className={`rounded-full px-5 py-2.5 text-sm font-medium transition ${
               selectedCategory === category
                 ? "bg-[#FF5A1F] font-bold text-white"
-                : "border border-white/10 bg-white/5 text-zinc-300 backdrop-blur-xl hover:bg-white/10"
+                : "border border-zinc-300 bg-white text-zinc-600 hover:border-[#FF5A1F]/50 hover:text-[#FF5A1F]"
             }`}
           >
 
@@ -126,7 +133,7 @@ export default function EventsList({
 
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-sm uppercase tracking-[0.2em] text-zinc-400 backdrop-blur-xl">
+        <div className="rounded-2xl border border-zinc-200 bg-white px-6 py-4 text-sm uppercase tracking-[0.2em] text-zinc-500 shadow-sm">
 
           {filteredEvents.length} événement{filteredEvents.length > 1 ? "s" : ""} actif{filteredEvents.length > 1 ? "s" : ""}
 
@@ -136,15 +143,15 @@ export default function EventsList({
 
       {filteredEvents.length === 0 && (
 
-        <div className="rounded-[32px] border border-white/10 bg-white/5 p-10 text-center backdrop-blur-xl">
+        <div className="rounded-[32px] border border-zinc-200 bg-white p-10 text-center shadow-sm">
 
-          <p className="text-2xl font-black text-white">
+          <p className="text-2xl font-black text-zinc-900">
 
             Aucun événement trouvé
 
           </p>
 
-          <p className="mt-4 text-zinc-400">
+          <p className="mt-4 text-zinc-500">
 
             Essayez une autre recherche ou catégorie.
 
