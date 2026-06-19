@@ -98,7 +98,7 @@ const procedures: Procedure[] = [
       "Chaque poste agite un drapeau JAUNE et présente simultanément le panneau « FCY ».",
       "Double drapeau jaune au poste précédant le danger si l'incident est sur la trajectoire.",
       "Les pilotes doivent réduire leur allure à 80 km/h maximum — contrôlé par le chronométrage.",
-      "Tout dépassement est interdit. Les infraction peuvent être sanctionnées par les commissaires sportifs.",
+      "Tout dépassement est interdit. Les infractions peuvent être sanctionnées par les commissaires sportifs.",
       "Une fois le problème résolu, le DC autorise la reprise.",
       "Tous les postes remplacent jaune + FCY par un drapeau VERT agité pendant 1 tour.",
     ],

@@ -169,7 +169,7 @@ const flags: Flag[] = [
         name: "Circuit asphalte",
         presentation: "AGITÉ",
         presentationColor: PRES.agite,
-        note: "Ouverture de piste, début de séance, fin de zone FCY (1 tour), relance après Safety Car. Présenté à tous les postes.",
+        note: "Ouverture de piste, début de séance, fin de zone FCY/Code 60 (1 tour) : présenté à TOUS les postes. Relance après Safety Car : présenté UNIQUEMENT sur la ligne de relance — jamais à tous les postes.",
       },
       {
         name: "Tout-terrain",
@@ -273,9 +273,9 @@ const flags: Flag[] = [
       },
       {
         name: "Karting",
-        presentation: "FIXE / AGITÉ",
-        presentationColor: PRES.agiteFixe,
-        note: "FIXE par la DC : gardez votre ligne, vous allez être doublé. AGITÉ par la DC : cédez le passage.",
+        presentation: "AGITÉ",
+        presentationColor: PRES.agite,
+        note: "AGITÉ par la D.C. : gardez votre ligne, vous allez être doublé par un ou plusieurs pilotes.",
       },
     ],
   },
@@ -427,7 +427,7 @@ const flags: Flag[] = [
         name: "Rallye",
         presentation: "AGITÉ",
         presentationColor: PRES.agite,
-        note: "Signale un véhicule beaucoup plus lent sur la portion contrôlée par le poste.",
+        note: "Signale un véhicule beaucoup plus lent sur la portion contrôlée par le poste. Son utilisation est facultative.",
       },
       {
         name: "Course de côte",
