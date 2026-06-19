@@ -56,14 +56,14 @@ export default function InviteButton({ marshalId, marshalName }: Props) {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md overflow-hidden rounded-[32px] border border-white/10 bg-[#0A0A0A]">
-            <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-xl">
+            <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-5">
               <div>
-                <p className="font-black text-white">Inviter {marshalName}</p>
+                <p className="font-black text-zinc-900">Inviter {marshalName}</p>
                 <p className="mt-1 text-xs text-zinc-500">Sélectionnez un événement à venir</p>
               </div>
-              <button onClick={() => setOpen(false)} className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 hover:bg-white/5">
+              <button onClick={() => setOpen(false)} className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-200 text-zinc-600 hover:bg-zinc-50">
                 <X size={16} />
               </button>
             </div>
@@ -79,17 +79,17 @@ export default function InviteButton({ marshalId, marshalName }: Props) {
                   disabled={sending || sent === ev.id}
                   className={`mb-2 flex w-full items-center justify-between rounded-2xl border px-5 py-4 text-left transition ${
                     sent === ev.id
-                      ? "border-green-500/30 bg-green-500/10 text-green-400"
-                      : "border-white/10 bg-white/[0.02] hover:border-[#FF5A1F]/30 hover:bg-[#FF5A1F]/5"
+                      ? "border-green-200 bg-green-100 text-green-700"
+                      : "border-zinc-200 bg-zinc-50 hover:border-[#FF5A1F]/30 hover:bg-[#FF5A1F]/5"
                   }`}
                 >
                   <div>
-                    <p className="font-bold text-white">{ev.title}</p>
+                    <p className="font-bold text-zinc-900">{ev.title}</p>
                     <p className="mt-1 text-xs text-zinc-500">
                       {new Date(ev.event_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
                     </p>
                   </div>
-                  {sent === ev.id && <span className="text-sm font-bold text-green-400">Envoyée ✓</span>}
+                  {sent === ev.id && <span className="text-sm font-bold text-green-700">Envoyée ✓</span>}
                 </button>
               ))}
             </div>

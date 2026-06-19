@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Footer() {
 
   return (
-    <footer className="relative overflow-hidden border-t border-white/10 bg-[#050505]">
+    <footer className="relative overflow-hidden border-t border-zinc-200 bg-white">
 
       <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[160px]" />
 
@@ -17,22 +17,22 @@ export default function Footer() {
 
               <div className="h-3 w-3 rounded-full bg-[#FF5A1F]" />
 
-              <h2 className="text-3xl font-black">
+              <h2 className="text-3xl font-black text-zinc-900">
                 TrackMarshal
               </h2>
 
             </div>
 
-            <p className="mt-8 max-w-xl text-lg leading-relaxed text-zinc-400">
+            <p className="mt-8 max-w-xl text-lg leading-relaxed text-zinc-600">
 
               The premium international platform connecting motorsport marshals,
-              officials and organizers across the world’s most iconic racing events.
+              officials and organizers across the world's most iconic racing events.
 
             </p>
 
             <div className="mt-10 flex gap-4">
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-xl">
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 px-6 py-4">
 
                 <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
                   Events
@@ -44,7 +44,7 @@ export default function Footer() {
 
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-4 backdrop-blur-xl">
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 px-6 py-4">
 
                 <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
                   Countries
@@ -62,7 +62,7 @@ export default function Footer() {
 
           <div>
 
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-white">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-900">
 
               Platform
 
@@ -72,21 +72,21 @@ export default function Footer() {
 
               <Link
                 href="/events"
-                className="text-zinc-400 transition hover:text-white"
+                className="text-zinc-500 transition hover:text-zinc-900"
               >
                 Events
               </Link>
 
               <Link
                 href="/dashboard"
-                className="text-zinc-400 transition hover:text-white"
+                className="text-zinc-500 transition hover:text-zinc-900"
               >
                 Dashboard
               </Link>
 
               <Link
                 href="/login"
-                className="text-zinc-400 transition hover:text-white"
+                className="text-zinc-500 transition hover:text-zinc-900"
               >
                 Login
               </Link>
@@ -97,7 +97,7 @@ export default function Footer() {
 
           <div>
 
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-white">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-900">
 
               Motorsport
 
@@ -105,15 +105,15 @@ export default function Footer() {
 
             <div className="mt-8 flex flex-col gap-5">
 
-              <p className="text-zinc-400">
+              <p className="text-zinc-500">
                 Formula
               </p>
 
-              <p className="text-zinc-400">
+              <p className="text-zinc-500">
                 Endurance
               </p>
 
-              <p className="text-zinc-400">
+              <p className="text-zinc-500">
                 Rally
               </p>
 
@@ -123,7 +123,7 @@ export default function Footer() {
 
         </div>
 
-        <div className="mt-20 border-t border-white/10 pt-8">
+        <div className="mt-20 border-t border-zinc-200 pt-8">
 
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 

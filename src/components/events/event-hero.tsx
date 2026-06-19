@@ -26,15 +26,15 @@ export default function EventHero({
 
       <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-6 pb-16">
 
-        <div className="mb-5 inline-flex w-fit rounded-full bg-[#FF5A1F] px-4 py-2 text-sm font-bold uppercase tracking-wide">
+        <div className="mb-5 inline-flex w-fit rounded-full bg-[#FF5A1F] px-4 py-2 text-sm font-bold uppercase tracking-wide text-white">
           {discipline}
         </div>
 
-        <h1 className="max-w-4xl text-6xl font-black leading-none">
+        <h1 className="max-w-4xl text-6xl font-black leading-none text-white">
           {title}
         </h1>
 
-        <div className="mt-6 flex flex-wrap gap-6 text-zinc-300">
+        <div className="mt-6 flex flex-wrap gap-6 text-zinc-200">
           <span>{location}</span>
           <span>{date}</span>
         </div>

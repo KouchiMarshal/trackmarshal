@@ -70,9 +70,9 @@ export default function NotificationBell({ dropdownUp = false }: Props) {
 
       <button
         onClick={() => setOpen(!open)}
-        className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] transition hover:bg-white/10"
+        className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-300 bg-zinc-50 transition hover:bg-zinc-100"
       >
-        <Bell size={20} className="text-zinc-400" />
+        <Bell size={20} className="text-zinc-600" />
         {unread > 0 && (
           <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#FF5A1F] text-[10px] font-black text-white">
             {unread > 9 ? "9+" : unread}
@@ -81,13 +81,13 @@ export default function NotificationBell({ dropdownUp = false }: Props) {
       </button>
 
       {open && (
-        <div className={`absolute right-0 z-50 w-[340px] overflow-hidden rounded-[28px] border border-white/10 bg-[#0A0A0A] shadow-2xl ${
+        <div className={`absolute right-0 z-50 w-[340px] overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-lg ${
           dropdownUp ? "bottom-14" : "top-14"
         }`}>
 
-          <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+          <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
             <div>
-              <p className="font-black text-white">Notifications</p>
+              <p className="font-black text-zinc-900">Notifications</p>
               {unread > 0 && (
                 <p className="text-xs text-zinc-500">{unread} non lue{unread > 1 ? "s" : ""}</p>
               )}
@@ -115,7 +115,7 @@ export default function NotificationBell({ dropdownUp = false }: Props) {
                     if (!notif.read) markAsRead(notif.id);
                     setOpen(false);
                   }}
-                  className={`relative cursor-pointer border-b border-white/5 px-6 py-4 transition last:border-0 hover:bg-white/5 ${
+                  className={`relative cursor-pointer border-b border-zinc-100 px-6 py-4 transition last:border-0 hover:bg-zinc-50 ${
                     !notif.read ? "bg-[#FF5A1F]/5" : ""
                   }`}
                 >
@@ -124,7 +124,7 @@ export default function NotificationBell({ dropdownUp = false }: Props) {
                   )}
                   {notif.link ? (
                     <Link href={notif.link} className="block">
-                      <p className={`text-sm font-semibold ${notif.read ? "text-zinc-300" : "text-white"}`}>
+                      <p className={`text-sm font-semibold ${notif.read ? "text-zinc-600" : "text-zinc-900"}`}>
                         {notif.title}
                       </p>
                       <p className="mt-1 text-xs text-zinc-500">
@@ -135,7 +135,7 @@ export default function NotificationBell({ dropdownUp = false }: Props) {
                     </Link>
                   ) : (
                     <>
-                      <p className={`text-sm font-semibold ${notif.read ? "text-zinc-300" : "text-white"}`}>
+                      <p className={`text-sm font-semibold ${notif.read ? "text-zinc-600" : "text-zinc-900"}`}>
                         {notif.title}
                       </p>
                       <p className="mt-1 text-xs text-zinc-500">

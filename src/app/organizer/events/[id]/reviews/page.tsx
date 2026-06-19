@@ -26,7 +26,7 @@ function StarRating({ value, onChange }: { value: number; onChange: (n: number) 
             className={`transition ${
               star <= (hover || value)
                 ? "fill-[#FF5A1F] text-[#FF5A1F]"
-                : "text-zinc-700"
+                : "text-zinc-300"
             }`}
           />
         </button>
@@ -132,40 +132,39 @@ export default function OrganizerReviewsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <Toast toast={toast} onClose={() => setToast(null)} />
       <div className="flex min-h-screen">
         <OrganizerSidebar />
         <div className="flex-1">
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
             <div className="flex h-20 items-center gap-4 px-4 lg:px-10">
-              <Link href={`/organizer/events/${eventId}`} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] transition hover:bg-white/10">
+              <Link href={`/organizer/events/${eventId}`} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 text-zinc-700 transition hover:bg-zinc-100">
                 <ArrowLeft size={18} />
               </Link>
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Événement</p>
-                <h1 className="mt-1 text-xl font-black lg:text-2xl">Évaluation des commissaires</h1>
+                <h1 className="mt-1 text-xl font-black text-zinc-900 lg:text-2xl">Évaluation des commissaires</h1>
               </div>
             </div>
           </header>
 
           <div className="relative overflow-hidden">
-            <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px] pointer-events-none" />
             <div className="relative z-10 mx-auto max-w-[1200px] p-4 pb-24 lg:p-10 lg:pb-10">
 
               {event && (
-                <div className="mb-8 rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+                <div className="mb-8 rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6">
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Évaluation pour</p>
-                  <h2 className="mt-2 text-3xl font-black">{event.title}</h2>
-                  <p className="mt-1 text-zinc-400">{event.location}</p>
+                  <h2 className="mt-2 text-3xl font-black text-zinc-900">{event.title}</h2>
+                  <p className="mt-1 text-zinc-600">{event.location}</p>
                 </div>
               )}
 
               {loading && <p className="py-20 text-center text-zinc-500">Chargement...</p>}
 
               {!loading && commissaires.length === 0 && (
-                <div className="rounded-[32px] border border-dashed border-white/10 p-16 text-center">
-                  <h2 className="text-3xl font-black">Aucun commissaire accepté</h2>
+                <div className="rounded-[32px] border border-dashed border-zinc-300 p-16 text-center">
+                  <h2 className="text-3xl font-black text-zinc-900">Aucun commissaire accepté</h2>
                   <p className="mt-4 text-zinc-500">Les évaluations sont disponibles pour les commissaires acceptés.</p>
                 </div>
               )}
@@ -175,7 +174,7 @@ export default function OrganizerReviewsPage() {
                   const r = reviews[c.id] || { rating: 0, comment: "" };
                   const already = existingReviews[c.id];
                   return (
-                    <div key={c.id} className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                    <div key={c.id} className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                       <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
 
                         <div className="flex items-center gap-4 sm:w-56 sm:shrink-0">
@@ -185,7 +184,7 @@ export default function OrganizerReviewsPage() {
                             className="h-16 w-16 shrink-0 rounded-2xl object-cover"
                           />
                           <div>
-                            <p className="font-black">{c.full_name}</p>
+                            <p className="font-black text-zinc-900">{c.full_name}</p>
                             {c.license_type && <p className="mt-0.5 text-xs text-[#FF5A1F]">{c.license_type}</p>}
                             {c.years_experience && <p className="mt-0.5 text-xs text-zinc-500">{c.years_experience} ans d'exp.</p>}
                           </div>
@@ -193,7 +192,7 @@ export default function OrganizerReviewsPage() {
 
                         <div className="flex-1 space-y-4">
                           {already && (
-                            <p className="text-xs text-green-400">✔ Avis déjà enregistré — vous pouvez le modifier</p>
+                            <p className="text-xs text-green-600">✔ Avis déjà enregistré — vous pouvez le modifier</p>
                           )}
                           <div>
                             <p className="mb-3 text-xs uppercase tracking-[0.15em] text-zinc-500">Note globale *</p>
@@ -212,13 +211,13 @@ export default function OrganizerReviewsPage() {
                               onChange={(e) => setReviews((prev) => ({ ...prev, [c.id]: { ...prev[c.id], comment: e.target.value } }))}
                               placeholder="Ponctuel, professionnel, bonne connaissance du règlement..."
                               rows={3}
-                              className="w-full rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-[#FF5A1F]/40"
+                              className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
                             />
                           </div>
                           <button
                             onClick={() => saveReview(c.id)}
                             disabled={saving === c.id || r.rating === 0}
-                            className="flex h-12 items-center gap-2 rounded-2xl bg-[#FF5A1F] px-6 text-sm font-bold transition hover:scale-[1.02] disabled:opacity-50 disabled:scale-100"
+                            className="flex h-12 items-center gap-2 rounded-2xl bg-[#FF5A1F] px-6 text-sm font-bold text-white transition hover:scale-[1.02] disabled:opacity-50 disabled:scale-100"
                           >
                             {saving === c.id ? "Enregistrement..." : already ? "Mettre à jour" : "Enregistrer l'avis"}
                           </button>

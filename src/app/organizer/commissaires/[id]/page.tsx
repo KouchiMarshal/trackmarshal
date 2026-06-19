@@ -41,17 +41,17 @@ export default function CommissaireProfilePage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-black text-white">
-        <p className="text-zinc-400">Chargement...</p>
+      <main className="flex min-h-screen items-center justify-center bg-zinc-50 text-zinc-900">
+        <p className="text-zinc-500">Chargement...</p>
       </main>
     );
   }
 
   if (!profile) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-black text-white">
+      <main className="flex min-h-screen items-center justify-center bg-zinc-50 text-zinc-900">
         <div className="text-center">
-          <p className="text-2xl font-black">Profil introuvable</p>
+          <p className="text-2xl font-black text-zinc-900">Profil introuvable</p>
           <Link href="/organizer/applications" className="mt-4 inline-block text-[#FF5A1F] hover:underline">
             Retour aux candidatures
           </Link>
@@ -61,25 +61,25 @@ export default function CommissaireProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <div className="flex min-h-screen">
 
         <OrganizerSidebar />
 
         <div className="flex-1">
 
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
             <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
               <div className="flex items-center gap-4">
                 <Link
                   href="/organizer/applications"
-                  className="flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] transition hover:bg-white/10"
+                  className="flex h-10 w-10 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 text-zinc-700 transition hover:bg-zinc-100"
                 >
                   <ArrowLeft size={18} />
                 </Link>
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Organisateur</p>
-                  <h1 className="mt-1 text-xl font-black lg:text-2xl">{profile.full_name || "Commissaire"}</h1>
+                  <h1 className="mt-1 text-xl font-black text-zinc-900 lg:text-2xl">{profile.full_name || "Commissaire"}</h1>
                 </div>
               </div>
               <NotificationBell />
@@ -87,7 +87,6 @@ export default function CommissaireProfilePage() {
           </header>
 
           <div className="relative overflow-hidden">
-            <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px] pointer-events-none" />
 
             <div className="relative z-10 mx-auto max-w-[1200px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
@@ -96,7 +95,7 @@ export default function CommissaireProfilePage() {
                 {/* Colonne gauche — photo + infos clés */}
                 <div className="space-y-6">
 
-                  <div className="overflow-hidden rounded-[32px] border border-white/10 bg-white/[0.03]">
+                  <div className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm">
                     <div className="relative h-[320px]">
                       <img
                         src={
@@ -109,27 +108,27 @@ export default function CommissaireProfilePage() {
                     </div>
 
                     <div className="p-6">
-                      <h2 className="text-2xl font-black">{profile.full_name}</h2>
-                      <p className="mt-1 text-zinc-400">Commissaire Motorsport</p>
+                      <h2 className="text-2xl font-black text-zinc-900">{profile.full_name}</h2>
+                      <p className="mt-1 text-zinc-600">Commissaire Motorsport</p>
 
                       {profile.city || profile.country ? (
-                        <div className="mt-3 flex items-center gap-2 text-sm text-zinc-400">
+                        <div className="mt-3 flex items-center gap-2 text-sm text-zinc-600">
                           <MapPin size={14} className="text-[#FF5A1F]" />
                           <span>{[profile.city, profile.country].filter(Boolean).join(", ")}</span>
                         </div>
                       ) : null}
 
                       {profile.email && (
-                        <div className="mt-2 flex items-center gap-2 text-sm text-zinc-400">
+                        <div className="mt-2 flex items-center gap-2 text-sm text-zinc-600">
                           <Mail size={14} className="text-[#FF5A1F]" />
-                          <a href={`mailto:${profile.email}`} className="hover:text-white">{profile.email}</a>
+                          <a href={`mailto:${profile.email}`} className="hover:text-zinc-900">{profile.email}</a>
                         </div>
                       )}
 
                       {profile.phone && (
-                        <div className="mt-2 flex items-center gap-2 text-sm text-zinc-400">
+                        <div className="mt-2 flex items-center gap-2 text-sm text-zinc-600">
                           <Phone size={14} className="text-[#FF5A1F]" />
-                          <a href={`tel:${profile.phone}`} className="hover:text-white">{profile.phone}</a>
+                          <a href={`tel:${profile.phone}`} className="hover:text-zinc-900">{profile.phone}</a>
                         </div>
                       )}
                     </div>
@@ -137,7 +136,7 @@ export default function CommissaireProfilePage() {
 
                   {/* Licence(s) */}
                   {(profile.license_type || profile.license_type_2) && (
-                    <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 space-y-4">
+                    <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 space-y-4">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
                         Licence{profile.license_type_2 ? "s" : ""}
                       </p>
@@ -147,25 +146,25 @@ export default function CommissaireProfilePage() {
                         <div>
                           <p className="text-lg font-black text-[#FF5A1F]">🏁 {profile.license_type}</p>
                           {profile.license_number && (
-                            <p className="mt-1 text-sm text-zinc-400">N° {profile.license_number}</p>
+                            <p className="mt-1 text-sm text-zinc-600">N° {profile.license_number}</p>
                           )}
                           {profile.asa && (
-                            <p className="mt-1 text-sm text-zinc-400">ASA : {profile.asa}</p>
+                            <p className="mt-1 text-sm text-zinc-600">ASA : {profile.asa}</p>
                           )}
                           <div className="mt-3">
                             {profile.license_verified ? (
-                              <div className="flex items-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
+                              <div className="flex items-center gap-2 rounded-2xl border border-green-200 bg-green-50 px-4 py-2 text-sm font-bold text-green-700">
                                 <CheckCircle2 size={16} /> Vérifiée
                               </div>
                             ) : (
-                              <div className="flex items-center gap-2 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 text-sm font-bold text-yellow-400">
+                              <div className="flex items-center gap-2 rounded-2xl border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm font-bold text-yellow-700">
                                 <Clock3 size={16} /> En attente
                               </div>
                             )}
                           </div>
                           {profile.license_url && (
                             <a href={profile.license_url} target="_blank" rel="noopener noreferrer"
-                              className="mt-3 flex h-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-sm font-bold transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]">
+                              className="mt-3 flex h-11 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]">
                               📄 Voir la licence
                             </a>
                           )}
@@ -175,20 +174,20 @@ export default function CommissaireProfilePage() {
                       {/* Licence 2 */}
                       {profile.license_type_2 && (
                         <>
-                          <div className="border-t border-white/10" />
+                          <div className="border-t border-zinc-200" />
                           <div>
                             <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500 mb-2">2ème licence</p>
                             <p className="text-lg font-black text-[#FF5A1F]">🏁 {profile.license_type_2}</p>
                             {profile.license_number_2 && (
-                              <p className="mt-1 text-sm text-zinc-400">N° {profile.license_number_2}</p>
+                              <p className="mt-1 text-sm text-zinc-600">N° {profile.license_number_2}</p>
                             )}
                             <div className="mt-3">
                               {profile.license_verified_2 ? (
-                                <div className="flex items-center gap-2 rounded-2xl border border-green-500/20 bg-green-500/10 px-4 py-2 text-sm font-bold text-green-400">
+                                <div className="flex items-center gap-2 rounded-2xl border border-green-200 bg-green-50 px-4 py-2 text-sm font-bold text-green-700">
                                   <CheckCircle2 size={16} /> Vérifiée
                                 </div>
                               ) : (
-                                <div className="flex items-center gap-2 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 text-sm font-bold text-yellow-400">
+                                <div className="flex items-center gap-2 rounded-2xl border border-yellow-200 bg-yellow-50 px-4 py-2 text-sm font-bold text-yellow-700">
                                   <Clock3 size={16} /> En attente
                                 </div>
                               )}
@@ -206,7 +205,7 @@ export default function CommissaireProfilePage() {
 
                   {/* Stats */}
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+                    <div className="rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Ancienneté</p>
                       <p className="mt-4 text-4xl font-black text-[#FF5A1F]">
                         {profile.years_experience || "—"}
@@ -216,16 +215,16 @@ export default function CommissaireProfilePage() {
                       )}
                     </div>
 
-                    <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6">
+                    <div className="rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Langues</p>
-                      <p className="mt-4 text-sm font-bold text-white">
+                      <p className="mt-4 text-sm font-bold text-zinc-900">
                         {profile.languages || "Non renseigné"}
                       </p>
                     </div>
 
-                    <div className="col-span-2 rounded-[28px] border border-white/10 bg-white/[0.03] p-6 sm:col-span-1">
+                    <div className="col-span-2 rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6 sm:col-span-1">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Disciplines</p>
-                      <p className="mt-4 text-sm font-bold text-white">
+                      <p className="mt-4 text-sm font-bold text-zinc-900">
                         {profile.disciplines || "Non renseigné"}
                       </p>
                     </div>
@@ -233,23 +232,23 @@ export default function CommissaireProfilePage() {
 
                   {/* Bio */}
                   {profile.bio && (
-                    <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                    <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Biographie</p>
-                      <p className="mt-4 whitespace-pre-wrap leading-relaxed text-zinc-300">{profile.bio}</p>
+                      <p className="mt-4 whitespace-pre-wrap leading-relaxed text-zinc-700">{profile.bio}</p>
                     </div>
                   )}
 
                   {/* Expérience */}
                   {profile.experience && (
-                    <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                    <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Expérience Motorsport</p>
-                      <p className="mt-4 whitespace-pre-wrap leading-relaxed text-zinc-300">{profile.experience}</p>
+                      <p className="mt-4 whitespace-pre-wrap leading-relaxed text-zinc-700">{profile.experience}</p>
                     </div>
                   )}
 
                   {/* Spécialités */}
                   {profile.specialties && (
-                    <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                    <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Spécialités</p>
                       <div className="mt-4 flex flex-wrap gap-2">
                         {profile.specialties.split(",").map((s: string) => s.trim()).filter(Boolean).map((s: string) => (
@@ -263,11 +262,11 @@ export default function CommissaireProfilePage() {
 
                   {/* Badges */}
                   {profile.badges && profile.badges.length > 0 && (
-                    <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                    <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Badges</p>
                       <div className="mt-4 flex flex-wrap gap-2">
                         {profile.badges.map((badge: string) => (
-                          <span key={badge} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold">
+                          <span key={badge} className="rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-600">
                             {badge}
                           </span>
                         ))}
@@ -279,7 +278,7 @@ export default function CommissaireProfilePage() {
                   <ParticipationHistory marshalId={marshalId} forceShow />
 
                   {/* Avis organisateurs — visible uniquement par les organisateurs */}
-                  <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+                  <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                     <div className="flex items-center justify-between">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Avis organisateurs</p>
                       {reviews.length > 0 && (
@@ -298,13 +297,13 @@ export default function CommissaireProfilePage() {
                     ) : (
                       <div className="mt-5 space-y-4">
                         {reviews.map((r) => (
-                          <div key={r.id} className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                          <div key={r.id} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
                             <div className="flex items-center gap-1">
                               {[1,2,3,4,5].map((s) => (
                                 <Star
                                   key={s}
                                   size={14}
-                                  className={s <= r.rating ? "fill-[#FF5A1F] text-[#FF5A1F]" : "text-zinc-700"}
+                                  className={s <= r.rating ? "fill-[#FF5A1F] text-[#FF5A1F]" : "text-zinc-300"}
                                 />
                               ))}
                               <span className="ml-2 text-xs text-zinc-500">
@@ -312,7 +311,7 @@ export default function CommissaireProfilePage() {
                               </span>
                             </div>
                             {r.comment && (
-                              <p className="mt-2 text-sm leading-relaxed text-zinc-300">{r.comment}</p>
+                              <p className="mt-2 text-sm leading-relaxed text-zinc-700">{r.comment}</p>
                             )}
                           </div>
                         ))}

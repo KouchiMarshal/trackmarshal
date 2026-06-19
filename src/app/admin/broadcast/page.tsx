@@ -61,11 +61,11 @@ export default function AdminBroadcastPage() {
     <div>
       <Toast toast={toast} onClose={() => setToast(null)} />
 
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+      <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
         <div className="flex h-20 items-center px-6 lg:px-10">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Administration</p>
-            <h1 className="mt-1 text-2xl font-black lg:text-3xl">Email groupé</h1>
+            <h1 className="mt-1 text-2xl font-black text-zinc-900 lg:text-3xl">Email groupé</h1>
           </div>
         </div>
       </header>
@@ -74,23 +74,23 @@ export default function AdminBroadcastPage() {
 
         {/* Sélection des destinataires */}
         <div className="mb-8">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Destinataires</p>
+          <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Destinataires</p>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <button
               onClick={() => setTarget("marshal")}
               className={`flex items-center gap-4 rounded-2xl border p-5 text-left transition ${
                 target === "marshal"
-                  ? "border-[#FF5A1F] bg-[#FF5A1F]/10"
-                  : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"
+                  ? "border-[#FF5A1F] bg-orange-50"
+                  : "border-zinc-200 bg-white hover:bg-zinc-50"
               }`}
             >
               <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${
-                target === "marshal" ? "bg-[#FF5A1F]/20" : "bg-white/5"
+                target === "marshal" ? "bg-[#FF5A1F]/20" : "bg-zinc-100"
               }`}>
                 <Users size={22} className={target === "marshal" ? "text-[#FF5A1F]" : "text-zinc-500"} />
               </div>
               <div>
-                <p className="font-black">Commissaires</p>
+                <p className="font-black text-zinc-900">Commissaires</p>
                 <p className="text-xs text-zinc-500">Tous les commissaires inscrits</p>
               </div>
             </button>
@@ -99,17 +99,17 @@ export default function AdminBroadcastPage() {
               onClick={() => setTarget("organizer")}
               className={`flex items-center gap-4 rounded-2xl border p-5 text-left transition ${
                 target === "organizer"
-                  ? "border-[#FF5A1F] bg-[#FF5A1F]/10"
-                  : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"
+                  ? "border-[#FF5A1F] bg-orange-50"
+                  : "border-zinc-200 bg-white hover:bg-zinc-50"
               }`}
             >
               <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ${
-                target === "organizer" ? "bg-[#FF5A1F]/20" : "bg-white/5"
+                target === "organizer" ? "bg-[#FF5A1F]/20" : "bg-zinc-100"
               }`}>
                 <Building2 size={22} className={target === "organizer" ? "text-[#FF5A1F]" : "text-zinc-500"} />
               </div>
               <div>
-                <p className="font-black">Organisateurs</p>
+                <p className="font-black text-zinc-900">Organisateurs</p>
                 <p className="text-xs text-zinc-500">Tous les organisateurs inscrits</p>
               </div>
             </button>
@@ -118,7 +118,7 @@ export default function AdminBroadcastPage() {
 
         {/* Sujet */}
         <div className="mb-5">
-          <label className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">
+          <label className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
             Sujet de l&apos;email
           </label>
           <input
@@ -126,13 +126,13 @@ export default function AdminBroadcastPage() {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             placeholder={`Annonce importante — TrackMarshal`}
-            className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm outline-none placeholder:text-zinc-600 transition focus:border-[#FF5A1F]/40"
+            className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 py-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-[#FF5A1F]"
           />
         </div>
 
         {/* Corps */}
         <div className="mb-8">
-          <label className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">
+          <label className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
             Corps du message
           </label>
           <textarea
@@ -140,18 +140,18 @@ export default function AdminBroadcastPage() {
             onChange={(e) => setBody(e.target.value)}
             placeholder={`Bonjour,\n\nVoici un message important pour tous les ${targetLabel}...\n\nCordialement,\nL'équipe TrackMarshal`}
             rows={10}
-            className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm outline-none placeholder:text-zinc-600 transition focus:border-[#FF5A1F]/40"
+            className="w-full resize-none rounded-2xl border border-zinc-300 bg-zinc-50 px-5 py-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 transition focus:border-[#FF5A1F]"
           />
-          <p className="mt-2 text-xs text-zinc-600">
+          <p className="mt-2 text-xs text-zinc-500">
             Les sauts de ligne sont conservés. L'email sera envoyé avec le template TrackMarshal.
           </p>
         </div>
 
         {/* Résultat */}
         {result && (
-          <div className="mb-6 flex items-center gap-3 rounded-2xl border border-green-500/20 bg-green-500/10 p-5">
-            <CheckCircle2 size={20} className="shrink-0 text-green-400" />
-            <p className="font-semibold text-green-400">
+          <div className="mb-6 flex items-center gap-3 rounded-2xl border border-green-200 bg-green-50 p-5">
+            <CheckCircle2 size={20} className="shrink-0 text-green-600" />
+            <p className="font-semibold text-green-700">
               {result.sent} email{result.sent > 1 ? "s" : ""} envoyé{result.sent > 1 ? "s" : ""} sur {result.total} {targetLabel}
             </p>
           </div>

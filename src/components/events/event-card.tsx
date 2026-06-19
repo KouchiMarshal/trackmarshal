@@ -23,7 +23,7 @@ export default function EventCard({
       className="group block"
     >
 
-      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#060606] transition duration-500 hover:-translate-y-2 hover:border-[#FF5A1F]/40 hover:shadow-[0_0_120px_rgba(255,90,31,0.15)] sm:rounded-[40px]">
+      <div className="relative overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-sm transition duration-500 hover:-translate-y-2 hover:border-[#FF5A1F]/40 hover:shadow-md sm:rounded-[40px]">
 
         <div className="relative h-[520px] overflow-hidden sm:h-[620px]">
 
@@ -34,7 +34,7 @@ export default function EventCard({
             className="object-cover transition duration-700 group-hover:scale-105"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-transparent" />
 
@@ -68,7 +68,7 @@ export default function EventCard({
 
               <div>
 
-                <p className="text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm sm:tracking-[0.25em]">
+                <p className="text-xs uppercase tracking-[0.2em] text-zinc-300 sm:text-sm sm:tracking-[0.25em]">
 
                   {event.country || "France"}
 
@@ -94,7 +94,7 @@ export default function EventCard({
 
                 <div>
 
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-500 sm:text-[11px] sm:tracking-[0.2em]">
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-400 sm:text-[11px] sm:tracking-[0.2em]">
 
                     Circuit / Lieu
 
@@ -110,7 +110,7 @@ export default function EventCard({
 
                 <div>
 
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-500 sm:text-[11px] sm:tracking-[0.2em]">
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-400 sm:text-[11px] sm:tracking-[0.2em]">
 
                     Date
 
@@ -132,7 +132,7 @@ export default function EventCard({
 
                   <div className="h-2 w-2 rounded-full bg-[#FF5A1F] sm:h-3 sm:w-3" />
 
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-400 sm:text-sm sm:tracking-[0.2em]">
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-300 sm:text-sm sm:tracking-[0.2em]">
 
                     TrackMarshal France
 

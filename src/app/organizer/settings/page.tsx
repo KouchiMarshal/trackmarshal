@@ -113,7 +113,7 @@ export default function OrganizerSettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
 
       <Toast toast={toast} onClose={() => setToast(null)} />
 
@@ -123,27 +123,26 @@ export default function OrganizerSettingsPage() {
 
         <div className="flex-1">
 
-          <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+          <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
             <div className="mx-auto flex h-20 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-10">
               <div>
                 <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Dashboard Organisateur</p>
-                <h1 className="mt-2 text-2xl font-black lg:text-4xl">Paramètres</h1>
+                <h1 className="mt-2 text-2xl font-black text-zinc-900 lg:text-4xl">Paramètres</h1>
               </div>
               <NotificationBell />
             </div>
           </header>
 
           <div className="relative overflow-hidden">
-            <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/10 blur-[140px]" />
 
             <div className="relative z-10 mx-auto max-w-[1200px] space-y-6 p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
-              <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+              <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                 <div className="flex items-center gap-4">
                   <Shield size={28} className="text-[#FF5A1F]" />
                   <div>
-                    <h2 className="text-3xl font-black">Sécurité</h2>
-                    <p className="mt-2 text-zinc-400">Gérez vos informations de connexion.</p>
+                    <h2 className="text-3xl font-black text-zinc-900">Sécurité</h2>
+                    <p className="mt-2 text-zinc-600">Gérez vos informations de connexion.</p>
                   </div>
                 </div>
 
@@ -154,12 +153,12 @@ export default function OrganizerSettingsPage() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
+                      className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none focus:border-[#FF5A1F]"
                     />
                     <button
                       onClick={updateEmail}
                       disabled={updatingEmail}
-                      className="mt-3 flex h-12 items-center gap-3 rounded-2xl bg-zinc-800 px-6 text-sm font-bold transition hover:bg-zinc-700 disabled:opacity-50"
+                      className="mt-3 flex h-12 items-center gap-3 rounded-2xl border border-zinc-200 bg-zinc-100 px-6 text-sm font-bold text-zinc-700 transition hover:bg-zinc-200 disabled:opacity-50"
                     >
                       <Save size={16} />
                       {updatingEmail ? "Mise à jour..." : "Mettre à jour l'email"}
@@ -171,13 +170,13 @@ export default function OrganizerSettingsPage() {
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="h-14 w-full rounded-2xl border border-white/10 bg-black/40 px-5 outline-none focus:border-[#FF5A1F]"
+                      className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                       placeholder="••••••••"
                     />
                   </div>
                   <button
                     onClick={updatePassword}
-                    className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold transition hover:scale-[1.01]"
+                    className="flex h-14 items-center gap-3 rounded-2xl bg-[#FF5A1F] px-8 font-bold text-white transition hover:scale-[1.01]"
                   >
                     <Save size={18} />
                     Sauvegarder
@@ -185,23 +184,23 @@ export default function OrganizerSettingsPage() {
                 </div>
               </div>
 
-              <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+              <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                 <div className="flex items-center gap-4">
                   <Bell size={28} className="text-[#FF5A1F]" />
                   <div>
-                    <h2 className="text-3xl font-black">Notifications</h2>
-                    <p className="mt-2 text-zinc-400">Configurez vos préférences.</p>
+                    <h2 className="text-3xl font-black text-zinc-900">Notifications</h2>
+                    <p className="mt-2 text-zinc-600">Configurez vos préférences.</p>
                   </div>
                 </div>
 
-                <div className="mt-10 flex items-center justify-between rounded-2xl border border-white/10 bg-black/30 p-5">
+                <div className="mt-10 flex items-center justify-between rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
                   <div>
-                    <h3 className="text-lg font-bold">Notifications email</h3>
+                    <h3 className="text-lg font-bold text-zinc-900">Notifications email</h3>
                     <p className="mt-2 text-sm text-zinc-500">Recevoir les mises à jour des événements.</p>
                   </div>
                   <button
                     onClick={() => saveNotifications(!notifications)}
-                    className={`relative h-8 w-16 rounded-full transition ${notifications ? "bg-[#FF5A1F]" : "bg-zinc-700"}`}
+                    className={`relative h-8 w-16 rounded-full transition ${notifications ? "bg-[#FF5A1F]" : "bg-zinc-300"}`}
                   >
                     <div className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${notifications ? "left-9" : "left-1"}`} />
                   </button>
@@ -210,30 +209,30 @@ export default function OrganizerSettingsPage() {
 
               <button
                 onClick={logout}
-                className="flex w-full items-center gap-4 rounded-[32px] border border-white/10 bg-white/[0.03] p-6 font-bold text-zinc-400 transition hover:bg-white/[0.06] hover:text-white lg:hidden"
+                className="flex w-full items-center gap-4 rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 font-bold text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-900 lg:hidden"
               >
                 <LogOut size={22} />
                 Se déconnecter
               </button>
 
-              <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl lg:p-8">
+              <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                 <div className="flex items-center gap-4">
                   <Shield size={28} className="text-[#FF5A1F]" />
                   <div>
-                    <h2 className="text-3xl font-black">Mes données (RGPD)</h2>
-                    <p className="mt-2 text-zinc-400">Exercez vos droits conformément au RGPD.</p>
+                    <h2 className="text-3xl font-black text-zinc-900">Mes données (RGPD)</h2>
+                    <p className="mt-2 text-zinc-600">Exercez vos droits conformément au RGPD.</p>
                   </div>
                 </div>
                 <div className="mt-8 space-y-4">
-                  <div className="flex items-start justify-between gap-4 rounded-2xl border border-white/10 bg-black/30 p-5">
+                  <div className="flex items-start justify-between gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
                     <div>
-                      <h3 className="font-bold">Télécharger mes données</h3>
+                      <h3 className="font-bold text-zinc-900">Télécharger mes données</h3>
                       <p className="mt-1 text-sm text-zinc-500">Exportez toutes vos données personnelles au format JSON (droit à la portabilité — Art. 20 RGPD).</p>
                     </div>
                     <button
                       onClick={exportData}
                       disabled={exportingData}
-                      className="flex shrink-0 h-12 items-center gap-2 rounded-2xl bg-zinc-800 px-6 text-sm font-bold transition hover:bg-zinc-700 disabled:opacity-50"
+                      className="flex shrink-0 h-12 items-center gap-2 rounded-2xl border border-zinc-200 bg-zinc-100 px-6 text-sm font-bold text-zinc-700 transition hover:bg-zinc-200 disabled:opacity-50"
                     >
                       <Download size={16} />
                       {exportingData ? "Export..." : "Télécharger"}
@@ -242,19 +241,19 @@ export default function OrganizerSettingsPage() {
                 </div>
               </div>
 
-              <div className="rounded-[32px] border border-red-500/20 bg-red-500/5 p-6 backdrop-blur-xl lg:p-8">
+              <div className="rounded-[32px] border border-red-200 bg-red-50 p-6 lg:p-8">
                 <div className="flex items-center gap-4">
-                  <Trash2 size={28} className="text-red-400" />
+                  <Trash2 size={28} className="text-red-500" />
                   <div>
-                    <h2 className="text-3xl font-black text-red-400">Zone dangereuse</h2>
-                    <p className="mt-2 text-zinc-400">Actions irréversibles liées à votre compte.</p>
+                    <h2 className="text-3xl font-black text-red-600">Zone dangereuse</h2>
+                    <p className="mt-2 text-zinc-600">Actions irréversibles liées à votre compte.</p>
                   </div>
                 </div>
                 <p className="mt-6 text-sm text-zinc-500">La suppression efface définitivement votre profil, vos événements, vos messages et toutes vos données personnelles (droit à l'effacement — Art. 17 RGPD).</p>
                 <button
                   onClick={deleteAccount}
                   disabled={deletingAccount}
-                  className="mt-6 flex h-14 items-center gap-3 rounded-2xl bg-red-500 px-8 font-bold transition hover:scale-[1.01] disabled:opacity-50"
+                  className="mt-6 flex h-14 items-center gap-3 rounded-2xl bg-red-500 px-8 font-bold text-white transition hover:scale-[1.01] disabled:opacity-50"
                 >
                   <Trash2 size={18} />
                   {deletingAccount ? "Suppression..." : "Supprimer mon compte"}

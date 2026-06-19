@@ -187,20 +187,20 @@ export default function AdminMessagesPage() {
   return (
     <div className="flex h-screen flex-col overflow-hidden">
 
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-black/70 backdrop-blur-2xl">
+      <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
         <div className="flex h-20 items-center justify-between gap-4 px-6 lg:px-10">
           <div className="flex items-center gap-4">
             {mobileView === "chat" && selectedUser && (
               <button
                 onClick={() => setMobileView("list")}
-                className="shrink-0 text-sm text-zinc-400 transition hover:text-white lg:hidden"
+                className="shrink-0 text-sm text-zinc-600 transition hover:text-zinc-900 lg:hidden"
               >
                 ← Retour
               </button>
             )}
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Administration</p>
-              <h1 className="text-2xl font-black lg:text-3xl">
+              <h1 className="text-2xl font-black text-zinc-900 lg:text-3xl">
                 {mobileView === "chat" && selectedUser
                   ? (selectedUser.full_name || selectedUser.email)
                   : "Messages"}
@@ -212,13 +212,13 @@ export default function AdminMessagesPage() {
             <div className="flex items-center gap-2 lg:hidden">
               {confirmDelete ? (
                 <>
-                  <button onClick={deleteConversation} className="rounded-xl bg-red-600 px-3 py-1.5 text-xs font-bold">Oui</button>
-                  <button onClick={() => setConfirmDelete(false)} className="rounded-xl border border-white/10 px-3 py-1.5 text-xs text-zinc-400">Non</button>
+                  <button onClick={deleteConversation} className="rounded-xl bg-red-600 px-3 py-1.5 text-xs font-bold text-white">Oui</button>
+                  <button onClick={() => setConfirmDelete(false)} className="rounded-xl border border-zinc-200 px-3 py-1.5 text-xs text-zinc-600">Non</button>
                 </>
               ) : (
                 <button
                   onClick={() => setConfirmDelete(true)}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-zinc-500 transition hover:border-red-600/30 hover:text-red-400"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-200 text-zinc-500 transition hover:border-red-300 hover:text-red-500"
                 >
                   <Trash2 size={16} />
                 </button>
@@ -231,17 +231,17 @@ export default function AdminMessagesPage() {
       <div className="flex flex-1 overflow-hidden">
 
         {/* Liste des utilisateurs */}
-        <div className={`flex flex-col border-r border-white/10 bg-[#050505] lg:w-[320px] ${mobileView === "chat" ? "hidden lg:flex" : "flex w-full"}`}>
+        <div className={`flex flex-col border-r border-zinc-200 bg-white lg:w-[320px] ${mobileView === "chat" ? "hidden lg:flex" : "flex w-full"}`}>
 
           <div className="p-4">
-            <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+            <div className="flex items-center gap-3 rounded-2xl border border-zinc-300 bg-zinc-50 px-4 py-3">
               <Search size={16} className="shrink-0 text-zinc-500" />
               <input
                 type="text"
                 placeholder="Rechercher..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-600"
+                className="flex-1 bg-transparent text-sm text-zinc-900 outline-none placeholder:text-zinc-400"
               />
             </div>
           </div>
@@ -249,7 +249,7 @@ export default function AdminMessagesPage() {
           <div className="flex-1 space-y-2 overflow-y-auto px-3 pb-4">
             {filteredUsers.length === 0 ? (
               <div className="py-16 text-center">
-                <Users size={36} className="mx-auto text-zinc-700" />
+                <Users size={36} className="mx-auto text-zinc-300" />
                 <p className="mt-3 text-sm text-zinc-500">Aucun utilisateur trouvé</p>
               </div>
             ) : (
@@ -260,7 +260,7 @@ export default function AdminMessagesPage() {
                   className={`w-full rounded-2xl border p-4 text-left transition ${
                     selectedUser?.id === u.id
                       ? "border-[#FF5A1F] bg-[#FF5A1F]/10"
-                      : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05]"
+                      : "border-zinc-200 bg-white hover:bg-zinc-50"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -270,12 +270,12 @@ export default function AdminMessagesPage() {
                       className="h-10 w-10 shrink-0 rounded-xl object-cover"
                     />
                     <div className="min-w-0">
-                      <p className="truncate font-bold text-sm">{u.full_name || "Sans nom"}</p>
+                      <p className="truncate font-bold text-sm text-zinc-900">{u.full_name || "Sans nom"}</p>
                       <p className="truncate text-xs text-zinc-500">{u.email}</p>
                       <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
                         u.role === "marshal"
-                          ? "bg-blue-500/20 text-blue-400"
-                          : "bg-purple-500/20 text-purple-400"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-purple-100 text-purple-700"
                       }`}>
                         {u.role === "marshal" ? "Commissaire" : "Organisateur"}
                       </span>
@@ -288,34 +288,34 @@ export default function AdminMessagesPage() {
         </div>
 
         {/* Zone de conversation */}
-        <div className={`flex flex-1 flex-col overflow-hidden lg:flex ${mobileView === "list" ? "hidden" : "flex"}`}>
+        <div className={`flex flex-1 flex-col overflow-hidden bg-zinc-50 lg:flex ${mobileView === "list" ? "hidden" : "flex"}`}>
 
           {!selectedUser ? (
             <div className="flex flex-1 flex-col items-center justify-center text-center">
-              <MessageSquare size={48} className="text-zinc-700" />
+              <MessageSquare size={48} className="text-zinc-300" />
               <p className="mt-4 font-semibold text-zinc-500">Sélectionne un utilisateur</p>
-              <p className="mt-2 text-sm text-zinc-600">pour démarrer une conversation</p>
+              <p className="mt-2 text-sm text-zinc-400">pour démarrer une conversation</p>
             </div>
           ) : (
             <>
-              <div className="hidden border-b border-white/10 px-6 py-4 lg:flex lg:items-center lg:justify-between">
+              <div className="hidden border-b border-zinc-200 bg-white px-6 py-4 lg:flex lg:items-center lg:justify-between">
                 <div>
-                  <p className="font-black">{selectedUser.full_name || "Sans nom"}</p>
-                  <p className="text-sm text-zinc-400">{selectedUser.email}</p>
+                  <p className="font-black text-zinc-900">{selectedUser.full_name || "Sans nom"}</p>
+                  <p className="text-sm text-zinc-600">{selectedUser.email}</p>
                 </div>
                 {selectedConv && (
                   confirmDelete ? (
                     <div className="flex items-center gap-2">
-                      <p className="text-sm text-zinc-400">Supprimer la conversation ?</p>
+                      <p className="text-sm text-zinc-600">Supprimer la conversation ?</p>
                       <button
                         onClick={deleteConversation}
-                        className="rounded-xl bg-red-600 px-3 py-1.5 text-xs font-bold transition hover:scale-105"
+                        className="rounded-xl bg-red-600 px-3 py-1.5 text-xs font-bold text-white transition hover:scale-105"
                       >
                         Oui
                       </button>
                       <button
                         onClick={() => setConfirmDelete(false)}
-                        className="rounded-xl border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition hover:text-white"
+                        className="rounded-xl border border-zinc-200 px-3 py-1.5 text-xs text-zinc-600 transition hover:text-zinc-900"
                       >
                         Non
                       </button>
@@ -323,7 +323,7 @@ export default function AdminMessagesPage() {
                   ) : (
                     <button
                       onClick={() => setConfirmDelete(true)}
-                      className="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 text-xs text-zinc-500 transition hover:border-red-600/30 hover:bg-red-600/10 hover:text-red-400"
+                      className="flex items-center gap-2 rounded-xl border border-zinc-200 px-3 py-2 text-xs text-zinc-500 transition hover:border-red-300 hover:bg-red-50 hover:text-red-500"
                     >
                       <Trash2 size={14} />
                       Supprimer
@@ -335,11 +335,11 @@ export default function AdminMessagesPage() {
               <div className="flex-1 overflow-y-auto p-4 lg:p-6">
                 {loadingConv ? (
                   <div className="flex h-full items-center justify-center">
-                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-700 border-t-[#FF5A1F]" />
+                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-300 border-t-[#FF5A1F]" />
                   </div>
                 ) : messages.length === 0 ? (
                   <div className="flex h-full items-center justify-center">
-                    <p className="text-sm text-zinc-600">Aucun message — écris le premier !</p>
+                    <p className="text-sm text-zinc-500">Aucun message — écris le premier !</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -355,11 +355,11 @@ export default function AdminMessagesPage() {
                             <div className={`rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
                               isMe
                                 ? "rounded-br-sm bg-[#FF5A1F] text-white"
-                                : "rounded-bl-sm border border-white/10 bg-white/[0.05] text-zinc-100"
+                                : "rounded-bl-sm border border-zinc-200 bg-white text-zinc-900"
                             }`}>
                               {msg.content}
                             </div>
-                            <p className="px-1 text-[10px] text-zinc-600">
+                            <p className="px-1 text-[10px] text-zinc-400">
                               {new Date(msg.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                             </p>
                           </div>
@@ -371,8 +371,8 @@ export default function AdminMessagesPage() {
                 )}
               </div>
 
-              <div className="border-t border-white/10 p-4 pb-24 lg:pb-4">
-                <div className="flex items-end gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2">
+              <div className="border-t border-zinc-200 bg-white p-4 pb-24 lg:pb-4">
+                <div className="flex items-end gap-3 rounded-2xl border border-zinc-300 bg-zinc-50 px-4 py-2">
                   <textarea
                     ref={textareaRef}
                     rows={1}
@@ -380,7 +380,7 @@ export default function AdminMessagesPage() {
                     value={message}
                     onChange={(e) => { setMessage(e.target.value); growTextarea(e.target); }}
                     disabled={loadingConv || !selectedConv}
-                    className="flex-1 resize-none bg-transparent py-2 text-sm outline-none placeholder:text-zinc-600 disabled:opacity-40"
+                    className="flex-1 resize-none bg-transparent py-2 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 disabled:opacity-40"
                     style={{ maxHeight: "128px", overflowY: "auto" }}
                   />
                   <button
@@ -390,11 +390,11 @@ export default function AdminMessagesPage() {
                   >
                     {sending
                       ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      : <Send size={16} />
+                      : <Send size={16} className="text-white" />
                     }
                   </button>
                 </div>
-                <p className="mt-2 hidden text-center text-[10px] text-zinc-700 lg:block">Entrée pour nouvelle ligne · Cliquez sur le bouton pour envoyer</p>
+                <p className="mt-2 hidden text-center text-[10px] text-zinc-400 lg:block">Entrée pour nouvelle ligne · Cliquez sur le bouton pour envoyer</p>
               </div>
             </>
           )}
