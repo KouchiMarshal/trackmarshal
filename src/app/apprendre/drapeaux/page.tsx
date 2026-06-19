@@ -25,12 +25,12 @@ type Flag = {
 };
 
 const PRES = {
-  agite: "border-[#FF5A1F]/40 bg-[#FF5A1F]/10 text-[#FF5A1F]",
-  fixe: "border-blue-500/40 bg-blue-500/10 text-blue-400",
-  agiteFixe: "border-yellow-500/40 bg-yellow-500/10 text-yellow-400",
-  nonUtilise: "border-zinc-600/40 bg-zinc-800/30 text-zinc-500",
-  propre: "border-red-500/40 bg-red-500/10 text-red-400",
-  dc: "border-purple-500/40 bg-purple-500/10 text-purple-400",
+  agite: "border-[#FF5A1F]/50 bg-orange-50 text-[#FF5A1F]",
+  fixe: "border-blue-300 bg-blue-50 text-blue-600",
+  agiteFixe: "border-amber-400 bg-amber-50 text-amber-700",
+  nonUtilise: "border-zinc-300 bg-zinc-100 text-zinc-400",
+  propre: "border-red-300 bg-red-50 text-red-600",
+  dc: "border-purple-300 bg-purple-50 text-purple-700",
 };
 
 const AUTO_DISCIPLINES = ["Circuit asphalte", "Tout-terrain", "Rallye", "Course de côte", "Karting"];
@@ -44,7 +44,7 @@ const flags: Flag[] = [
     description: "La session est interrompue : accident grave, obstruction de la piste ou conditions dangereuses. Tout dépassement est interdit. En auto, dimensions : 100×80 cm (plus grand que les autres drapeaux).",
     reaction: "Agiter vigoureusement. Maintenir jusqu'à ce qu'il n'y ait plus aucun concurrent en piste.",
     category: "Danger extrême",
-    categoryColor: "bg-red-500/20 text-red-400 border-red-500/30",
+    categoryColor: "bg-red-100 text-red-600 border-red-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -111,7 +111,7 @@ const flags: Flag[] = [
     description: "Un danger est présent sur le bord ou sur une partie de la piste (véhicule accidenté, commissaire à proximité, débris). Tout dépassement est formellement interdit jusqu'à la fin de la zone de danger. En moto, règle supplémentaire : PAS DE SAUT en motocross et endurance TT.",
     reaction: "Agiter vigoureusement au poste précédant le danger.",
     category: "Danger",
-    categoryColor: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+    categoryColor: "bg-amber-100 text-amber-700 border-amber-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -178,7 +178,7 @@ const flags: Flag[] = [
     description: "Danger qui obstrue partiellement ou totalement la piste, ou des commissaires interviennent directement sur la piste. Les deux drapeaux sont agités par le même commissaire, au poste immédiatement avant le danger. Tout dépassement est strictement interdit.",
     reaction: "Agiter les deux drapeaux simultanément. Présenté uniquement au poste immédiatement avant l'endroit dangereux.",
     category: "Danger majeur",
-    categoryColor: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+    categoryColor: "bg-amber-100 text-amber-700 border-amber-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -245,7 +245,7 @@ const flags: Flag[] = [
     description: "Indique la fin d'une zone de danger ou l'ouverture de la piste. Utilisé différemment selon les disciplines : parfois par la direction de course uniquement, parfois par les commissaires de poste.",
     reaction: "Agiter à l'entrée de la zone dégagée. Usage et conditions selon discipline.",
     category: "Autorisation",
-    categoryColor: "bg-green-500/20 text-green-400 border-green-500/30",
+    categoryColor: "bg-green-100 text-green-700 border-green-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -312,7 +312,7 @@ const flags: Flag[] = [
     description: "Présenté au vainqueur lors du passage sous le drapeau, puis à tous les concurrents suivants. Marque la fin officielle de l'épreuve. Présenté depuis la ligne d'arrivée ou depuis une voiture officielle.",
     reaction: "Agiter vigoureusement au passage du premier concurrent, puis des suivants.",
     category: "Fin de session",
-    categoryColor: "bg-zinc-500/20 text-zinc-300 border-zinc-500/30",
+    categoryColor: "bg-zinc-100 text-zinc-600 border-zinc-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -379,7 +379,7 @@ const flags: Flag[] = [
     description: "Présenté au concurrent qui va être doublé — soit par un pilote plus rapide lors des essais, soit par un pilote ayant un ou plusieurs tours d'avance en course.",
     reaction: "Agiter. Le pilote averti doit laisser le passage sans retarder le concurrent plus rapide.",
     category: "Information",
-    categoryColor: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    categoryColor: "bg-blue-100 text-blue-700 border-blue-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -446,7 +446,7 @@ const flags: Flag[] = [
     description: "Présenté avec un panneau indiquant le numéro du concurrent exclu. Le pilote doit rejoindre immédiatement les stands. L'exclusion peut être due à une infraction grave au règlement sportif.",
     reaction: "Tenu fixe avec panneau numéro. Uniquement sur ordre de la DC ou du collège des commissaires sportifs. Ne concerne qu'un seul concurrent.",
     category: "Exclusion",
-    categoryColor: "bg-zinc-800/50 text-zinc-300 border-zinc-600/30",
+    categoryColor: "bg-zinc-100 text-zinc-700 border-zinc-300",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -513,7 +513,7 @@ const flags: Flag[] = [
     description: "Drapeau « meatball ». Présenté avec le numéro du concurrent dont le véhicule présente un problème mécanique apparent pouvant constituer un danger (fuite d'huile, pièce détachée...). Le pilote DOIT s'arrêter au stand au prochain passage.",
     reaction: "Tenu FIXE avec panneau numéro. Uniquement sur ordre DC. Délégué aux postes les plus proches de la voie des stands.",
     category: "Mécanique",
-    categoryColor: "bg-orange-500/20 text-orange-400 border-orange-500/30",
+    categoryColor: "bg-orange-100 text-orange-600 border-orange-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -551,7 +551,7 @@ const flags: Flag[] = [
         name: "Vitesse",
         presentation: "FIXE",
         presentationColor: PRES.fixe,
-        note: "Drapeau noir + disque orange + numéro : quitter la piste le plus rapidement possible. UNIQUEMENT sur ordre DC. Numéro affiché.",
+        note: "Drapeau noir + disque orange + numéro : quitter la piste le plus rapidement possible. UNIQUEMENT sur ordre DC.",
       },
       {
         name: "Motocross",
@@ -580,7 +580,7 @@ const flags: Flag[] = [
     description: "Avertit les concurrents d'une détérioration de l'adhérence : huile, eau, débris ou autre substance glissante. En moto vitesse, il est présenté simultanément avec le drapeau jaune en cas de chute avec moto tombée sur la piste.",
     reaction: "Tenir FIXE au poste. Aucun drapeau vert n'est présenté à la suite de ce drapeau (sauf en karting).",
     category: "Avertissement",
-    categoryColor: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+    categoryColor: "bg-amber-100 text-amber-700 border-amber-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -647,7 +647,7 @@ const flags: Flag[] = [
     description: "Signale la présence d'un véhicule circulant beaucoup plus lentement que les concurrents en piste. Important : en moto vitesse, le dépassement reste AUTORISÉ sous drapeau blanc (contrairement à l'auto). En circuit tout-terrain auto, présenté FIXE pour demander une assistance médicale.",
     reaction: "Agiter. En moto, le concurrent peut dépasser le véhicule lent sous ce drapeau.",
     category: "Information",
-    categoryColor: "bg-zinc-500/20 text-zinc-300 border-zinc-500/30",
+    categoryColor: "bg-zinc-100 text-zinc-600 border-zinc-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -714,7 +714,7 @@ const flags: Flag[] = [
     description: "Présenté avec le numéro du concurrent. Premier et unique avertissement pour comportement contraire à l'esprit sportif ou conduite dangereuse. La répétition de l'infraction peut entraîner le drapeau noir.",
     reaction: "Tenu FIXE avec panneau numéro. Uniquement sur ordre DC. Délégué à certains postes selon discipline.",
     category: "Avertissement sportif",
-    categoryColor: "bg-zinc-500/20 text-zinc-300 border-zinc-500/30",
+    categoryColor: "bg-zinc-100 text-zinc-600 border-zinc-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -755,7 +755,7 @@ const flags: Flag[] = [
     description: "Drapeau violet avec un cercle blanc contenant le chiffre « 60 ». Imposé par le directeur de course lorsque deux drapeaux jaunes sont présentés. Limite la vitesse à 60 km/h sur l'ensemble du circuit. Chaque tour sous Code 60 compte comme un tour de course. Utilisé uniquement si les vitesses peuvent être surveillées en direct.",
     reaction: "Agiter sur la ligne de départ et à TOUS les postes simultanément, puis maintenir FIXE une fois les voitures ralenties. Remplacé par le drapeau vert agité à la reprise.",
     category: "Neutralisation",
-    categoryColor: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+    categoryColor: "bg-purple-100 text-purple-700 border-purple-200",
     disciplines: [
       {
         name: "Circuit asphalte",
@@ -796,7 +796,7 @@ const flags: Flag[] = [
     description: "Drapeau blanc barré d'une croix rouge diagonale (croix de Saint-André). En vitesse moto, signale que la pluie affecte l'adhérence sur cette section. En motocross et endurance TT, sert à appeler les secours (agité) ou indique la présence de personnel médical sur la piste (fixe). Ce drapeau est SPÉCIFIQUE à la moto — il n'est pas utilisé en auto.",
     reaction: "AGITÉ = appel secours / pluie sur section. FIXE = personnel médical sur piste. En cas de croix rouge agitée, prudence extrême, pas de dépassement, pas de saut.",
     category: "Moto uniquement",
-    categoryColor: "bg-red-500/20 text-red-400 border-red-500/30",
+    categoryColor: "bg-red-100 text-red-600 border-red-200",
     motoDisciplines: [
       {
         name: "Vitesse",
@@ -850,37 +850,35 @@ export default function DrapeauxPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050505] text-white">
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
 
       <section className="relative pt-36 pb-24">
-        <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/8 blur-[160px] pointer-events-none" />
-
         <div className="relative z-10 mx-auto max-w-[1100px] px-6 lg:px-10">
 
           <div className="mb-4">
-            <Link href="/apprendre" className="text-sm text-zinc-500 transition hover:text-white">
+            <Link href="/apprendre" className="text-sm text-zinc-400 transition hover:text-zinc-700">
               ← Espace pédagogique
             </Link>
           </div>
 
           <p className="text-xs font-bold uppercase tracking-[0.4em] text-[#FF5A1F]">Lexique</p>
-          <h1 className="mt-4 text-4xl font-black lg:text-6xl">Les drapeaux</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-400">
+          <h1 className="mt-4 text-4xl font-black text-zinc-900 lg:text-6xl">Les drapeaux</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-500">
             Chaque drapeau a une signification précise — et son usage varie selon la discipline.
             Un commissaire doit connaître les deux.
           </p>
 
           {/* Sport mode toggle */}
           <div className="mt-8">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Sport</p>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Sport</p>
             <div className="flex gap-2">
               <button
                 onClick={() => handleSportMode("auto")}
                 className={`rounded-xl px-4 py-2.5 text-sm font-black uppercase tracking-[0.06em] transition ${
                   sportMode === "auto"
-                    ? "bg-[#FF5A1F] text-white"
-                    : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                    ? "bg-[#FF5A1F] text-white shadow-sm"
+                    : "border border-zinc-300 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"
                 }`}
               >
                 🏎 Auto
@@ -889,8 +887,8 @@ export default function DrapeauxPage() {
                 onClick={() => handleSportMode("moto")}
                 className={`rounded-xl px-4 py-2.5 text-sm font-black uppercase tracking-[0.06em] transition ${
                   sportMode === "moto"
-                    ? "bg-[#FF5A1F] text-white"
-                    : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                    ? "bg-[#FF5A1F] text-white shadow-sm"
+                    : "border border-zinc-300 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"
                 }`}
               >
                 🏍 Moto
@@ -900,14 +898,14 @@ export default function DrapeauxPage() {
 
           {/* Discipline filter */}
           <div className="mt-5">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Filtrer par discipline</p>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Filtrer par discipline</p>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedDiscipline(null)}
                 className={`rounded-xl px-3 py-2 text-xs font-black uppercase tracking-[0.08em] transition ${
                   selectedDiscipline === null
-                    ? "bg-[#FF5A1F] text-white"
-                    : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                    ? "bg-[#FF5A1F] text-white shadow-sm"
+                    : "border border-zinc-300 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"
                 }`}
               >
                 Toutes disciplines
@@ -918,8 +916,8 @@ export default function DrapeauxPage() {
                   onClick={() => setSelectedDiscipline(selectedDiscipline === disc ? null : disc)}
                   className={`rounded-xl px-3 py-2 text-xs font-black tracking-[0.04em] transition ${
                     selectedDiscipline === disc
-                      ? "bg-[#FF5A1F] text-white"
-                      : "border border-white/10 text-zinc-400 hover:border-white/20 hover:text-white"
+                      ? "bg-[#FF5A1F] text-white shadow-sm"
+                      : "border border-zinc-300 bg-white text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"
                   }`}
                 >
                   {disc}
@@ -931,13 +929,13 @@ export default function DrapeauxPage() {
           {/* Dimensions + légende */}
           <div className="mt-5 flex flex-wrap gap-3">
             {sportMode === "auto" && (
-              <div className="rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-2 text-sm text-zinc-400">
-                <span className="font-bold text-white">Drapeau rouge :</span> 100 × 80 cm
+              <div className="rounded-2xl border border-zinc-200 bg-white px-4 py-2 text-sm text-zinc-500 shadow-sm">
+                <span className="font-bold text-zinc-800">Drapeau rouge :</span> 100 × 80 cm
                 &nbsp;·&nbsp;
-                <span className="font-bold text-white">Autres :</span> 80 × 60 cm
+                <span className="font-bold text-zinc-800">Autres :</span> 80 × 60 cm
               </div>
             )}
-            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-2">
+            <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-2 shadow-sm">
               <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.agite}`}>AGITÉ</span>
               <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.fixe}`}>FIXE</span>
               <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.agiteFixe}`}>AGITÉ+FIXE</span>
@@ -952,7 +950,7 @@ export default function DrapeauxPage() {
           <div className="mt-6 flex items-center gap-3">
             <Link
               href="/apprendre/quiz/drapeaux"
-              className="inline-flex items-center gap-2 rounded-2xl bg-[#FF5A1F] px-5 py-3 text-sm font-bold transition hover:opacity-90"
+              className="inline-flex items-center gap-2 rounded-2xl bg-[#FF5A1F] px-5 py-3 text-sm font-bold text-white transition hover:opacity-90 shadow-sm"
             >
               🎯 Tester mes connaissances
             </Link>
@@ -960,11 +958,11 @@ export default function DrapeauxPage() {
 
           {selectedDiscipline && (
             <p className="mt-4 text-sm text-zinc-500">
-              {visibleFlags.length} drapeau{visibleFlags.length > 1 ? "x" : ""} utilisé{visibleFlags.length !== 1 ? "s" : ""} en <span className="font-bold text-white">{selectedDiscipline}</span>
+              {visibleFlags.length} drapeau{visibleFlags.length > 1 ? "x" : ""} utilisé{visibleFlags.length !== 1 ? "s" : ""} en <span className="font-bold text-zinc-800">{selectedDiscipline}</span>
             </p>
           )}
 
-          <div className="mt-10 space-y-5">
+          <div className="mt-10 space-y-4">
             {visibleFlags.map((flag) => {
               const allDiscs = sportMode === "auto" ? flag.disciplines : flag.motoDisciplines;
               const disciplinesToShow = selectedDiscipline
@@ -973,7 +971,7 @@ export default function DrapeauxPage() {
               return (
               <div
                 key={flag.name}
-                className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.02] transition hover:border-white/20"
+                className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-sm transition hover:shadow-md hover:border-zinc-300"
               >
                 <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-start lg:p-8">
 
@@ -982,43 +980,43 @@ export default function DrapeauxPage() {
                     <img
                       src={flag.img}
                       alt={flag.name}
-                      className="h-20 w-32 rounded-2xl border border-white/10 object-cover sm:h-24 sm:w-36"
+                      className="h-20 w-32 rounded-2xl border border-zinc-200 object-cover shadow-sm sm:h-24 sm:w-36"
                     />
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-start gap-3">
-                      <h2 className="text-xl font-black lg:text-2xl">{flag.name}</h2>
+                      <h2 className="text-xl font-black text-zinc-900 lg:text-2xl">{flag.name}</h2>
                       <span className={`rounded-full border px-3 py-1 text-xs font-bold ${flag.categoryColor}`}>
                         {flag.category}
                       </span>
                     </div>
 
                     <p className="mt-2 text-base font-bold text-[#FF5A1F]">{flag.situation}</p>
-                    <p className="mt-3 leading-relaxed text-zinc-400">{flag.description}</p>
+                    <p className="mt-3 leading-relaxed text-zinc-600">{flag.description}</p>
 
-                    <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
-                      <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">Geste du commissaire</p>
-                      <p className="mt-1 text-sm text-zinc-300">{flag.reaction}</p>
+                    <div className="mt-4 rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
+                      <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-400">Geste du commissaire</p>
+                      <p className="mt-1 text-sm text-zinc-700">{flag.reaction}</p>
                     </div>
 
                     {/* Par discipline */}
                     {disciplinesToShow && disciplinesToShow.length > 0 && (
                       <div className="mt-5">
-                        <p className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">Par type d&apos;épreuve</p>
+                        <p className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-zinc-400">Par type d&apos;épreuve</p>
                         <div className={`grid gap-2 ${selectedDiscipline ? "" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
                           {disciplinesToShow.map((d) => (
                             <div
                               key={d.name}
                               className={`rounded-2xl border px-3 py-3 ${
                                 selectedDiscipline
-                                  ? "border-[#FF5A1F]/20 bg-[#FF5A1F]/5"
-                                  : "border-white/10 bg-black/20"
+                                  ? "border-[#FF5A1F]/30 bg-orange-50"
+                                  : "border-zinc-200 bg-zinc-50"
                               }`}
                             >
                               <div className="flex flex-wrap items-center gap-2">
-                                <span className="text-xs font-black text-white">{d.name}</span>
+                                <span className="text-xs font-black text-zinc-800">{d.name}</span>
                                 <span className={`rounded border px-2 py-0.5 text-[10px] font-black uppercase tracking-wide ${d.presentationColor}`}>
                                   {d.presentation}
                                 </span>
