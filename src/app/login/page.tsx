@@ -81,7 +81,7 @@ async function handleLogin(
 }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-black text-white">
+    <main className="relative min-h-screen overflow-hidden bg-black">
 
       <Toast toast={toast} onClose={() => setToast(null)} />
 
@@ -115,7 +115,7 @@ async function handleLogin(
 
             </p>
 
-            <h1 className="mt-8 text-7xl font-black uppercase leading-[0.9] tracking-[-0.05em]">
+            <h1 className="mt-8 text-7xl font-black uppercase leading-[0.9] tracking-[-0.05em] text-white">
 
               Bon
               <br />
@@ -136,7 +136,7 @@ async function handleLogin(
 
           <div className="flex items-center justify-center">
 
-            <div className="w-full max-w-xl rounded-[32px] border border-white/10 bg-black/40 p-6 backdrop-blur-2xl sm:p-8 lg:rounded-[40px] lg:p-10">
+            <div className="w-full max-w-xl rounded-[32px] border border-zinc-200 bg-white shadow-xl p-6 sm:p-8 lg:rounded-[40px] lg:p-10">
 
               <div>
 
@@ -146,13 +146,13 @@ async function handleLogin(
 
                 </p>
 
-                <h2 className="mt-4 text-4xl font-black sm:text-5xl">
+                <h2 className="mt-4 text-4xl font-black text-zinc-900 sm:text-5xl">
 
                   Se connecter
 
                 </h2>
 
-                <p className="mt-5 text-base leading-relaxed text-zinc-400 lg:text-lg">
+                <p className="mt-5 text-base leading-relaxed text-zinc-600 lg:text-lg">
 
                   Accédez à votre dashboard
                   et gérez vos événements motorsport.
@@ -168,7 +168,7 @@ async function handleLogin(
 
                 <div>
 
-                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
 
                     Adresse Email
 
@@ -181,7 +181,7 @@ async function handleLogin(
                     onChange={(e) =>
                       setEmail(e.target.value)
                     }
-                    className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none backdrop-blur-xl placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                    className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                     placeholder="contact@email.com"
                   />
 
@@ -189,7 +189,7 @@ async function handleLogin(
 
                 <div>
 
-                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-400 sm:text-sm">
+                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-600 sm:text-sm">
 
                     Mot de Passe
 
@@ -202,14 +202,14 @@ async function handleLogin(
                     onChange={(e) =>
                       setPassword(e.target.value)
                     }
-                    className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 px-5 text-white outline-none backdrop-blur-xl placeholder:text-zinc-500 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
+                    className="h-14 w-full rounded-2xl border border-zinc-300 bg-zinc-50 px-5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] lg:h-16 lg:px-6"
                     placeholder="••••••••"
                   />
 
                 </div>
 
                 <div className="flex justify-end">
-                  <Link href="/forgot-password" className="text-sm text-zinc-400 hover:text-[#FF5A1F] transition">
+                  <Link href="/forgot-password" className="text-sm text-zinc-500 hover:text-[#FF5A1F] transition">
                     Mot de passe oublié ?
                   </Link>
                 </div>
@@ -228,9 +228,9 @@ async function handleLogin(
 
               </form>
 
-              <p className="mt-8 text-center text-sm text-zinc-400 lg:text-base">
+              <p className="mt-8 text-center text-sm text-zinc-600 lg:text-base">
 
-                Vous n’avez pas encore de compte ?{" "}
+                Vous n'avez pas encore de compte ?{" "}
 
                 <Link
                   href="/register"

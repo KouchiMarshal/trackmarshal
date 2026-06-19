@@ -2,13 +2,13 @@ import Link from "next/link";
 
 export default function PublicFooter() {
   return (
-    <footer className="border-t border-white/10 bg-black py-10">
+    <footer className="border-t border-zinc-200 bg-white py-10">
       <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-6 lg:flex-row">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               <img src="/logo.png" alt="TrackMarshal" className="h-8 w-8 rounded-full object-cover" />
-              <p className="font-black">Track<span className="text-[#FF5A1F]">Marshal</span></p>
+              <p className="font-black text-zinc-900">Track<span className="text-[#FF5A1F]">Marshal</span></p>
             </div>
             <a
               href="https://www.instagram.com/trackmarshal.app"

@@ -7,7 +7,7 @@ import PublicFooter from "@/components/layout/public-footer";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen overflow-hidden bg-black text-white">
+    <main className="min-h-screen overflow-hidden bg-zinc-50 text-zinc-900">
 
       <PublicNavbar />
 
@@ -34,14 +34,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-black py-20 lg:py-32">
+      <section className="bg-white py-20 lg:py-32">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
 
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
-            <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-8 lg:p-12">
+            <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-8 lg:p-12">
               <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Le problème</p>
               <h2 className="mt-6 text-4xl font-black lg:text-5xl">Recruter des commissaires était compliqué.</h2>
-              <p className="mt-6 text-lg leading-relaxed text-zinc-400">
+              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
                 Appels téléphoniques, emails éparpillés, tableurs Excel,
                 groupes WhatsApp… Les organisateurs perdaient un temps précieux
                 à trouver et gérer leurs équipes. Les commissaires ne savaient
@@ -49,10 +49,10 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="rounded-[32px] border border-white/10 bg-white/[0.03] p-8 lg:p-12">
+            <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-8 lg:p-12">
               <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">La solution</p>
               <h2 className="mt-6 text-4xl font-black lg:text-5xl">Une plateforme dédiée au motorsport.</h2>
-              <p className="mt-6 text-lg leading-relaxed text-zinc-400">
+              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
                 TrackMarshal centralise tout : publication d'événements,
                 candidatures, gestion des profils et licences, messagerie
                 intégrée. Du rallye au circuit, de la première prise de
@@ -68,12 +68,12 @@ export default function AboutPage() {
               { icon: Shield, title: "Candidatures suivies", text: "Statut en temps réel : en attente, accepté ou refusé." },
               { icon: Award, title: "Communication directe", text: "Messagerie intégrée entre organisateurs et commissaires acceptés." },
             ].map((item) => (
-              <div key={item.title} className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 lg:p-8">
+              <div key={item.title} className="rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
                   <item.icon size={24} className="text-[#FF5A1F]" />
                 </div>
                 <h3 className="mt-6 text-xl font-black">{item.title}</h3>
-                <p className="mt-3 leading-relaxed text-zinc-400">{item.text}</p>
+                <p className="mt-3 leading-relaxed text-zinc-600">{item.text}</p>
               </div>
             ))}
           </div>
@@ -81,17 +81,17 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="border-t border-white/10 bg-black py-20 lg:py-28">
+      <section className="border-t border-zinc-200 bg-zinc-50 py-20 lg:py-28">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
             <p className="text-xs uppercase tracking-[0.35em] text-[#FF5A1F]">Rejoignez-nous</p>
             <h2 className="mt-6 text-4xl font-black lg:text-6xl">Prêt à rejoindre la communauté ?</h2>
-            <p className="mt-6 text-xl text-zinc-400">Commissaire ou organisateur, TrackMarshal est fait pour vous.</p>
+            <p className="mt-6 text-xl text-zinc-600">Commissaire ou organisateur, TrackMarshal est fait pour vous.</p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Link href="/register" className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-black transition hover:scale-[1.02] lg:h-16 lg:text-lg">
                 Créer un compte
               </Link>
-              <Link href="/events" className="flex h-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-8 font-black transition hover:border-[#FF5A1F]/40 lg:h-16 lg:text-lg">
+              <Link href="/events" className="flex h-14 items-center justify-center rounded-2xl border border-zinc-300 bg-white text-zinc-700 px-8 font-black transition hover:border-[#FF5A1F]/40 lg:h-16 lg:text-lg">
                 Voir les événements
               </Link>
             </div>

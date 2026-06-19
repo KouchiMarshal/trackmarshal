@@ -40,7 +40,7 @@ export default function HomePage() {
 
 
   return (
-    <main className="min-h-screen overflow-hidden bg-black text-white">
+    <main className="min-h-screen overflow-hidden bg-zinc-50 text-zinc-900">
       <PublicNavbar />
 
       {/* Hero */}
@@ -99,7 +99,7 @@ export default function HomePage() {
       </section>
 
       {/* Comment ça marche */}
-      <section className="border-t border-white/10 bg-[#050505] py-20 lg:py-32">
+      <section className="border-t border-zinc-200 bg-zinc-50 py-20 lg:py-32">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
             <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Simple et rapide</p>
@@ -108,13 +108,13 @@ export default function HomePage() {
 
           <div className="grid gap-8 lg:grid-cols-3">
             {steps.map((s) => (
-              <div key={s.step} className="relative rounded-[32px] border border-white/10 bg-white/[0.02] p-8 lg:p-10">
-                <span className="text-8xl font-black text-white/5 absolute top-6 right-8 leading-none">{s.step}</span>
+              <div key={s.step} className="relative rounded-[32px] border border-zinc-200 bg-white shadow-sm p-8 lg:p-10">
+                <span className="text-8xl font-black text-zinc-200 absolute top-6 right-8 leading-none">{s.step}</span>
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
                   <s.icon size={24} className="text-[#FF5A1F]" />
                 </div>
                 <h3 className="mt-6 text-2xl font-black lg:text-3xl">{s.title}</h3>
-                <p className="mt-4 text-lg leading-relaxed text-zinc-400">{s.desc}</p>
+                <p className="mt-4 text-lg leading-relaxed text-zinc-600">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -128,7 +128,7 @@ export default function HomePage() {
       </section>
 
       {/* Fonctionnalités */}
-      <section className="border-t border-white/10 bg-black py-20 lg:py-32">
+      <section className="border-t border-zinc-200 bg-white py-20 lg:py-32">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
             <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Tout ce qu'il vous faut</p>
@@ -141,12 +141,12 @@ export default function HomePage() {
               { icon: MessageSquare, title: "Messagerie intégrée", text: "Communication directe entre organisateurs et commissaires après acceptation. Zéro email externe nécessaire." },
               { icon: ClipboardList, title: "Gestion des candidatures", text: "Workflow complet : candidature → examen → acceptation/refus → briefing PDF téléchargeable." },
             ].map((item) => (
-              <div key={item.title} className="rounded-[32px] border border-white/10 bg-white/[0.03] p-8 backdrop-blur-xl lg:p-12">
+              <div key={item.title} className="rounded-[32px] border border-zinc-200 bg-zinc-50 shadow-sm p-8 lg:p-12">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
                   <item.icon size={24} className="text-[#FF5A1F]" />
                 </div>
                 <h3 className="mt-8 text-2xl font-black lg:text-3xl">{item.title}</h3>
-                <p className="mt-5 text-lg leading-relaxed text-zinc-400">{item.text}</p>
+                <p className="mt-5 text-lg leading-relaxed text-zinc-600">{item.text}</p>
               </div>
             ))}
           </div>
@@ -154,18 +154,18 @@ export default function HomePage() {
       </section>
 
       {/* CTA final */}
-      <section className="border-t border-white/10 bg-black py-20 lg:py-32">
+      <section className="border-t border-zinc-200 bg-zinc-50 py-20 lg:py-32">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 text-center">
           <img src="/logo.png" alt="TrackMarshal" className="mx-auto mb-8 h-20 w-20 rounded-full object-cover shadow-xl shadow-[#FF5A1F]/20 ring-2 ring-[#FF5A1F]/30" />
           <h2 className="text-4xl font-black lg:text-7xl">Prêt à démarrer ?</h2>
-          <p className="mt-6 mx-auto max-w-2xl text-lg text-zinc-400">
+          <p className="mt-6 mx-auto max-w-2xl text-lg text-zinc-600">
             Rejoignez la communauté des commissaires et organisateurs motorsport sur TrackMarshal.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row justify-center">
             <Link href="/register" className="flex h-16 items-center justify-center rounded-2xl bg-[#FF5A1F] px-10 text-lg font-black transition hover:scale-[1.02]">
               Créer un compte gratuit
             </Link>
-            <Link href="/events" className="flex h-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-10 text-lg font-black transition hover:border-[#FF5A1F]/40">
+            <Link href="/events" className="flex h-16 items-center justify-center rounded-2xl border border-zinc-300 bg-white text-zinc-700 px-10 text-lg font-black transition hover:border-[#FF5A1F]/40">
               Parcourir les événements
             </Link>
           </div>
