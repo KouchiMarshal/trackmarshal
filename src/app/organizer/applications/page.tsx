@@ -14,6 +14,8 @@ export default function OrganizerApplicationsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [toast, setToast] = useState<ToastData>(null);
+  const [postValues, setPostValues] = useState<Record<string, string>>({});
+  const [postSaving, setPostSaving] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadApplications();
@@ -77,7 +79,29 @@ export default function OrganizerApplicationsPage() {
     }));
 
     setApplications(merged);
+
+    const initialPostValues: Record<string, string> = {};
+    merged.forEach((a: any) => { if (a.post) initialPostValues[a.id] = a.post; });
+    setPostValues(initialPostValues);
+
     setLoading(false);
+  }
+
+  async function savePost(appId: string, post: string) {
+    setPostSaving(prev => ({ ...prev, [appId]: true }));
+    await supabase.from("applications").update({ post: post.trim() || null }).eq("id", appId);
+    const app = applications.find(a => a.id === appId);
+    if (app && post.trim()) {
+      await supabase.from("notifications").insert({
+        user_id: app.marshal_id,
+        title: `Poste assigné : ${post.trim()}`,
+        type: "post_assigned",
+        link: `/events/${app.events?.slug}`,
+      });
+    }
+    setPostSaving(prev => ({ ...prev, [appId]: false }));
+    setToast({ message: "Poste enregistré.", type: "success" });
+    loadApplications();
   }
 
   async function updateStatus(appId: string, status: "accepted" | "rejected", marshalId: string, eventSlug: string, eventTitle: string, marshalName: string, marshalEmail: string, eventDate: string, eventLocation: string) {
@@ -355,8 +379,33 @@ export default function OrganizerApplicationsPage() {
 
                         </div>
 
+                        {app.status === "accepted" && (
+                          <div className="mt-5 rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                            <p className="mb-2 text-xs font-bold uppercase tracking-widest text-zinc-500">Poste assigné</p>
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={postValues[app.id] ?? ""}
+                                onChange={(e) => setPostValues(prev => ({ ...prev, [app.id]: e.target.value }))}
+                                placeholder="ex : Poste 12, Direction de course..."
+                                className="flex-1 rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+                              />
+                              <button
+                                onClick={() => savePost(app.id, postValues[app.id] ?? "")}
+                                disabled={postSaving[app.id]}
+                                className="rounded-xl bg-[#FF5A1F]/20 px-4 py-2 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/30 disabled:opacity-50"
+                              >
+                                {postSaving[app.id] ? "..." : "OK"}
+                              </button>
+                            </div>
+                            {app.post && (
+                              <p className="mt-1.5 text-xs text-zinc-500">Actuel : <span className="font-semibold text-zinc-700">{app.post}</span></p>
+                            )}
+                          </div>
+                        )}
+
                         {app.profiles?.experience && (
-                          <div className="mt-6 rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                          <div className="mt-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
                             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Expérience</p>
                             <p className="mt-2 whitespace-pre-line text-sm text-zinc-700">{app.profiles.experience}</p>
                           </div>

@@ -282,7 +282,7 @@ export default function OrganizerEventDetailsPage() {
 
   function exportCSV() {
     const accepted = applications.filter((a) => a.status === "accepted");
-    const headers = ["Nom", "Email", "Téléphone", "Ville", "Pays", "Années d'expérience", "Type licence", "Numéro licence", "ASA", "Licence vérifiée", "Type licence 2", "Numéro licence 2", "Licence 2 vérifiée", "Poste", "Langues", "Spécialités", "Disciplines", "Expérience"];
+    const headers = ["Nom", "Email", "Téléphone", "Ville", "Pays", "Années d'expérience", "Type licence", "Numéro licence", "ASA", "Licence vérifiée", "Type licence 2", "Numéro licence 2", "Licence 2 vérifiée", "Rôle postulé", "Poste", "Langues", "Spécialités", "Disciplines", "Expérience"];
     const rows = accepted.map((app) => {
       const p = app.profiles || {};
       return [
@@ -291,6 +291,7 @@ export default function OrganizerEventDetailsPage() {
         p.license_verified ? "Oui" : "Non",
         p.license_type_2 || "", p.license_number_2 || "",
         p.license_type_2 ? (p.license_verified_2 ? "Oui" : "Non") : "",
+        app.desired_role || "",
         app.post,
         p.languages, p.specialties, p.disciplines, p.experience,
       ].map(escapeCSV);
@@ -319,6 +320,7 @@ export default function OrganizerEventDetailsPage() {
           <td>${escapeHtml(p.license_type)}${p.license_type_2 ? `<br/><span style="color:#aaa;font-size:10px;">${escapeHtml(p.license_type_2)}</span>` : ""}</td>
           <td>${escapeHtml(p.license_number)}${p.asa ? `<br/><span style="color:#888;font-size:10px;">ASA: ${escapeHtml(p.asa)}</span>` : ""}${p.license_number_2 ? `<br/><span style="color:#aaa;font-size:10px;">${escapeHtml(p.license_number_2)}</span>` : ""}</td>
           <td>${p.license_verified ? "✔ Vérifiée" : "En attente"}${p.license_type_2 ? `<br/><span style="font-size:10px;">${p.license_verified_2 ? "✔ Vérifiée" : "En attente"}</span>` : ""}</td>
+          <td>${escapeHtml(app.desired_role)}</td>
           <td>${escapeHtml(app.post)}</td>
           <td>${escapeHtml(p.languages)}</td>
         </tr>
@@ -342,7 +344,7 @@ export default function OrganizerEventDetailsPage() {
       <table>
         <thead><tr>
           <th>Nom</th><th>Email</th><th>Téléphone</th><th>Localisation</th>
-          <th>Exp.</th><th>Type licence</th><th>N° licence</th><th>Vérifiée</th><th>Poste</th><th>Langues</th>
+          <th>Exp.</th><th>Type licence</th><th>N° licence</th><th>Vérifiée</th><th>Rôle postulé</th><th>Poste</th><th>Langues</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
@@ -382,7 +384,7 @@ export default function OrganizerEventDetailsPage() {
       return `
         <tr>
           <td style="text-align:center;">${idx + 1}</td>
-          <td><strong>${escapeHtml(p.full_name)}</strong><br/><span style="color:#888;font-size:10px;">${escapeHtml(p.license_type)} ${escapeHtml(p.license_number)}${p.asa ? ` — ${escapeHtml(p.asa)}` : ""}${p.license_type_2 ? ` · ${escapeHtml(p.license_type_2)}` : ""}</span></td>
+          <td><strong>${escapeHtml(p.full_name)}</strong><br/><span style="color:#888;font-size:10px;">${escapeHtml(p.license_type)} ${escapeHtml(p.license_number)}${p.asa ? ` — ${escapeHtml(p.asa)}` : ""}${p.license_type_2 ? ` · ${escapeHtml(p.license_type_2)}` : ""}${app.desired_role ? `<br/><em style="color:#FF5A1F;font-style:normal;font-weight:bold;">${escapeHtml(app.desired_role)}</em>` : ""}</span></td>
           <td>${escapeHtml(app.post) !== "—" ? escapeHtml(app.post) : '<span style="color:#bbb;">—</span>'}</td>
           ${checkboxCells}
           <td></td>
@@ -446,7 +448,7 @@ export default function OrganizerEventDetailsPage() {
       const note = bilanNotes[app.id];
       return `
         <tr>
-          <td><strong>${escapeHtml(p.full_name)}</strong><br/><span style="color:#888;font-size:10px;">${escapeHtml(p.license_type)}${p.asa ? ` — ${escapeHtml(p.asa)}` : ""}${p.license_type_2 ? ` · ${escapeHtml(p.license_type_2)}` : ""}</span></td>
+          <td><strong>${escapeHtml(p.full_name)}</strong><br/><span style="color:#888;font-size:10px;">${escapeHtml(p.license_type)}${p.asa ? ` — ${escapeHtml(p.asa)}` : ""}${p.license_type_2 ? ` · ${escapeHtml(p.license_type_2)}` : ""}${app.desired_role ? `<br/><em style="color:#FF5A1F;font-style:normal;font-weight:bold;">${escapeHtml(app.desired_role)}</em>` : ""}</span></td>
           <td>${escapeHtml(app.post)}</td>
           <td style="text-align:center;font-weight:bold;color:${att === true ? "#16a34a" : att === false ? "#dc2626" : "#888"}">
             ${att === true ? "✔ Présent" : att === false ? "✗ Absent" : "—"}
