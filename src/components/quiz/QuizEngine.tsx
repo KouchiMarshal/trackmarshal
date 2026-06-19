@@ -15,6 +15,19 @@ export interface QuizQuestion {
   explanation: string;
 }
 
+function shuffleQuestion(q: QuizQuestion): QuizQuestion {
+  const order = [0, 1, 2, 3].slice(0, q.options.length);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return {
+    ...q,
+    options: order.map((i) => q.options[i]),
+    correct: order.indexOf(q.correct),
+  };
+}
+
 interface QuizEngineProps {
   title: string;
   questions: QuizQuestion[];
@@ -43,14 +56,15 @@ export default function QuizEngine({
   reviewLabel,
   glowColor = "bg-green-500/5",
 }: QuizEngineProps) {
+  const [shuffled] = useState<QuizQuestion[]>(() => questions.map(shuffleQuestion));
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const [showResult, setShowResult] = useState(false);
 
-  const question = questions[current];
+  const question = shuffled[current];
   const isAnswered = selected !== null;
-  const score = answers.filter((a, i) => a === questions[i].correct).length;
+  const score = answers.filter((a, i) => a === shuffled[i].correct).length;
 
   function handleSelect(idx: number) {
     if (isAnswered) return;
@@ -104,7 +118,7 @@ export default function QuizEngine({
             </div>
 
             <div className="mt-12 space-y-4">
-              {questions.map((q, i) => {
+              {shuffled.map((q, i) => {
                 const userAnswer = answers[i];
                 const correct = userAnswer === q.correct;
                 return (
@@ -256,7 +270,7 @@ export default function QuizEngine({
             </button>
 
             <div className="flex flex-wrap gap-1 justify-center">
-              {questions.map((_, i) => (
+              {shuffled.map((q, i) => (
                 <button
                   key={i}
                   onClick={() => { setCurrent(i); setSelected(answers[i]); }}
@@ -264,7 +278,7 @@ export default function QuizEngine({
                     i === current
                       ? "bg-[#FF5A1F]"
                       : answers[i] !== null
-                        ? answers[i] === questions[i].correct
+                        ? answers[i] === q.correct
                           ? "bg-green-500"
                           : "bg-red-500"
                         : "bg-white/20"
