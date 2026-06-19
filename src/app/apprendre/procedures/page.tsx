@@ -808,9 +808,21 @@ export default function ProceduresPage() {
           <div className="mt-12 flex items-start gap-3 rounded-[24px] border border-yellow-200 bg-yellow-50 p-6 lg:p-8">
             <span className="shrink-0 text-2xl">⚠️</span>
             <p className="leading-relaxed text-zinc-700">
-              Ces procédures sont basées sur les règlements standard FFSA 2025. Certaines épreuves ou
-              championnats peuvent avoir des spécificités additionnelles. Consultez toujours le règlement
-              particulier et écoutez attentivement le briefing de la direction de course.
+              {sportMode === "auto"
+                ? "Ces procédures sont basées sur les règlements standard FFSA 2025. Certaines épreuves ou championnats peuvent avoir des spécificités additionnelles."
+                : "Ces procédures moto sont issues du Dossier Candidat Commissaire de Piste FFM (version janvier 2023) et des Règles Techniques et de Sécurité FFM. Certaines épreuves ou championnats peuvent avoir des spécificités additionnelles."
+              }
+              {" "}Consultez toujours le règlement particulier et écoutez attentivement le briefing de la direction de course.
+            </p>
+          </div>
+
+          <div className="mt-6 flex items-start gap-3 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
+            <span className="shrink-0 text-lg">📄</span>
+            <p className="text-sm leading-relaxed text-zinc-500">
+              <span className="font-bold text-zinc-700">Sources :</span>{" "}
+              {sportMode === "moto"
+                ? "Dossier Candidat Commissaire de Piste FFM — Version janvier 2023 · Règles Techniques et de Sécurité FFM (Art. 8 Vitesse, Art. 6 Motocross, Art. Enduro/Endurance TT)."
+                : "Règlement Sportif FFSA 2025 · Code Sportif FIA (procédures Safety Car/FCY)."}
             </p>
           </div>
 

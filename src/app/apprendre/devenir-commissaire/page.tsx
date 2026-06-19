@@ -114,8 +114,8 @@ const licenses = [
     federation: "FFM",
     color: "border-yellow-200 bg-yellow-50",
     badgeColor: "bg-yellow-100 text-yellow-700",
-    description: "Première licence officiel FFM pour les épreuves moto.",
-    access: "Épreuves moto régionales",
+    description: "Première étape : permet d'officier sous supervision d'un Officiel expérimenté. Licence d'entrée dans le parcours FFM.",
+    access: "Épreuves moto régionales (sous supervision)",
   },
   {
     code: "OFF",
@@ -123,8 +123,8 @@ const licenses = [
     federation: "FFM",
     color: "border-orange-200 bg-orange-50",
     badgeColor: "bg-orange-100 text-orange-700",
-    description: "Licence officiel FFM confirmé, toutes épreuves moto.",
-    access: "Toutes épreuves moto",
+    description: "Licence requise pour officier en autonomie. Selon le Dossier Candidat FFM, le commissaire de piste doit être titulaire d'une licence OFF ou d'une licence pilote de l'année en cours.",
+    access: "Toutes épreuves moto — en autonomie",
   },
 ];
 
@@ -268,6 +268,18 @@ export default function DevenirCommissairePage() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Source */}
+          <div className="mt-12 flex items-start gap-3 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
+            <span className="shrink-0 text-lg">📄</span>
+            <p className="text-sm leading-relaxed text-zinc-500">
+              <span className="font-bold text-zinc-700">Sources :</span>{" "}
+              {sportMode === "moto"
+                ? "Dossier Candidat Commissaire de Piste FFM — Version janvier 2023 (Formation des Officiels, Fédération Française de Motocyclisme)."
+                : "Règlement Sportif FFSA 2025 · Formations FFSA e-learning (ffsa.org/divers/commissaires)."}
+              {" "}Ces contenus sont fournis à titre pédagogique — les règlements peuvent évoluer chaque saison.
+            </p>
           </div>
 
           {/* CTA */}

@@ -31,6 +31,7 @@ const PRES = {
   nonUtilise: "border-zinc-300 bg-zinc-100 text-zinc-400",
   propre: "border-red-300 bg-red-50 text-red-600",
   dc: "border-purple-300 bg-purple-50 text-purple-700",
+  adapte: "border-yellow-400 bg-yellow-50 text-yellow-700",
 };
 
 const AUTO_DISCIPLINES = ["Circuit asphalte", "Tout-terrain", "Rallye", "Course de côte", "Karting"];
@@ -622,9 +623,9 @@ const flags: Flag[] = [
       },
       {
         name: "Motocross",
-        presentation: "NON UTILISÉ",
-        presentationColor: PRES.nonUtilise,
-        note: "Non utilisé en motocross sauf pour les supermotards et courses mixtes asphalte/terre.",
+        presentation: "SUPERMOTARD",
+        presentationColor: PRES.adapte,
+        note: "Utilisé uniquement en courses mixtes supermotard (asphalte/terre) : piste glissante, changement d'adhérence. Non utilisé en motocross pur.",
       },
       {
         name: "Enduro",
@@ -636,7 +637,7 @@ const flags: Flag[] = [
         name: "Endurance TT",
         presentation: "NON UTILISÉ",
         presentationColor: PRES.nonUtilise,
-        note: "Non utilisé en endurance TT.",
+        note: "Non utilisé en Endurance TT.",
       },
     ],
   },
@@ -802,13 +803,13 @@ const flags: Flag[] = [
         name: "Vitesse",
         presentation: "AGITÉ",
         presentationColor: PRES.agite,
-        note: "Signale que la pluie affecte l'adhérence sur cette section de circuit. Signal météo d'alerte pour les concurrents.",
+        note: "Présenté dès que des gouttes de pluie ou de la pluie affectent la surface du circuit sur cette section. Le commissaire doit AUSSITÔT avertir le directeur de course.",
       },
       {
         name: "Motocross",
         presentation: "AGITÉ ou FIXE",
         presentationColor: PRES.agiteFixe,
-        note: "AGITÉ = appel secours, prudence extrême, pas de dépassement, PAS DE SAUT. FIXE = personnel médical sur la piste, mêmes consignes de prudence.",
+        note: "Si un pilote chute et se blesse à votre poste : ne bougez pas — appelez les secours avec la CROIX ROUGE AGITÉE — protégez avec le JAUNE AGITÉ — quand les secours arrivent : CROIX ROUGE FIXE. Le poste suivant présente le VERT si la piste est libre.",
       },
       {
         name: "Enduro",
@@ -943,6 +944,9 @@ export default function DrapeauxPage() {
               {sportMode === "auto" && (
                 <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.propre}`}>PROPRE INITIATIVE</span>
               )}
+              {sportMode === "moto" && (
+                <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.adapte}`}>SUPERMOTARD</span>
+              )}
               <span className={`rounded border px-2 py-0.5 text-xs font-bold ${PRES.nonUtilise}`}>NON UTILISÉ</span>
             </div>
           </div>
@@ -1033,6 +1037,14 @@ export default function DrapeauxPage() {
               </div>
               );
             })}
+          </div>
+
+          <div className="mt-12 flex items-start gap-3 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
+            <span className="shrink-0 text-lg">📄</span>
+            <p className="text-sm leading-relaxed text-zinc-500">
+              <span className="font-bold text-zinc-700">Sources :</span> Dossier Candidat Commissaire de Piste FFM — Version janvier 2023 · Règles Techniques et de Sécurité FFM (Art. 8 Vitesse, Art. 6 Motocross) · Dépliant FFM <em>Drapeaux en usage sur les épreuves motocyclistes</em>.
+              Les règles auto sont issues du Règlement Sportif FFSA 2025. Ces contenus sont fournis à titre pédagogique — consultez toujours le règlement particulier de l&apos;épreuve et le briefing de la direction de course.
+            </p>
           </div>
 
         </div>
