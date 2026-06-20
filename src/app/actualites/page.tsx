@@ -37,24 +37,43 @@ function extractImage(item: string): string | undefined {
   );
 }
 
-async function fetchFeed(url: string, source: string, category: "auto" | "moto"): Promise<Article[]> {
+// Pour Google News RSS, le <source> de chaque item donne le vrai média
+function extractItemSource(item: string, fallback: string): string {
+  return item.match(/<source[^>]*>([^<]+)<\/source>/)?.[1]?.trim() || fallback;
+}
+
+async function fetchFeed(
+  url: string,
+  source: string,
+  category: "auto" | "moto",
+  useItemSource = false
+): Promise<Article[]> {
   try {
     const res = await fetch(url, {
       next: { revalidate: 3600 },
-      headers: { "User-Agent": "TrackMarshal/1.0 (+https://www.trackmarshal.app)" },
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+        "Accept": "application/rss+xml, application/xml, text/xml, */*",
+      },
     });
     if (!res.ok) return [];
     const text = await res.text();
     const items = text.match(/<item>([\s\S]*?)<\/item>/g) ?? [];
-    return items.slice(0, 8).map((item) => ({
-      title: extractText(item, "title"),
-      link: extractText(item, "link") || item.match(/<link\s+href="([^"]+)"/)?.[1] || "",
-      description: extractText(item, "description").replace(/<[^>]+>/g, "").trim().slice(0, 220),
-      pubDate: extractText(item, "pubDate"),
-      source,
-      image: extractImage(item),
-      category,
-    })).filter((a) => a.title && a.link);
+    return items.slice(0, 10).map((item) => {
+      const itemSource = useItemSource ? extractItemSource(item, source) : source;
+      let title = extractText(item, "title");
+      // Google News appende " - Nom du média" dans le titre, on le retire
+      if (useItemSource) title = title.replace(/\s*[-–]\s*[^-–]{2,40}$/, "").trim();
+      return {
+        title,
+        link: extractText(item, "link") || item.match(/<link\s+href="([^"]+)"/)?.[1] || "",
+        description: extractText(item, "description").replace(/<[^>]+>/g, "").trim().slice(0, 220),
+        pubDate: extractText(item, "pubDate"),
+        source: itemSource,
+        image: extractImage(item),
+        category,
+      };
+    }).filter((a) => a.title && a.link);
   } catch {
     return [];
   }
@@ -62,10 +81,24 @@ async function fetchFeed(url: string, source: string, category: "auto" | "moto")
 
 export default async function ActualitesPage() {
   const results = await Promise.allSettled([
-    fetchFeed("https://fr.motorsport.com/rss/news/", "Motorsport.com", "auto"),
-    fetchFeed("https://www.autohebdo.fr/rss.xml", "Auto Hebdo", "auto"),
-    fetchFeed("https://www.moto-journal.fr/feed/", "Moto Journal", "moto"),
+    // Auto — Google News agrège L'Équipe, Le Monde, Motorsport, Autohebdo, etc.
+    fetchFeed(
+      "https://news.google.com/rss/search?q=sport+automobile+motorsport+formule+rallye&hl=fr&gl=FR&ceid=FR:fr",
+      "Google News",
+      "auto",
+      true
+    ),
+    fetchFeed("https://www.automobile-magazine.fr/toute-l-actualite/rss.xml", "Automobile Magazine", "auto"),
+    fetchFeed("https://moteur-actu.fr/feed/", "Moteur Actu", "auto"),
+    // Moto — Motomag confirmé fonctionnel + Google News moto + Repaire des Motards
     fetchFeed("https://www.motomag.com/feed/", "Moto Mag", "moto"),
+    fetchFeed(
+      "https://news.google.com/rss/search?q=sport+moto+motocyclisme+superbike+motogp+enduro&hl=fr&gl=FR&ceid=FR:fr",
+      "Google News",
+      "moto",
+      true
+    ),
+    fetchFeed("https://www.lerepairedesmotards.com/actualites/rss.php", "Le Repaire des Motards", "moto"),
   ]);
 
   const all: Article[] = results
