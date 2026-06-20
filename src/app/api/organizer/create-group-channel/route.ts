@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
   } else {
     const { data: conv } = await supabaseAdmin
       .from("conversations")
-      .insert({ title: `Équipe — ${event.title}`, event_id: eventId, is_group: true })
+      .insert({ title: `🏁 — ${event.title}`, event_id: eventId, is_group: true })
       .select()
       .single();
     conversationId = conv?.id || null;

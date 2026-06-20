@@ -25,8 +25,8 @@ BEGIN
       INSERT INTO notifications (user_id, title, message, type, link, read)
       VALUES (
         NEW.marshal_id,
-        'Canal d''équipe — ' || v_event_title,
-        'Vous avez été ajouté au canal d''équipe de l''événement "' || v_event_title || '".',
+        '🏁 — ' || v_event_title,
+        'Vous avez été ajouté au canal "🏁 — ' || v_event_title || '".',
         'new_message',
         '/dashboard/messages',
         FALSE
