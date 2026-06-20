@@ -80,32 +80,80 @@ async function fetchFeed(
   }
 }
 
+const AUTO_KEYWORDS = [
+  "F1", "Formule 1", "Formula 1", "Grand Prix", "GP", "WEC", "WRC", "WTCR", "DTM",
+  "rallye", "circuit", "pilote", "écurie", "championnat", "podium", "course automobile",
+  "Le Mans", "24 Heures", "IndyCar", "NASCAR", "IMSA", "Formule E", "pole position",
+  "qualification", "Ferrari", "Red Bull", "Mercedes AMG", "McLaren", "Alpine F1",
+  "Aston Martin F1", "Williams F1", "Haas F1", "Verstappen", "Hamilton", "Leclerc",
+  "Norris", "Sainz", "Alonso", "Piastri", "Pérez", "SafetyCar", "endurance auto",
+  "touring car", "sport-prototype", "monoplaces",
+];
+
+const MOTO_KEYWORDS = [
+  "MotoGP", "Moto GP", "Superbike", "WSBK", "motocross", "MXGP", "enduro",
+  "trial", "Supersport", "SSP", "Moto2", "Moto3", "championnat moto",
+  "course moto", "pilote moto", "GP moto", "podium moto", "Marquez", "Bagnaia",
+  "Quartararo", "Bastianini", "Martin moto", "Espargaro", "rallye moto",
+  "supermotard", "Paris-Dakar moto", "Bol d'Or", "8 heures de Suzuka",
+];
+
+function isMotoSport(article: { title: string; description: string }): boolean {
+  const text = (article.title + " " + article.description).toLowerCase();
+  return MOTO_KEYWORDS.some((kw) => text.includes(kw.toLowerCase()));
+}
+
+function isAutoSport(article: { title: string; description: string }): boolean {
+  const text = (article.title + " " + article.description).toLowerCase();
+  return AUTO_KEYWORDS.some((kw) => text.includes(kw.toLowerCase()));
+}
+
 export default async function ActualitesPage() {
   const results = await Promise.allSettled([
-    // Auto — Google News agrège L'Équipe, Le Monde, Motorsport, Autohebdo, etc.
+    // Auto — requêtes ciblées sport automobile uniquement
     fetchFeed(
-      "https://news.google.com/rss/search?q=sport+automobile+motorsport+formule+rallye&hl=fr&gl=FR&ceid=FR:fr",
+      "https://news.google.com/rss/search?q=Formule+1+F1+Grand+Prix+course&hl=fr&gl=FR&ceid=FR:fr",
       "Google News",
       "auto",
       true
     ),
     fetchFeed(
-      "https://news.google.com/rss/search?q=Formule+1+F1+GP&hl=fr&gl=FR&ceid=FR:fr",
+      "https://news.google.com/rss/search?q=WEC+WRC+rallye+championnat+sport+automobile&hl=fr&gl=FR&ceid=FR:fr",
       "Google News",
       "auto",
       true
     ),
-    fetchFeed("https://www.automobile-magazine.fr/toute-l-actualite/rss.xml", "Automobile Magazine", "auto"),
-    fetchFeed("https://moteur-actu.fr/feed/", "Moteur Actu", "auto"),
-    // Moto — Motomag confirmé fonctionnel + Google News moto + Repaire des Motards
-    fetchFeed("https://www.motomag.com/feed/", "Moto Mag", "moto"),
     fetchFeed(
-      "https://news.google.com/rss/search?q=sport+moto+motocyclisme+superbike+motogp+enduro&hl=fr&gl=FR&ceid=FR:fr",
+      "https://news.google.com/rss/search?q=24+heures+Le+Mans+endurance+DTM+WTCR+pilote&hl=fr&gl=FR&ceid=FR:fr",
+      "Google News",
+      "auto",
+      true
+    ),
+    fetchFeed(
+      "https://news.google.com/rss/search?q=IndyCar+NASCAR+Formule+E+circuit+course+auto&hl=fr&gl=FR&ceid=FR:fr",
+      "Google News",
+      "auto",
+      true
+    ),
+    // Moto — requêtes ciblées sport moto uniquement
+    fetchFeed(
+      "https://news.google.com/rss/search?q=MotoGP+Grand+Prix+moto+championnat+pilote&hl=fr&gl=FR&ceid=FR:fr",
       "Google News",
       "moto",
       true
     ),
-    fetchFeed("https://www.lerepairedesmotards.com/actualites/rss.php", "Le Repaire des Motards", "moto"),
+    fetchFeed(
+      "https://news.google.com/rss/search?q=Superbike+WSBK+Moto2+Moto3+SSP+course+moto&hl=fr&gl=FR&ceid=FR:fr",
+      "Google News",
+      "moto",
+      true
+    ),
+    fetchFeed(
+      "https://news.google.com/rss/search?q=motocross+MXGP+enduro+trial+supermotard+sport+moto&hl=fr&gl=FR&ceid=FR:fr",
+      "Google News",
+      "moto",
+      true
+    ),
   ]);
 
   const threeMonthsAgo = Date.now() - 90 * 24 * 60 * 60 * 1000;
@@ -115,8 +163,8 @@ export default async function ActualitesPage() {
     .filter((a) => !a.pubDate || new Date(a.pubDate).getTime() >= threeMonthsAgo)
     .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
-  const autoArticles = all.filter((a) => a.category === "auto");
-  const motoArticles = all.filter((a) => a.category === "moto");
+  const autoArticles = all.filter((a) => a.category === "auto" && isAutoSport(a));
+  const motoArticles = all.filter((a) => a.category === "moto" && isMotoSport(a));
 
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
