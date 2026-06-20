@@ -105,18 +105,28 @@ export default function OrganizerApplicationsPage() {
   }
 
   async function updateStatus(appId: string, status: "accepted" | "rejected", marshalId: string, eventSlug: string, eventTitle: string, marshalName: string, marshalEmail: string, eventDate: string, eventLocation: string) {
-    await supabase.from("applications").update({ status }).eq("id", appId);
+    const { error: updateError } = await supabase.from("applications").update({ status }).eq("id", appId);
+    if (updateError) {
+      setToast({ message: `Erreur : ${updateError.message}`, type: "error" });
+      return;
+    }
+
+    // Optimistic update
+    setApplications((prev) => prev.map((a) => a.id === appId ? { ...a, status } : a));
 
     await supabase.from("notifications").insert({
       user_id: marshalId,
       title: status === "accepted"
         ? "Votre candidature a été acceptée"
         : "Votre candidature a été refusée",
+      message: status === "accepted"
+        ? `Votre candidature pour "${eventTitle}" a été acceptée.`
+        : `Votre candidature pour "${eventTitle}" n'a pas été retenue.`,
       type: status === "accepted" ? "application_accepted" : "application_rejected",
       link: `/events/${eventSlug}`,
+      read: false,
     });
 
-    // Envoi de l'email au commissaire
     const { data: { session } } = await supabase.auth.getSession();
     if (session && marshalEmail) {
       await fetch("/api/send-email", {
@@ -140,7 +150,6 @@ export default function OrganizerApplicationsPage() {
     if (status === "accepted") {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (currentUser) {
-        // Vérifier si une conversation existe déjà entre cet organisateur et ce commissaire
         const { data: myMemberships } = await supabase
           .from("conversation_members")
           .select("conversation_id")
@@ -159,15 +168,13 @@ export default function OrganizerApplicationsPage() {
         }
 
         if (!alreadyExists) {
-          const { data: convData, error: convError } = await supabase
+          const { data: convData } = await supabase
             .from("conversations")
             .insert({ title: `${eventTitle} — ${marshalName}` })
             .select()
             .single();
 
-          if (convError) {
-            console.error("Erreur création conversation:", convError);
-          } else if (convData?.id) {
+          if (convData?.id) {
             await supabase.from("conversation_members").insert([
               { conversation_id: convData.id, user_id: currentUser.id },
               { conversation_id: convData.id, user_id: marshalId },
@@ -179,10 +186,8 @@ export default function OrganizerApplicationsPage() {
 
     setToast({
       message: status === "accepted" ? "Candidature acceptée." : "Candidature refusée.",
-      type: status === "accepted" ? "success" : "error",
+      type: "success",
     });
-
-    loadApplications();
   }
 
   const filtered = applications.filter((a) => filter === "all" || a.status === filter);
