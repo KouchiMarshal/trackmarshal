@@ -746,6 +746,12 @@ export default function OrganizerEventDetailsPage() {
                       >
                         ⭐ Évaluer
                       </Link>
+                      <Link
+                        href={`/organizer/events/${eventId}/documents`}
+                        className="flex items-center gap-1.5 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                      >
+                        📁 Documents
+                      </Link>
                       <button
                         onClick={() => setShowGroupMsg(true)}
                         className="flex items-center gap-1.5 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"

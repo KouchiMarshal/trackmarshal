@@ -103,5 +103,60 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Survey notifications — for events that ended ~24h ago
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const surveyWindowStart = new Date(yesterday.getTime() - 4 * 60 * 60 * 1000).toISOString();
+  const surveyWindowEnd = new Date(yesterday.getTime() + 4 * 60 * 60 * 1000).toISOString();
+
+  const { data: endedWithEndDate } = await supabase
+    .from("events")
+    .select("id, title")
+    .gte("event_end_date", surveyWindowStart)
+    .lte("event_end_date", surveyWindowEnd);
+
+  const { data: endedSingleDay } = await supabase
+    .from("events")
+    .select("id, title")
+    .is("event_end_date", null)
+    .gte("event_date", surveyWindowStart)
+    .lte("event_date", surveyWindowEnd);
+
+  const endedEvents = [...(endedWithEndDate || []), ...(endedSingleDay || [])];
+
+  for (const event of endedEvents) {
+    const { data: accepted } = await supabase
+      .from("applications")
+      .select("marshal_id")
+      .eq("event_id", event.id)
+      .eq("status", "accepted");
+
+    if (!accepted || accepted.length === 0) continue;
+
+    const marshalIds = accepted.map((a) => a.marshal_id);
+
+    // Only notify marshals who haven't answered yet
+    const { data: alreadyAnswered } = await supabase
+      .from("event_surveys")
+      .select("marshal_id")
+      .eq("event_id", event.id)
+      .in("marshal_id", marshalIds);
+
+    const answered = new Set((alreadyAnswered || []).map((s) => s.marshal_id));
+    const pending = marshalIds.filter((id) => !answered.has(id));
+
+    if (pending.length === 0) continue;
+
+    await supabase.from("notifications").insert(
+      pending.map((userId) => ({
+        user_id: userId,
+        title: `Votre avis sur "${event.title}"`,
+        message: "Prenez 30 secondes pour donner votre retour sur cet événement.",
+        type: "info",
+        link: "/dashboard/applications",
+        read: false,
+      }))
+    );
+  }
+
   return NextResponse.json({ ok: true, sent });
 }

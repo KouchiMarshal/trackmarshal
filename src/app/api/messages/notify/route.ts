@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
 
   const { data: recipients, error: profilesError } = await supabaseAdmin
     .from("profiles")
-    .select("email, role")
+    .select("id, email, role")
     .in("id", recipientIds);
 
   if (profilesError) {
@@ -75,6 +75,23 @@ export async function POST(req: NextRequest) {
   }
 
   console.log(`[messages/notify] Recipients with profiles: ${recipients?.length ?? 0}`);
+
+  // In-app notifications for all recipients
+  if (recipients && recipients.length > 0) {
+    const notifLink = (role: string) =>
+      role === "organizer" ? "/organizer/messages" : "/dashboard/messages";
+
+    await supabaseAdmin.from("notifications").insert(
+      recipients.map((r: any) => ({
+        user_id: r.id,
+        title: `Nouveau message de ${senderName}`,
+        message: preview,
+        type: "new_message",
+        link: notifLink(r.role),
+        read: false,
+      }))
+    );
+  }
 
   let sent = 0;
   for (const recipient of recipients || []) {
@@ -105,26 +122,28 @@ export async function POST(req: NextRequest) {
 
     console.log(`[messages/notify] Sending to ${recipient.email}`);
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: FROM_EMAIL,
-        to: recipient.email,
-        subject: `💬 Nouveau message de ${senderName} — TrackMarshal`,
-        html,
-      }),
-    });
+    if (RESEND_API_KEY) {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: FROM_EMAIL,
+          to: recipient.email,
+          subject: `💬 Nouveau message de ${senderName} — TrackMarshal`,
+          html,
+        }),
+      });
 
-    const result = await res.json();
-    if (res.ok) {
-      console.log(`[messages/notify] Sent OK, id=${result.id}`);
-      sent++;
-    } else {
-      console.error(`[messages/notify] Resend error:`, JSON.stringify(result));
+      const result = await res.json();
+      if (res.ok) {
+        console.log(`[messages/notify] Sent OK, id=${result.id}`);
+        sent++;
+      } else {
+        console.error(`[messages/notify] Resend error:`, JSON.stringify(result));
+      }
     }
   }
 
