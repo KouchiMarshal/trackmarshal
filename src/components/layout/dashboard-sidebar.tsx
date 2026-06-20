@@ -173,8 +173,8 @@ export default function DashboardSidebar() {
           {[
             { icon: Home, label: "Dashboard", href: "/dashboard" },
             { icon: CalendarDays, label: "Events", href: "/dashboard/events" },
+            { icon: FileBadge2, label: "Candidatures", href: "/dashboard/applications" },
             { icon: MessageSquare, label: "Messages", href: "/dashboard/messages" },
-            { icon: Trophy, label: "Historique", href: "/dashboard/history" },
             { icon: User, label: "Profil", href: "/dashboard/profile" },
             { icon: Settings, label: "Réglages", href: "/dashboard/settings" },
           ].map((item) => {
