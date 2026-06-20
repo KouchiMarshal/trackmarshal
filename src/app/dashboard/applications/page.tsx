@@ -55,6 +55,9 @@ export default function ApplicationsPage() {
   const [briefingOpened, setBriefingOpened] = useState<Record<string, boolean>>({});
   const [ratings, setRatings] = useState<Record<string, { rating: number; comment: string; saved: boolean }>>({});
   const [ratingSubmitting, setRatingSubmitting] = useState<string | null>(null);
+  const [surveys, setSurveys] = useState<Record<string, { organisation: number; securite: number; ambiance: number; comment: string; saved: boolean }>>({});
+  const [surveySubmitting, setSurveySubmitting] = useState<string | null>(null);
+  const [docs, setDocs] = useState<Record<string, any[]>>({});
 
   useEffect(() => {
     loadApplications();
@@ -129,6 +132,34 @@ export default function ApplicationsPage() {
         initial[r.event_id] = { rating: r.rating, comment: r.comment || "", saved: true };
       });
       setRatings(initial);
+
+      // Load existing surveys
+      const { data: existingSurveys } = await supabase
+        .from("event_surveys")
+        .select("event_id, organisation, securite, ambiance, comment")
+        .eq("marshal_id", user.id)
+        .in("event_id", pastAcceptedEventIds);
+
+      const surveyInit: Record<string, { organisation: number; securite: number; ambiance: number; comment: string; saved: boolean }> = {};
+      (existingSurveys || []).forEach((s: any) => {
+        surveyInit[s.event_id] = { organisation: s.organisation, securite: s.securite, ambiance: s.ambiance, comment: s.comment || "", saved: true };
+      });
+      setSurveys(surveyInit);
+    }
+
+    // Load documents for accepted events
+    const acceptedEventIds = merged.filter((a: any) => a.status === "accepted").map((a: any) => a.event_id);
+    if (acceptedEventIds.length > 0) {
+      const { data: { session } } = await supabase.auth.getSession();
+      const docsMap: Record<string, any[]> = {};
+      await Promise.all(acceptedEventIds.map(async (eid: string) => {
+        const res = await fetch(`/api/organizer/documents?eventId=${eid}`, {
+          headers: { Authorization: `Bearer ${session?.access_token}` },
+        });
+        const data = await res.json();
+        if (data.docs?.length > 0) docsMap[eid] = data.docs;
+      }));
+      setDocs(docsMap);
     }
 
     setLoading(false);
@@ -149,6 +180,21 @@ export default function ApplicationsPage() {
       );
     }
     setAcknowledging(null);
+  }
+
+  async function submitSurvey(eventId: string) {
+    const s = surveys[eventId];
+    if (!s || !s.organisation || !s.securite || !s.ambiance) return;
+    setSurveySubmitting(eventId);
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch("/api/surveys/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ eventId, organisation: s.organisation, securite: s.securite, ambiance: s.ambiance, comment: s.comment }),
+    });
+    const data = await res.json();
+    if (data.ok) setSurveys((prev) => ({ ...prev, [eventId]: { ...prev[eventId], saved: true } }));
+    setSurveySubmitting(null);
   }
 
   async function submitMarshalRating(eventId: string) {
@@ -638,6 +684,86 @@ export default function ApplicationsPage() {
                                         {acknowledging === app.id ? "Enregistrement..." : "Je confirme avoir lu"}
                                       </button>
                                     </div>
+                                  </>
+                                )}
+                              </div>
+                            );
+                          })()}
+
+                          {/* Documents de l'événement */}
+                          {app.status === "accepted" && docs[app.event_id]?.length > 0 && (
+                            <div className="mt-5 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+                              <p className="mb-3 text-sm font-black text-zinc-900">📁 Documents de l'événement</p>
+                              <div className="space-y-2">
+                                {docs[app.event_id].map((doc: any) => (
+                                  <a
+                                    key={doc.id}
+                                    href={doc.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                                  >
+                                    <span className="text-base">📄</span>
+                                    <span className="truncate">{doc.name}</span>
+                                  </a>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Sondage post-événement */}
+                          {app.status === "accepted" && (() => {
+                            const endDate = new Date(app.events?.event_end_date || app.events?.event_date);
+                            const daysSinceEnd = (Date.now() - endDate.getTime()) / (1000 * 60 * 60 * 24);
+                            if (daysSinceEnd < 1 || daysSinceEnd > 30) return null;
+                            const eventId = app.event_id;
+                            const s = surveys[eventId] || { organisation: 0, securite: 0, ambiance: 0, comment: "", saved: false };
+                            const dims = [
+                              { key: "organisation" as const, label: "Organisation" },
+                              { key: "securite" as const, label: "Sécurité" },
+                              { key: "ambiance" as const, label: "Ambiance" },
+                            ];
+                            return (
+                              <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-5">
+                                <p className="mb-4 text-sm font-black text-blue-900">
+                                  {s.saved ? "✓ Sondage complété — merci !" : "📊 Sondage post-événement"}
+                                </p>
+                                {!s.saved && (
+                                  <>
+                                    <div className="space-y-3 mb-4">
+                                      {dims.map(({ key, label }) => (
+                                        <div key={key}>
+                                          <p className="text-xs font-bold text-blue-700 mb-1">{label}</p>
+                                          <div className="flex gap-1">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                              <button
+                                                key={star}
+                                                onClick={() => setSurveys((prev) => ({ ...prev, [eventId]: { ...s, [key]: star, saved: false } }))}
+                                                className="transition hover:scale-110"
+                                              >
+                                                <Star size={20} className={star <= s[key] ? "fill-blue-500 text-blue-500" : "text-blue-200"} />
+                                              </button>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                    <textarea
+                                      value={s.comment}
+                                      onChange={(e) => setSurveys((prev) => ({ ...prev, [eventId]: { ...s, comment: e.target.value } }))}
+                                      placeholder="Commentaire libre (optionnel)"
+                                      rows={2}
+                                      className="w-full resize-none rounded-xl border border-blue-200 bg-white p-3 text-sm outline-none placeholder:text-blue-300 focus:border-blue-400"
+                                    />
+                                    {s.organisation > 0 && s.securite > 0 && s.ambiance > 0 && (
+                                      <button
+                                        onClick={() => submitSurvey(eventId)}
+                                        disabled={surveySubmitting === eventId}
+                                        className="mt-3 flex h-10 items-center rounded-xl bg-blue-600 px-5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-60"
+                                      >
+                                        {surveySubmitting === eventId ? "Envoi..." : "Envoyer le sondage"}
+                                      </button>
+                                    )}
                                   </>
                                 )}
                               </div>

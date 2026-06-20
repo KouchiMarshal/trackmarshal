@@ -41,8 +41,32 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
     .select("id", { count: "exact", head: true })
     .in("event_id", (events || []).map((e) => e.id));
 
+  // Trust score — computed from existing data
+  const allEventIds = (events || []).map((e: any) => e.id);
+
+  const { count: totalApps } = await supabase
+    .from("applications")
+    .select("id", { count: "exact", head: true })
+    .in("event_id", allEventIds.length > 0 ? allEventIds : ["none"]);
+
+  const { count: respondedApps } = await supabase
+    .from("applications")
+    .select("id", { count: "exact", head: true })
+    .in("event_id", allEventIds.length > 0 ? allEventIds : ["none"])
+    .neq("status", "pending");
+
+  const { count: eventsWithBriefing } = await supabase
+    .from("events")
+    .select("id", { count: "exact", head: true })
+    .eq("organizer_id", id)
+    .not("briefing", "is", null)
+    .neq("briefing", "");
+
+  const responseRate = totalApps ? Math.round(((respondedApps || 0) / totalApps) * 100) : null;
+  const briefingRate = totalEvents ? Math.round(((eventsWithBriefing || 0) / totalEvents) * 100) : null;
+
   // Fetch marshal reviews for all events of this organizer
-  const eventIds = (events || []).map((e: any) => e.id);
+  const eventIds = allEventIds;
   const { data: rawReviews } = eventIds.length > 0
     ? await supabase
         .from("marshal_reviews")
@@ -131,6 +155,33 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
                       <p className="mt-1 text-xs text-zinc-500">Candidatures</p>
                     </div>
                   </div>
+
+                  {/* Trust score */}
+                  {(responseRate !== null || briefingRate !== null) && (
+                    <div className="mt-6 space-y-3 text-left">
+                      <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Fiabilité</p>
+                      {responseRate !== null && (
+                        <div>
+                          <div className="flex justify-between text-xs text-zinc-500 mb-1">
+                            <span>Taux de réponse</span><span className="font-bold text-zinc-700">{responseRate}%</span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-zinc-100">
+                            <div className="h-1.5 rounded-full bg-[#FF5A1F]" style={{ width: `${responseRate}%` }} />
+                          </div>
+                        </div>
+                      )}
+                      {briefingRate !== null && (
+                        <div>
+                          <div className="flex justify-between text-xs text-zinc-500 mb-1">
+                            <span>Briefings publiés</span><span className="font-bold text-zinc-700">{briefingRate}%</span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-zinc-100">
+                            <div className="h-1.5 rounded-full bg-[#FF5A1F]" style={{ width: `${briefingRate}%` }} />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {profile.email && (
                     <a
