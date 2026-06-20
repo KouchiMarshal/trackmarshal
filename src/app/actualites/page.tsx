@@ -21,46 +21,64 @@ export interface Article {
   category: "auto" | "moto";
 }
 
+// Images de secours motorsport (Unsplash, libres de droits)
+const AUTO_FALLBACKS = [
+  "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1541889413457-4aec57bcdc4c?w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=800&auto=format&fit=crop",
+];
+
+const MOTO_FALLBACKS = [
+  "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1558981285-501cd373af7b?w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=800&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&auto=format&fit=crop",
+];
+
+function decodeHtmlEntities(str: string): string {
+  return str
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&nbsp;/g, " ");
+}
+
 function extractText(xml: string, tag: string): string {
   const cdata = xml.match(new RegExp(`<${tag}[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tag}>`, "i"));
   if (cdata) return cdata[1].trim();
   const plain = xml.match(new RegExp(`<${tag}[^>]*>([^<]*)<\\/${tag}>`, "i"));
-  return plain ? plain[1].trim() : "";
+  return plain ? decodeHtmlEntities(plain[1].trim()) : "";
+}
+
+function extractDescription(item: string): string {
+  const raw = extractText(item, "description");
+  return decodeHtmlEntities(raw)
+    .replace(/<[^>]+>/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 220);
 }
 
 function extractImage(item: string): string | undefined {
-  return (
+  const url =
     item.match(/media:content[^>]*url="([^"]+)"/)?.[1] ||
     item.match(/media:thumbnail[^>]*url="([^"]+)"/)?.[1] ||
     item.match(/enclosure[^>]*type="image[^"]*"\s+url="([^"]+)"/)?.[1] ||
-    item.match(/enclosure[^>]*url="([^"]+)"[^>]*type="image/)?.[1] ||
-    undefined
-  );
+    item.match(/enclosure[^>]*url="([^"]+)"[^>]*type="image/)?.[1];
+
+  // Exclure les logos/icônes Google ou génériques
+  if (!url) return undefined;
+  if (url.includes("googleusercontent.com") || url.includes("news.google.com")) return undefined;
+  if (url.includes("favicon") || url.includes("logo") || url.includes("icon")) return undefined;
+  return url;
 }
 
-// Pour Google News RSS, le <source> de chaque item donne le vrai média
 function extractItemSource(item: string, fallback: string): string {
   return item.match(/<source[^>]*>([^<]+)<\/source>/)?.[1]?.trim() || fallback;
-}
-
-async function fetchOgImage(url: string): Promise<string | undefined> {
-  try {
-    const res = await fetch(url, {
-      signal: AbortSignal.timeout(4000),
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" },
-      redirect: "follow",
-    });
-    if (!res.ok) return undefined;
-    const html = await res.text();
-    return (
-      html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)?.[1] ||
-      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i)?.[1] ||
-      html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)?.[1] ||
-      undefined
-    );
-  } catch {
-    return undefined;
-  }
 }
 
 async function fetchFeed(
@@ -80,15 +98,14 @@ async function fetchFeed(
     if (!res.ok) return [];
     const text = await res.text();
     const items = text.match(/<item>([\s\S]*?)<\/item>/g) ?? [];
-    return items.slice(0, 10).map((item) => {
+    return items.slice(0, 12).map((item) => {
       const itemSource = useItemSource ? extractItemSource(item, source) : source;
       let title = extractText(item, "title");
-      // Google News appende " - Nom du média" dans le titre, on le retire
       if (useItemSource) title = title.replace(/\s*[-–]\s*[^-–]{2,40}$/, "").trim();
       return {
         title,
         link: extractText(item, "link") || item.match(/<link\s+href="([^"]+)"/)?.[1] || "",
-        description: extractText(item, "description").replace(/<[^>]+>/g, "").trim().slice(0, 220),
+        description: extractDescription(item),
         pubDate: extractText(item, "pubDate"),
         source: itemSource,
         image: extractImage(item),
@@ -106,101 +123,85 @@ const AUTO_KEYWORDS = [
   "Le Mans", "24 Heures", "IndyCar", "NASCAR", "IMSA", "Formule E", "pole position",
   "qualification", "Ferrari", "Red Bull", "Mercedes AMG", "McLaren", "Alpine F1",
   "Aston Martin F1", "Williams F1", "Haas F1", "Verstappen", "Hamilton", "Leclerc",
-  "Norris", "Sainz", "Alonso", "Piastri", "Pérez", "SafetyCar", "endurance auto",
-  "touring car", "sport-prototype", "monoplaces",
+  "Norris", "Sainz", "Alonso", "Piastri", "Pérez", "SafetyCar", "sport-prototype",
 ];
 
 const MOTO_KEYWORDS = [
   "MotoGP", "Moto GP", "Superbike", "WSBK", "motocross", "MXGP", "enduro",
   "trial", "Supersport", "SSP", "Moto2", "Moto3", "championnat moto",
   "course moto", "pilote moto", "GP moto", "podium moto", "Marquez", "Bagnaia",
-  "Quartararo", "Bastianini", "Martin moto", "Espargaro", "rallye moto",
-  "supermotard", "Paris-Dakar moto", "Bol d'Or", "8 heures de Suzuka",
+  "Quartararo", "Bastianini", "Espargaro", "supermotard", "Bol d'Or",
 ];
 
-function isMotoSport(article: { title: string; description: string }): boolean {
-  const text = (article.title + " " + article.description).toLowerCase();
+function isAutoSport(a: { title: string; description: string }): boolean {
+  const text = (a.title + " " + a.description).toLowerCase();
+  return AUTO_KEYWORDS.some((kw) => text.includes(kw.toLowerCase()));
+}
+
+function isMotoSport(a: { title: string; description: string }): boolean {
+  const text = (a.title + " " + a.description).toLowerCase();
   return MOTO_KEYWORDS.some((kw) => text.includes(kw.toLowerCase()));
 }
 
-function isAutoSport(article: { title: string; description: string }): boolean {
-  const text = (article.title + " " + article.description).toLowerCase();
-  return AUTO_KEYWORDS.some((kw) => text.includes(kw.toLowerCase()));
+function assignFallbackImages(articles: Article[], fallbacks: string[]): Article[] {
+  let idx = 0;
+  return articles.map((a) => {
+    if (a.image) return a;
+    const img = fallbacks[idx % fallbacks.length];
+    idx++;
+    return { ...a, image: img };
+  });
 }
 
 export default async function ActualitesPage() {
   const results = await Promise.allSettled([
-    // Auto — requêtes ciblées sport automobile uniquement
+    // Motorsport.com FR — flux avec images natives
+    fetchFeed("https://fr.motorsport.com/rss/f1/news/", "Motorsport.com", "auto"),
+    fetchFeed("https://fr.motorsport.com/rss/wrc/news/", "Motorsport.com", "auto"),
+    fetchFeed("https://fr.motorsport.com/rss/wec/news/", "Motorsport.com", "auto"),
+    fetchFeed("https://fr.motorsport.com/rss/motogp/news/", "Motorsport.com", "moto"),
+    fetchFeed("https://fr.motorsport.com/rss/motocross/news/", "Motorsport.com", "moto"),
+    fetchFeed("https://fr.motorsport.com/rss/superbike/news/", "Motorsport.com", "moto"),
+    // Google News en complément pour la couverture
     fetchFeed(
-      "https://news.google.com/rss/search?q=Formule+1+F1+Grand+Prix+course&hl=fr&gl=FR&ceid=FR:fr",
-      "Google News",
-      "auto",
-      true
+      "https://news.google.com/rss/search?q=Formule+1+F1+Grand+Prix+course+pilote&hl=fr&gl=FR&ceid=FR:fr",
+      "Google News", "auto", true
     ),
     fetchFeed(
-      "https://news.google.com/rss/search?q=WEC+WRC+rallye+championnat+sport+automobile&hl=fr&gl=FR&ceid=FR:fr",
-      "Google News",
-      "auto",
-      true
+      "https://news.google.com/rss/search?q=WEC+WRC+rallye+sport+automobile+championnat&hl=fr&gl=FR&ceid=FR:fr",
+      "Google News", "auto", true
     ),
-    fetchFeed(
-      "https://news.google.com/rss/search?q=24+heures+Le+Mans+endurance+DTM+WTCR+pilote&hl=fr&gl=FR&ceid=FR:fr",
-      "Google News",
-      "auto",
-      true
-    ),
-    fetchFeed(
-      "https://news.google.com/rss/search?q=IndyCar+NASCAR+Formule+E+circuit+course+auto&hl=fr&gl=FR&ceid=FR:fr",
-      "Google News",
-      "auto",
-      true
-    ),
-    // Moto — requêtes ciblées sport moto uniquement
     fetchFeed(
       "https://news.google.com/rss/search?q=MotoGP+Grand+Prix+moto+championnat+pilote&hl=fr&gl=FR&ceid=FR:fr",
-      "Google News",
-      "moto",
-      true
+      "Google News", "moto", true
     ),
     fetchFeed(
-      "https://news.google.com/rss/search?q=Superbike+WSBK+Moto2+Moto3+SSP+course+moto&hl=fr&gl=FR&ceid=FR:fr",
-      "Google News",
-      "moto",
-      true
-    ),
-    fetchFeed(
-      "https://news.google.com/rss/search?q=motocross+MXGP+enduro+trial+supermotard+sport+moto&hl=fr&gl=FR&ceid=FR:fr",
-      "Google News",
-      "moto",
-      true
+      "https://news.google.com/rss/search?q=Superbike+WSBK+Moto2+Moto3+motocross+MXGP&hl=fr&gl=FR&ceid=FR:fr",
+      "Google News", "moto", true
     ),
   ]);
 
   const threeMonthsAgo = Date.now() - 90 * 24 * 60 * 60 * 1000;
 
+  // Dédoublonner par titre
+  const seen = new Set<string>();
   const all: Article[] = results
     .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
-    .filter((a) => !a.pubDate || new Date(a.pubDate).getTime() >= threeMonthsAgo)
+    .filter((a) => {
+      if (!a.pubDate || new Date(a.pubDate).getTime() < threeMonthsAgo) return false;
+      const key = a.title.toLowerCase().slice(0, 60);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
     .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
   const autoFiltered = all.filter((a) => a.category === "auto" && isAutoSport(a));
   const motoFiltered = all.filter((a) => a.category === "moto" && isMotoSport(a));
 
-  // Enrich articles missing images with og:image (server-side, cached 1h)
-  async function enrichImages(articles: Article[]): Promise<Article[]> {
-    return Promise.all(
-      articles.map(async (a) => {
-        if (a.image) return a;
-        const img = await fetchOgImage(a.link);
-        return img ? { ...a, image: img } : a;
-      })
-    );
-  }
-
-  const [autoArticles, motoArticles] = await Promise.all([
-    enrichImages(autoFiltered),
-    enrichImages(motoFiltered),
-  ]);
+  // Assigner des images de secours aux articles sans photo
+  const autoArticles = assignFallbackImages(autoFiltered, AUTO_FALLBACKS);
+  const motoArticles = assignFallbackImages(motoFiltered, MOTO_FALLBACKS);
 
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
