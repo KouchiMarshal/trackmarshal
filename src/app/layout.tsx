@@ -4,6 +4,8 @@ import "./globals.css";
 
 import { Toaster } from "react-hot-toast";
 import RegisterSW from "@/components/pwa/register-sw";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: {
@@ -103,6 +105,9 @@ export default function RootLayout({
         <RegisterSW />
 
         {children}
+
+        <Analytics />
+        <SpeedInsights />
 
         <Toaster
           position="top-right"
