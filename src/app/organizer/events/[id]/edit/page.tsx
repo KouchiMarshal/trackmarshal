@@ -6,6 +6,7 @@ import {
   ImageIcon,
   MapPin,
   Save,
+  Sparkles,
   Users,
 } from "lucide-react";
 
@@ -28,6 +29,7 @@ export default function EditEventPage() {
   const [loadingData, setLoadingData] = useState(true);
   const [userId, setUserId] = useState("");
   const [toast, setToast] = useState<ToastData>(null);
+  const [generatingDescription, setGeneratingDescription] = useState(false);
 
   const [title, setTitle] = useState("");
   const [country, setCountry] = useState("");
@@ -111,6 +113,23 @@ export default function EditEventPage() {
   }
   function setExtraRoleCount(index: number, count: string) {
     setExtraRoles(prev => prev.map((r, i) => i === index ? { ...r, count } : r));
+  }
+
+  async function generateDescription() {
+    setGeneratingDescription(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch("/api/ai/generate-description", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ title, discipline, location, country, date, endDate, marshalsNeeded }),
+    });
+    const data = await res.json();
+    if (data.description) {
+      setDescription(data.description);
+    } else {
+      setToast({ message: "Erreur lors de la génération. Vérifiez votre clé API.", type: "error" });
+    }
+    setGeneratingDescription(false);
   }
 
   async function uploadImage() {
@@ -517,14 +536,25 @@ export default function EditEventPage() {
                   </div>
 
                   <div>
-                    <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
-                      Description / Briefing
-                    </p>
+                    <div className="mb-3 flex items-center justify-between">
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+                        Description / Briefing
+                      </p>
+                      <button
+                        type="button"
+                        onClick={generateDescription}
+                        disabled={generatingDescription}
+                        className="flex items-center gap-1.5 rounded-xl bg-[#FF5A1F]/10 px-3 py-1.5 text-xs font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20 disabled:opacity-50"
+                      >
+                        <Sparkles size={13} />
+                        {generatingDescription ? "Génération..." : "Générer avec l'IA"}
+                      </button>
+                    </div>
                     <textarea
                       rows={8}
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Décrivez votre événement..."
+                      placeholder="Décrivez votre événement ou laissez l'IA le faire..."
                       className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                     />
                   </div>

@@ -1,5 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+
+const IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+async function verifyLicenseImage(buffer: Uint8Array, mimeType: string) {
+  if (!process.env.ANTHROPIC_API_KEY) return null;
+  try {
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const base64 = Buffer.from(buffer).toString("base64");
+    const message = await anthropic.messages.create({
+      model: "claude-opus-4-8",
+      max_tokens: 512,
+      messages: [{
+        role: "user",
+        content: [
+          {
+            type: "image",
+            source: { type: "base64", media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp", data: base64 },
+          },
+          {
+            type: "text",
+            text: `Analyse cette image. S'agit-il d'une licence sportive officielle (FFSA, FFM, ASA, licence club automobile ou moto) ?
+
+Réponds UNIQUEMENT en JSON avec ce format exact :
+{"valid":true,"confidence":"high","message":"Message court en français"}
+
+- valid: true si c'est une licence sportive officielle, false sinon
+- confidence: "high", "medium" ou "low"
+- message: explication courte (max 80 caractères)
+
+Considère valide : licence FFSA, FFM, ASA, licence club, toute licence sportive auto ou moto officielle.
+Considère invalide : selfie, photo quelconque, carte d'identité, passeport, autre document non sportif, image floue ou illisible.`,
+          },
+        ],
+      }],
+    });
+    const text = message.content.find((b) => b.type === "text")?.text || "";
+    const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
+    return JSON.parse(cleaned);
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
@@ -45,5 +88,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: dbError.message }, { status: 500 });
   }
 
-  return NextResponse.json({ publicUrl });
+  // AI verification for image files
+  let aiResult = null;
+  if (IMAGE_TYPES.includes(file.type)) {
+    aiResult = await verifyLicenseImage(buffer, file.type);
+  }
+
+  return NextResponse.json({ publicUrl, aiResult });
 }
