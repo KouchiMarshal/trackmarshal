@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export async function POST(req: NextRequest) {
@@ -9,8 +9,8 @@ export async function POST(req: NextRequest) {
   const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
   if (authError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json({ error: "Clé API Anthropic manquante" }, { status: 503 });
+  if (!process.env.GEMINI_API_KEY) {
+    return NextResponse.json({ error: "Clé API Gemini manquante" }, { status: 503 });
   }
 
   try {
@@ -35,14 +35,11 @@ Rédige une description de 3 paragraphes qui :
 
 Ton : professionnel, dynamique, passionné. Pas de titres, pas de puces, pas de markdown.`;
 
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    const message = await anthropic.messages.create({
-      model: "claude-opus-4-8",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
 
-    const text = message.content.find((b) => b.type === "text")?.text || "";
     return NextResponse.json({ description: text });
   } catch (err: any) {
     return NextResponse.json({ error: err?.message || "Erreur serveur" }, { status: 500 });

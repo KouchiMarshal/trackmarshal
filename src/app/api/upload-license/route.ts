@@ -1,27 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
 async function verifyLicenseImage(buffer: Uint8Array, mimeType: string) {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
+  if (!process.env.GEMINI_API_KEY) return null;
   try {
-    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
     const base64 = Buffer.from(buffer).toString("base64");
-    const message = await anthropic.messages.create({
-      model: "claude-opus-4-8",
-      max_tokens: 512,
-      messages: [{
-        role: "user",
-        content: [
-          {
-            type: "image",
-            source: { type: "base64", media_type: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp", data: base64 },
-          },
-          {
-            type: "text",
-            text: `Analyse cette image. S'agit-il d'une licence sportive officielle (FFSA, FFM, ASA, licence club automobile ou moto) ?
+    const result = await model.generateContent([
+      {
+        inlineData: { mimeType: mimeType as "image/jpeg" | "image/png" | "image/gif" | "image/webp", data: base64 },
+      },
+      {
+        text: `Analyse cette image. S'agit-il d'une licence sportive officielle (FFSA, FFM, ASA, licence club automobile ou moto) ?
 
 Réponds UNIQUEMENT en JSON avec ce format exact :
 {"valid":true,"confidence":"high","message":"Message court en français"}
@@ -32,11 +27,10 @@ Réponds UNIQUEMENT en JSON avec ce format exact :
 
 Considère valide : licence FFSA, FFM, ASA, licence club, toute licence sportive auto ou moto officielle.
 Considère invalide : selfie, photo quelconque, carte d'identité, passeport, autre document non sportif, image floue ou illisible.`,
-          },
-        ],
-      }],
-    });
-    const text = message.content.find((b) => b.type === "text")?.text || "";
+      },
+    ]);
+
+    const text = result.response.text();
     const cleaned = text.replace(/```json\n?|\n?```/g, "").trim();
     return JSON.parse(cleaned);
   } catch {
@@ -88,7 +82,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: dbError.message }, { status: 500 });
   }
 
-  // AI verification for image files
   let aiResult = null;
   if (IMAGE_TYPES.includes(file.type)) {
     aiResult = await verifyLicenseImage(buffer, file.type);
