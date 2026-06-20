@@ -128,7 +128,7 @@ export default function OrganizerMessagesPage() {
       const otherProfile = otherId ? profilesById[otherId] : null;
       return {
         ...conv,
-        displayName: otherProfile?.full_name || conv.title || "Conversation",
+        displayName: conv.is_group ? conv.title : (otherProfile?.full_name || conv.title || "Conversation"),
         lastMsg: lastMsgMap[conv.id] || null,
       };
     });
@@ -344,7 +344,6 @@ export default function OrganizerMessagesPage() {
                               >
                                 <div className="flex items-center justify-between gap-2">
                                   <div className="flex items-center gap-1.5 min-w-0">
-                                    {conv.is_group && <span className="shrink-0 text-[10px]">🏁</span>}
                                     <p className={`truncate font-bold leading-tight ${convUnread > 0 ? "text-zinc-900" : "text-zinc-700"}`}>
                                       {conv.displayName || conv.title || "Conversation"}
                                     </p>
