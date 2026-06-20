@@ -128,41 +128,77 @@ export default function AdminAnalyticsPage() {
 
       <div className="mx-auto max-w-[1400px] p-6 pb-32 lg:p-10 lg:pb-10 space-y-10">
 
-        {/* Vercel Analytics card */}
-        <div className="rounded-3xl border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* Google Analytics 4 */}
+        <div className="rounded-3xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between p-6 lg:p-8">
             <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zinc-900">
-                <BarChart3 size={22} className="text-white" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl" style={{ background: "#E37400" }}>
+                <svg width="22" height="22" viewBox="0 0 192 192" fill="none"><path d="M24 136V56l72 80 72-80v80" stroke="#fff" strokeWidth="24" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
               <div>
-                <h2 className="text-xl font-black text-zinc-900">Trafic web — Vercel Analytics</h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-black text-zinc-900">Google Analytics 4</h2>
+                  <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-700">Connecté · G-0035L7HCJK</span>
+                </div>
                 <p className="mt-1 text-sm text-zinc-500">
-                  Pages vues, visiteurs uniques, pays, appareils et performances — mis à jour en temps réel.
+                  Visiteurs, sources de trafic, pages vues, appareils, pays — collecte active sur tout le site.
                 </p>
               </div>
             </div>
             <a
-              href="https://vercel.com/kouchimarshal/trackmarshal/analytics"
+              href="https://analytics.google.com/analytics/web/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex shrink-0 items-center gap-2 rounded-2xl bg-zinc-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-zinc-700"
+              className="flex shrink-0 items-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold text-white transition hover:opacity-90"
+              style={{ background: "#E37400" }}
             >
-              Ouvrir Vercel Analytics
+              Ouvrir Google Analytics
               <ExternalLink size={14} />
             </a>
           </div>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+
+          {/* Raccourcis GA4 */}
+          <div className="border-t border-zinc-100 grid sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-zinc-100">
             {[
-              { label: "Pages vues", sub: "Toutes les pages" },
-              { label: "Visiteurs uniques", sub: "Par session" },
-              { label: "Performance", sub: "Core Web Vitals" },
+              {
+                label: "Trafic en temps réel",
+                sub: "Visiteurs actifs maintenant",
+                href: "https://analytics.google.com/analytics/web/#/realtime/overview",
+                emoji: "🟢",
+              },
+              {
+                label: "Espace pédagogique",
+                sub: "Pages /devenir-commissaire/*",
+                href: "https://analytics.google.com/analytics/web/#/p/reports/explorer?params=_u..nav%3Dmaui&r=all-pages-and-screens&collectionId=life-cycle",
+                emoji: "📚",
+              },
+              {
+                label: "Acquisition",
+                sub: "D'où viennent les visiteurs",
+                href: "https://analytics.google.com/analytics/web/#/p/reports/acquisition",
+                emoji: "🔎",
+              },
+              {
+                label: "Pages les plus vues",
+                sub: "Classement de toutes les pages",
+                href: "https://analytics.google.com/analytics/web/#/p/reports/content",
+                emoji: "📄",
+              },
             ].map((item) => (
-              <div key={item.label} className="rounded-2xl border border-zinc-100 bg-zinc-50 p-4">
-                <p className="text-sm font-bold text-zinc-900">{item.label}</p>
-                <p className="text-xs text-zinc-500">{item.sub}</p>
-                <p className="mt-3 text-xs text-zinc-400 italic">Voir dans Vercel Analytics →</p>
-              </div>
+              <a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-5 transition hover:bg-zinc-50"
+              >
+                <span className="text-2xl">{item.emoji}</span>
+                <div>
+                  <p className="text-sm font-black text-zinc-900">{item.label}</p>
+                  <p className="text-xs text-zinc-500">{item.sub}</p>
+                </div>
+                <ExternalLink size={12} className="ml-auto shrink-0 text-zinc-300" />
+              </a>
             ))}
           </div>
         </div>
