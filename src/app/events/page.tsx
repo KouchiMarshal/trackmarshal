@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 import {
   useEffect,
@@ -9,7 +10,10 @@ import {
 
 import {
   CalendarDays,
+  ChevronLeft,
+  ChevronRight,
   Heart,
+  LayoutGrid,
   MapPin,
   Search,
   Users,
@@ -47,6 +51,12 @@ export default function EventsPage() {
 
   const [loading, setLoading] =
     useState(true);
+
+  const [view, setView] =
+    useState<"grid" | "calendar">("grid");
+
+  const [calendarMonth, setCalendarMonth] =
+    useState(() => { const d = new Date(); d.setDate(1); return d; });
 
   const { toggle, isFavorite } = useFavorites();
 
@@ -219,13 +229,39 @@ export default function EventsPage() {
 
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
 
+          <div className="mb-6 flex items-center justify-end gap-2">
+            <button
+              onClick={() => setView("grid")}
+              className={`flex h-10 w-10 items-center justify-center rounded-xl border transition ${view === "grid" ? "border-[#FF5A1F] bg-[#FF5A1F]/10 text-[#FF5A1F]" : "border-zinc-300 bg-white text-zinc-500 hover:text-[#FF5A1F]"}`}
+              title="Vue grille"
+            >
+              <LayoutGrid size={18} />
+            </button>
+            <button
+              onClick={() => setView("calendar")}
+              className={`flex h-10 w-10 items-center justify-center rounded-xl border transition ${view === "calendar" ? "border-[#FF5A1F] bg-[#FF5A1F]/10 text-[#FF5A1F]" : "border-zinc-300 bg-white text-zinc-500 hover:text-[#FF5A1F]"}`}
+              title="Vue calendrier"
+            >
+              <CalendarDays size={18} />
+            </button>
+          </div>
+
           {loading && (
             <div className="grid gap-6 lg:grid-cols-2">
               {[1, 2, 3, 4].map((i) => <SkeletonEventCard key={i} />)}
             </div>
           )}
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          {!loading && view === "calendar" && (
+            <CalendarView
+              events={filteredEvents}
+              month={calendarMonth}
+              onPrev={() => setCalendarMonth((m) => { const d = new Date(m); d.setMonth(d.getMonth() - 1); return d; })}
+              onNext={() => setCalendarMonth((m) => { const d = new Date(m); d.setMonth(d.getMonth() + 1); return d; })}
+            />
+          )}
+
+          <div className={view === "calendar" ? "hidden" : "grid gap-6 lg:grid-cols-2"}>
 
             {filteredEvents.map((event) => (
 
@@ -235,13 +271,14 @@ export default function EventsPage() {
               >
 
                 <div className="relative h-[260px]">
-                  <img
+                  <Image
                     src={
                       event.image_url ||
                       "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"
                     }
                     alt={event.title || "Événement motorsport"}
-                    className="h-full w-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                   <button
@@ -343,5 +380,96 @@ export default function EventsPage() {
       <PublicFooter />
 
     </main>
+  );
+}
+
+function CalendarView({
+  events,
+  month,
+  onPrev,
+  onNext,
+}: {
+  events: any[];
+  month: Date;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  const year = month.getFullYear();
+  const monthIndex = month.getMonth();
+
+  const monthLabel = month.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+
+  const firstDay = new Date(year, monthIndex, 1).getDay();
+  const startOffset = (firstDay === 0 ? 6 : firstDay - 1);
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+  const cells: (number | null)[] = [
+    ...Array(startOffset).fill(null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  function eventsOnDay(day: number) {
+    return events.filter((e) => {
+      const start = new Date(e.event_date);
+      const end = e.event_end_date ? new Date(e.event_end_date) : start;
+      const d = new Date(year, monthIndex, day);
+      return d >= new Date(start.getFullYear(), start.getMonth(), start.getDate()) &&
+             d <= new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    });
+  }
+
+  const today = new Date();
+
+  return (
+    <div className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm">
+      <div className="mb-6 flex items-center justify-between">
+        <button onClick={onPrev} className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-300 text-zinc-600 hover:text-[#FF5A1F] transition">
+          <ChevronLeft size={18} />
+        </button>
+        <h2 className="text-xl font-black capitalize text-zinc-900">{monthLabel}</h2>
+        <button onClick={onNext} className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-300 text-zinc-600 hover:text-[#FF5A1F] transition">
+          <ChevronRight size={18} />
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-px overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-200">
+        {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map((d) => (
+          <div key={d} className="bg-zinc-50 py-2 text-center text-xs font-bold uppercase tracking-widest text-zinc-400">{d}</div>
+        ))}
+        {cells.map((day, i) => {
+          const dayEvents = day ? eventsOnDay(day) : [];
+          const isToday = day !== null && today.getDate() === day && today.getMonth() === monthIndex && today.getFullYear() === year;
+          return (
+            <div
+              key={i}
+              className={`min-h-[80px] bg-white p-2 ${!day ? "bg-zinc-50/50" : ""}`}
+            >
+              {day && (
+                <>
+                  <span className={`inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold ${isToday ? "bg-[#FF5A1F] text-white" : "text-zinc-700"}`}>
+                    {day}
+                  </span>
+                  <div className="mt-1 space-y-0.5">
+                    {dayEvents.slice(0, 2).map((e) => (
+                      <Link
+                        key={e.slug}
+                        href={`/events/${e.slug}`}
+                        className="block truncate rounded bg-[#FF5A1F]/10 px-1.5 py-0.5 text-[10px] font-bold text-[#FF5A1F] hover:bg-[#FF5A1F]/20 transition"
+                      >
+                        {e.title}
+                      </Link>
+                    ))}
+                    {dayEvents.length > 2 && (
+                      <p className="text-[10px] font-bold text-zinc-400">+{dayEvents.length - 2}</p>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

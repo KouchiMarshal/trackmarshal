@@ -6,8 +6,9 @@ import ActualitesClient from "@/components/actualites/ActualitesClient";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "Actualités motorsport",
-  robots: { index: false, follow: false },
+  title: "Actualités motorsport — Auto et Moto",
+  description: "Les dernières actualités motorsport auto et moto en France : Formule 1, rallye, MotoGP, superbike, enduro — mis à jour toutes les heures.",
+  alternates: { canonical: "/actualites" },
 };
 
 export interface Article {

@@ -344,9 +344,12 @@ export default function MessagesPage() {
                                 className="flex flex-1 flex-col py-3 text-left"
                               >
                                 <div className="flex items-center justify-between gap-2">
-                                  <p className={`font-bold leading-tight ${convUnread > 0 ? "text-zinc-900" : "text-zinc-700"}`}>
-                                    {conv.displayName || conv.title || "Conversation"}
-                                  </p>
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    {conv.is_group && <span className="shrink-0 text-[10px]">🏁</span>}
+                                    <p className={`truncate font-bold leading-tight ${convUnread > 0 ? "text-zinc-900" : "text-zinc-700"}`}>
+                                      {conv.displayName || conv.title || "Conversation"}
+                                    </p>
+                                  </div>
                                   {convUnread > 0 && (
                                     <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#FF5A1F] px-1 text-[10px] font-black text-white">
                                       {convUnread > 9 ? "9+" : convUnread}

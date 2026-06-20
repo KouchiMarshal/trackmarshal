@@ -6,23 +6,12 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
 
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-
   images: {
     remotePatterns: [
-
-      {
-        protocol: "https",
-        hostname: "uzojugyjlakssipvvvsq.supabase.co",
-      },
-
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-
+      { protocol: "https", hostname: "uzojugyjlakssipvvvsq.supabase.co" },
+      { protocol: "https", hostname: "images.unsplash.com" },
+      { protocol: "https", hostname: "ui-avatars.com" },
+      { protocol: "https", hostname: "www.trackmarshal.app" },
     ],
   },
 

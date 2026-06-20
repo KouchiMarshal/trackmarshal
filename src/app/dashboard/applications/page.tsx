@@ -8,6 +8,7 @@ import {
   XCircle,
   CalendarPlus,
   Hourglass,
+  Star,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -47,6 +48,10 @@ export default function ApplicationsPage() {
   const [withdrawModal, setWithdrawModal] = useState<{ appId: string; eventTitle: string; eventId: string; organizerId: string } | null>(null);
   const [withdrawReason, setWithdrawReason] = useState("");
   const [withdrawSending, setWithdrawSending] = useState(false);
+
+  const [acknowledging, setAcknowledging] = useState<string | null>(null);
+  const [ratings, setRatings] = useState<Record<string, { rating: number; comment: string; saved: boolean }>>({});
+  const [ratingSubmitting, setRatingSubmitting] = useState<string | null>(null);
 
   useEffect(() => {
     loadApplications();
@@ -104,7 +109,60 @@ export default function ApplicationsPage() {
 
     setApplications(merged);
 
+    // Load existing marshal reviews for past accepted events
+    const pastAcceptedEventIds = merged
+      .filter((a: any) => a.status === "accepted" && a.events && new Date(a.events.event_end_date || a.events.event_date) < new Date())
+      .map((a: any) => a.event_id);
+
+    if (pastAcceptedEventIds.length > 0) {
+      const { data: existingReviews } = await supabase
+        .from("marshal_reviews")
+        .select("event_id, rating, comment")
+        .eq("marshal_id", user.id)
+        .in("event_id", pastAcceptedEventIds);
+
+      const initial: Record<string, { rating: number; comment: string; saved: boolean }> = {};
+      (existingReviews || []).forEach((r: any) => {
+        initial[r.event_id] = { rating: r.rating, comment: r.comment || "", saved: true };
+      });
+      setRatings(initial);
+    }
+
     setLoading(false);
+  }
+
+  async function acknowledgeBriefing(appId: string) {
+    setAcknowledging(appId);
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch("/api/applications/acknowledge-briefing", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ applicationId: appId }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      setApplications((prev) =>
+        prev.map((a) => a.id === appId ? { ...a, briefing_acknowledged: true, briefing_acknowledged_at: new Date().toISOString() } : a)
+      );
+    }
+    setAcknowledging(null);
+  }
+
+  async function submitMarshalRating(eventId: string) {
+    const r = ratings[eventId];
+    if (!r || r.rating === 0) return;
+    setRatingSubmitting(eventId);
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch("/api/reviews/marshal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ eventId, rating: r.rating, comment: r.comment }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      setRatings((prev) => ({ ...prev, [eventId]: { ...prev[eventId], saved: true } }));
+    }
+    setRatingSubmitting(null);
   }
 
   function downloadICS(ev: any) {
@@ -529,6 +587,84 @@ export default function ApplicationsPage() {
                             )}
 
                           </div>
+
+                          {/* Briefing acknowledgment */}
+                          {app.status === "accepted" && app.events?.briefing && (() => {
+                            const isPast = new Date(app.events.event_end_date || app.events.event_date) < new Date();
+                            return !isPast ? (
+                              <div className={`mt-5 flex items-center justify-between rounded-2xl border px-5 py-4 ${app.briefing_acknowledged ? "border-green-200 bg-green-50" : "border-orange-200 bg-orange-50"}`}>
+                                <div>
+                                  <p className={`text-sm font-black ${app.briefing_acknowledged ? "text-green-700" : "text-orange-700"}`}>
+                                    {app.briefing_acknowledged ? "✓ Briefing confirmé" : "📋 Briefing à confirmer"}
+                                  </p>
+                                  {app.briefing_acknowledged && app.briefing_acknowledged_at && (
+                                    <p className="text-xs text-green-600 mt-0.5">
+                                      {new Date(app.briefing_acknowledged_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+                                    </p>
+                                  )}
+                                </div>
+                                {!app.briefing_acknowledged && (
+                                  <button
+                                    onClick={() => acknowledgeBriefing(app.id)}
+                                    disabled={acknowledging === app.id}
+                                    className="flex h-10 items-center gap-2 rounded-xl bg-orange-500 px-4 text-sm font-bold text-white transition hover:bg-orange-600 disabled:opacity-60"
+                                  >
+                                    {acknowledging === app.id ? "..." : "J'ai lu le briefing"}
+                                  </button>
+                                )}
+                              </div>
+                            ) : null;
+                          })()}
+
+                          {/* Marshal rating for past events */}
+                          {app.status === "accepted" && (() => {
+                            const isPast = new Date(app.events?.event_end_date || app.events?.event_date) < new Date();
+                            if (!isPast) return null;
+                            const eventId = app.event_id;
+                            const r = ratings[eventId] || { rating: 0, comment: "", saved: false };
+                            return (
+                              <div className="mt-5 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+                                <p className="mb-3 text-sm font-black text-zinc-900">
+                                  {r.saved ? "✓ Votre avis sur cet événement" : "Évaluez cet événement"}
+                                </p>
+                                <div className="flex gap-1 mb-3">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                      key={star}
+                                      onClick={() => setRatings((prev) => ({ ...prev, [eventId]: { ...r, rating: star, saved: false } }))}
+                                      className="transition hover:scale-110"
+                                    >
+                                      <Star
+                                        size={24}
+                                        className={star <= r.rating ? "fill-[#FF5A1F] text-[#FF5A1F]" : "text-zinc-300"}
+                                      />
+                                    </button>
+                                  ))}
+                                  {r.rating > 0 && (
+                                    <span className="ml-2 self-center text-xs text-zinc-500">
+                                      {r.rating === 1 ? "Insuffisant" : r.rating === 2 ? "Passable" : r.rating === 3 ? "Bien" : r.rating === 4 ? "Très bien" : "Excellent"}
+                                    </span>
+                                  )}
+                                </div>
+                                <textarea
+                                  value={r.comment}
+                                  onChange={(e) => setRatings((prev) => ({ ...prev, [eventId]: { ...r, comment: e.target.value, saved: false } }))}
+                                  placeholder="Organisation, accueil, sécurité... (optionnel)"
+                                  rows={2}
+                                  className="w-full resize-none rounded-xl border border-zinc-200 bg-white p-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+                                />
+                                {!r.saved && r.rating > 0 && (
+                                  <button
+                                    onClick={() => submitMarshalRating(eventId)}
+                                    disabled={ratingSubmitting === eventId}
+                                    className="mt-3 flex h-10 items-center rounded-xl bg-[#FF5A1F] px-5 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-60"
+                                  >
+                                    {ratingSubmitting === eventId ? "Envoi..." : r.saved ? "Mettre à jour" : "Enregistrer l'avis"}
+                                  </button>
+                                )}
+                              </div>
+                            );
+                          })()}
 
                         </div>
 
