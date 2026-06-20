@@ -117,19 +117,24 @@ export default function EditEventPage() {
 
   async function generateDescription() {
     setGeneratingDescription(true);
-    const { data: { session } } = await supabase.auth.getSession();
-    const res = await fetch("/api/ai/generate-description", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token}` },
-      body: JSON.stringify({ title, discipline, location, country, date, endDate, marshalsNeeded }),
-    });
-    const data = await res.json();
-    if (data.description) {
-      setDescription(data.description);
-    } else {
-      setToast({ message: "Erreur lors de la génération. Vérifiez votre clé API.", type: "error" });
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/ai/generate-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token}` },
+        body: JSON.stringify({ title, discipline, location, country, date, endDate, marshalsNeeded }),
+      });
+      const data = await res.json();
+      if (data.description) {
+        setDescription(data.description);
+      } else {
+        setToast({ message: data.error || "Erreur lors de la génération.", type: "error" });
+      }
+    } catch {
+      setToast({ message: "Erreur réseau lors de la génération.", type: "error" });
+    } finally {
+      setGeneratingDescription(false);
     }
-    setGeneratingDescription(false);
   }
 
   async function uploadImage() {
