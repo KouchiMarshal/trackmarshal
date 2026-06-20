@@ -18,6 +18,28 @@ export async function GET(req: NextRequest) {
     .order("created_at", { ascending: false });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Filter out records whose files no longer exist in storage
+  const { data: storageFiles } = await supabaseAdmin.storage.from("event-docs").list(eventId);
+  if (storageFiles) {
+    const existing = new Set(storageFiles.map((f) => `${eventId}/${f.name}`));
+    const validDocs = (docs || []).filter((doc) => {
+      const urlPath = new URL(doc.url).pathname;
+      const storagePath = urlPath.split("/event-docs/")[1];
+      return !storagePath || existing.has(storagePath);
+    });
+    // Clean up orphaned DB records silently
+    const orphans = (docs || []).filter((doc) => {
+      const urlPath = new URL(doc.url).pathname;
+      const storagePath = urlPath.split("/event-docs/")[1];
+      return storagePath && !existing.has(storagePath);
+    });
+    if (orphans.length > 0) {
+      await supabaseAdmin.from("event_documents").delete().in("id", orphans.map((d) => d.id));
+    }
+    return NextResponse.json({ docs: validDocs });
+  }
+
   return NextResponse.json({ docs: docs || [] });
 }
 

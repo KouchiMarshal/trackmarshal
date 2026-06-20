@@ -63,6 +63,8 @@ export default function ApplicationsPage() {
   const [myCarpools, setMyCarpools] = useState<Record<string, any>>({});
   const [carpoolForms, setCarpoolForms] = useState<Record<string, { city: string; seats: number; comment: string }>>({});
   const [carpoolSubmitting, setCarpoolSubmitting] = useState<string | null>(null);
+  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
+  const [activeTabs, setActiveTabs] = useState<Record<string, string>>({});
 
   useEffect(() => {
     loadApplications();
@@ -522,522 +524,311 @@ export default function ApplicationsPage() {
 
               )}
 
-              <div className="space-y-6">
+              <div className="space-y-3">
 
                 {applications.map((app) => {
 
-                  const status =
-                    getStatus(app.status);
+                  const status = getStatus(app.status);
+                  const isPast = new Date(app.events?.event_end_date || app.events?.event_date) < new Date();
+                  const daysSinceEnd = (Date.now() - new Date(app.events?.event_end_date || app.events?.event_date).getTime()) / (1000 * 60 * 60 * 24);
+                  const isExpanded = !!expandedCards[app.id];
+
+                  const tabs: { key: string; label: string; urgent?: boolean }[] = [];
+                  if (app.status === "accepted" && app.events?.briefing && !isPast)
+                    tabs.push({ key: "briefing", label: "Briefing", urgent: !app.briefing_acknowledged });
+                  if (app.status === "accepted" && (docs[app.event_id] || []).length > 0)
+                    tabs.push({ key: "docs", label: `Documents (${(docs[app.event_id] || []).length})` });
+                  if (app.status === "accepted" && !isPast)
+                    tabs.push({ key: "carpool", label: "Covoiturage" });
+                  if (app.status === "accepted" && isPast)
+                    tabs.push({ key: "avis", label: "Avis" });
+
+                  const activeTab = activeTabs[app.id] || tabs[0]?.key || "";
 
                   return (
+                    <div key={app.id} className="overflow-hidden rounded-[24px] border border-zinc-200 bg-white shadow-sm">
 
-                    <div
-                      key={app.id}
-                      className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm"
-                    >
-
-                      <div className="grid lg:grid-cols-[320px_1fr]">
-
-                        <div className="relative h-[240px] lg:h-full">
-
-                          <img
-                            src={
-                              app.events
-                                ?.image_url ||
-                              "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"
-                            }
-                            className="h-full w-full object-cover"
-                          />
-
-                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-
+                      {/* Compact header */}
+                      <div className="flex gap-4 p-4 sm:p-5">
+                        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl sm:h-24 sm:w-24">
+                          <img src={app.events?.image_url || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=400&auto=format&fit=crop"} className="h-full w-full object-cover" alt="" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                         </div>
-
-                        <div className="p-6 lg:p-8">
-
-                          <div
-                            className={`w-fit rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.15em] ${status.color}`}
-                          >
-
-                            {status.text}
-
-                          </div>
-
-                          <h2 className="mt-6 text-3xl font-black text-zinc-900 lg:text-5xl">
-
-                            {
-                              app.events?.title
-                            }
-
-                          </h2>
-
-                          <div className="mt-8 space-y-4 text-zinc-600">
-
-                            <div className="flex items-center gap-3">
-
-                              <CalendarDays
-                                size={18}
-                              />
-
-                              <p>{formatDateRange(app.events?.event_date, app.events?.event_end_date)}</p>
-
+                        <div className="flex min-w-0 flex-1 flex-col justify-between">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <span className={`inline-block rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.1em] ${status.color}`}>{status.text}</span>
+                              <h2 className="mt-1.5 truncate text-lg font-black text-zinc-900 sm:text-xl">{app.events?.title}</h2>
                             </div>
-
-                            <div className="flex items-center gap-3">
-
-                              <MapPin
-                                size={18}
-                              />
-
-                              <p>
-
-                                {
-                                  app.events?.location
-                                }
-
-                              </p>
-
-                            </div>
-
-                            {app.status === "accepted" && app.post && (
-                              <div className="flex items-center gap-3">
-                                <span className="text-lg">📍</span>
-                                <p>
-                                  <span className="text-zinc-500">Poste assigné : </span>
-                                  <span className="font-bold text-zinc-900">{app.post}</span>
-                                </p>
-                              </div>
-                            )}
-
-                            {app.desired_role && (
-                              <p className="text-xs text-zinc-500">Rôle postulé : <span className="font-semibold text-zinc-700">{app.desired_role}</span></p>
-                            )}
-
-                          </div>
-
-                          <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-
-                            <Link
-                              href={`/events/${app.events?.slug}`}
-                              className="flex h-14 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 px-8 font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40"
-                            >
-                              Voir l'événement
-                            </Link>
-
-                            {app.status === "accepted" && (
-                              <>
-                                <Link
-                                  href={`/events/${app.events?.slug}`}
-                                  className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-bold text-white transition hover:scale-[1.01]"
-                                >
-                                  Voir briefing
-                                </Link>
-                                <button
-                                  onClick={() => printBriefing(app)}
-                                  className="flex h-14 items-center justify-center rounded-2xl border border-zinc-200 bg-zinc-50 px-5 font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40"
-                                  title="Télécharger le briefing PDF"
-                                >
-                                  📄 PDF
-                                </button>
-                                <button
-                                  onClick={() => downloadICS(app.events)}
-                                  className="flex h-14 items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-zinc-50 px-5 font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40"
-                                  title="Ajouter à mon agenda"
-                                >
-                                  <CalendarPlus size={18} />
-                                  Agenda
-                                </button>
-                                {app.events && (
-                                  <a
-                                    href={googleCalUrl(app.events)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex h-14 items-center justify-center gap-2 rounded-2xl border border-zinc-200 bg-zinc-50 px-5 font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40"
-                                    title="Ajouter à Google Calendar"
-                                  >
-                                    <img src="https://calendar.google.com/googlecalendar/images/favicon_v2018_96.png" alt="Google" className="h-4 w-4" />
-                                    Google
-                                  </a>
-                                )}
-                              </>
-                            )}
-
-                            {app.status !== "rejected" && !app.withdrawal_reason && (
+                            {tabs.length > 0 && (
                               <button
-                                onClick={() => cancelApplication(app)}
-                                disabled={cancelling === app.id}
-                                className="flex h-14 items-center justify-center rounded-2xl border border-red-200 bg-red-50 px-8 font-bold text-red-600 transition hover:bg-red-100 disabled:opacity-60"
+                                onClick={() => setExpandedCards((prev) => ({ ...prev, [app.id]: !prev[app.id] }))}
+                                className="shrink-0 rounded-xl border border-zinc-200 p-2 text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-900"
                               >
-                                {cancelling === app.id ? "Annulation..."
-                                  : app.status === "accepted" ? "Demander l'annulation"
-                                  : "Annuler"}
+                                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                               </button>
                             )}
-                            {app.withdrawal_reason && (
-                              <div className="flex h-14 items-center justify-center rounded-2xl border border-orange-200 bg-orange-50 px-6 text-sm font-bold text-orange-600">
-                                ⏳ Annulation en attente
-                              </div>
-                            )}
+                          </div>
+                          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500">
+                            <span className="flex items-center gap-1.5"><CalendarDays size={12} />{formatDateRange(app.events?.event_date, app.events?.event_end_date)}</span>
+                            <span className="flex items-center gap-1.5"><MapPin size={12} />{app.events?.location}</span>
+                            {app.status === "accepted" && app.post && <span className="font-semibold text-zinc-700">📍 {app.post}</span>}
+                            {app.desired_role && <span className="rounded-full bg-[#FF5A1F]/10 px-2 py-0.5 font-semibold text-[#FF5A1F]">{app.desired_role}</span>}
+                          </div>
+                        </div>
+                      </div>
 
+                      {/* Action bar */}
+                      <div className="flex flex-wrap items-center gap-2 border-t border-zinc-100 px-4 py-3 sm:px-5">
+                        <Link href={`/events/${app.events?.slug}`} className="flex h-8 items-center rounded-xl border border-zinc-200 px-3 text-xs font-bold text-zinc-600 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]">
+                          Voir l'événement
+                        </Link>
+                        {app.status === "accepted" && (
+                          <>
+                            <button onClick={() => printBriefing(app)} className="flex h-8 items-center rounded-xl border border-zinc-200 px-3 text-xs font-bold text-zinc-600 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]">
+                              📄 PDF
+                            </button>
+                            <button onClick={() => downloadICS(app.events)} className="flex h-8 items-center gap-1.5 rounded-xl border border-zinc-200 px-3 text-xs font-bold text-zinc-600 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]">
+                              <CalendarPlus size={12} /> Agenda
+                            </button>
+                            {app.events && (
+                              <a href={googleCalUrl(app.events)} target="_blank" rel="noopener noreferrer" className="flex h-8 items-center gap-1.5 rounded-xl border border-zinc-200 px-3 text-xs font-bold text-zinc-600 transition hover:border-[#FF5A1F]/40">
+                                <img src="https://calendar.google.com/googlecalendar/images/favicon_v2018_96.png" alt="Google" className="h-3 w-3" /> Google
+                              </a>
+                            )}
+                            {!app.briefing_acknowledged && app.events?.briefing && !isPast && (
+                              <span className="flex h-8 items-center rounded-xl bg-orange-50 px-3 text-xs font-bold text-orange-600">📋 Briefing à lire</span>
+                            )}
+                          </>
+                        )}
+                        {app.status !== "rejected" && !app.withdrawal_reason && (
+                          <button onClick={() => cancelApplication(app)} disabled={cancelling === app.id} className="ml-auto flex h-8 items-center rounded-xl border border-red-200 bg-red-50 px-3 text-xs font-bold text-red-600 transition hover:bg-red-100 disabled:opacity-60">
+                            {cancelling === app.id ? "..." : app.status === "accepted" ? "Demander l'annulation" : "Annuler"}
+                          </button>
+                        )}
+                        {app.withdrawal_reason && (
+                          <span className="ml-auto flex h-8 items-center rounded-xl border border-orange-200 bg-orange-50 px-3 text-xs font-bold text-orange-600">⏳ Annulation en attente</span>
+                        )}
+                      </div>
+
+                      {/* Expandable tabs */}
+                      {isExpanded && tabs.length > 0 && (
+                        <div className="border-t border-zinc-100">
+                          <div className="flex gap-1.5 overflow-x-auto px-4 pt-4 sm:px-5">
+                            {tabs.map((tab) => (
+                              <button
+                                key={tab.key}
+                                onClick={() => setActiveTabs((prev) => ({ ...prev, [app.id]: tab.key }))}
+                                className={`relative shrink-0 rounded-xl px-3 py-2 text-xs font-bold transition ${activeTab === tab.key ? "bg-zinc-900 text-white" : "border border-zinc-200 text-zinc-500 hover:text-zinc-900"}`}
+                              >
+                                {tab.label}
+                                {tab.urgent && <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-orange-500" />}
+                              </button>
+                            ))}
                           </div>
 
-                          {/* Briefing acknowledgment */}
-                          {app.status === "accepted" && app.events?.briefing && (() => {
-                            const isPast = new Date(app.events.event_end_date || app.events.event_date) < new Date();
-                            if (isPast) return null;
-                            const isOpen = !!briefingOpened[app.id];
-                            if (app.briefing_acknowledged) {
-                              return (
-                                <div className="mt-5 flex items-center gap-3 rounded-2xl border border-green-200 bg-green-50 px-5 py-4">
-                                  <CheckCircle2 size={18} className="text-green-600 shrink-0" />
+                          <div className="p-4 sm:p-5">
+
+                            {/* Briefing */}
+                            {activeTab === "briefing" && app.events?.briefing && (
+                              app.briefing_acknowledged ? (
+                                <div className="flex items-center gap-3 rounded-2xl border border-green-200 bg-green-50 px-5 py-4">
+                                  <CheckCircle2 size={18} className="shrink-0 text-green-600" />
                                   <div>
                                     <p className="text-sm font-black text-green-700">Briefing confirmé</p>
-                                    {app.briefing_acknowledged_at && (
-                                      <p className="text-xs text-green-600 mt-0.5">
-                                        Lu le {new Date(app.briefing_acknowledged_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
-                                      </p>
-                                    )}
+                                    {app.briefing_acknowledged_at && <p className="mt-0.5 text-xs text-green-600">Lu le {new Date(app.briefing_acknowledged_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</p>}
                                   </div>
                                 </div>
-                              );
-                            }
-                            return (
-                              <div className="mt-5 rounded-2xl border border-orange-200 bg-orange-50 overflow-hidden">
-                                <button
-                                  onClick={() => setBriefingOpened((prev) => ({ ...prev, [app.id]: !prev[app.id] }))}
-                                  className="flex w-full items-center justify-between px-5 py-4 text-left"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <span className="text-base">📋</span>
-                                    <p className="text-sm font-black text-orange-700">Briefing à lire et confirmer</p>
-                                  </div>
-                                  {isOpen ? <ChevronUp size={18} className="text-orange-500 shrink-0" /> : <ChevronDown size={18} className="text-orange-500 shrink-0" />}
-                                </button>
-                                {isOpen && (
-                                  <>
-                                    <div className="border-t border-orange-200 bg-white px-5 py-5">
-                                      <p className="whitespace-pre-line text-sm text-zinc-700 leading-relaxed">{app.events.briefing}</p>
-                                    </div>
-                                    <div className="border-t border-orange-200 px-5 py-4 flex items-center justify-between gap-4">
-                                      <p className="text-xs text-orange-600 font-medium">En cliquant, vous confirmez avoir lu et compris ce briefing.</p>
-                                      <button
-                                        onClick={() => acknowledgeBriefing(app.id)}
-                                        disabled={acknowledging === app.id}
-                                        className="shrink-0 flex h-10 items-center gap-2 rounded-xl bg-orange-500 px-5 text-sm font-bold text-white transition hover:bg-orange-600 disabled:opacity-60"
-                                      >
-                                        {acknowledging === app.id ? "Enregistrement..." : "Je confirme avoir lu"}
-                                      </button>
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-                            );
-                          })()}
+                              ) : (
+                                <div className="overflow-hidden rounded-2xl border border-orange-200 bg-orange-50">
+                                  <button onClick={() => setBriefingOpened((prev) => ({ ...prev, [app.id]: !prev[app.id] }))} className="flex w-full items-center justify-between px-5 py-4">
+                                    <div className="flex items-center gap-3"><span>📋</span><p className="text-sm font-black text-orange-700">Lire le briefing</p></div>
+                                    {briefingOpened[app.id] ? <ChevronUp size={18} className="text-orange-500" /> : <ChevronDown size={18} className="text-orange-500" />}
+                                  </button>
+                                  {briefingOpened[app.id] && (
+                                    <>
+                                      <div className="border-t border-orange-200 bg-white px-5 py-5">
+                                        <p className="whitespace-pre-line text-sm leading-relaxed text-zinc-700">{app.events.briefing}</p>
+                                      </div>
+                                      <div className="flex items-center justify-between gap-4 border-t border-orange-200 px-5 py-4">
+                                        <p className="text-xs font-medium text-orange-600">En cliquant, vous confirmez avoir lu et compris ce briefing.</p>
+                                        <button onClick={() => acknowledgeBriefing(app.id)} disabled={acknowledging === app.id} className="shrink-0 flex h-10 items-center rounded-xl bg-orange-500 px-5 text-sm font-bold text-white transition hover:bg-orange-600 disabled:opacity-60">
+                                          {acknowledging === app.id ? "Enregistrement..." : "Je confirme avoir lu"}
+                                        </button>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              )
+                            )}
 
-                          {/* Documents de l'événement */}
-                          {app.status === "accepted" && docs[app.event_id]?.length > 0 && (
-                            <div className="mt-5 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-                              <p className="mb-3 text-sm font-black text-zinc-900">📁 Documents de l'événement</p>
+                            {/* Documents */}
+                            {activeTab === "docs" && (
                               <div className="space-y-2">
-                                {docs[app.event_id].map((doc: any) => (
-                                  <a
-                                    key={doc.id}
-                                    href={doc.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
-                                  >
-                                    <span className="text-base">📄</span>
-                                    <span className="truncate">{doc.name}</span>
+                                {(docs[app.event_id] || []).map((doc: any) => (
+                                  <a key={doc.id} href={doc.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm font-medium text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]">
+                                    <span>📄</span><span className="truncate">{doc.name}</span>
                                   </a>
                                 ))}
                               </div>
-                            </div>
-                          )}
+                            )}
 
-                          {/* Covoiturage */}
-                          {app.status === "accepted" && (() => {
-                            const isPast = new Date(app.events?.event_end_date || app.events?.event_date) < new Date();
-                            if (isPast) return null;
-                            const eventId = app.event_id;
-                            const allCarpools = carpools[eventId] || [];
-                            const myCarpool = myCarpools[eventId];
-                            const otherCarpools = allCarpools.filter((c: any) => c.driver_id !== userId);
-                            const form = carpoolForms[eventId] || { city: "", seats: 1, comment: "" };
-
-                            return (
-                              <div className="mt-5 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-                                <div className="mb-4 flex items-center gap-2">
-                                  <Car size={16} className="text-zinc-600" />
-                                  <p className="text-sm font-black text-zinc-900">Covoiturage</p>
-                                </div>
-
-                                {/* Mon offre */}
-                                {myCarpool ? (
-                                  <div className="mb-4 rounded-xl border border-green-200 bg-green-50 p-4">
-                                    <div className="flex items-start justify-between gap-3">
-                                      <div>
-                                        <p className="text-sm font-bold text-green-800">Votre proposition</p>
-                                        <p className="mt-1 text-sm text-green-700">
-                                          📍 {myCarpool.departure_city} · {myCarpool.seats} place{myCarpool.seats > 1 ? "s" : ""}
-                                        </p>
-                                        {myCarpool.comment && (
-                                          <p className="mt-1 text-xs text-green-600">{myCarpool.comment}</p>
-                                        )}
-                                      </div>
-                                      <button
-                                        onClick={async () => {
+                            {/* Covoiturage */}
+                            {activeTab === "carpool" && (() => {
+                              const eventId = app.event_id;
+                              const allCarpools = carpools[eventId] || [];
+                              const myCarpool = myCarpools[eventId];
+                              const otherCarpools = allCarpools.filter((c: any) => c.driver_id !== userId);
+                              const form = carpoolForms[eventId] || { city: "", seats: 1, comment: "" };
+                              return (
+                                <div>
+                                  {myCarpool ? (
+                                    <div className="mb-4 rounded-xl border border-green-200 bg-green-50 p-4">
+                                      <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                          <p className="text-sm font-bold text-green-800">Votre proposition</p>
+                                          <p className="mt-1 text-sm text-green-700">📍 {myCarpool.departure_city} · {myCarpool.seats} place{myCarpool.seats > 1 ? "s" : ""}</p>
+                                          {myCarpool.comment && <p className="mt-1 text-xs text-green-600">{myCarpool.comment}</p>}
+                                        </div>
+                                        <button onClick={async () => {
                                           await supabase.from("carpools").delete().eq("id", myCarpool.id);
                                           setCarpools((prev) => ({ ...prev, [eventId]: (prev[eventId] || []).filter((c: any) => c.id !== myCarpool.id) }));
                                           setMyCarpools((prev) => { const n = { ...prev }; delete n[eventId]; return n; });
-                                        }}
-                                        className="shrink-0 text-xs text-red-500 transition hover:text-red-700"
-                                      >
-                                        Supprimer
-                                      </button>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="mb-4 rounded-xl border border-zinc-200 bg-white p-4">
-                                    <p className="mb-3 text-xs font-bold uppercase tracking-widest text-zinc-500">Proposer un trajet</p>
-                                    <div className="space-y-2">
-                                      <div className="flex gap-2">
-                                        <input
-                                          type="text"
-                                          value={form.city}
-                                          onChange={(e) => setCarpoolForms((prev) => ({ ...prev, [eventId]: { ...form, city: e.target.value } }))}
-                                          placeholder="Ville de départ"
-                                          className="flex-1 rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
-                                        />
-                                        <select
-                                          value={form.seats}
-                                          onChange={(e) => setCarpoolForms((prev) => ({ ...prev, [eventId]: { ...form, seats: Number(e.target.value) } }))}
-                                          className="rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm outline-none focus:border-[#FF5A1F]"
-                                        >
-                                          {[1, 2, 3, 4, 5, 6, 7].map((n) => (
-                                            <option key={n} value={n}>{n} place{n > 1 ? "s" : ""}</option>
-                                          ))}
-                                        </select>
+                                        }} className="text-xs text-red-500 transition hover:text-red-700">Supprimer</button>
                                       </div>
-                                      <input
-                                        type="text"
-                                        value={form.comment}
-                                        onChange={(e) => setCarpoolForms((prev) => ({ ...prev, [eventId]: { ...form, comment: e.target.value } }))}
-                                        placeholder="Heure de départ, point de RDV... (optionnel)"
-                                        className="w-full rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
-                                      />
-                                      <button
-                                        disabled={!form.city.trim() || carpoolSubmitting === eventId}
-                                        onClick={async () => {
+                                    </div>
+                                  ) : (
+                                    <div className="mb-4 rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                                      <p className="mb-3 text-xs font-bold uppercase tracking-widest text-zinc-500">Proposer un trajet</p>
+                                      <div className="space-y-2">
+                                        <div className="flex gap-2">
+                                          <input type="text" value={form.city} onChange={(e) => setCarpoolForms((prev) => ({ ...prev, [eventId]: { ...form, city: e.target.value } }))} placeholder="Ville de départ" className="flex-1 rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-[#FF5A1F]" />
+                                          <select value={form.seats} onChange={(e) => setCarpoolForms((prev) => ({ ...prev, [eventId]: { ...form, seats: Number(e.target.value) } }))} className="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-[#FF5A1F]">
+                                            {[1,2,3,4,5,6,7].map((n) => <option key={n} value={n}>{n} place{n > 1 ? "s" : ""}</option>)}
+                                          </select>
+                                        </div>
+                                        <input type="text" value={form.comment} onChange={(e) => setCarpoolForms((prev) => ({ ...prev, [eventId]: { ...form, comment: e.target.value } }))} placeholder="Heure de départ, point de RDV... (optionnel)" className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-[#FF5A1F]" />
+                                        <button disabled={!form.city.trim() || carpoolSubmitting === eventId} onClick={async () => {
                                           setCarpoolSubmitting(eventId);
-                                          const { data, error } = await supabase
-                                            .from("carpools")
-                                            .insert({
-                                              event_id: eventId,
-                                              driver_id: userId,
-                                              departure_city: form.city.trim(),
-                                              seats: form.seats,
-                                              comment: form.comment.trim() || null,
-                                            })
-                                            .select("*")
-                                            .single();
+                                          const { data, error } = await supabase.from("carpools").insert({ event_id: eventId, driver_id: userId, departure_city: form.city.trim(), seats: form.seats, comment: form.comment.trim() || null }).select("*").single();
                                           if (!error && data) {
-                                            const { data: driverProfile } = await supabase
-                                              .from("profiles").select("id, full_name, avatar_url").eq("id", userId).single();
-                                            const enriched = { ...data, driver: driverProfile || null };
+                                            const { data: dp } = await supabase.from("profiles").select("id, full_name, avatar_url").eq("id", userId).single();
+                                            const enriched = { ...data, driver: dp || null };
                                             setCarpools((prev) => ({ ...prev, [eventId]: [...(prev[eventId] || []), enriched] }));
                                             setMyCarpools((prev) => ({ ...prev, [eventId]: enriched }));
                                             setCarpoolForms((prev) => ({ ...prev, [eventId]: { city: "", seats: 1, comment: "" } }));
                                           }
                                           setCarpoolSubmitting(null);
-                                        }}
-                                        className="flex h-9 items-center rounded-xl bg-zinc-900 px-4 text-sm font-bold text-white transition hover:bg-zinc-700 disabled:opacity-40"
-                                      >
-                                        {carpoolSubmitting === eventId ? "..." : "Proposer"}
-                                      </button>
+                                        }} className="flex h-9 items-center rounded-xl bg-zinc-900 px-4 text-sm font-bold text-white transition hover:bg-zinc-700 disabled:opacity-40">
+                                          {carpoolSubmitting === eventId ? "..." : "Proposer"}
+                                        </button>
+                                      </div>
                                     </div>
-                                  </div>
-                                )}
-
-                                {/* Autres trajets */}
-                                {otherCarpools.length > 0 ? (
-                                  <div className="space-y-2">
-                                    <p className="mb-2 text-xs font-bold uppercase tracking-widest text-zinc-500">Trajets disponibles</p>
-                                    {otherCarpools.map((c: any) => (
-                                      <div key={c.id} className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-3">
-                                        <div className="flex min-w-0 items-center gap-3">
-                                          <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-zinc-100">
-                                            {c.driver?.avatar_url ? (
-                                              <img src={c.driver.avatar_url} alt="" className="h-full w-full object-cover" />
-                                            ) : (
-                                              <div className="flex h-full w-full items-center justify-center text-xs font-black text-[#FF5A1F]">
-                                                {c.driver?.full_name?.charAt(0) || "?"}
-                                              </div>
-                                            )}
+                                  )}
+                                  {otherCarpools.length > 0 ? (
+                                    <div className="space-y-2">
+                                      <p className="mb-2 text-xs font-bold uppercase tracking-widest text-zinc-500">Trajets disponibles</p>
+                                      {otherCarpools.map((c: any) => (
+                                        <div key={c.id} className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-3">
+                                          <div className="flex min-w-0 items-center gap-3">
+                                            <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-zinc-100">
+                                              {c.driver?.avatar_url ? <img src={c.driver.avatar_url} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full w-full items-center justify-center text-xs font-black text-[#FF5A1F]">{c.driver?.full_name?.charAt(0) || "?"}</div>}
+                                            </div>
+                                            <div className="min-w-0">
+                                              <p className="truncate text-sm font-bold text-zinc-900">{c.driver?.full_name || "Commissaire"}</p>
+                                              <p className="text-xs text-zinc-500">📍 {c.departure_city} · {c.seats} place{c.seats > 1 ? "s" : ""}</p>
+                                              {c.comment && <p className="truncate text-xs text-zinc-400">{c.comment}</p>}
+                                            </div>
                                           </div>
-                                          <div className="min-w-0">
-                                            <p className="truncate text-sm font-bold text-zinc-900">{c.driver?.full_name || "Commissaire"}</p>
-                                            <p className="text-xs text-zinc-500">📍 {c.departure_city} · {c.seats} place{c.seats > 1 ? "s" : ""}</p>
-                                            {c.comment && <p className="truncate text-xs text-zinc-400">{c.comment}</p>}
-                                          </div>
-                                        </div>
-                                        <button
-                                          onClick={async () => {
-                                            const { data: myMemberships } = await supabase
-                                              .from("conversation_members").select("conversation_id").eq("user_id", userId);
+                                          <button onClick={async () => {
+                                            const { data: myMemberships } = await supabase.from("conversation_members").select("conversation_id").eq("user_id", userId);
                                             const myConvIds = (myMemberships || []).map((m: any) => m.conversation_id);
                                             let existingConvId: string | null = null;
                                             if (myConvIds.length > 0) {
-                                              const { data: shared } = await supabase
-                                                .from("conversation_members").select("conversation_id")
-                                                .eq("user_id", c.driver_id).in("conversation_id", myConvIds);
+                                              const { data: shared } = await supabase.from("conversation_members").select("conversation_id").eq("user_id", c.driver_id).in("conversation_id", myConvIds);
                                               existingConvId = shared?.[0]?.conversation_id || null;
                                             }
                                             if (!existingConvId) {
-                                              const { data: conv } = await supabase
-                                                .from("conversations")
-                                                .insert({ title: `Covoiturage — ${app.events?.title}` })
-                                                .select().single();
-                                              if (conv?.id) {
-                                                await supabase.from("conversation_members").insert([
-                                                  { conversation_id: conv.id, user_id: userId },
-                                                  { conversation_id: conv.id, user_id: c.driver_id },
-                                                ]);
-                                              }
+                                              const { data: conv } = await supabase.from("conversations").insert({ title: `Covoiturage — ${app.events?.title}` }).select().single();
+                                              if (conv?.id) await supabase.from("conversation_members").insert([{ conversation_id: conv.id, user_id: userId }, { conversation_id: conv.id, user_id: c.driver_id }]);
                                             }
                                             router.push("/dashboard/messages");
-                                          }}
-                                          className="shrink-0 rounded-xl bg-[#FF5A1F]/10 px-3 py-2 text-xs font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20"
-                                        >
-                                          Contacter
-                                        </button>
-                                      </div>
-                                    ))}
-                                  </div>
-                                ) : (
-                                  !myCarpool && (
-                                    <p className="text-center text-xs text-zinc-400">Aucun trajet proposé pour l'instant.</p>
-                                  )
-                                )}
-                              </div>
-                            );
-                          })()}
-
-                          {/* Sondage post-événement */}
-                          {app.status === "accepted" && (() => {
-                            const endDate = new Date(app.events?.event_end_date || app.events?.event_date);
-                            const daysSinceEnd = (Date.now() - endDate.getTime()) / (1000 * 60 * 60 * 24);
-                            if (daysSinceEnd < 1 || daysSinceEnd > 30) return null;
-                            const eventId = app.event_id;
-                            const s = surveys[eventId] || { organisation: 0, securite: 0, ambiance: 0, comment: "", saved: false };
-                            const dims = [
-                              { key: "organisation" as const, label: "Organisation" },
-                              { key: "securite" as const, label: "Sécurité" },
-                              { key: "ambiance" as const, label: "Ambiance" },
-                            ];
-                            return (
-                              <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-5">
-                                <p className="mb-4 text-sm font-black text-blue-900">
-                                  {s.saved ? "✓ Sondage complété — merci !" : "📊 Sondage post-événement"}
-                                </p>
-                                {!s.saved && (
-                                  <>
-                                    <div className="space-y-3 mb-4">
-                                      {dims.map(({ key, label }) => (
-                                        <div key={key}>
-                                          <p className="text-xs font-bold text-blue-700 mb-1">{label}</p>
-                                          <div className="flex gap-1">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                              <button
-                                                key={star}
-                                                onClick={() => setSurveys((prev) => ({ ...prev, [eventId]: { ...s, [key]: star, saved: false } }))}
-                                                className="transition hover:scale-110"
-                                              >
-                                                <Star size={20} className={star <= s[key] ? "fill-blue-500 text-blue-500" : "text-blue-200"} />
-                                              </button>
-                                            ))}
-                                          </div>
+                                          }} className="shrink-0 rounded-xl bg-[#FF5A1F]/10 px-3 py-2 text-xs font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20">Contacter</button>
                                         </div>
                                       ))}
                                     </div>
-                                    <textarea
-                                      value={s.comment}
-                                      onChange={(e) => setSurveys((prev) => ({ ...prev, [eventId]: { ...s, comment: e.target.value } }))}
-                                      placeholder="Commentaire libre (optionnel)"
-                                      rows={2}
-                                      className="w-full resize-none rounded-xl border border-blue-200 bg-white p-3 text-sm outline-none placeholder:text-blue-300 focus:border-blue-400"
-                                    />
-                                    {s.organisation > 0 && s.securite > 0 && s.ambiance > 0 && (
-                                      <button
-                                        onClick={() => submitSurvey(eventId)}
-                                        disabled={surveySubmitting === eventId}
-                                        className="mt-3 flex h-10 items-center rounded-xl bg-blue-600 px-5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-60"
-                                      >
-                                        {surveySubmitting === eventId ? "Envoi..." : "Envoyer le sondage"}
+                                  ) : !myCarpool && <p className="text-center text-xs text-zinc-400">Aucun trajet proposé.</p>}
+                                </div>
+                              );
+                            })()}
+
+                            {/* Avis — survey + notation */}
+                            {activeTab === "avis" && (() => {
+                              const eventId = app.event_id;
+                              const s = surveys[eventId] || { organisation: 0, securite: 0, ambiance: 0, comment: "", saved: false };
+                              const r = ratings[eventId] || { rating: 0, comment: "", saved: false };
+                              const surveyDims = [
+                                { key: "organisation" as const, label: "Organisation" },
+                                { key: "securite" as const, label: "Sécurité" },
+                                { key: "ambiance" as const, label: "Ambiance" },
+                              ];
+                              return (
+                                <div className="space-y-4">
+                                  {daysSinceEnd >= 1 && daysSinceEnd <= 30 && (
+                                    <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                                      <p className="mb-3 text-sm font-black text-blue-900">{s.saved ? "✓ Sondage complété — merci !" : "📊 Sondage post-événement"}</p>
+                                      {!s.saved && (
+                                        <>
+                                          <div className="mb-3 space-y-3">
+                                            {surveyDims.map(({ key, label }) => (
+                                              <div key={key}>
+                                                <p className="mb-1 text-xs font-bold text-blue-700">{label}</p>
+                                                <div className="flex gap-1">
+                                                  {[1,2,3,4,5].map((star) => (
+                                                    <button key={star} onClick={() => setSurveys((prev) => ({ ...prev, [eventId]: { ...s, [key]: star, saved: false } }))} className="transition hover:scale-110">
+                                                      <Star size={20} className={star <= s[key] ? "fill-blue-500 text-blue-500" : "text-blue-200"} />
+                                                    </button>
+                                                  ))}
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <textarea value={s.comment} onChange={(e) => setSurveys((prev) => ({ ...prev, [eventId]: { ...s, comment: e.target.value } }))} placeholder="Commentaire libre (optionnel)" rows={2} className="w-full resize-none rounded-xl border border-blue-200 bg-white p-3 text-sm outline-none placeholder:text-blue-300 focus:border-blue-400" />
+                                          {s.organisation > 0 && s.securite > 0 && s.ambiance > 0 && (
+                                            <button onClick={() => submitSurvey(eventId)} disabled={surveySubmitting === eventId} className="mt-3 flex h-10 items-center rounded-xl bg-blue-600 px-5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-60">
+                                              {surveySubmitting === eventId ? "Envoi..." : "Envoyer le sondage"}
+                                            </button>
+                                          )}
+                                        </>
+                                      )}
+                                    </div>
+                                  )}
+                                  <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                                    <p className="mb-3 text-sm font-black text-zinc-900">{r.saved ? "✓ Votre avis" : "Évaluez cet événement"}</p>
+                                    <div className="mb-3 flex gap-1">
+                                      {[1,2,3,4,5].map((star) => (
+                                        <button key={star} onClick={() => setRatings((prev) => ({ ...prev, [eventId]: { ...r, rating: star, saved: false } }))} className="transition hover:scale-110">
+                                          <Star size={22} className={star <= r.rating ? "fill-[#FF5A1F] text-[#FF5A1F]" : "text-zinc-300"} />
+                                        </button>
+                                      ))}
+                                      {r.rating > 0 && <span className="ml-2 self-center text-xs text-zinc-500">{["","Insuffisant","Passable","Bien","Très bien","Excellent"][r.rating]}</span>}
+                                    </div>
+                                    <textarea value={r.comment} onChange={(e) => setRatings((prev) => ({ ...prev, [eventId]: { ...r, comment: e.target.value, saved: false } }))} placeholder="Organisation, accueil, sécurité... (optionnel)" rows={2} className="w-full resize-none rounded-xl border border-zinc-200 bg-white p-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]" />
+                                    {!r.saved && r.rating > 0 && (
+                                      <button onClick={() => submitMarshalRating(eventId)} disabled={ratingSubmitting === eventId} className="mt-3 flex h-10 items-center rounded-xl bg-[#FF5A1F] px-5 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-60">
+                                        {ratingSubmitting === eventId ? "Envoi..." : "Enregistrer l'avis"}
                                       </button>
                                     )}
-                                  </>
-                                )}
-                              </div>
-                            );
-                          })()}
-
-                          {/* Marshal rating for past events */}
-                          {app.status === "accepted" && (() => {
-                            const isPast = new Date(app.events?.event_end_date || app.events?.event_date) < new Date();
-                            if (!isPast) return null;
-                            const eventId = app.event_id;
-                            const r = ratings[eventId] || { rating: 0, comment: "", saved: false };
-                            return (
-                              <div className="mt-5 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
-                                <p className="mb-3 text-sm font-black text-zinc-900">
-                                  {r.saved ? "✓ Votre avis sur cet événement" : "Évaluez cet événement"}
-                                </p>
-                                <div className="flex gap-1 mb-3">
-                                  {[1, 2, 3, 4, 5].map((star) => (
-                                    <button
-                                      key={star}
-                                      onClick={() => setRatings((prev) => ({ ...prev, [eventId]: { ...r, rating: star, saved: false } }))}
-                                      className="transition hover:scale-110"
-                                    >
-                                      <Star
-                                        size={24}
-                                        className={star <= r.rating ? "fill-[#FF5A1F] text-[#FF5A1F]" : "text-zinc-300"}
-                                      />
-                                    </button>
-                                  ))}
-                                  {r.rating > 0 && (
-                                    <span className="ml-2 self-center text-xs text-zinc-500">
-                                      {r.rating === 1 ? "Insuffisant" : r.rating === 2 ? "Passable" : r.rating === 3 ? "Bien" : r.rating === 4 ? "Très bien" : "Excellent"}
-                                    </span>
-                                  )}
+                                  </div>
                                 </div>
-                                <textarea
-                                  value={r.comment}
-                                  onChange={(e) => setRatings((prev) => ({ ...prev, [eventId]: { ...r, comment: e.target.value, saved: false } }))}
-                                  placeholder="Organisation, accueil, sécurité... (optionnel)"
-                                  rows={2}
-                                  className="w-full resize-none rounded-xl border border-zinc-200 bg-white p-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
-                                />
-                                {!r.saved && r.rating > 0 && (
-                                  <button
-                                    onClick={() => submitMarshalRating(eventId)}
-                                    disabled={ratingSubmitting === eventId}
-                                    className="mt-3 flex h-10 items-center rounded-xl bg-[#FF5A1F] px-5 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-60"
-                                  >
-                                    {ratingSubmitting === eventId ? "Envoi..." : r.saved ? "Mettre à jour" : "Enregistrer l'avis"}
-                                  </button>
-                                )}
-                              </div>
-                            );
-                          })()}
+                              );
+                            })()}
 
+                          </div>
                         </div>
-
-                      </div>
+                      )}
 
                     </div>
-
                   );
                 })}
 
