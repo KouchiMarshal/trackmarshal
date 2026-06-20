@@ -63,6 +63,23 @@ export default function ApplicationsPage() {
     loadApplications();
   }, []);
 
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel("marshal-applications-" + userId)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "applications", filter: `marshal_id=eq.${userId}` },
+        (payload: any) => {
+          setApplications((prev) =>
+            prev.map((a) => a.id === payload.new.id ? { ...a, ...payload.new } : a)
+          );
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
+
   async function loadApplications() {
 
     const {

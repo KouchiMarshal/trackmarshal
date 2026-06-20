@@ -989,8 +989,9 @@ export default function OrganizerEventDetailsPage() {
                               <button
                                 disabled={app.status === "accepted" || !!app.withdrawal_reason}
                                 onClick={async () => {
-                                  if (acceptedCount >= event.marshals_needed) {
-                                    setToast({ message: "Le nombre maximum de commissaires a été atteint.", type: "error" });
+                                  const cappedCount = applications.filter((a) => a.status === "accepted" && a.id !== app.id).length;
+                                  if (cappedCount >= event.marshals_needed) {
+                                    setToast({ message: "Le nombre maximum de commissaires est atteint. Refusez d'abord un autre commissaire.", type: "error" });
                                     return;
                                   }
                                   const { error: updateError } = await supabase
