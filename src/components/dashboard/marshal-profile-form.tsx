@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  AlertCircle,
   CheckCircle2,
   Clock,
   Upload,
-  XCircle,
 } from "lucide-react";
 
 import {
@@ -25,8 +23,6 @@ export default function MarshalProfileForm() {
 
   const [uploadingLicense, setUploadingLicense] =
     useState(false);
-
-  const [licenseAiResult, setLicenseAiResult] = useState<{ valid: boolean; confidence: string; message: string } | null>(null);
 
   const [available, setAvailable] = useState(true);
 
@@ -197,10 +193,6 @@ export default function MarshalProfileForm() {
       ...prev,
       license_url: result.publicUrl,
     }));
-
-    if (result.aiResult) {
-      setLicenseAiResult(result.aiResult);
-    }
 
     setUploadingLicense(false);
   }
@@ -727,46 +719,22 @@ export default function MarshalProfileForm() {
 
               {/* En attente de validation */}
               {formData.license_url && !uploadingLicense && (
-                <div className="space-y-3">
-                  {/* AI verification result */}
-                  {licenseAiResult && (
-                    <div className={`rounded-2xl border p-4 ${licenseAiResult.valid ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}>
-                      <div className="flex items-center gap-2">
-                        {licenseAiResult.valid ? (
-                          <CheckCircle2 size={18} className="shrink-0 text-green-600" />
-                        ) : (
-                          <XCircle size={18} className="shrink-0 text-red-500" />
-                        )}
-                        <p className={`font-bold text-sm ${licenseAiResult.valid ? "text-green-700" : "text-red-700"}`}>
-                          {licenseAiResult.valid ? "Document reconnu par l'IA" : "Document non reconnu"}
-                        </p>
-                        <span className={`ml-auto text-xs px-2 py-0.5 rounded-full font-semibold ${licenseAiResult.confidence === "high" ? "bg-zinc-100 text-zinc-600" : "bg-yellow-100 text-yellow-700"}`}>
-                          {licenseAiResult.confidence === "high" ? "Haute confiance" : licenseAiResult.confidence === "medium" ? "Confiance moyenne" : "Faible confiance"}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-xs text-zinc-600">{licenseAiResult.message}</p>
-                      {!licenseAiResult.valid && (
-                        <p className="mt-2 text-xs text-red-600">Veuillez uploader une image lisible de votre licence sportive (FFSA, FFM ou ASA).</p>
-                      )}
-                    </div>
-                  )}
-                  <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
-                    <div className="flex items-center gap-2">
-                      <Clock size={18} className="text-yellow-600" />
-                      <p className="font-bold text-yellow-700">En attente de validation</p>
-                    </div>
-                    <p className="mt-1 text-xs text-zinc-600">
-                      Votre licence a bien été reçue et sera vérifiée par notre équipe.
-                    </p>
-                    <div className="mt-3 flex items-center justify-between">
-                      <a href={formData.license_url} target="_blank" className="text-xs font-bold text-[#FF5A1F] underline underline-offset-2">
-                        Voir le fichier envoyé
-                      </a>
-                      <label className="cursor-pointer text-xs text-zinc-500 hover:text-zinc-900 transition">
-                        Remplacer
-                        <input type="file" accept=".pdf,image/*" onChange={uploadLicense} className="hidden" />
-                      </label>
-                    </div>
+                <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
+                  <div className="flex items-center gap-2">
+                    <Clock size={18} className="text-yellow-600" />
+                    <p className="font-bold text-yellow-700">En attente de validation</p>
+                  </div>
+                  <p className="mt-1 text-xs text-zinc-600">
+                    Votre licence a bien été reçue et sera vérifiée par notre équipe.
+                  </p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <a href={formData.license_url} target="_blank" className="text-xs font-bold text-[#FF5A1F] underline underline-offset-2">
+                      Voir le fichier envoyé
+                    </a>
+                    <label className="cursor-pointer text-xs text-zinc-500 hover:text-zinc-900 transition">
+                      Remplacer
+                      <input type="file" accept=".pdf,image/*" onChange={uploadLicense} className="hidden" />
+                    </label>
                   </div>
                 </div>
               )}

@@ -6,7 +6,6 @@ import {
   ImageIcon,
   MapPin,
   Save,
-  Sparkles,
   Users,
 } from "lucide-react";
 
@@ -94,9 +93,6 @@ export default function CreateEventPage() {
   const [loading, setLoading] =
     useState(false);
 
-  const [generatingDescription, setGeneratingDescription] =
-    useState(false);
-
   const [toast, setToast] =
     useState<ToastData>(null);
 
@@ -105,28 +101,6 @@ export default function CreateEventPage() {
   }
   function setExtraRoleCount(index: number, count: string) {
     setExtraRoles(prev => prev.map((r, i) => i === index ? { ...r, count } : r));
-  }
-
-  async function generateDescription() {
-    setGeneratingDescription(true);
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch("/api/ai/generate-description", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token}` },
-        body: JSON.stringify({ title, discipline, location, country, date, endDate, marshalsNeeded }),
-      });
-      const data = await res.json();
-      if (data.description) {
-        setDescription(data.description);
-      } else {
-        setToast({ message: data.error || "Erreur lors de la génération.", type: "error" });
-      }
-    } catch {
-      setToast({ message: "Erreur réseau lors de la génération.", type: "error" });
-    } finally {
-      setGeneratingDescription(false);
-    }
   }
 
   async function uploadImage() {
@@ -743,20 +717,11 @@ export default function CreateEventPage() {
 
               <div>
 
-                <div className="mb-3 flex items-center justify-between">
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-                    Description / Briefing
-                  </p>
-                  <button
-                    type="button"
-                    onClick={generateDescription}
-                    disabled={generatingDescription}
-                    className="flex items-center gap-1.5 rounded-xl bg-[#FF5A1F]/10 px-3 py-1.5 text-xs font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20 disabled:opacity-50"
-                  >
-                    <Sparkles size={13} />
-                    {generatingDescription ? "Génération..." : "Générer avec l'IA"}
-                  </button>
-                </div>
+                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
+
+                  Description / Briefing
+
+                </p>
 
                 <textarea
                   rows={8}
@@ -766,7 +731,7 @@ export default function CreateEventPage() {
                       e.target.value
                     )
                   }
-                  placeholder="Décrivez votre événement ou laissez l'IA le faire..."
+                  placeholder="Décrivez votre événement..."
                   className="w-full rounded-2xl border border-zinc-300 bg-zinc-50 p-6 text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-[#FF5A1F]"
                 />
 
