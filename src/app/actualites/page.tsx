@@ -107,8 +107,11 @@ export default async function ActualitesPage() {
     fetchFeed("https://www.lerepairedesmotards.com/actualites/rss.php", "Le Repaire des Motards", "moto"),
   ]);
 
+  const threeMonthsAgo = Date.now() - 90 * 24 * 60 * 60 * 1000;
+
   const all: Article[] = results
     .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
+    .filter((a) => !a.pubDate || new Date(a.pubDate).getTime() >= threeMonthsAgo)
     .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
   const autoArticles = all.filter((a) => a.category === "auto");
