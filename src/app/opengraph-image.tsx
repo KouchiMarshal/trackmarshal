@@ -15,81 +15,115 @@ export default function OgImage() {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "sans-serif",
+          padding: "80px",
           position: "relative",
         }}
       >
-        {/* Orange glow */}
+        {/* Orange accent bar top */}
         <div
           style={{
             position: "absolute",
-            top: -100,
-            left: -100,
-            width: 500,
-            height: 500,
-            borderRadius: "50%",
-            background: "rgba(255,90,31,0.15)",
-            filter: "blur(120px)",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "6px",
+            background: "#FF5A1F",
+            display: "flex",
           }}
         />
-        {/* Content */}
+
+        {/* Orange rectangle decoration */}
+        <div
+          style={{
+            position: "absolute",
+            top: -80,
+            right: -80,
+            width: 400,
+            height: 400,
+            borderRadius: "50%",
+            background: "rgba(255,90,31,0.12)",
+            display: "flex",
+          }}
+        />
+
+        {/* Logo circle */}
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
-            gap: 24,
-            zIndex: 10,
+            gap: "20px",
+            marginBottom: "auto",
           }}
         >
           <div
             style={{
-              fontSize: 14,
-              fontWeight: 700,
-              letterSpacing: "0.35em",
-              textTransform: "uppercase",
-              color: "#FF5A1F",
+              width: 72,
+              height: 72,
+              borderRadius: "50%",
+              background: "#FF5A1F",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Plateforme Motorsport Premium
+            <div style={{ color: "#fff", fontSize: 28, fontWeight: 900, display: "flex" }}>TM</div>
           </div>
+          <div style={{ color: "#FF5A1F", fontSize: 16, fontWeight: 700, letterSpacing: "0.3em", display: "flex" }}>
+            TRACKMARSHAL
+          </div>
+        </div>
+
+        {/* Main text */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "auto" }}>
           <div
             style={{
               fontSize: 72,
               fontWeight: 900,
               color: "#ffffff",
-              textAlign: "center",
               lineHeight: 1,
-              letterSpacing: "-0.04em",
+              letterSpacing: "-0.03em",
+              display: "flex",
             }}
           >
-            TRACK<span style={{ color: "#FF5A1F" }}>MARSHAL</span>
+            Commissaires
           </div>
           <div
             style={{
-              fontSize: 24,
+              fontSize: 72,
+              fontWeight: 900,
+              color: "#FF5A1F",
+              lineHeight: 1,
+              letterSpacing: "-0.03em",
+              display: "flex",
+            }}
+          >
+            Motorsport
+          </div>
+          <div
+            style={{
+              fontSize: 26,
               color: "#a1a1aa",
-              textAlign: "center",
-              maxWidth: 700,
+              marginTop: "12px",
+              display: "flex",
             }}
           >
-            Connecter organisateurs et commissaires motorsport (FFSA / FFM)
+            Connecter organisateurs et commissaires FFSA · FFM
           </div>
-          <div
-            style={{
-              marginTop: 16,
-              padding: "12px 32px",
-              background: "#FF5A1F",
-              borderRadius: 16,
-              fontSize: 18,
-              fontWeight: 700,
-              color: "#ffffff",
-            }}
-          >
-            trackmarshal.app
-          </div>
+        </div>
+
+        {/* Bottom right URL */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: "48px",
+            right: "80px",
+            fontSize: 18,
+            color: "#52525b",
+            fontWeight: 600,
+            display: "flex",
+          }}
+        >
+          trackmarshal.app
         </div>
       </div>
     ),
