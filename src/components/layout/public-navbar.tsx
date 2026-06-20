@@ -54,16 +54,6 @@ export default function PublicNavbar() {
                 {link.label}
               </Link>
             ))}
-            {isAdmin && (
-              <Link
-                href="/apprendre"
-                className={`text-sm font-bold uppercase tracking-[0.12em] transition hover:text-[#FF5A1F] ${
-                  pathname.startsWith("/apprendre") ? "text-[#FF5A1F]" : "text-zinc-600"
-                }`}
-              >
-                Apprendre
-              </Link>
-            )}
           </nav>
 
           <div className="flex items-center gap-2">
@@ -147,19 +137,6 @@ export default function PublicNavbar() {
                   {link.label}
                 </Link>
               ))}
-              {isAdmin && (
-                <Link
-                  href="/apprendre"
-                  onClick={() => setOpen(false)}
-                  className={`flex h-14 items-center rounded-2xl px-5 text-lg font-black transition ${
-                    pathname.startsWith("/apprendre")
-                      ? "bg-[#FF5A1F] text-white"
-                      : "text-zinc-700 hover:bg-zinc-100"
-                  }`}
-                >
-                  📚 Apprendre
-                </Link>
-              )}
             </nav>
 
             <div className="space-y-3">
