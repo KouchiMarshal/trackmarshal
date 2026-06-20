@@ -8,7 +8,7 @@ async function verifyLicenseImage(buffer: Uint8Array, mimeType: string) {
   if (!process.env.GEMINI_API_KEY) return null;
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const base64 = Buffer.from(buffer).toString("base64");
     const result = await model.generateContent([
