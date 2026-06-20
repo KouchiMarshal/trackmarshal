@@ -60,6 +60,10 @@ export default async function EventPage({
     .eq("event_id", event?.id)
     .eq("status", "accepted");
 
+  const { data: organizerProfile } = event?.organizer_id
+    ? await supabase.from("profiles").select("id, full_name, avatar_url, organizer_verified").eq("id", event.organizer_id).single()
+    : { data: null };
+
   const isFull = event ? (acceptedCount || 0) >= (event.marshals_needed || 0) : false;
 
   if (!event) {
@@ -321,6 +325,29 @@ export default async function EventPage({
                   Contact Organisateur
 
                 </p>
+
+                {organizerProfile && (
+                  <a
+                    href={`/organizer/${organizerProfile.id}`}
+                    className="mt-4 flex items-center gap-3 rounded-2xl border border-zinc-200 bg-zinc-50 p-3 transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/5"
+                  >
+                    <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-zinc-200">
+                      {organizerProfile.avatar_url ? (
+                        <img src={organizerProfile.avatar_url} className="h-full w-full object-cover" alt="" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-sm font-black text-[#FF5A1F]">
+                          {organizerProfile.full_name?.charAt(0) || "O"}
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate font-bold text-zinc-900">{organizerProfile.full_name}</p>
+                      {organizerProfile.organizer_verified && (
+                        <p className="text-xs text-green-600 font-medium">✔ Vérifié</p>
+                      )}
+                    </div>
+                  </a>
+                )}
 
               </div>
 

@@ -2,7 +2,7 @@ import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 import { formatDateRange } from "@/lib/formatDate";
-import { CalendarDays, MapPin, Users } from "lucide-react";
+import { CalendarDays, MapPin, Users, Star } from "lucide-react";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -41,6 +41,34 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
     .select("id", { count: "exact", head: true })
     .in("event_id", (events || []).map((e) => e.id));
 
+  // Fetch marshal reviews for all events of this organizer
+  const eventIds = (events || []).map((e: any) => e.id);
+  const { data: rawReviews } = eventIds.length > 0
+    ? await supabase
+        .from("marshal_reviews")
+        .select("id, rating, comment, created_at, event_id, marshal_id")
+        .in("event_id", eventIds)
+        .order("created_at", { ascending: false })
+    : { data: [] };
+
+  const reviews = rawReviews || [];
+
+  // Fetch reviewer profiles
+  const reviewerIds = [...new Set(reviews.map((r: any) => r.marshal_id))];
+  const { data: reviewerProfiles } = reviewerIds.length > 0
+    ? await supabase.from("profiles").select("id, full_name, avatar_url").in("id", reviewerIds)
+    : { data: [] };
+  const profilesById: Record<string, any> = {};
+  (reviewerProfiles || []).forEach((p: any) => { profilesById[p.id] = p; });
+
+  // Fetch event titles for reviews
+  const eventsById: Record<string, any> = {};
+  (events || []).forEach((e: any) => { eventsById[e.id] = e; });
+
+  const avgRating = reviews.length > 0
+    ? reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length
+    : null;
+
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
@@ -76,6 +104,23 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
                     </div>
                   )}
 
+                  {avgRating !== null && (
+                    <div className="mt-5 flex flex-col items-center gap-1">
+                      <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            size={18}
+                            className={s <= Math.round(avgRating) ? "fill-[#FF5A1F] text-[#FF5A1F]" : "text-zinc-300"}
+                          />
+                        ))}
+                      </div>
+                      <p className="text-sm font-bold text-zinc-700">
+                        {avgRating.toFixed(1)} / 5 <span className="font-normal text-zinc-400">({reviews.length} avis)</span>
+                      </p>
+                    </div>
+                  )}
+
                   <div className="mt-8 grid grid-cols-2 gap-4 text-center">
                     <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
                       <p className="text-3xl font-black text-[#FF5A1F]">{totalEvents || 0}</p>
@@ -99,50 +144,110 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
               </div>
             </div>
 
-            {/* Événements */}
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Organisateur</p>
-              <h2 className="mt-3 text-4xl font-black text-zinc-900 lg:text-6xl">Événements publiés</h2>
-              <p className="mt-4 text-zinc-600">
-                Retrouvez tous les événements organisés par {profile.full_name}.
-              </p>
+            {/* Contenu principal */}
+            <div className="space-y-16">
 
-              <div className="mt-10 grid gap-6 xl:grid-cols-2">
-                {(events || []).length === 0 && (
-                  <div className="col-span-2 rounded-[32px] border border-dashed border-zinc-300 p-12 text-center text-zinc-500">
-                    Aucun événement publié pour le moment.
-                  </div>
-                )}
+              {/* Événements */}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Organisateur</p>
+                <h2 className="mt-3 text-4xl font-black text-zinc-900 lg:text-6xl">Événements publiés</h2>
+                <p className="mt-4 text-zinc-600">
+                  Retrouvez tous les événements organisés par {profile.full_name}.
+                </p>
 
-                {(events || []).map((event) => (
-                  <a
-                    key={event.id}
-                    href={`/events/${event.slug}`}
-                    className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm transition hover:border-[#FF5A1F]/30"
-                  >
-                    <div className="relative h-[200px]">
-                      <img
-                        src={event.image_url || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"}
-                        className="h-full w-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-                      <div className="absolute bottom-4 left-4">
-                        <span className="rounded-full bg-[#FF5A1F] px-3 py-1 text-xs font-black uppercase text-white">{event.discipline}</span>
-                      </div>
+                <div className="mt-10 grid gap-6 xl:grid-cols-2">
+                  {(events || []).length === 0 && (
+                    <div className="col-span-2 rounded-[32px] border border-dashed border-zinc-300 p-12 text-center text-zinc-500">
+                      Aucun événement publié pour le moment.
                     </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-black text-zinc-900">{event.title}</h3>
-                      <div className="mt-3 space-y-2 text-sm text-zinc-600">
-                        <div className="flex items-center gap-2"><CalendarDays size={14} />{formatDateRange(event.event_date, event.event_end_date)}</div>
-                        <div className="flex items-center gap-2"><MapPin size={14} />{event.location}{event.country ? `, ${event.country}` : ""}</div>
-                        <div className="flex items-center gap-2"><Users size={14} />{event.marshals_needed} commissaires</div>
+                  )}
+
+                  {(events || []).map((event: any) => (
+                    <a
+                      key={event.id}
+                      href={`/events/${event.slug}`}
+                      className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm transition hover:border-[#FF5A1F]/30"
+                    >
+                      <div className="relative h-[200px]">
+                        <img
+                          src={event.image_url || "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2070&auto=format&fit=crop"}
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
+                        <div className="absolute bottom-4 left-4">
+                          <span className="rounded-full bg-[#FF5A1F] px-3 py-1 text-xs font-black uppercase text-white">{event.discipline}</span>
+                        </div>
                       </div>
-                    </div>
-                  </a>
-                ))}
+                      <div className="p-6">
+                        <h3 className="text-xl font-black text-zinc-900">{event.title}</h3>
+                        <div className="mt-3 space-y-2 text-sm text-zinc-600">
+                          <div className="flex items-center gap-2"><CalendarDays size={14} />{formatDateRange(event.event_date, event.event_end_date)}</div>
+                          <div className="flex items-center gap-2"><MapPin size={14} />{event.location}{event.country ? `, ${event.country}` : ""}</div>
+                          <div className="flex items-center gap-2"><Users size={14} />{event.marshals_needed} commissaires</div>
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
               </div>
-            </div>
 
+              {/* Avis des commissaires */}
+              {reviews.length > 0 && (
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Réputation</p>
+                  <h2 className="mt-3 text-4xl font-black text-zinc-900 lg:text-5xl">Avis des commissaires</h2>
+                  <p className="mt-4 text-zinc-600">
+                    {reviews.length} avis laissés par des commissaires ayant participé aux événements de {profile.full_name}.
+                  </p>
+
+                  <div className="mt-8 space-y-4">
+                    {reviews.map((review: any) => {
+                      const reviewer = profilesById[review.marshal_id];
+                      const event = eventsById[review.event_id];
+                      return (
+                        <div key={review.id} className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex items-center gap-3">
+                              <div className="h-10 w-10 overflow-hidden rounded-full bg-zinc-100 shrink-0">
+                                {reviewer?.avatar_url ? (
+                                  <img src={reviewer.avatar_url} className="h-full w-full object-cover" alt="" />
+                                ) : (
+                                  <div className="flex h-full w-full items-center justify-center text-sm font-black text-[#FF5A1F]">
+                                    {reviewer?.full_name?.charAt(0) || "?"}
+                                  </div>
+                                )}
+                              </div>
+                              <div>
+                                <p className="font-bold text-zinc-900">{reviewer?.full_name || "Commissaire"}</p>
+                                {event && (
+                                  <p className="text-xs text-zinc-400">{event.title}</p>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex shrink-0 items-center gap-1">
+                              {[1, 2, 3, 4, 5].map((s) => (
+                                <Star
+                                  key={s}
+                                  size={14}
+                                  className={s <= review.rating ? "fill-[#FF5A1F] text-[#FF5A1F]" : "text-zinc-200"}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          {review.comment && (
+                            <p className="mt-4 text-sm text-zinc-600 leading-relaxed">{review.comment}</p>
+                          )}
+                          <p className="mt-3 text-xs text-zinc-400">
+                            {new Date(review.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+            </div>
           </div>
         </div>
       </section>
