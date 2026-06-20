@@ -59,15 +59,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 rounded-[24px] border border-zinc-200 bg-white p-6">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
-                    <MapPin size={20} className="text-[#FF5A1F]" />
-                  </div>
-                  <div>
-                    <p className="font-black text-zinc-900">Basé en France</p>
-                    <p className="mt-1 text-sm text-zinc-600">Plateforme nationale — commissaires FFSA &amp; FFM</p>
-                  </div>
-                </div>
               </div>
 
               <div className="mt-8 rounded-[24px] border border-zinc-200 bg-white p-6">

@@ -138,45 +138,6 @@ export default async function OrganizerPublicProfilePage({ params }: Props) {
                     </div>
                   )}
 
-                  <div className="mt-8 grid grid-cols-2 gap-4 text-center">
-                    <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                      <p className="text-3xl font-black text-[#FF5A1F]">{totalEvents || 0}</p>
-                      <p className="mt-1 text-xs text-zinc-500">Événements</p>
-                    </div>
-                    <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                      <p className="text-3xl font-black text-[#FF5A1F]">{totalApplications || 0}</p>
-                      <p className="mt-1 text-xs text-zinc-500">Candidatures</p>
-                    </div>
-                  </div>
-
-                  {(responseRate !== null || briefingRate !== null) && (
-                    <div className="mt-6 space-y-3 text-left">
-                      <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Fiabilité</p>
-                      {responseRate !== null && (
-                        <div>
-                          <div className="mb-1 flex justify-between text-xs text-zinc-500">
-                            <span>Taux de réponse</span>
-                            <span className="font-bold text-zinc-700">{responseRate}%</span>
-                          </div>
-                          <div className="h-1.5 w-full rounded-full bg-zinc-100">
-                            <div className="h-1.5 rounded-full bg-[#FF5A1F] transition-all" style={{ width: `${responseRate}%` }} />
-                          </div>
-                        </div>
-                      )}
-                      {briefingRate !== null && (
-                        <div>
-                          <div className="mb-1 flex justify-between text-xs text-zinc-500">
-                            <span>Briefings publiés</span>
-                            <span className="font-bold text-zinc-700">{briefingRate}%</span>
-                          </div>
-                          <div className="h-1.5 w-full rounded-full bg-zinc-100">
-                            <div className="h-1.5 rounded-full bg-[#FF5A1F] transition-all" style={{ width: `${briefingRate}%` }} />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
                   {profile.email && (
                     <a
                       href={`mailto:${profile.email}`}
