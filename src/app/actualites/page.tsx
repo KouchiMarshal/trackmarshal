@@ -88,7 +88,6 @@ export default async function ActualitesPage() {
       "auto",
       true
     ),
-    fetchFeed("https://www.autohebdo.fr/rss.xml", "Auto Hebdo", "auto"),
     fetchFeed("https://www.automobile-magazine.fr/toute-l-actualite/rss.xml", "Automobile Magazine", "auto"),
     fetchFeed("https://moteur-actu.fr/feed/", "Moteur Actu", "auto"),
     // Moto — Motomag confirmé fonctionnel + Google News moto + Repaire des Motards
