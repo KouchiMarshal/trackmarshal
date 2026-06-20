@@ -9,6 +9,8 @@ import {
   CalendarPlus,
   Hourglass,
   Star,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -50,6 +52,7 @@ export default function ApplicationsPage() {
   const [withdrawSending, setWithdrawSending] = useState(false);
 
   const [acknowledging, setAcknowledging] = useState<string | null>(null);
+  const [briefingOpened, setBriefingOpened] = useState<Record<string, boolean>>({});
   const [ratings, setRatings] = useState<Record<string, { rating: number; comment: string; saved: boolean }>>({});
   const [ratingSubmitting, setRatingSubmitting] = useState<string | null>(null);
 
@@ -591,29 +594,54 @@ export default function ApplicationsPage() {
                           {/* Briefing acknowledgment */}
                           {app.status === "accepted" && app.events?.briefing && (() => {
                             const isPast = new Date(app.events.event_end_date || app.events.event_date) < new Date();
-                            return !isPast ? (
-                              <div className={`mt-5 flex items-center justify-between rounded-2xl border px-5 py-4 ${app.briefing_acknowledged ? "border-green-200 bg-green-50" : "border-orange-200 bg-orange-50"}`}>
-                                <div>
-                                  <p className={`text-sm font-black ${app.briefing_acknowledged ? "text-green-700" : "text-orange-700"}`}>
-                                    {app.briefing_acknowledged ? "✓ Briefing confirmé" : "📋 Briefing à confirmer"}
-                                  </p>
-                                  {app.briefing_acknowledged && app.briefing_acknowledged_at && (
-                                    <p className="text-xs text-green-600 mt-0.5">
-                                      {new Date(app.briefing_acknowledged_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
-                                    </p>
-                                  )}
+                            if (isPast) return null;
+                            const isOpen = !!briefingOpened[app.id];
+                            if (app.briefing_acknowledged) {
+                              return (
+                                <div className="mt-5 flex items-center gap-3 rounded-2xl border border-green-200 bg-green-50 px-5 py-4">
+                                  <CheckCircle2 size={18} className="text-green-600 shrink-0" />
+                                  <div>
+                                    <p className="text-sm font-black text-green-700">Briefing confirmé</p>
+                                    {app.briefing_acknowledged_at && (
+                                      <p className="text-xs text-green-600 mt-0.5">
+                                        Lu le {new Date(app.briefing_acknowledged_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                                      </p>
+                                    )}
+                                  </div>
                                 </div>
-                                {!app.briefing_acknowledged && (
-                                  <button
-                                    onClick={() => acknowledgeBriefing(app.id)}
-                                    disabled={acknowledging === app.id}
-                                    className="flex h-10 items-center gap-2 rounded-xl bg-orange-500 px-4 text-sm font-bold text-white transition hover:bg-orange-600 disabled:opacity-60"
-                                  >
-                                    {acknowledging === app.id ? "..." : "J'ai lu le briefing"}
-                                  </button>
+                              );
+                            }
+                            return (
+                              <div className="mt-5 rounded-2xl border border-orange-200 bg-orange-50 overflow-hidden">
+                                <button
+                                  onClick={() => setBriefingOpened((prev) => ({ ...prev, [app.id]: !prev[app.id] }))}
+                                  className="flex w-full items-center justify-between px-5 py-4 text-left"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-base">📋</span>
+                                    <p className="text-sm font-black text-orange-700">Briefing à lire et confirmer</p>
+                                  </div>
+                                  {isOpen ? <ChevronUp size={18} className="text-orange-500 shrink-0" /> : <ChevronDown size={18} className="text-orange-500 shrink-0" />}
+                                </button>
+                                {isOpen && (
+                                  <>
+                                    <div className="border-t border-orange-200 bg-white px-5 py-5">
+                                      <p className="whitespace-pre-line text-sm text-zinc-700 leading-relaxed">{app.events.briefing}</p>
+                                    </div>
+                                    <div className="border-t border-orange-200 px-5 py-4 flex items-center justify-between gap-4">
+                                      <p className="text-xs text-orange-600 font-medium">En cliquant, vous confirmez avoir lu et compris ce briefing.</p>
+                                      <button
+                                        onClick={() => acknowledgeBriefing(app.id)}
+                                        disabled={acknowledging === app.id}
+                                        className="shrink-0 flex h-10 items-center gap-2 rounded-xl bg-orange-500 px-5 text-sm font-bold text-white transition hover:bg-orange-600 disabled:opacity-60"
+                                      >
+                                        {acknowledging === app.id ? "Enregistrement..." : "Je confirme avoir lu"}
+                                      </button>
+                                    </div>
+                                  </>
                                 )}
                               </div>
-                            ) : null;
+                            );
                           })()}
 
                           {/* Marshal rating for past events */}
