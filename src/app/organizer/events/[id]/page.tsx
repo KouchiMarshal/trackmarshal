@@ -50,6 +50,9 @@ export default function OrganizerEventDetailsPage() {
   // Feature 4: Rappels automatiques
   const [sendingReminders, setSendingReminders] = useState(false);
 
+  // Canal de groupe
+  const [creatingGroupChannel, setCreatingGroupChannel] = useState(false);
+
   // Feature 2: Attribution de postes
   const [postValues, setPostValues] = useState<Record<string, string>>({});
   const [postSaving, setPostSaving] = useState<Record<string, boolean>>({});
@@ -221,6 +224,28 @@ export default function OrganizerEventDetailsPage() {
       setToast({ message: "Erreur réseau.", type: "error" });
     }
     setSendingGroupMsg(false);
+  }
+
+  async function createGroupChannel() {
+    setCreatingGroupChannel(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/organizer/create-group-channel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token}` },
+        body: JSON.stringify({ eventId }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setToast({ message: "Canal d'équipe créé ! Redirection...", type: "success" });
+        setTimeout(() => router.push("/organizer/messages"), 800);
+      } else {
+        setToast({ message: data.error || "Erreur lors de la création.", type: "error" });
+      }
+    } catch {
+      setToast({ message: "Erreur réseau.", type: "error" });
+    }
+    setCreatingGroupChannel(false);
   }
 
   async function sendReminders() {
@@ -729,6 +754,13 @@ export default function OrganizerEventDetailsPage() {
                         Message
                       </button>
                       <button
+                        onClick={createGroupChannel}
+                        disabled={creatingGroupChannel}
+                        className="flex items-center gap-1.5 rounded-2xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-3 py-2 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20 disabled:opacity-50"
+                      >
+                        🏁 {creatingGroupChannel ? "..." : "Canal d'équipe"}
+                      </button>
+                      <button
                         onClick={sendReminders}
                         disabled={sendingReminders}
                         className="flex items-center gap-1.5 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F] disabled:opacity-50"
@@ -861,6 +893,11 @@ export default function OrganizerEventDetailsPage() {
                                 {app.desired_role && (
                                   <span className="rounded-full border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-3 py-1 text-xs font-bold text-[#FF5A1F] lg:text-sm">
                                     {app.desired_role}
+                                  </span>
+                                )}
+                                {app.status === "accepted" && event?.briefing && (
+                                  <span className={`rounded-full px-3 py-1 text-xs font-bold lg:text-sm ${app.briefing_acknowledged ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
+                                    {app.briefing_acknowledged ? "✓ Briefing lu" : "📋 Briefing non confirmé"}
                                   </span>
                                 )}
                                 {app.withdrawal_reason && (

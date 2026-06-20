@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CalendarCheck2,
   CalendarDays,
   FileBadge2,
   Heart,
@@ -23,6 +24,7 @@ const navItems = [
   { icon: Home, label: "Dashboard", href: "/dashboard" },
   { icon: CalendarDays, label: "Événements", href: "/dashboard/events" },
   { icon: FileBadge2, label: "Mes candidatures", href: "/dashboard/applications" },
+  { icon: CalendarCheck2, label: "Disponibilités", href: "/dashboard/disponibilites" },
   { icon: Trophy, label: "Mon historique", href: "/dashboard/history" },
   { icon: Heart, label: "Favoris", href: "/dashboard/favorites" },
   { icon: MessageSquare, label: "Messages", href: "/dashboard/messages" },
