@@ -13,6 +13,7 @@ const links = [
   { href: "/events", label: "Événements" },
   { href: "/actualites", label: "Actualités" },
   { href: "/about", label: "À propos" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function PublicNavbar() {
