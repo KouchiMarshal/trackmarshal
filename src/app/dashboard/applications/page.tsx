@@ -555,19 +555,11 @@ export default function ApplicationsPage() {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                         </div>
                         <div className="flex min-w-0 flex-1 flex-col justify-between">
-                          <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-start gap-2">
                             <div className="min-w-0 flex-1">
                               <span className={`inline-block rounded-full px-3 py-1 text-xs font-black uppercase tracking-[0.1em] ${status.color}`}>{status.text}</span>
                               <h2 className="mt-1.5 truncate text-lg font-black text-zinc-900 sm:text-xl">{app.events?.title}</h2>
                             </div>
-                            {tabs.length > 0 && (
-                              <button
-                                onClick={() => setExpandedCards((prev) => ({ ...prev, [app.id]: !prev[app.id] }))}
-                                className="shrink-0 rounded-xl border border-zinc-200 p-2 text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-900"
-                              >
-                                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                              </button>
-                            )}
                           </div>
                           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500">
                             <span className="flex items-center gap-1.5"><CalendarDays size={12} />{formatDateRange(app.events?.event_date, app.events?.event_end_date)}</span>
@@ -610,6 +602,18 @@ export default function ApplicationsPage() {
                           <span className="ml-auto flex h-8 items-center rounded-xl border border-orange-200 bg-orange-50 px-3 text-xs font-bold text-orange-600">⏳ Annulation en attente</span>
                         )}
                       </div>
+
+                      {/* Expand toggle strip */}
+                      {tabs.length > 0 && (
+                        <button
+                          onClick={() => setExpandedCards((prev) => ({ ...prev, [app.id]: !prev[app.id] }))}
+                          className={`flex w-full items-center justify-center gap-2 border-t py-3 text-xs font-bold transition ${isExpanded ? "border-[#FF5A1F]/20 bg-[#FF5A1F]/5 text-[#FF5A1F] hover:bg-[#FF5A1F]/10" : "border-zinc-100 text-[#FF5A1F] hover:bg-[#FF5A1F]/5"}`}
+                        >
+                          {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                          {isExpanded ? "Réduire" : tabs.map((t) => t.label).join(" · ")}
+                          {!isExpanded && tabs.some((t) => t.urgent) && <span className="h-2 w-2 rounded-full bg-orange-500" />}
+                        </button>
+                      )}
 
                       {/* Expandable tabs */}
                       {isExpanded && tabs.length > 0 && (
