@@ -993,12 +993,21 @@ export default function OrganizerEventDetailsPage() {
                                     setToast({ message: "Le nombre maximum de commissaires a été atteint.", type: "error" });
                                     return;
                                   }
-                                  await supabase.from("applications").update({ status: "accepted" }).eq("id", app.id);
+                                  const { error: updateError } = await supabase
+                                    .from("applications").update({ status: "accepted" }).eq("id", app.id);
+                                  if (updateError) {
+                                    setToast({ message: `Erreur : ${updateError.message}`, type: "error" });
+                                    return;
+                                  }
+                                  // Optimistic update
+                                  setApplications((prev) => prev.map((a) => a.id === app.id ? { ...a, status: "accepted" } : a));
                                   await supabase.from("notifications").insert({
                                     user_id: app.marshal_id,
                                     title: "Votre candidature a été acceptée",
+                                    message: `Votre candidature pour "${event.title}" a été acceptée.`,
                                     type: "application_accepted",
                                     link: `/events/${event.slug}`,
+                                    read: false,
                                   });
                                   if (app.profiles?.email) {
                                     sendEmail(app.profiles.email, "application_accepted", {
@@ -1032,9 +1041,9 @@ export default function OrganizerEventDetailsPage() {
                                       }
                                     }
                                   }
-                                  loadEvent();
+                                  setToast({ message: "Candidature acceptée.", type: "success" });
                                 }}
-                                className={`rounded-2xl px-4 py-2 text-sm font-bold text-white transition ${app.status === "accepted" ? "cursor-not-allowed bg-zinc-200 text-zinc-400" : "bg-green-600 hover:bg-green-500"}`}
+                                className={`rounded-2xl px-4 py-2 text-sm font-bold transition ${app.status === "accepted" ? "cursor-not-allowed bg-zinc-200 text-zinc-400" : "bg-green-600 text-white hover:bg-green-500"}`}
                               >
                                 Accepter
                               </button>
@@ -1042,19 +1051,28 @@ export default function OrganizerEventDetailsPage() {
                                 <button
                                   disabled={app.status === "rejected"}
                                   onClick={async () => {
-                                    await supabase.from("applications").update({ status: "rejected" }).eq("id", app.id);
+                                    const { error: updateError } = await supabase
+                                      .from("applications").update({ status: "rejected" }).eq("id", app.id);
+                                    if (updateError) {
+                                      setToast({ message: `Erreur : ${updateError.message}`, type: "error" });
+                                      return;
+                                    }
+                                    // Optimistic update
+                                    setApplications((prev) => prev.map((a) => a.id === app.id ? { ...a, status: "rejected" } : a));
                                     await supabase.from("notifications").insert({
                                       user_id: app.marshal_id,
                                       title: "Votre candidature a été refusée",
+                                      message: `Votre candidature pour "${event.title}" n'a pas été retenue.`,
                                       type: "application_rejected",
                                       link: `/events/${event.slug}`,
+                                      read: false,
                                     });
                                     if (app.profiles?.email) {
                                       sendEmail(app.profiles.email, "application_rejected", { eventTitle: event.title });
                                     }
-                                    loadEvent();
+                                    setToast({ message: "Candidature refusée.", type: "success" });
                                   }}
-                                  className={`rounded-2xl px-4 py-2 text-sm font-bold text-white transition ${app.status === "rejected" ? "cursor-not-allowed bg-zinc-200 text-zinc-400" : "bg-red-600 hover:bg-red-500"}`}
+                                  className={`rounded-2xl px-4 py-2 text-sm font-bold transition ${app.status === "rejected" ? "cursor-not-allowed bg-zinc-200 text-zinc-400" : "bg-red-600 text-white hover:bg-red-500"}`}
                                 >
                                   Refuser
                                 </button>
