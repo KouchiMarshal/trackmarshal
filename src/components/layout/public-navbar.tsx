@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -10,6 +11,7 @@ import NotificationBell from "@/components/notifications/notification-bell";
 const links = [
   { href: "/", label: "Accueil" },
   { href: "/events", label: "Événements" },
+  { href: "/actualites", label: "Actualités" },
   { href: "/about", label: "À propos" },
 ];
 
@@ -32,7 +34,7 @@ export default function PublicNavbar() {
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
 
           <Link href="/" className="flex items-center gap-3">
-            <img src="/logo.png" alt="TrackMarshal" className="h-9 w-9 rounded-full object-cover lg:h-11 lg:w-11" />
+            <Image src="/logo.png" alt="TrackMarshal" width={44} height={44} className="h-9 w-9 rounded-full object-cover lg:h-11 lg:w-11" />
             <h1 className="text-xl font-black text-zinc-900 lg:text-2xl">
               Track<span className="text-[#FF5A1F]">Marshal</span>
             </h1>
@@ -124,7 +126,7 @@ export default function PublicNavbar() {
         <div className="fixed inset-0 z-[60] flex flex-col bg-white lg:hidden">
           <div className="flex h-16 items-center justify-between border-b border-zinc-200 px-4">
             <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-3">
-              <img src="/logo.png" alt="TrackMarshal" className="h-9 w-9 rounded-full object-cover" />
+              <Image src="/logo.png" alt="TrackMarshal" width={36} height={36} className="h-9 w-9 rounded-full object-cover" />
               <h1 className="text-xl font-black text-zinc-900">
                 Track<span className="text-[#FF5A1F]">Marshal</span>
               </h1>

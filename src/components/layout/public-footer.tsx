@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function PublicFooter() {
   return (
@@ -7,7 +8,7 @@ export default function PublicFooter() {
         <div className="flex flex-col items-center justify-between gap-6 lg:flex-row">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
-              <img src="/logo.png" alt="TrackMarshal" className="h-8 w-8 rounded-full object-cover" />
+              <Image src="/logo.png" alt="TrackMarshal" width={32} height={32} className="rounded-full object-cover" />
               <p className="font-black text-zinc-900">Track<span className="text-[#FF5A1F]">Marshal</span></p>
             </div>
             <a
@@ -33,8 +34,10 @@ export default function PublicFooter() {
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-zinc-600">
             <Link href="/about" className="transition hover:text-[#FF5A1F]">À propos</Link>
             <Link href="/events" className="transition hover:text-[#FF5A1F]">Événements</Link>
+            <Link href="/actualites" className="transition hover:text-[#FF5A1F]">Actualités</Link>
             <Link href="/commissaires" className="transition hover:text-[#FF5A1F]">Annuaire commissaires</Link>
             <Link href="/devenir-commissaire" className="transition hover:text-[#FF5A1F]">Devenir commissaire</Link>
+            <Link href="/contact" className="transition hover:text-[#FF5A1F]">Contact</Link>
             <Link href="/login" className="transition hover:text-[#FF5A1F]">Connexion</Link>
           </div>
 

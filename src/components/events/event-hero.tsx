@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type EventHeroProps = {
   title: string;
   location: string;
@@ -16,10 +18,12 @@ export default function EventHero({
   return (
     <section className="relative h-[70vh] overflow-hidden">
 
-      <img
+      <Image
         src={image}
         alt={title}
-        className="absolute inset-0 h-full w-full object-cover"
+        fill
+        className="object-cover"
+        priority
       />
 
       <div className="absolute inset-0 bg-black/70" />

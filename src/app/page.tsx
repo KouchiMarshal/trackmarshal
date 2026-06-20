@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 import { CheckCircle2, ClipboardList, MessageSquare, Search, ShieldCheck } from "lucide-react";
@@ -51,10 +52,13 @@ export default function HomePage() {
         <div className="relative z-10 mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl">
             <div className="flex items-center gap-5">
-              <img
+              <Image
                 src="/logo.png"
                 alt="TrackMarshal"
+                width={112}
+                height={112}
                 className="h-20 w-20 rounded-full object-cover shadow-xl shadow-[#FF5A1F]/20 ring-2 ring-[#FF5A1F]/30 lg:h-28 lg:w-28"
+                priority
               />
               <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">
                 Plateforme Motorsport Premium
@@ -148,7 +152,7 @@ export default function HomePage() {
       {/* CTA final */}
       <section className="border-t border-zinc-200 bg-zinc-50 py-20 lg:py-32">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 text-center">
-          <img src="/logo.png" alt="TrackMarshal" className="mx-auto mb-8 h-20 w-20 rounded-full object-cover shadow-xl shadow-[#FF5A1F]/20 ring-2 ring-[#FF5A1F]/30" />
+          <Image src="/logo.png" alt="TrackMarshal" width={80} height={80} className="mx-auto mb-8 h-20 w-20 rounded-full object-cover shadow-xl shadow-[#FF5A1F]/20 ring-2 ring-[#FF5A1F]/30" />
           <h2 className="text-4xl font-black lg:text-7xl">Prêt à démarrer ?</h2>
           <p className="mt-6 mx-auto max-w-2xl text-lg text-zinc-600">
             Rejoignez la communauté des commissaires et organisateurs motorsport sur TrackMarshal.
