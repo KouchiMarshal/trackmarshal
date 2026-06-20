@@ -11,6 +11,7 @@ import {
   Star,
   ChevronDown,
   ChevronUp,
+  Car,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -58,6 +59,10 @@ export default function ApplicationsPage() {
   const [surveys, setSurveys] = useState<Record<string, { organisation: number; securite: number; ambiance: number; comment: string; saved: boolean }>>({});
   const [surveySubmitting, setSurveySubmitting] = useState<string | null>(null);
   const [docs, setDocs] = useState<Record<string, any[]>>({});
+  const [carpools, setCarpools] = useState<Record<string, any[]>>({});
+  const [myCarpools, setMyCarpools] = useState<Record<string, any>>({});
+  const [carpoolForms, setCarpoolForms] = useState<Record<string, { city: string; seats: number; comment: string }>>({});
+  const [carpoolSubmitting, setCarpoolSubmitting] = useState<string | null>(null);
 
   useEffect(() => {
     loadApplications();
@@ -164,7 +169,7 @@ export default function ApplicationsPage() {
       setSurveys(surveyInit);
     }
 
-    // Load documents for accepted events
+    // Load documents and carpools for accepted events
     const acceptedEventIds = merged.filter((a: any) => a.status === "accepted").map((a: any) => a.event_id);
     if (acceptedEventIds.length > 0) {
       const { data: { session } } = await supabase.auth.getSession();
@@ -177,6 +182,28 @@ export default function ApplicationsPage() {
         if (data.docs?.length > 0) docsMap[eid] = data.docs;
       }));
       setDocs(docsMap);
+
+      // Load carpools
+      const { data: carpoolsData } = await supabase
+        .from("carpools").select("*").in("event_id", acceptedEventIds);
+      const allCarpools = carpoolsData || [];
+      const driverIds = [...new Set(allCarpools.map((c: any) => c.driver_id))] as string[];
+      const driverProfilesMap: Record<string, any> = {};
+      if (driverIds.length > 0) {
+        const { data: driverProfiles } = await supabase
+          .from("profiles").select("id, full_name, avatar_url").in("id", driverIds);
+        (driverProfiles || []).forEach((p: any) => { driverProfilesMap[p.id] = p; });
+      }
+      const enriched = allCarpools.map((c: any) => ({ ...c, driver: driverProfilesMap[c.driver_id] || null }));
+      const carpoolsMap: Record<string, any[]> = {};
+      const myCarpoolsMap: Record<string, any> = {};
+      enriched.forEach((c: any) => {
+        if (!carpoolsMap[c.event_id]) carpoolsMap[c.event_id] = [];
+        carpoolsMap[c.event_id].push(c);
+        if (c.driver_id === user.id) myCarpoolsMap[c.event_id] = c;
+      });
+      setCarpools(carpoolsMap);
+      setMyCarpools(myCarpoolsMap);
     }
 
     setLoading(false);
@@ -727,6 +754,174 @@ export default function ApplicationsPage() {
                               </div>
                             </div>
                           )}
+
+                          {/* Covoiturage */}
+                          {app.status === "accepted" && (() => {
+                            const isPast = new Date(app.events?.event_end_date || app.events?.event_date) < new Date();
+                            if (isPast) return null;
+                            const eventId = app.event_id;
+                            const allCarpools = carpools[eventId] || [];
+                            const myCarpool = myCarpools[eventId];
+                            const otherCarpools = allCarpools.filter((c: any) => c.driver_id !== userId);
+                            const form = carpoolForms[eventId] || { city: "", seats: 1, comment: "" };
+
+                            return (
+                              <div className="mt-5 rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+                                <div className="mb-4 flex items-center gap-2">
+                                  <Car size={16} className="text-zinc-600" />
+                                  <p className="text-sm font-black text-zinc-900">Covoiturage</p>
+                                </div>
+
+                                {/* Mon offre */}
+                                {myCarpool ? (
+                                  <div className="mb-4 rounded-xl border border-green-200 bg-green-50 p-4">
+                                    <div className="flex items-start justify-between gap-3">
+                                      <div>
+                                        <p className="text-sm font-bold text-green-800">Votre proposition</p>
+                                        <p className="mt-1 text-sm text-green-700">
+                                          📍 {myCarpool.departure_city} · {myCarpool.seats} place{myCarpool.seats > 1 ? "s" : ""}
+                                        </p>
+                                        {myCarpool.comment && (
+                                          <p className="mt-1 text-xs text-green-600">{myCarpool.comment}</p>
+                                        )}
+                                      </div>
+                                      <button
+                                        onClick={async () => {
+                                          await supabase.from("carpools").delete().eq("id", myCarpool.id);
+                                          setCarpools((prev) => ({ ...prev, [eventId]: (prev[eventId] || []).filter((c: any) => c.id !== myCarpool.id) }));
+                                          setMyCarpools((prev) => { const n = { ...prev }; delete n[eventId]; return n; });
+                                        }}
+                                        className="shrink-0 text-xs text-red-500 transition hover:text-red-700"
+                                      >
+                                        Supprimer
+                                      </button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="mb-4 rounded-xl border border-zinc-200 bg-white p-4">
+                                    <p className="mb-3 text-xs font-bold uppercase tracking-widest text-zinc-500">Proposer un trajet</p>
+                                    <div className="space-y-2">
+                                      <div className="flex gap-2">
+                                        <input
+                                          type="text"
+                                          value={form.city}
+                                          onChange={(e) => setCarpoolForms((prev) => ({ ...prev, [eventId]: { ...form, city: e.target.value } }))}
+                                          placeholder="Ville de départ"
+                                          className="flex-1 rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+                                        />
+                                        <select
+                                          value={form.seats}
+                                          onChange={(e) => setCarpoolForms((prev) => ({ ...prev, [eventId]: { ...form, seats: Number(e.target.value) } }))}
+                                          className="rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm outline-none focus:border-[#FF5A1F]"
+                                        >
+                                          {[1, 2, 3, 4, 5, 6, 7].map((n) => (
+                                            <option key={n} value={n}>{n} place{n > 1 ? "s" : ""}</option>
+                                          ))}
+                                        </select>
+                                      </div>
+                                      <input
+                                        type="text"
+                                        value={form.comment}
+                                        onChange={(e) => setCarpoolForms((prev) => ({ ...prev, [eventId]: { ...form, comment: e.target.value } }))}
+                                        placeholder="Heure de départ, point de RDV... (optionnel)"
+                                        className="w-full rounded-xl border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+                                      />
+                                      <button
+                                        disabled={!form.city.trim() || carpoolSubmitting === eventId}
+                                        onClick={async () => {
+                                          setCarpoolSubmitting(eventId);
+                                          const { data, error } = await supabase
+                                            .from("carpools")
+                                            .insert({
+                                              event_id: eventId,
+                                              driver_id: userId,
+                                              departure_city: form.city.trim(),
+                                              seats: form.seats,
+                                              comment: form.comment.trim() || null,
+                                            })
+                                            .select("*")
+                                            .single();
+                                          if (!error && data) {
+                                            const { data: driverProfile } = await supabase
+                                              .from("profiles").select("id, full_name, avatar_url").eq("id", userId).single();
+                                            const enriched = { ...data, driver: driverProfile || null };
+                                            setCarpools((prev) => ({ ...prev, [eventId]: [...(prev[eventId] || []), enriched] }));
+                                            setMyCarpools((prev) => ({ ...prev, [eventId]: enriched }));
+                                            setCarpoolForms((prev) => ({ ...prev, [eventId]: { city: "", seats: 1, comment: "" } }));
+                                          }
+                                          setCarpoolSubmitting(null);
+                                        }}
+                                        className="flex h-9 items-center rounded-xl bg-zinc-900 px-4 text-sm font-bold text-white transition hover:bg-zinc-700 disabled:opacity-40"
+                                      >
+                                        {carpoolSubmitting === eventId ? "..." : "Proposer"}
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Autres trajets */}
+                                {otherCarpools.length > 0 ? (
+                                  <div className="space-y-2">
+                                    <p className="mb-2 text-xs font-bold uppercase tracking-widest text-zinc-500">Trajets disponibles</p>
+                                    {otherCarpools.map((c: any) => (
+                                      <div key={c.id} className="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-3">
+                                        <div className="flex min-w-0 items-center gap-3">
+                                          <div className="h-8 w-8 shrink-0 overflow-hidden rounded-full bg-zinc-100">
+                                            {c.driver?.avatar_url ? (
+                                              <img src={c.driver.avatar_url} alt="" className="h-full w-full object-cover" />
+                                            ) : (
+                                              <div className="flex h-full w-full items-center justify-center text-xs font-black text-[#FF5A1F]">
+                                                {c.driver?.full_name?.charAt(0) || "?"}
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div className="min-w-0">
+                                            <p className="truncate text-sm font-bold text-zinc-900">{c.driver?.full_name || "Commissaire"}</p>
+                                            <p className="text-xs text-zinc-500">📍 {c.departure_city} · {c.seats} place{c.seats > 1 ? "s" : ""}</p>
+                                            {c.comment && <p className="truncate text-xs text-zinc-400">{c.comment}</p>}
+                                          </div>
+                                        </div>
+                                        <button
+                                          onClick={async () => {
+                                            const { data: myMemberships } = await supabase
+                                              .from("conversation_members").select("conversation_id").eq("user_id", userId);
+                                            const myConvIds = (myMemberships || []).map((m: any) => m.conversation_id);
+                                            let existingConvId: string | null = null;
+                                            if (myConvIds.length > 0) {
+                                              const { data: shared } = await supabase
+                                                .from("conversation_members").select("conversation_id")
+                                                .eq("user_id", c.driver_id).in("conversation_id", myConvIds);
+                                              existingConvId = shared?.[0]?.conversation_id || null;
+                                            }
+                                            if (!existingConvId) {
+                                              const { data: conv } = await supabase
+                                                .from("conversations")
+                                                .insert({ title: `Covoiturage — ${app.events?.title}` })
+                                                .select().single();
+                                              if (conv?.id) {
+                                                await supabase.from("conversation_members").insert([
+                                                  { conversation_id: conv.id, user_id: userId },
+                                                  { conversation_id: conv.id, user_id: c.driver_id },
+                                                ]);
+                                              }
+                                            }
+                                            router.push("/dashboard/messages");
+                                          }}
+                                          className="shrink-0 rounded-xl bg-[#FF5A1F]/10 px-3 py-2 text-xs font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20"
+                                        >
+                                          Contacter
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  !myCarpool && (
+                                    <p className="text-center text-xs text-zinc-400">Aucun trajet proposé pour l'instant.</p>
+                                  )
+                                )}
+                              </div>
+                            );
+                          })()}
 
                           {/* Sondage post-événement */}
                           {app.status === "accepted" && (() => {
