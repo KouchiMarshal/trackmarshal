@@ -43,6 +43,26 @@ function extractItemSource(item: string, fallback: string): string {
   return item.match(/<source[^>]*>([^<]+)<\/source>/)?.[1]?.trim() || fallback;
 }
 
+async function fetchOgImage(url: string): Promise<string | undefined> {
+  try {
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(4000),
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)" },
+      redirect: "follow",
+    });
+    if (!res.ok) return undefined;
+    const html = await res.text();
+    return (
+      html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)?.[1] ||
+      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i)?.[1] ||
+      html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)?.[1] ||
+      undefined
+    );
+  } catch {
+    return undefined;
+  }
+}
+
 async function fetchFeed(
   url: string,
   source: string,
@@ -163,8 +183,24 @@ export default async function ActualitesPage() {
     .filter((a) => !a.pubDate || new Date(a.pubDate).getTime() >= threeMonthsAgo)
     .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
-  const autoArticles = all.filter((a) => a.category === "auto" && isAutoSport(a));
-  const motoArticles = all.filter((a) => a.category === "moto" && isMotoSport(a));
+  const autoFiltered = all.filter((a) => a.category === "auto" && isAutoSport(a));
+  const motoFiltered = all.filter((a) => a.category === "moto" && isMotoSport(a));
+
+  // Enrich articles missing images with og:image (server-side, cached 1h)
+  async function enrichImages(articles: Article[]): Promise<Article[]> {
+    return Promise.all(
+      articles.map(async (a) => {
+        if (a.image) return a;
+        const img = await fetchOgImage(a.link);
+        return img ? { ...a, image: img } : a;
+      })
+    );
+  }
+
+  const [autoArticles, motoArticles] = await Promise.all([
+    enrichImages(autoFiltered),
+    enrichImages(motoFiltered),
+  ]);
 
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
