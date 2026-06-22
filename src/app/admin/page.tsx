@@ -21,24 +21,27 @@ export default function AdminDashboardPage() {
       const now = new Date();
       const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1).toISOString();
 
-      const [marshals, organizers, eventsRes, monthlyRes] = await Promise.all([
-        supabase.from("profiles").select("license_url, license_verified, license_type, asa").eq("role", "marshal"),
+      const [marshals, licensesRes, organizers, eventsRes, monthlyRes] = await Promise.all([
+        supabase.from("profiles").select("id").eq("role", "marshal"),
+        supabase.from("licenses").select("user_id, type, asa, url, verified"),
         supabase.from("profiles").select("organizer_verified").eq("role", "organizer"),
         supabase.from("events").select("organizer_id, discipline"),
         supabase.from("profiles").select("created_at").eq("role", "marshal").gte("created_at", twelveMonthsAgo),
       ]);
 
       // --- Commissaires ---
-      const data = marshals.data || [];
-      const total = data.length;
-      const pending = data.filter((p) => p.license_url && !p.license_verified).length;
-      const verified = data.filter((p) => p.license_verified).length;
-      const noLicense = data.filter((p) => !p.license_url).length;
+      const marshalData = marshals.data || [];
+      const licensesData = licensesRes.data || [];
+      const total = marshalData.length;
+      const pending = licensesData.filter((l) => l.url && !l.verified).length;
+      const verified = licensesData.filter((l) => l.verified).length;
+      const marshalIdsWithLicense = new Set(licensesData.map((l) => l.user_id));
+      const noLicense = marshalData.filter((p) => !marshalIdsWithLicense.has(p.id)).length;
       setStats({ total, pending, verified, noLicense });
 
       const ltMap: Record<string, number> = {};
-      data.forEach((p) => {
-        const t = p.license_type || "Non renseigné";
+      licensesData.forEach((l) => {
+        const t = l.type || "Non renseigné";
         ltMap[t] = (ltMap[t] || 0) + 1;
       });
       setLicenseStats(
@@ -46,8 +49,8 @@ export default function AdminDashboardPage() {
       );
 
       const asaMap: Record<string, number> = {};
-      data.forEach((p) => {
-        if (p.asa) { const a = p.asa.trim(); asaMap[a] = (asaMap[a] || 0) + 1; }
+      licensesData.forEach((l) => {
+        if (l.asa) { const a = l.asa.trim(); asaMap[a] = (asaMap[a] || 0) + 1; }
       });
       setAsaStats(
         Object.entries(asaMap).map(([asa, count]) => ({ asa, count })).sort((a, b) => b.count - a.count).slice(0, 15)
