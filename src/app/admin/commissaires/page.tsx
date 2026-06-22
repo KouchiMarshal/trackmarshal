@@ -8,6 +8,7 @@ import { CheckCircle2, Clock3, ChevronRight, Search, X } from "lucide-react";
 
 export default function AdminCommissairesPage() {
   const [commissaires, setCommissaires] = useState<any[]>([]);
+  const [licensesByUser, setLicensesByUser] = useState<Map<string, any[]>>(new Map());
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [urlFilter, setUrlFilter] = useState<{ type: string; value: string } | null>(null);
@@ -23,23 +24,43 @@ export default function AdminCommissairesPage() {
     async function load() {
       const { data } = await supabase
         .from("profiles")
-        .select("id, full_name, email, avatar_url, city, country, license_type, license_number, asa, license_verified, license_url, years_experience, created_at")
+        .select("id, full_name, email, avatar_url, city, country, years_experience, created_at")
         .eq("role", "marshal")
         .order("created_at", { ascending: false });
 
-      setCommissaires(data || []);
+      const profiles = data || [];
+      setCommissaires(profiles);
+
+      if (profiles.length > 0) {
+        const ids = profiles.map((p: any) => p.id);
+        const { data: licsData } = await supabase
+          .from("licenses")
+          .select("user_id, type, category, verified")
+          .in("user_id", ids);
+
+        const map = new Map<string, any[]>();
+        for (const lic of licsData || []) {
+          if (!map.has(lic.user_id)) map.set(lic.user_id, []);
+          map.get(lic.user_id)!.push(lic);
+        }
+        setLicensesByUser(map);
+      }
+
       setLoading(false);
     }
     load();
   }, []);
 
   const filtered = commissaires.filter((c) => {
+    const lics = licensesByUser.get(c.id) || [];
     if (urlFilter) {
       if (urlFilter.type === "license_type") {
-        return urlFilter.value === "Non renseigné" ? !c.license_type : c.license_type === urlFilter.value;
+        return urlFilter.value === "Non renseigné"
+          ? lics.length === 0
+          : lics.some((l: any) => l.type === urlFilter.value);
       }
       if (urlFilter.type === "asa") {
-        return c.asa === urlFilter.value;
+        return lics.some((l: any) => l.asa === urlFilter.value);
       }
     }
     if (!search.trim()) return true;
@@ -47,9 +68,10 @@ export default function AdminCommissairesPage() {
     return (
       c.full_name?.toLowerCase().includes(q) ||
       c.email?.toLowerCase().includes(q) ||
-      c.license_number?.toLowerCase().includes(q) ||
-      c.license_type?.toLowerCase().includes(q) ||
-      c.asa?.toLowerCase().includes(q)
+      lics.some((l: any) =>
+        l.type?.toLowerCase().includes(q) ||
+        l.category?.toLowerCase().includes(q)
+      )
     );
   });
 
@@ -120,14 +142,33 @@ export default function AdminCommissairesPage() {
               </div>
 
               <div className="flex flex-wrap items-center gap-3 sm:shrink-0 sm:ml-auto">
-                {c.license_type && (
-                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs">
-                    <p className="text-zinc-500">Licence</p>
-                    <p className="font-bold text-[#FF5A1F]">{c.license_type}</p>
-                    {c.license_number && <p className="text-zinc-600">N° {c.license_number}</p>}
-                    {c.asa && <p className="mt-0.5 text-zinc-500">{c.asa}</p>}
-                  </div>
-                )}
+                {(() => {
+                  const lics = licensesByUser.get(c.id) || [];
+                  if (lics.length === 0) {
+                    return (
+                      <span className="rounded-full bg-zinc-100 px-3 py-1.5 text-xs text-zinc-600">
+                        Pas de licence
+                      </span>
+                    );
+                  }
+                  return lics.map((lic: any, i: number) => (
+                    <div key={i} className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs">
+                      <p className="font-bold text-[#FF5A1F]">{lic.type}</p>
+                      {lic.category && (
+                        <p className="text-zinc-500">{lic.category === "moto" ? "FFM" : "FFSA"}</p>
+                      )}
+                      {lic.verified ? (
+                        <span className="mt-1 flex items-center gap-1 font-bold text-green-700">
+                          <CheckCircle2 size={10} /> Validée
+                        </span>
+                      ) : (
+                        <span className="mt-1 flex items-center gap-1 font-bold text-yellow-700">
+                          <Clock3 size={10} /> En attente
+                        </span>
+                      )}
+                    </div>
+                  ));
+                })()}
 
                 {c.years_experience && (
                   <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-center">
@@ -136,24 +177,6 @@ export default function AdminCommissairesPage() {
                   </div>
                 )}
 
-                {c.license_url ? (
-                  c.license_verified ? (
-                    <span className="flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1.5 text-xs font-bold text-green-700">
-                      <CheckCircle2 size={12} /> Validée
-                    </span>
-                  ) : (
-                    <Link
-                      href="/admin/licenses"
-                      className="flex items-center gap-1.5 rounded-full bg-yellow-100 px-3 py-1.5 text-xs font-bold text-yellow-700 transition hover:bg-yellow-200"
-                    >
-                      <Clock3 size={12} /> À valider
-                    </Link>
-                  )
-                ) : (
-                  <span className="rounded-full bg-zinc-100 px-3 py-1.5 text-xs text-zinc-600">
-                    Pas de licence
-                  </span>
-                )}
                 <ChevronRight size={18} className="shrink-0 text-zinc-400" />
               </div>
 

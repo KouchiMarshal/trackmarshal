@@ -24,6 +24,9 @@ export default function DashboardPage() {
   const [profile, setProfile] =
     useState<any>(null);
 
+  const [licenses, setLicenses] =
+    useState<any[]>([]);
+
   const [applications, setApplications] =
     useState<any[]>([]);
 
@@ -65,6 +68,13 @@ if (profileData?.role === "organizer" && !isAdmin) {
 }
 
 setProfile(profileData);
+
+    const { data: licensesData } = await supabase
+      .from("licenses")
+      .select("id, type, category, verified")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true });
+    setLicenses(licensesData || []);
 
     const { data: appsData } =
       await supabase
@@ -193,11 +203,20 @@ setProfile(profileData);
                     </div>
 
                     <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">
-                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Licence</p>
-                      <h2 className={`mt-6 text-3xl font-black ${profile?.license_verified ? "text-green-600" : "text-yellow-600"}`}>
-                        {profile?.license_verified ? "Vérifiée ✔" : "En attente"}
-                      </h2>
-                      {profile?.license_type && <p className="mt-2 text-xs text-zinc-500">{profile.license_type}</p>}
+                      <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Licences</p>
+                      {licenses.length === 0 ? (
+                        <h2 className="mt-6 text-2xl font-black text-zinc-400">Aucune</h2>
+                      ) : (
+                        <div className="mt-4 space-y-2">
+                          {licenses.map((l: any) => (
+                            <div key={l.id} className="flex items-center gap-2">
+                              <span className={`h-2 w-2 shrink-0 rounded-full ${l.verified ? "bg-green-500" : "bg-yellow-400"}`} />
+                              <p className="truncate text-xs font-semibold text-zinc-700">{l.type || (l.category === "moto" ? "FFM" : "FFSA")}</p>
+                              {l.verified && <span className="ml-auto shrink-0 text-[10px] font-bold text-green-600">✔</span>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
                     <div className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm lg:p-8">

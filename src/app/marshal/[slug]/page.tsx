@@ -65,6 +65,12 @@ export default async function MarshalPage({
     .eq("marshal_id", profile?.id)
     .order("created_at", { ascending: false });
 
+  const { data: licenses } = await supabase
+    .from("licenses")
+    .select("id, type, category, number, asa, url, verified")
+    .eq("user_id", profile?.id)
+    .order("created_at", { ascending: true });
+
   const avgRating = reviews && reviews.length > 0
     ? Math.round((reviews.reduce((s, r) => s + (r.rating || 0), 0) / reviews.length) * 10) / 10
     : null;
@@ -137,64 +143,34 @@ export default async function MarshalPage({
 
                   </p>
 
-                  {profile.license_type && (
-
-                    <div className="mt-6 rounded-3xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/10 p-5">
-
+                  {licenses && licenses.length > 0 && (
+                    <div className="mt-6 space-y-3">
                       <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
-
-                        Licence Motorsport
-
+                        Licence{licenses.length > 1 ? "s" : ""} Motorsport
                       </p>
-
-                      <p className="mt-3 text-xl font-black text-[#FF5A1F]">
-
-                        🏁 {profile.license_type}
-
-                      </p>
-
-                      {profile.asa && (
-                        <p className="mt-1 text-sm text-zinc-600">ASA : {profile.asa}</p>
-                      )}
-
-                      <div className="mt-4 flex flex-wrap gap-3">
-
-                        {profile.license_verified ? (
-
-                          <div className="rounded-full border border-green-200 bg-green-100 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-green-700">
-
-                            ✔ Licence Vérifiée
-
+                      {licenses.map((lic) => (
+                        <div key={lic.id} className="rounded-3xl border border-[#FF5A1F]/20 bg-[#FF5A1F]/10 p-5">
+                          <p className="text-base font-black text-[#FF5A1F]">🏁 {lic.type || "—"}</p>
+                          <p className="mt-0.5 text-xs font-semibold text-zinc-500 uppercase tracking-[0.1em]">
+                            {lic.category === "moto" ? "FFM (Moto)" : "FFSA (Auto)"}
+                          </p>
+                          {lic.number && <p className="mt-1 text-sm text-zinc-600">N° {lic.number}</p>}
+                          {lic.asa && <p className="text-sm text-zinc-600">ASA : {lic.asa}</p>}
+                          <div className="mt-3 flex flex-wrap items-center gap-2">
+                            {lic.verified ? (
+                              <span className="rounded-full border border-green-200 bg-green-100 px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-green-700">✔ Vérifiée</span>
+                            ) : (
+                              <span className="rounded-full border border-yellow-200 bg-yellow-100 px-3 py-1 text-xs font-black uppercase tracking-[0.1em] text-yellow-700">⏳ En attente</span>
+                            )}
+                            {lic.url && (
+                              <a href={lic.url} target="_blank" className="text-xs font-bold text-[#FF5A1F] underline underline-offset-2">
+                                📄 Voir
+                              </a>
+                            )}
                           </div>
-
-                        ) : (
-
-                          <div className="rounded-full border border-yellow-200 bg-yellow-100 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-yellow-700">
-
-                            ⏳ Vérification en attente
-
-                          </div>
-
-                        )}
-
-                      </div>
-
-                      {profile.license_url && (
-
-                        <a
-                          href={profile.license_url}
-                          target="_blank"
-                          className="mt-5 inline-flex rounded-2xl border border-zinc-300 bg-zinc-50 px-5 py-3 text-sm font-bold uppercase tracking-[0.15em] text-zinc-900 transition hover:border-[#FF5A1F]/40 hover:bg-[#FF5A1F]/10"
-                        >
-
-                          📄 Voir la licence
-
-                        </a>
-
-                      )}
-
+                        </div>
+                      ))}
                     </div>
-
                   )}
 
                   <a
