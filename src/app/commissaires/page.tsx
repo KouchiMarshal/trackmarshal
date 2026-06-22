@@ -14,6 +14,7 @@ const DISCIPLINES = [
 
 export default function AnnuaireCommissairesPage() {
   const [profiles, setProfiles] = useState<any[]>([]);
+  const [licensesByUser, setLicensesByUser] = useState<Map<string, any[]>>(new Map());
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [discipline, setDiscipline] = useState("");
@@ -22,10 +23,30 @@ export default function AnnuaireCommissairesPage() {
   useEffect(() => {
     supabase
       .from("profiles")
-      .select("id, full_name, slug, avatar_url, city, country, disciplines, years_experience, license_verified, license_verified_2, available, license_type, license_type_2")
+      .select("id, full_name, slug, avatar_url, city, country, disciplines, years_experience, available")
       .eq("role", "marshal")
       .order("full_name")
-      .then(({ data }) => { setProfiles(data || []); setLoading(false); });
+      .then(async ({ data }) => {
+        const profileList = data || [];
+        setProfiles(profileList);
+
+        if (profileList.length > 0) {
+          const ids = profileList.map((p: any) => p.id);
+          const { data: licsData } = await supabase
+            .from("licenses")
+            .select("user_id, category, verified")
+            .in("user_id", ids);
+
+          const map = new Map<string, any[]>();
+          for (const lic of licsData || []) {
+            if (!map.has(lic.user_id)) map.set(lic.user_id, []);
+            map.get(lic.user_id)!.push(lic);
+          }
+          setLicensesByUser(map);
+        }
+
+        setLoading(false);
+      });
   }, []);
 
   const filtered = profiles.filter((p) => {
@@ -143,12 +164,25 @@ export default function AnnuaireCommissairesPage() {
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-black text-zinc-900 group-hover:text-[#FF5A1F] transition">{profile.full_name}</h3>
                   <div className="flex shrink-0 items-center gap-1">
-                    {profile.license_verified && (
-                      <ShieldCheck size={16} className="text-green-600" title={`Licence ${profile.license_type?.startsWith("OFS") || profile.license_type?.startsWith("OFF") ? "moto (FFM)" : "auto (FFSA)"} validée`} />
-                    )}
-                    {profile.license_verified_2 && (
-                      <ShieldCheck size={16} className="text-blue-600" title={`Licence ${profile.license_type_2?.startsWith("OFS") || profile.license_type_2?.startsWith("OFF") || profile.license_type_2?.startsWith("FFM") ? "moto (FFM)" : "auto (FFSA)"} validée`} />
-                    )}
+                    {(() => {
+                      const lics = licensesByUser.get(profile.id) || [];
+                      const hasVerifiedAuto = lics.some((l: any) => l.category === "auto" && l.verified);
+                      const hasVerifiedMoto = lics.some((l: any) => l.category === "moto" && l.verified);
+                      return (
+                        <>
+                          {hasVerifiedAuto && (
+                            <span title="Licence auto (FFSA) validée">
+                              <ShieldCheck size={16} className="text-green-600" />
+                            </span>
+                          )}
+                          {hasVerifiedMoto && (
+                            <span title="Licence moto (FFM) validée">
+                              <ShieldCheck size={16} className="text-blue-600" />
+                            </span>
+                          )}
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
 

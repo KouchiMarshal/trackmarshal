@@ -25,6 +25,7 @@ export default function HistoryPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
+  const [licenses, setLicenses] = useState<any[]>([]);
   const [participations, setParticipations] = useState<any[]>([]);
   const [selectedYear, setSelectedYear] = useState("all");
 
@@ -36,10 +37,17 @@ export default function HistoryPage() {
 
     const { data: profileData } = await supabase
       .from("profiles")
-      .select("full_name, license_type, license_number, asa, avatar_url")
+      .select("full_name, avatar_url")
       .eq("id", user.id)
       .single();
     setProfile(profileData);
+
+    const { data: licensesData } = await supabase
+      .from("licenses")
+      .select("id, type, category, number, asa, verified")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true });
+    setLicenses(licensesData || []);
 
     const { data: apps } = await supabase
       .from("applications")
@@ -100,16 +108,31 @@ export default function HistoryPage() {
 
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
-              {/* Licence + total */}
+              {/* Licences + total */}
               <div className="mb-6 flex flex-wrap items-center gap-4 rounded-[24px] border border-[#FF5A1F]/20 bg-[#FF5A1F]/5 p-5">
                 <Trophy size={24} className="text-[#FF5A1F] shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Licence</p>
-                  <p className="font-black text-[#FF5A1F] truncate">
-                    {profile?.license_type || "—"}
-                    {profile?.license_number ? ` · N° ${profile.license_number}` : ""}
-                    {profile?.asa ? ` — ${profile.asa}` : ""}
+                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 mb-1">
+                    Licence{licenses.length > 1 ? "s" : ""}
                   </p>
+                  {licenses.length === 0 ? (
+                    <p className="font-black text-zinc-400">—</p>
+                  ) : (
+                    <div className="space-y-0.5">
+                      {licenses.map((lic) => (
+                        <p key={lic.id} className="font-black text-[#FF5A1F] truncate">
+                          {lic.type}
+                          {lic.category && (
+                            <span className="ml-1 text-sm font-bold text-zinc-500">
+                              ({lic.category === "moto" ? "FFM" : "FFSA"})
+                            </span>
+                          )}
+                          {lic.number ? ` · N° ${lic.number}` : ""}
+                          {lic.asa ? ` — ${lic.asa}` : ""}
+                        </p>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Total</p>
