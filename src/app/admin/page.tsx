@@ -22,7 +22,7 @@ export default function AdminDashboardPage() {
       const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1).toISOString();
 
       const [marshals, licensesRes, organizers, eventsRes, monthlyRes] = await Promise.all([
-        supabase.from("profiles").select("id, license_url, license_verified").eq("role", "marshal"),
+        supabase.from("profiles").select("id, license_url, license_verified, license_url_2, license_verified_2").eq("role", "marshal"),
         supabase.from("licenses").select("user_id, type, asa, url, verified"),
         supabase.from("profiles").select("organizer_verified").eq("role", "organizer"),
         supabase.from("events").select("organizer_id, discipline"),
@@ -35,12 +35,16 @@ export default function AdminDashboardPage() {
       const total = marshalData.length;
       const marshalIdsWithLicense = new Set(licensesData.map((l) => l.user_id));
       // Marshals still on old system only (no entry in new licenses table)
-      const oldOnlyMarshals = marshalData.filter((p: any) => !marshalIdsWithLicense.has(p.id) && p.license_url);
+      const oldOnlyMarshals = marshalData.filter((p: any) =>
+        !marshalIdsWithLicense.has(p.id) && (p.license_url || p.license_url_2)
+      );
       const pending = licensesData.filter((l) => l.url && !l.verified).length
-        + oldOnlyMarshals.filter((p: any) => !p.license_verified).length;
+        + oldOnlyMarshals.filter((p: any) => (!p.license_url || !p.license_verified) && (!p.license_url_2 || !p.license_verified_2)).length;
       const verified = licensesData.filter((l) => l.verified).length
-        + oldOnlyMarshals.filter((p: any) => p.license_verified).length;
-      const noLicense = marshalData.filter((p: any) => !marshalIdsWithLicense.has(p.id) && !p.license_url).length;
+        + oldOnlyMarshals.filter((p: any) => p.license_verified || p.license_verified_2).length;
+      const noLicense = marshalData.filter((p: any) =>
+        !marshalIdsWithLicense.has(p.id) && !p.license_url && !p.license_url_2
+      ).length;
       setStats({ total, pending, verified, noLicense });
 
       const ltMap: Record<string, number> = {};
