@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
+const ADMIN_EMAILS = [
+  "foussardk@gmail.com",
+  ...(process.env.NEXT_PUBLIC_ADMIN_EMAIL ? [process.env.NEXT_PUBLIC_ADMIN_EMAIL] : []),
+];
+
 async function getUser(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
   if (!authHeader?.startsWith("Bearer ")) return null;
@@ -75,9 +80,11 @@ export async function PATCH(req: NextRequest) {
   const { id, type, category, number, asa } = body;
   if (!id) return NextResponse.json({ error: "id manquant" }, { status: 400 });
 
+  const isAdmin = ADMIN_EMAILS.includes(user.email || "") || user.user_metadata?.role === "admin";
+
   const { data, error } = await supabaseAdmin
     .from("licenses")
-    .update({ type, category, number, asa, verified: false })
+    .update({ type, category, number, asa, ...(isAdmin ? {} : { verified: false }) })
     .eq("id", id)
     .eq("user_id", user.id)
     .select()
