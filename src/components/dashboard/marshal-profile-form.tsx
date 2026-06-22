@@ -16,6 +16,52 @@ import {
 
 import { supabase } from "@/lib/supabase";
 
+// ─── License type lists ───────────────────────────────────────────────────────
+
+const FFSA_LICENSES = [
+  // Commissaires de course (piste)
+  "ENCOC – Commissaire Nationale C",
+  "EICOB – Commissaire Internationale B",
+  "EICOACPR – Commissaire Internationale A (Chef de Poste Route)",
+  "EICOACPC – Commissaire Internationale A (Chef de Poste Circuit)",
+  // Commissaires sportifs
+  "ENCSST – Commissaire Sportif Nationale Stagiaire",
+  "ENCSCK – Commissaire Sportif grade C Karting",
+  "ENCSK – Commissaire Sportif Nationale Karting",
+  "EICSK – Commissaire Sportif Internationale Karting",
+  "EICS – Commissaire Sportif Internationale Auto",
+  // Directeurs de course
+  "ENDCST – Directeur de Course Nationale Stagiaire",
+  // Juges Drift
+  "ENJDRST – Juge Drift Nationale Stagiaire",
+  "ENJDR – Juge Drift Nationale",
+  // Dirigeants
+  "ENDIRIG – Dirigeant National",
+  "EIDIRIG – Dirigeant International",
+];
+
+const FFM_LICENSES = [
+  // Officiels
+  "OFS – Officiel Stagiaire",
+  "OFF – Directeur de Course",
+  "OFF – Arbitre",
+  "OFF – Commissaire Sportif",
+  "OFF – Commissaire Technique",
+  "OFF – Commissaire de Piste",
+  "OFF – Commissaire de Zone (Trial)",
+  "OFF – Chronométreur",
+  // Encadrants / Dirigeants
+  "DRG – Dirigeant (sans qualification)",
+  "EDU – Éducateur",
+  // Autres
+  "MED – Corps médical",
+  "ASS – Assistant Pilote (Mécanicien / Panneauteur)",
+];
+
+function getLicenseOptions(category: string) {
+  return category === "moto" ? FFM_LICENSES : FFSA_LICENSES;
+}
+
 // ─── LicenseCard ─────────────────────────────────────────────────────────────
 
 type License = {
@@ -45,10 +91,13 @@ function LicenseCard({
 }) {
   const [local, setLocal] = useState<License>(license);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const knownTypes = getLicenseOptions(local.category);
+  const [customType, setCustomType] = useState(() => !!license.type && !getLicenseOptions(license.category).includes(license.type));
 
   // Sync if parent changes (e.g. after upload)
   useEffect(() => {
     setLocal(license);
+    setCustomType(!!license.type && !getLicenseOptions(license.category).includes(license.type));
   }, [license]);
 
   const isUploading = uploadingId === license.id;
@@ -97,29 +146,60 @@ function LicenseCard({
       <div className="grid gap-4 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-zinc-500">
-            Type de licence
-          </label>
-          <input
-            type="text"
-            value={local.type}
-            onChange={(e) => setLocal((p) => ({ ...p, type: e.target.value }))}
-            placeholder="Ex: FFSA Circuit, FFM Enduro, Licence club..."
-            className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-zinc-500">
             Fédération
           </label>
           <select
             value={local.category}
-            onChange={(e) => setLocal((p) => ({ ...p, category: e.target.value }))}
+            onChange={(e) => setLocal((p) => ({ ...p, category: e.target.value, type: "" }))}
             className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none focus:border-[#FF5A1F]"
           >
             <option value="auto">FFSA (Auto)</option>
             <option value="moto">FFM (Moto)</option>
           </select>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-zinc-500">
+            Intitulé de la licence
+          </label>
+          {!customType ? (
+            <select
+              value={local.type}
+              onChange={(e) => {
+                if (e.target.value === "__autre__") {
+                  setCustomType(true);
+                  setLocal((p) => ({ ...p, type: "" }));
+                } else {
+                  setLocal((p) => ({ ...p, type: e.target.value }));
+                }
+              }}
+              className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none focus:border-[#FF5A1F]"
+            >
+              <option value="">— Sélectionner —</option>
+              {knownTypes.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+              <option value="__autre__">Autre (saisie libre)...</option>
+            </select>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={local.type}
+                onChange={(e) => setLocal((p) => ({ ...p, type: e.target.value }))}
+                placeholder="Intitulé libre..."
+                autoFocus
+                className="h-12 flex-1 rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+              />
+              <button
+                type="button"
+                onClick={() => { setCustomType(false); setLocal((p) => ({ ...p, type: "" })); }}
+                className="h-12 rounded-xl border border-zinc-200 px-3 text-xs text-zinc-500 transition hover:text-zinc-900"
+              >
+                Liste
+              </button>
+            </div>
+          )}
         </div>
 
         <div>
@@ -386,7 +466,7 @@ export default function MarshalProfileForm() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.access_token}`,
       },
-      body: JSON.stringify(newForm),
+      body: JSON.stringify({ ...newForm, type: newForm.type === "__autre__" ? "" : newForm.type }),
     });
 
     if (res.ok) {
@@ -697,7 +777,7 @@ export default function MarshalProfileForm() {
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    onClick={() => setNewForm((p) => ({ ...p, category: "auto" }))}
+                    onClick={() => setNewForm((p) => ({ ...p, category: "auto", type: "" }))}
                     className={`flex h-14 flex-col items-center justify-center rounded-xl font-black transition ${
                       newForm.category === "auto"
                         ? "bg-[#FF5A1F] text-white shadow-md"
@@ -709,7 +789,7 @@ export default function MarshalProfileForm() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setNewForm((p) => ({ ...p, category: "moto" }))}
+                    onClick={() => setNewForm((p) => ({ ...p, category: "moto", type: "" }))}
                     className={`flex h-14 flex-col items-center justify-center rounded-xl font-black transition ${
                       newForm.category === "moto"
                         ? "bg-[#FF5A1F] text-white shadow-md"
@@ -727,14 +807,37 @@ export default function MarshalProfileForm() {
                   <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-zinc-500">
                     Intitulé de la licence
                   </label>
-                  <input
-                    type="text"
-                    value={newForm.type}
-                    onChange={(e) => setNewForm((p) => ({ ...p, type: e.target.value }))}
-                    placeholder="Ex: ENCOC, EICOB, OFS..."
-                    autoFocus
-                    className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
-                  />
+                  {newForm.type !== "__autre__" && getLicenseOptions(newForm.category).includes(newForm.type) || newForm.type === "" ? (
+                    <select
+                      value={newForm.type}
+                      onChange={(e) => setNewForm((p) => ({ ...p, type: e.target.value }))}
+                      className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none focus:border-[#FF5A1F]"
+                    >
+                      <option value="">— Sélectionner —</option>
+                      {getLicenseOptions(newForm.category).map((t) => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                      <option value="__autre__">Autre (saisie libre)...</option>
+                    </select>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={newForm.type === "__autre__" ? "" : newForm.type}
+                        onChange={(e) => setNewForm((p) => ({ ...p, type: e.target.value }))}
+                        placeholder="Intitulé libre..."
+                        autoFocus
+                        className="h-12 flex-1 rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setNewForm((p) => ({ ...p, type: "" }))}
+                        className="h-12 rounded-xl border border-zinc-200 px-3 text-xs text-zinc-500 transition hover:text-zinc-900"
+                      >
+                        Liste
+                      </button>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-zinc-500">
@@ -773,7 +876,7 @@ export default function MarshalProfileForm() {
                 <button
                   type="button"
                   onClick={createLicense}
-                  disabled={creatingLicense || !newForm.type.trim()}
+                  disabled={creatingLicense || !newForm.type.trim() || newForm.type === "__autre__"}
                   className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#FF5A1F] text-sm font-bold text-white transition hover:scale-[1.01] disabled:opacity-50"
                 >
                   {creatingLicense ? (
