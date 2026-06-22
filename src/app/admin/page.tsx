@@ -33,18 +33,22 @@ export default function AdminDashboardPage() {
       const marshalData = marshals.data || [];
       const licensesData = licensesRes.data || [];
       const total = marshalData.length;
-      const marshalIdsWithLicense = new Set(licensesData.map((l) => l.user_id));
-      // Marshals still on old system only (no entry in new licenses table)
+
+      // IDs of marshals who have at least one document uploaded anywhere
+      const idsWithDoc = new Set<string>([
+        ...licensesData.filter((l: any) => l.url).map((l: any) => l.user_id as string),
+        ...marshalData.filter((p: any) => p.license_url || p.license_url_2).map((p: any) => p.id as string),
+      ]);
+
+      const marshalIdsWithLicense = new Set(licensesData.map((l: any) => l.user_id));
       const oldOnlyMarshals = marshalData.filter((p: any) =>
         !marshalIdsWithLicense.has(p.id) && (p.license_url || p.license_url_2)
       );
-      const pending = licensesData.filter((l) => l.url && !l.verified).length
+      const pending = licensesData.filter((l: any) => l.url && !l.verified).length
         + oldOnlyMarshals.filter((p: any) => (!p.license_url || !p.license_verified) && (!p.license_url_2 || !p.license_verified_2)).length;
-      const verified = licensesData.filter((l) => l.verified).length
+      const verified = licensesData.filter((l: any) => l.verified).length
         + oldOnlyMarshals.filter((p: any) => p.license_verified || p.license_verified_2).length;
-      const noLicense = marshalData.filter((p: any) =>
-        !marshalIdsWithLicense.has(p.id) && !p.license_url && !p.license_url_2
-      ).length;
+      const noLicense = marshalData.filter((p: any) => !idsWithDoc.has(p.id)).length;
       setStats({ total, pending, verified, noLicense });
 
       const ltMap: Record<string, number> = {};
