@@ -77,7 +77,7 @@ export async function PATCH(req: NextRequest) {
 
   const { data, error } = await supabaseAdmin
     .from("licenses")
-    .update({ type, category, number, asa })
+    .update({ type, category, number, asa, verified: false })
     .eq("id", id)
     .eq("user_id", user.id)
     .select()
