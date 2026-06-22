@@ -175,8 +175,8 @@ export default function AdminLicensesPage() {
                       <p className="mt-1 font-bold text-[#FF5A1F]">{lic.type || "—"}</p>
                     </div>
                     <div className="min-w-[100px] rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
-                      <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-500">Catégorie</p>
-                      <p className="mt-1 font-bold text-zinc-900 capitalize">{lic.category}</p>
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-500">Fédération</p>
+                      <p className="mt-1 font-bold text-zinc-900">{lic.category === "moto" ? "FFM" : "FFSA"}</p>
                     </div>
                     {lic.number && (
                       <div className="min-w-[120px] rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">

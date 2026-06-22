@@ -110,15 +110,15 @@ function LicenseCard({
 
         <div>
           <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-zinc-500">
-            Catégorie
+            Fédération
           </label>
           <select
             value={local.category}
             onChange={(e) => setLocal((p) => ({ ...p, category: e.target.value }))}
             className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none focus:border-[#FF5A1F]"
           >
-            <option value="auto">Auto</option>
-            <option value="moto">Moto</option>
+            <option value="auto">FFSA (Auto)</option>
+            <option value="moto">FFM (Moto)</option>
           </select>
         </div>
 
