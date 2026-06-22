@@ -22,6 +22,26 @@ async function getAdminUser(req: NextRequest) {
   return user;
 }
 
+export async function PATCH(req: NextRequest) {
+  const adminUser = await getAdminUser(req);
+  if (!adminUser) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+
+  const body = await req.json();
+  const { licenseId, type, category, number, asa } = body;
+  if (!licenseId) return NextResponse.json({ error: "licenseId manquant" }, { status: 400 });
+
+  const { data, error } = await supabaseAdmin
+    .from("licenses")
+    .update({ type, category, number, asa })
+    .eq("id", licenseId)
+    .select()
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  return NextResponse.json({ license: data });
+}
+
 export async function POST(req: NextRequest) {
   const adminUser = await getAdminUser(req);
   if (!adminUser) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });

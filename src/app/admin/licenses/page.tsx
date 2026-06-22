@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { CheckCircle2, ExternalLink, XCircle } from "lucide-react";
+import { CheckCircle2, ExternalLink, Pencil, Save, X, XCircle } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
 type LicenseRow = {
@@ -22,12 +22,17 @@ type LicenseRow = {
   } | null;
 };
 
+type EditForm = { type: string; category: string; number: string; asa: string };
+
 export default function AdminLicensesPage() {
   const [licenses, setLicenses] = useState<LicenseRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "verified" | "all">("pending");
   const [toast, setToast] = useState<ToastData>(null);
   const [actingId, setActingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<EditForm>({ type: "", category: "auto", number: "", asa: "" });
+  const [savingEdit, setSavingEdit] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -72,6 +77,40 @@ export default function AdminLicensesPage() {
       setLicenses((prev) => prev.filter((l) => l.id !== licenseId));
       setToast({ message: "Licence rejetée et supprimée.", type: "error" });
     }
+  }
+
+  function startEdit(lic: LicenseRow) {
+    setEditingId(lic.id);
+    setEditForm({ type: lic.type || "", category: lic.category || "auto", number: lic.number || "", asa: lic.asa || "" });
+  }
+
+  async function saveEdit(licenseId: string) {
+    setSavingEdit(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { setSavingEdit(false); return; }
+
+    const res = await fetch("/api/admin/licenses", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ licenseId, ...editForm }),
+    });
+
+    const json = await res.json();
+    setSavingEdit(false);
+
+    if (!res.ok) {
+      setToast({ message: json.error || "Erreur lors de la modification.", type: "error" });
+      return;
+    }
+
+    setLicenses((prev) =>
+      prev.map((l) => l.id === licenseId ? { ...l, ...editForm } : l)
+    );
+    setEditingId(null);
+    setToast({ message: "Licence modifiée.", type: "success" });
   }
 
   const withDoc = licenses.filter((l) => !!l.url);
@@ -148,6 +187,7 @@ export default function AdminLicensesPage() {
           {filtered.map((lic) => {
             const profile = lic.profiles;
             const isActing = actingId === lic.id;
+            const isEditing = editingId === lic.id;
             return (
               <div key={lic.id} className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-sm">
                 <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center lg:p-8">
@@ -212,10 +252,22 @@ export default function AdminLicensesPage() {
 
                     <div className="flex gap-2">
                       <button
-                        onClick={() => act(lic.id, "verify")}
-                        disabled={lic.verified || isActing}
+                        onClick={() => isEditing ? setEditingId(null) : startEdit(lic)}
+                        disabled={isActing}
                         className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
-                          lic.verified || isActing
+                          isActing ? "cursor-not-allowed bg-zinc-100 text-zinc-400" :
+                          isEditing ? "border border-zinc-200 bg-zinc-100 text-zinc-700 hover:scale-105" :
+                          "border border-zinc-200 bg-white text-zinc-700 hover:scale-105"
+                        }`}
+                      >
+                        {isEditing ? <X size={15} /> : <Pencil size={15} />}
+                        {isEditing ? "Annuler" : "Modifier"}
+                      </button>
+                      <button
+                        onClick={() => act(lic.id, "verify")}
+                        disabled={lic.verified || isActing || isEditing}
+                        className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
+                          lic.verified || isActing || isEditing
                             ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
                             : "bg-green-600 text-white hover:scale-105"
                         }`}
@@ -225,9 +277,9 @@ export default function AdminLicensesPage() {
                       </button>
                       <button
                         onClick={() => act(lic.id, "reject")}
-                        disabled={isActing}
+                        disabled={isActing || isEditing}
                         className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
-                          isActing ? "cursor-not-allowed bg-zinc-100 text-zinc-400" : "bg-red-600 text-white hover:scale-105"
+                          isActing || isEditing ? "cursor-not-allowed bg-zinc-100 text-zinc-400" : "bg-red-600 text-white hover:scale-105"
                         }`}
                       >
                         <XCircle size={15} />
@@ -237,6 +289,67 @@ export default function AdminLicensesPage() {
                   </div>
 
                 </div>
+
+                {/* Inline edit form */}
+                {isEditing && (
+                  <div className="border-t border-zinc-100 bg-zinc-50 p-6 lg:p-8">
+                    <p className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Modifier la licence</p>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-zinc-600">Fédération</label>
+                        <select
+                          value={editForm.category}
+                          onChange={(e) => setEditForm((f) => ({ ...f, category: e.target.value }))}
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm font-semibold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/40"
+                        >
+                          <option value="auto">FFSA (Auto)</option>
+                          <option value="moto">FFM (Moto)</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-zinc-600">Type de licence</label>
+                        <input
+                          type="text"
+                          value={editForm.type}
+                          onChange={(e) => setEditForm((f) => ({ ...f, type: e.target.value }))}
+                          placeholder="ex. ENCOC, EICOB…"
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/40"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-zinc-600">Numéro</label>
+                        <input
+                          type="text"
+                          value={editForm.number}
+                          onChange={(e) => setEditForm((f) => ({ ...f, number: e.target.value }))}
+                          placeholder="N° de licence"
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/40"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1.5 block text-xs font-semibold text-zinc-600">ASA</label>
+                        <input
+                          type="text"
+                          value={editForm.asa}
+                          onChange={(e) => setEditForm((f) => ({ ...f, asa: e.target.value }))}
+                          placeholder="ASA rattachée"
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/40"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={() => saveEdit(lic.id)}
+                        disabled={savingEdit}
+                        className="flex items-center gap-2 rounded-xl bg-[#FF5A1F] px-6 py-2.5 text-sm font-bold text-white transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <Save size={15} />
+                        {savingEdit ? "Enregistrement…" : "Enregistrer"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
               </div>
             );
           })}
