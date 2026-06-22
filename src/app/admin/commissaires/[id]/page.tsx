@@ -52,6 +52,7 @@ export default function AdminCommissaireProfilePage() {
   const [asaSaving, setAsaSaving] = useState(false);
   const [asa2Edit, setAsa2Edit] = useState("");
   const [asa2Saving, setAsa2Saving] = useState(false);
+  const [userLicenses, setUserLicenses] = useState<any[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -61,6 +62,13 @@ export default function AdminCommissaireProfilePage() {
       .eq("id", id)
       .single()
       .then(({ data }) => { setProfile(data); setAsaEdit(data?.asa || ""); setAsa2Edit(data?.asa_2 || ""); setLoading(false); });
+
+    supabase
+      .from("licenses")
+      .select("*")
+      .eq("user_id", id)
+      .order("created_at", { ascending: true })
+      .then(({ data }) => setUserLicenses(data || []));
   }, [id]);
 
   async function saveAsa() {
@@ -361,6 +369,58 @@ export default function AdminCommissaireProfilePage() {
                 <div className="mt-4 flex flex-wrap gap-2">
                   {profile.badges.map((badge: string) => (
                     <span key={badge} className="rounded-full border border-zinc-200 bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-700">{badge}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Licences (new system) */}
+            {userLicenses.length > 0 && (
+              <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
+                <p className="mb-5 text-xs uppercase tracking-[0.2em] text-zinc-500">Licences</p>
+                <div className="space-y-3">
+                  {userLicenses.map((lic: any) => (
+                    <div key={lic.id} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-bold text-[#FF5A1F]">{lic.type || "—"}</span>
+                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
+                              lic.category === "moto"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-orange-100 text-orange-700"
+                            }`}>
+                              {lic.category}
+                            </span>
+                          </div>
+                          {lic.number && (
+                            <p className="mt-1 text-sm text-zinc-700">N° {lic.number}</p>
+                          )}
+                          {lic.asa && (
+                            <p className="mt-0.5 text-xs text-zinc-500">ASA : {lic.asa}</p>
+                          )}
+                          {lic.url && (
+                            <a
+                              href={lic.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[#FF5A1F] underline underline-offset-2"
+                            >
+                              <ExternalLink size={12} /> Voir le document
+                            </a>
+                          )}
+                        </div>
+                        <span className={`shrink-0 rounded-full px-3 py-1 text-[10px] font-bold uppercase ${
+                          lic.verified
+                            ? "bg-green-100 text-green-700"
+                            : lic.url
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-zinc-100 text-zinc-500"
+                        }`}>
+                          {lic.verified ? "Validée" : lic.url ? "En attente" : "Sans doc"}
+                        </span>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>

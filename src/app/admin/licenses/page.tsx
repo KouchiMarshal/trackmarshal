@@ -2,176 +2,89 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { CheckCircle2, ExternalLink, Pencil, XCircle } from "lucide-react";
+import { CheckCircle2, ExternalLink, XCircle } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
-import { sendEmail } from "@/lib/sendEmail";
 
-const LICENSE_TYPES_FFSA = [
-  "ENCOC - Commissaire C",
-  "EICOB - Commissaire international B",
-  "EICOACPC - CHEF DE POSTE CIRCUIT",
-  "EICOACPR - CHEF DE POSTE ROUTE",
-];
-
-const LICENSE_TYPES_FFM = [
-  "OFS - Officiel Stagiaire",
-  "OFF - Officiel",
-];
+type LicenseRow = {
+  id: string;
+  user_id: string;
+  type: string;
+  category: string;
+  number: string;
+  asa: string;
+  url: string;
+  verified: boolean;
+  created_at: string;
+  profiles: {
+    full_name: string | null;
+    email: string | null;
+    avatar_url: string | null;
+  } | null;
+};
 
 export default function AdminLicensesPage() {
-  const [commissaires, setCommissaires] = useState<any[]>([]);
+  const [licenses, setLicenses] = useState<LicenseRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "verified" | "all">("pending");
   const [toast, setToast] = useState<ToastData>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({ license_type: "", license_number: "", note: "" });
-  const [saving, setSaving] = useState(false);
+  const [actingId, setActingId] = useState<string | null>(null);
 
   useEffect(() => { load(); }, []);
 
   async function load() {
-    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "foussardk@gmail.com";
     const { data } = await supabase
-      .from("profiles")
-      .select("id, full_name, email, avatar_url, license_type, license_number, license_url, license_verified, license_type_2, license_number_2, license_url_2, license_verified_2, asa, created_at")
-      .or(`role.eq.marshal,email.eq.${adminEmail}`)
-      .not("license_url", "is", null)
+      .from("licenses")
+      .select("*, profiles(full_name, email, avatar_url)")
       .order("created_at", { ascending: false });
 
-    setCommissaires(data || []);
+    setLicenses((data as LicenseRow[]) || []);
     setLoading(false);
   }
 
-  async function validate2(id: string, verified: boolean) {
-    await supabase.from("profiles").update({ license_verified_2: verified }).eq("id", id);
+  async function act(licenseId: string, action: "verify" | "reject") {
+    setActingId(licenseId);
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { setActingId(null); return; }
 
-    await supabase.from("notifications").insert({
-      user_id: id,
-      title: verified ? "Votre 2ème licence a été validée ✔" : "Votre 2ème licence n'a pas pu être validée",
-      type: verified ? "license_verified" : "license_rejected",
-      link: "/dashboard/profile",
+    const res = await fetch("/api/admin/licenses", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ licenseId, action }),
     });
 
-    const commissaire = commissaires.find((c) => c.id === id);
-    if (commissaire?.email) {
-      sendEmail(commissaire.email, verified ? "license_validated" : "license_rejected", {
-        licenseType: commissaire.license_type_2,
-      });
+    const json = await res.json();
+    setActingId(null);
+
+    if (!res.ok) {
+      setToast({ message: json.error || "Erreur serveur.", type: "error" });
+      return;
     }
 
-    setToast({ message: verified ? "2ème licence validée." : "2ème licence rejetée.", type: verified ? "success" : "error" });
-    if (verified) {
-      setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_verified_2: true } : c));
+    if (action === "verify") {
+      setLicenses((prev) =>
+        prev.map((l) => l.id === licenseId ? { ...l, verified: true } : l)
+      );
+      setToast({ message: "Licence validée.", type: "success" });
     } else {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        await fetch("/api/admin/delete-license", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-          body: JSON.stringify({ targetUserId: id, licenseField: "2" }),
-        });
-      }
-      setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_url_2: null, license_type_2: null, license_number_2: null, license_verified_2: false } : c));
+      setLicenses((prev) => prev.filter((l) => l.id !== licenseId));
+      setToast({ message: "Licence rejetée et supprimée.", type: "error" });
     }
   }
 
-  async function validate(id: string, verified: boolean) {
-    await supabase.from("profiles").update({ license_verified: verified }).eq("id", id);
-
-    await supabase.from("notifications").insert({
-      user_id: id,
-      title: verified
-        ? "Votre licence a été validée ✔"
-        : "Votre licence n'a pas pu être validée",
-      type: verified ? "license_verified" : "license_rejected",
-      link: "/dashboard/profile",
-    });
-
-    const commissaire = commissaires.find((c) => c.id === id);
-    if (commissaire?.email) {
-      sendEmail(commissaire.email, verified ? "license_validated" : "license_rejected", {
-        licenseType: commissaire.license_type,
-      });
-    }
-
-    setToast({
-      message: verified ? "Licence validée." : "Licence rejetée.",
-      type: verified ? "success" : "error",
-    });
-
-    if (verified) {
-      setCommissaires((prev) => prev.map((c) => c.id === id ? { ...c, license_verified: true } : c));
-    } else {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        await fetch("/api/admin/delete-license", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
-          body: JSON.stringify({ targetUserId: id, licenseField: "1" }),
-        });
-      }
-      setCommissaires((prev) => prev.filter((c) => c.id !== id));
-    }
-  }
-
-  function startEdit(c: any) {
-    setEditingId(c.id);
-    setEditForm({ license_type: c.license_type || "", license_number: c.license_number || "", note: "" });
-  }
-
-  async function saveEdit(c: any) {
-    if (saving) return;
-    setSaving(true);
-
-    await supabase
-      .from("profiles")
-      .update({ license_type: editForm.license_type, license_number: editForm.license_number })
-      .eq("id", c.id);
-
-    if (editForm.note.trim()) {
-      await supabase.from("notifications").insert({
-        user_id: c.id,
-        title: `Votre licence a été corrigée par l'admin`,
-        body: editForm.note.trim(),
-        type: "license_updated",
-        link: "/dashboard/profile",
-      });
-
-      if (c.email) {
-        sendEmail(c.email, "license_updated", {
-          note: editForm.note.trim(),
-          licenseType: editForm.license_type,
-          licenseNumber: editForm.license_number,
-        });
-      }
-    }
-
-    setCommissaires((prev) =>
-      prev.map((x) =>
-        x.id === c.id
-          ? { ...x, license_type: editForm.license_type, license_number: editForm.license_number }
-          : x
-      )
-    );
-
-    setEditingId(null);
-    setSaving(false);
-    setToast({ message: "Licence mise à jour.", type: "success" });
-  }
-
-  const hasPending = (c: any) =>
-    !c.license_verified || (c.license_url_2 && !c.license_verified_2);
-
-  const filtered = commissaires.filter((c) => {
-    if (filter === "pending") return hasPending(c);
-    if (filter === "verified") return c.license_verified && (!c.license_url_2 || c.license_verified_2);
+  const withDoc = licenses.filter((l) => !!l.url);
+  const filtered = withDoc.filter((l) => {
+    if (filter === "pending") return !l.verified;
+    if (filter === "verified") return l.verified;
     return true;
   });
 
   const counts = {
-    all: commissaires.length,
-    pending: commissaires.filter(hasPending).length,
-    verified: commissaires.filter((c) => c.license_verified && (!c.license_url_2 || c.license_verified_2)).length,
+    all: withDoc.length,
+    pending: withDoc.filter((l) => !l.verified).length,
+    verified: withDoc.filter((l) => l.verified).length,
   };
 
   return (
@@ -199,25 +112,25 @@ export default function AdminLicensesPage() {
 
       <div className="mx-auto max-w-[1400px] p-6 pb-24 lg:p-10 lg:pb-10">
 
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap gap-3">
-            {([
-              { key: "pending", label: "En attente", count: counts.pending, activeClass: "bg-yellow-500 text-white" },
-              { key: "verified", label: "Validées", count: counts.verified, activeClass: "bg-green-600 text-white" },
-              { key: "all", label: "Toutes", count: counts.all, activeClass: "bg-[#FF5A1F] text-white" },
-            ] as const).map((f) => (
-              <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                className={`flex items-center gap-2 rounded-2xl px-5 py-3 font-bold transition ${
-                  filter === f.key ? f.activeClass : "border border-zinc-200 bg-white text-zinc-600 hover:text-zinc-900"
-                }`}
-              >
-                {f.label}
-                <span className={`rounded-full px-2 py-0.5 text-xs ${filter === f.key ? "bg-white/20" : "bg-zinc-100 text-zinc-600"}`}>{f.count}</span>
-              </button>
-            ))}
-          </div>
+        <div className="mb-8 flex flex-wrap gap-3">
+          {([
+            { key: "pending", label: "En attente", count: counts.pending, cls: "bg-yellow-500 text-white" },
+            { key: "verified", label: "Validées", count: counts.verified, cls: "bg-green-600 text-white" },
+            { key: "all", label: "Toutes", count: counts.all, cls: "bg-[#FF5A1F] text-white" },
+          ] as const).map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className={`flex items-center gap-2 rounded-2xl px-5 py-3 font-bold transition ${
+                filter === f.key ? f.cls : "border border-zinc-200 bg-white text-zinc-600 hover:text-zinc-900"
+              }`}
+            >
+              {f.label}
+              <span className={`rounded-full px-2 py-0.5 text-xs ${filter === f.key ? "bg-white/20" : "bg-zinc-100 text-zinc-600"}`}>
+                {f.count}
+              </span>
+            </button>
+          ))}
         </div>
 
         {loading && <p className="py-20 text-center text-zinc-500">Chargement...</p>}
@@ -228,198 +141,105 @@ export default function AdminLicensesPage() {
             <h2 className="mt-6 text-2xl font-black text-zinc-900">
               {filter === "pending" ? "Aucune licence en attente" : "Aucun résultat"}
             </h2>
-            <p className="mt-3 text-zinc-500">
-              {filter === "pending" ? "Toutes les licences ont été traitées." : ""}
-            </p>
           </div>
         )}
 
         <div className="space-y-5">
-          {filtered.map((c) => (
-            <div key={c.id} className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-sm">
-              <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-start lg:p-8">
+          {filtered.map((lic) => {
+            const profile = lic.profiles;
+            const isActing = actingId === lic.id;
+            return (
+              <div key={lic.id} className="overflow-hidden rounded-[28px] border border-zinc-200 bg-white shadow-sm">
+                <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center lg:p-8">
 
-                {/* Identité */}
-                <div className="flex items-center gap-4 sm:w-64 sm:shrink-0">
-                  <img
-                    src={
-                      c.avatar_url ||
-                      `https://ui-avatars.com/api/?name=${encodeURIComponent(c.full_name || "C")}&background=FF5A1F&color=fff&size=80`
-                    }
-                    alt={c.full_name}
-                    className="h-16 w-16 shrink-0 rounded-2xl object-cover"
-                  />
-                  <div className="min-w-0">
-                    <p className="truncate font-black text-zinc-900">{c.full_name || "Sans nom"}</p>
-                    <p className="truncate text-sm text-zinc-600">{c.email}</p>
-                    <p className="mt-1 text-xs text-zinc-500">
-                      Inscrit le {new Date(c.created_at).toLocaleDateString("fr-FR")}
-                    </p>
+                  {/* User identity */}
+                  <div className="flex items-center gap-4 sm:w-60 sm:shrink-0">
+                    <img
+                      src={
+                        profile?.avatar_url ||
+                        `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.full_name || "C")}&background=FF5A1F&color=fff&size=80`
+                      }
+                      alt={profile?.full_name || ""}
+                      className="h-14 w-14 shrink-0 rounded-2xl object-cover"
+                    />
+                    <div className="min-w-0">
+                      <p className="truncate font-black text-zinc-900">{profile?.full_name || "Sans nom"}</p>
+                      <p className="truncate text-sm text-zinc-600">{profile?.email}</p>
+                    </div>
                   </div>
-                </div>
 
-                {/* Infos licence */}
-                <div className="flex-1 space-y-3">
-                  {editingId === c.id ? (
-                    <div className="space-y-3 rounded-2xl border border-[#FF5A1F]/30 bg-orange-50 p-4">
-                      <div>
-                        <p className="mb-2 text-xs uppercase tracking-[0.15em] text-zinc-500">Type de licence</p>
-                        <select
-                          value={editForm.license_type}
-                          onChange={(e) => setEditForm((f) => ({ ...f, license_type: e.target.value }))}
-                          className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none focus:border-[#FF5A1F]"
-                        >
-                          <option value="">— Sélectionner —</option>
-                          <optgroup label="FFSA (Auto)">
-                            {LICENSE_TYPES_FFSA.map((t) => <option key={t} value={t}>{t}</option>)}
-                          </optgroup>
-                          <optgroup label="FFM (Moto)">
-                            {LICENSE_TYPES_FFM.map((t) => <option key={t} value={t}>{t}</option>)}
-                          </optgroup>
-                        </select>
-                      </div>
-                      <div>
-                        <p className="mb-2 text-xs uppercase tracking-[0.15em] text-zinc-500">Numéro de licence</p>
-                        <input
-                          type="text"
-                          value={editForm.license_number}
-                          onChange={(e) => setEditForm((f) => ({ ...f, license_number: e.target.value }))}
-                          className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none focus:border-[#FF5A1F]"
-                        />
-                      </div>
-                      <div>
-                        <p className="mb-2 text-xs uppercase tracking-[0.15em] text-zinc-500">Message pour le commissaire</p>
-                        <textarea
-                          value={editForm.note}
-                          onChange={(e) => setEditForm((f) => ({ ...f, note: e.target.value }))}
-                          placeholder="Ex : Votre numéro de licence était incorrect, nous l'avons corrigé."
-                          rows={3}
-                          className="w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 py-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F] resize-none"
-                        />
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => saveEdit(c)}
-                          disabled={saving}
-                          className="flex h-10 flex-1 items-center justify-center rounded-xl bg-[#FF5A1F] text-sm font-bold text-white transition hover:scale-[1.02] disabled:opacity-50"
-                        >
-                          {saving ? "Sauvegarde..." : "Sauvegarder"}
-                        </button>
-                        <button
-                          onClick={() => setEditingId(null)}
-                          className="flex h-10 items-center justify-center rounded-xl border border-zinc-200 px-4 text-sm text-zinc-600 transition hover:text-zinc-900"
-                        >
-                          Annuler
-                        </button>
-                      </div>
+                  {/* License info */}
+                  <div className="flex flex-1 flex-wrap gap-3">
+                    <div className="min-w-[140px] rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-500">Type</p>
+                      <p className="mt-1 font-bold text-[#FF5A1F]">{lic.type || "—"}</p>
                     </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                          <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Type de licence</p>
-                          <p className="mt-2 font-bold text-[#FF5A1F]">{c.license_type || "—"}</p>
-                        </div>
-                        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                          <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">Numéro de licence</p>
-                          <p className="mt-2 font-bold text-zinc-900">{c.license_number || "—"}</p>
-                        </div>
-                        <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                          <p className="text-xs uppercase tracking-[0.15em] text-zinc-500">ASA</p>
-                          <p className="mt-2 font-bold text-zinc-900">{c.asa || "—"}</p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <a
-                          href={c.license_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex flex-1 items-center gap-3 rounded-2xl border border-[#FF5A1F]/20 bg-orange-50 px-5 py-4 font-bold text-[#FF5A1F] transition hover:border-[#FF5A1F]/40 hover:bg-orange-100"
-                        >
-                          <ExternalLink size={18} />
-                          Ouvrir la licence (PDF ou image)
-                        </a>
-                        <button
-                          onClick={() => startEdit(c)}
-                          className="flex items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-4 text-sm font-bold text-zinc-600 transition hover:border-zinc-300 hover:text-zinc-900"
-                        >
-                          <Pencil size={16} />
-                          <span className="hidden sm:inline">Modifier</span>
-                        </button>
-                      </div>
+                    <div className="min-w-[100px] rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
+                      <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-500">Catégorie</p>
+                      <p className="mt-1 font-bold text-zinc-900 capitalize">{lic.category}</p>
                     </div>
-                  )}
-                </div>
-
-                {/* 2ème licence si présente */}
-                {c.license_type_2 && (
-                  <div className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 p-4 lg:w-auto">
-                    <p className="mb-2 text-xs uppercase tracking-[0.15em] text-zinc-500">2ème licence</p>
-                    <p className="font-bold text-[#FF5A1F]">{c.license_type_2}</p>
-                    {c.license_number_2 && <p className="mt-1 text-sm text-zinc-600">N° {c.license_number_2}</p>}
-                    {c.license_url_2 && (
-                      <a href={c.license_url_2} target="_blank" rel="noopener noreferrer"
-                        className="mt-2 inline-flex items-center gap-2 text-sm font-bold text-[#FF5A1F] underline underline-offset-2">
-                        <ExternalLink size={14} /> Ouvrir
+                    {lic.number && (
+                      <div className="min-w-[120px] rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
+                        <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-500">N°</p>
+                        <p className="mt-1 font-bold text-zinc-900">{lic.number}</p>
+                      </div>
+                    )}
+                    {lic.asa && (
+                      <div className="min-w-[120px] rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3">
+                        <p className="text-[10px] uppercase tracking-[0.15em] text-zinc-500">ASA</p>
+                        <p className="mt-1 font-bold text-zinc-900">{lic.asa}</p>
+                      </div>
+                    )}
+                    {lic.url && (
+                      <a
+                        href={lic.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 self-center rounded-2xl border border-[#FF5A1F]/20 bg-orange-50 px-4 py-3 text-sm font-bold text-[#FF5A1F] transition hover:bg-orange-100"
+                      >
+                        <ExternalLink size={14} /> Voir document
                       </a>
                     )}
-                    <div className="mt-3 flex gap-2">
+                  </div>
+
+                  {/* Status + actions */}
+                  <div className="flex shrink-0 flex-col items-end gap-3">
+                    <span className={`rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.15em] ${
+                      lic.verified ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"
+                    }`}>
+                      {lic.verified ? "✔ Validée" : "⏳ En attente"}
+                    </span>
+
+                    <div className="flex gap-2">
                       <button
-                        onClick={() => validate2(c.id, true)}
-                        disabled={c.license_verified_2}
-                        className={`flex items-center gap-1 rounded-xl px-3 py-2 text-xs font-bold transition ${c.license_verified_2 ? "cursor-not-allowed bg-zinc-100 text-zinc-400" : "bg-green-600 text-white hover:scale-105"}`}
+                        onClick={() => act(lic.id, "verify")}
+                        disabled={lic.verified || isActing}
+                        className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
+                          lic.verified || isActing
+                            ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
+                            : "bg-green-600 text-white hover:scale-105"
+                        }`}
                       >
-                        <CheckCircle2 size={12} /> Valider
+                        <CheckCircle2 size={15} />
+                        {isActing ? "..." : "Valider"}
                       </button>
                       <button
-                        onClick={() => validate2(c.id, false)}
-                        className="flex items-center gap-1 rounded-xl bg-red-600 text-white px-3 py-2 text-xs font-bold transition hover:scale-105"
+                        onClick={() => act(lic.id, "reject")}
+                        disabled={isActing}
+                        className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
+                          isActing ? "cursor-not-allowed bg-zinc-100 text-zinc-400" : "bg-red-600 text-white hover:scale-105"
+                        }`}
                       >
-                        <XCircle size={12} /> Rejeter
+                        <XCircle size={15} />
+                        {isActing ? "..." : "Rejeter"}
                       </button>
                     </div>
-                    <span className={`mt-2 inline-block rounded-full px-3 py-1 text-[10px] font-bold uppercase ${c.license_verified_2 ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
-                      {c.license_verified_2 ? "✔ Validée" : "⏳ En attente"}
-                    </span>
                   </div>
-                )}
 
-                {/* Statut + actions */}
-                <div className="flex flex-col items-start gap-3 sm:items-end sm:shrink-0">
-                  <span className={`rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] ${
-                    c.license_verified
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
-                  }`}>
-                    {c.license_verified ? "✔ Validée" : "⏳ En attente"}
-                  </span>
-
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => validate(c.id, true)}
-                      disabled={c.license_verified}
-                      className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold transition ${
-                        c.license_verified
-                          ? "cursor-not-allowed bg-zinc-100 text-zinc-400"
-                          : "bg-green-600 text-white hover:scale-105"
-                      }`}
-                    >
-                      <CheckCircle2 size={16} />
-                      Valider
-                    </button>
-                    <button
-                      onClick={() => validate(c.id, false)}
-                      className="flex items-center gap-2 rounded-2xl bg-red-600 text-white px-5 py-3 text-sm font-bold transition hover:scale-105"
-                    >
-                      <XCircle size={16} />
-                      Rejeter
-                    </button>
-                  </div>
                 </div>
-
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>

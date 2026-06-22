@@ -1,6 +1,4 @@
-export const AUTO_DISCIPLINES = ["Rallye", "Circuit", "Karting", "Drift", "Endurance"];
-export const MOTO_DISCIPLINES = ["Moto Cross", "Enduro", "Trial", "Road Racing", "Supermoto", "Rallye Moto"];
-
+// Legacy helpers kept for backward compatibility
 export function isAutoLicense(type?: string | null): boolean {
   return !!type && /ENCOC|EICOB|EICOACPC|EICOACPR/.test(type);
 }
@@ -9,13 +7,29 @@ export function isMotoLicense(type?: string | null): boolean {
   return !!type && (type.startsWith("FFM") || type.startsWith("OFS") || type.startsWith("OFF"));
 }
 
+export const AUTO_DISCIPLINES = [
+  "Rallye",
+  "Circuit",
+  "Karting",
+  "Drift",
+  "Endurance",
+  "Course de côtes",
+  "Slalom",
+  "Montée de démonstration",
+  "Montée historique",
+];
+
+export const MOTO_DISCIPLINES = [
+  "Moto Cross",
+  "Enduro",
+  "Trial",
+  "Road Racing",
+  "Supermoto",
+  "Rallye Moto",
+];
+
 export function canApplyToEvent(
-  profile: {
-    license_type?: string | null;
-    license_verified?: boolean | null;
-    license_type_2?: string | null;
-    license_verified_2?: boolean | null;
-  },
+  licenses: { category: string; verified: boolean }[],
   discipline?: string | null
 ): { allowed: boolean; reason?: string } {
   if (!discipline) return { allowed: true };
@@ -25,19 +39,26 @@ export function canApplyToEvent(
 
   if (!isAuto && !isMoto) return { allowed: true };
 
-  const hasValidAuto =
-    (isAutoLicense(profile.license_type) && !!profile.license_verified) ||
-    (isAutoLicense(profile.license_type_2) && !!profile.license_verified_2);
+  const hasValidAuto = licenses.some(
+    (l) => l.category === "auto" && l.verified === true
+  );
 
-  const hasValidMoto =
-    (isMotoLicense(profile.license_type) && !!profile.license_verified) ||
-    (isMotoLicense(profile.license_type_2) && !!profile.license_verified_2);
+  const hasValidMoto = licenses.some(
+    (l) => l.category === "moto" && l.verified === true
+  );
 
   if (isAuto && !hasValidAuto) {
-    return { allowed: false, reason: "Une licence FFSA (auto) validée est requise pour cet événement." };
+    return {
+      allowed: false,
+      reason: "Une licence auto validée est requise pour cet événement.",
+    };
   }
+
   if (isMoto && !hasValidMoto) {
-    return { allowed: false, reason: "Une licence FFM (moto) validée est requise pour cet événement." };
+    return {
+      allowed: false,
+      reason: "Une licence moto validée est requise pour cet événement.",
+    };
   }
 
   return { allowed: true };

@@ -36,19 +36,29 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
 
     const { data: profileData } = await supabase
       .from("profiles")
-      .select("id, role, license_type, license_verified, license_type_2, license_verified_2")
+      .select("id, role")
       .eq("id", user.id)
       .single();
 
     setProfile(profileData);
+
+    const { data: userLicenses } = await supabase
+      .from("licenses")
+      .select("category, verified")
+      .eq("user_id", user.id);
+
+    // Store licenses on profile for use in handleApply
+    setProfile((prev: any) => ({ ...(prev || {}), _licenses: userLicenses || [] }));
 
     const { data: eventData } = await supabase
       .from("events")
       .select("discipline, staff_roles")
       .eq("id", eventId)
       .single();
-    if (eventData?.discipline) setDiscipline(eventData.discipline);
-    if (eventData?.staff_roles?.length > 0) setStaffRoles(eventData.staff_roles);
+    if (eventData) {
+      if (eventData.discipline) setDiscipline(eventData.discipline);
+      if (eventData.staff_roles?.length > 0) setStaffRoles(eventData.staff_roles);
+    }
 
     const { data } = await supabase
       .from("applications")
@@ -77,7 +87,7 @@ export default function ApplyButton({ eventId, eventDiscipline, isFull = false }
       return;
     }
 
-    const check = canApplyToEvent(profile || {}, discipline);
+    const check = canApplyToEvent(profile?._licenses || [], discipline);
     if (!check.allowed) {
       setMessage({ text: check.reason || "Licence non valide pour cet événement.", type: "error" });
       setLoading(false);
