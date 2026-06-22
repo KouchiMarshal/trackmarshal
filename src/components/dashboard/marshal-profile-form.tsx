@@ -252,7 +252,9 @@ export default function MarshalProfileForm() {
   const [licenses, setLicenses] = useState<License[]>([]);
   const [uploadingLicenseId, setUploadingLicenseId] = useState<string | null>(null);
   const [savingLicenseId, setSavingLicenseId] = useState<string | null>(null);
-  const [addingLicense, setAddingLicense] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newForm, setNewForm] = useState({ category: "auto", type: "", number: "", asa: "" });
+  const [creatingLicense, setCreatingLicense] = useState(false);
 
   useEffect(() => {
     loadProfile();
@@ -373,10 +375,10 @@ export default function MarshalProfileForm() {
 
   // ── License management functions ──────────────────────────────────────────
 
-  async function addLicense() {
-    setAddingLicense(true);
+  async function createLicense() {
+    setCreatingLicense(true);
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) { setAddingLicense(false); return; }
+    if (!session) { setCreatingLicense(false); return; }
 
     const res = await fetch("/api/licenses", {
       method: "POST",
@@ -384,14 +386,16 @@ export default function MarshalProfileForm() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.access_token}`,
       },
-      body: JSON.stringify({ type: "", category: "auto", number: "", asa: "" }),
+      body: JSON.stringify(newForm),
     });
 
     if (res.ok) {
       const json = await res.json();
       setLicenses((prev) => [...prev, json.license]);
+      setShowAddForm(false);
+      setNewForm({ category: "auto", type: "", number: "", asa: "" });
     }
-    setAddingLicense(false);
+    setCreatingLicense(false);
   }
 
   async function updateLicense(id: string, fields: Partial<License>) {
@@ -649,24 +653,18 @@ export default function MarshalProfileForm() {
             <p className="text-sm uppercase tracking-[0.3em] text-[#FF5A1F]">
               Mes licences
             </p>
-            <button
-              type="button"
-              onClick={addLicense}
-              disabled={addingLicense}
-              className="flex h-10 items-center gap-2 rounded-xl bg-[#FF5A1F] px-5 text-sm font-bold text-white transition hover:scale-[1.02] disabled:opacity-50"
-            >
-              {addingLicense ? (
-                <>
-                  <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  ...
-                </>
-              ) : (
-                "+ Ajouter une licence"
-              )}
-            </button>
+            {!showAddForm && (
+              <button
+                type="button"
+                onClick={() => setShowAddForm(true)}
+                className="flex h-10 items-center gap-2 rounded-xl bg-[#FF5A1F] px-5 text-sm font-bold text-white transition hover:scale-[1.02]"
+              >
+                + Ajouter une licence
+              </button>
+            )}
           </div>
 
-          {licenses.length === 0 && !addingLicense && (
+          {licenses.length === 0 && !showAddForm && (
             <p className="mt-6 text-sm text-zinc-400">
               Aucune licence. Ajoutez-en une.
             </p>
@@ -685,6 +683,109 @@ export default function MarshalProfileForm() {
               />
             ))}
           </div>
+
+          {/* Inline add form */}
+          {showAddForm && (
+            <div className="mt-6 rounded-2xl border-2 border-dashed border-[#FF5A1F]/30 bg-white p-6">
+              <p className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-zinc-500">
+                Nouvelle licence
+              </p>
+
+              {/* Federation picker */}
+              <div className="mb-5">
+                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">Fédération</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setNewForm((p) => ({ ...p, category: "auto" }))}
+                    className={`flex h-14 flex-col items-center justify-center rounded-xl font-black transition ${
+                      newForm.category === "auto"
+                        ? "bg-[#FF5A1F] text-white shadow-md"
+                        : "border border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-[#FF5A1F]/40 hover:text-zinc-900"
+                    }`}
+                  >
+                    FFSA
+                    <span className="mt-0.5 text-[10px] font-normal opacity-70">Auto</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNewForm((p) => ({ ...p, category: "moto" }))}
+                    className={`flex h-14 flex-col items-center justify-center rounded-xl font-black transition ${
+                      newForm.category === "moto"
+                        ? "bg-[#FF5A1F] text-white shadow-md"
+                        : "border border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-[#FF5A1F]/40 hover:text-zinc-900"
+                    }`}
+                  >
+                    FFM
+                    <span className="mt-0.5 text-[10px] font-normal opacity-70">Moto</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-zinc-500">
+                    Intitulé de la licence
+                  </label>
+                  <input
+                    type="text"
+                    value={newForm.type}
+                    onChange={(e) => setNewForm((p) => ({ ...p, type: e.target.value }))}
+                    placeholder="Ex: ENCOC, EICOB, OFS..."
+                    autoFocus
+                    className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-zinc-500">
+                    Numéro de licence
+                  </label>
+                  <input
+                    type="text"
+                    value={newForm.number}
+                    onChange={(e) => setNewForm((p) => ({ ...p, number: e.target.value }))}
+                    placeholder="ex : 2024-FFSA-00123"
+                    className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="mb-2 block text-xs uppercase tracking-[0.2em] text-zinc-500">
+                    ASA
+                  </label>
+                  <input
+                    type="text"
+                    value={newForm.asa}
+                    onChange={(e) => setNewForm((p) => ({ ...p, asa: e.target.value }))}
+                    placeholder="ex : ASA Lyon, ASA Côte d'Azur..."
+                    className="h-12 w-full rounded-xl border border-zinc-300 bg-zinc-50 px-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-5 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setShowAddForm(false); setNewForm({ category: "auto", type: "", number: "", asa: "" }); }}
+                  className="flex h-11 flex-1 items-center justify-center rounded-xl border border-zinc-200 text-sm font-bold text-zinc-600 transition hover:text-zinc-900"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={createLicense}
+                  disabled={creatingLicense || !newForm.type.trim()}
+                  className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-[#FF5A1F] text-sm font-bold text-white transition hover:scale-[1.01] disabled:opacity-50"
+                >
+                  {creatingLicense ? (
+                    <>
+                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Création...
+                    </>
+                  ) : "Créer la licence"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* ── Disponibilité ── */}
