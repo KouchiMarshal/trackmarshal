@@ -47,7 +47,50 @@ export async function POST(req: NextRequest) {
   if (!adminUser) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 
   const body = await req.json();
-  const { licenseId, action } = body;
+  const { licenseId, profileId, action } = body;
+
+  // Legacy profile-based license actions
+  if (profileId && ["verify-legacy", "reject-legacy"].includes(action)) {
+    const { data: profile } = await supabaseAdmin
+      .from("profiles")
+      .select("id, full_name, email, license_type")
+      .eq("id", profileId)
+      .single();
+
+    if (!profile) return NextResponse.json({ error: "Profil introuvable" }, { status: 404 });
+
+    if (action === "verify-legacy") {
+      const { error } = await supabaseAdmin
+        .from("profiles")
+        .update({ license_verified: true })
+        .eq("id", profileId);
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+      await supabaseAdmin.from("notifications").insert({
+        user_id: profileId,
+        title: "Votre licence a été validée ✔",
+        type: "license_verified",
+        link: "/dashboard/profile",
+      });
+      return NextResponse.json({ ok: true, action: "verified" });
+    }
+
+    if (action === "reject-legacy") {
+      const { error } = await supabaseAdmin
+        .from("profiles")
+        .update({ license_verified: false, license_url: null, license_type: null })
+        .eq("id", profileId);
+      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+      await supabaseAdmin.from("notifications").insert({
+        user_id: profileId,
+        title: "Votre licence n'a pas pu être validée",
+        type: "license_rejected",
+        link: "/dashboard/profile",
+      });
+      return NextResponse.json({ ok: true, action: "rejected" });
+    }
+  }
 
   if (!licenseId || !["verify", "reject"].includes(action)) {
     return NextResponse.json({ error: "Paramètres invalides" }, { status: 400 });
