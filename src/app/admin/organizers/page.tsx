@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { Building2, CheckCircle2, Clock3, ExternalLink, Search, XCircle } from "lucide-react";
+import { Building2, CheckCircle2, Clock3, ExternalLink, MessageSquare, Search, Send, X, XCircle } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
 import { sendEmail } from "@/lib/sendEmail";
 
@@ -12,6 +12,10 @@ export default function AdminOrganizersPage() {
   const [filter, setFilter] = useState<"pending" | "verified" | "all">("pending");
   const [search, setSearch] = useState("");
   const [toast, setToast] = useState<ToastData>(null);
+
+  const [msgModal, setMsgModal] = useState<{ id: string; name: string; email: string } | null>(null);
+  const [msgText, setMsgText] = useState("");
+  const [msgSending, setMsgSending] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -47,6 +51,50 @@ export default function AdminOrganizersPage() {
     setToast({ message: verified ? "Organisateur vérifié." : "Vérification refusée.", type: verified ? "success" : "error" });
   }
 
+  async function sendMessage() {
+    if (!msgModal || !msgText.trim()) return;
+    setMsgSending(true);
+
+    const { data: { user }, } = await supabase.auth.getUser();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!user || !session) { setMsgSending(false); return; }
+
+    // Create or retrieve the conversation
+    const res = await fetch("/api/admin/start-conversation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+      body: JSON.stringify({ targetUserId: msgModal.id }),
+    });
+    const data = await res.json();
+
+    if (!data.conversation) {
+      setToast({ message: "Impossible de créer la conversation.", type: "error" });
+      setMsgSending(false);
+      return;
+    }
+
+    // Insert the message
+    const { error } = await supabase.from("messages").insert({
+      conversation_id: data.conversation.id,
+      sender_id: user.id,
+      content: msgText.trim(),
+    });
+
+    if (error) {
+      setToast({ message: "Erreur lors de l'envoi.", type: "error" });
+    } else {
+      sendEmail(msgModal.email, "new_message", {
+        senderName: "TrackMarshal",
+        preview: msgText.trim().slice(0, 100),
+        replyUrl: "https://trackmarshal.app/organizer/messages",
+      });
+      setToast({ message: `Message envoyé à ${msgModal.name}.`, type: "success" });
+      setMsgModal(null);
+      setMsgText("");
+    }
+    setMsgSending(false);
+  }
+
   const counts = {
     all: organizers.length,
     pending: organizers.filter((o) => !o.organizer_verified).length,
@@ -66,6 +114,48 @@ export default function AdminOrganizersPage() {
   return (
     <div>
       <Toast toast={toast} onClose={() => setToast(null)} />
+
+      {/* Message modal */}
+      {msgModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-lg rounded-3xl border border-zinc-200 bg-white p-6 shadow-xl lg:p-8">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-[#FF5A1F]">Message</p>
+                <h2 className="mt-1 text-xl font-black text-zinc-900">{msgModal.name}</h2>
+                <p className="text-sm text-zinc-500">{msgModal.email}</p>
+              </div>
+              <button onClick={() => { setMsgModal(null); setMsgText(""); }} className="rounded-xl p-2 text-zinc-400 hover:bg-zinc-100 transition">
+                <X size={20} />
+              </button>
+            </div>
+            <textarea
+              autoFocus
+              rows={5}
+              value={msgText}
+              onChange={(e) => setMsgText(e.target.value)}
+              placeholder="Votre message..."
+              className="w-full resize-none rounded-2xl border border-zinc-300 bg-zinc-50 p-4 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-[#FF5A1F]"
+            />
+            <div className="mt-4 flex justify-end gap-3">
+              <button
+                onClick={() => { setMsgModal(null); setMsgText(""); }}
+                className="rounded-2xl border border-zinc-200 px-5 py-3 text-sm font-bold text-zinc-600 hover:text-zinc-900 transition"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={sendMessage}
+                disabled={msgSending || !msgText.trim()}
+                className="flex items-center gap-2 rounded-2xl bg-[#FF5A1F] px-6 py-3 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-50"
+              >
+                <Send size={14} />
+                {msgSending ? "Envoi..." : "Envoyer"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
         <div className="flex h-20 items-center justify-between px-6 lg:px-10">
@@ -169,7 +259,13 @@ export default function AdminOrganizersPage() {
                     )}
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex flex-wrap gap-3">
+                    <button
+                      onClick={() => { setMsgModal({ id: o.id, name: o.full_name || "Organisateur", email: o.email }); setMsgText(""); }}
+                      className="flex items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-5 py-3 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                    >
+                      <MessageSquare size={16} /> Message
+                    </button>
                     <button
                       onClick={() => setVerified(o.id, true)}
                       disabled={o.organizer_verified}
