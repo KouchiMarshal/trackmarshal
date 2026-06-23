@@ -136,12 +136,32 @@ export default function OrganizerEventDetailsPage() {
   }
 
   function copyInviteLink() {
-    if (!event?.slug) return;
+    if (!event?.slug) {
+      setToast({ message: "Slug de l'événement introuvable.", type: "error" });
+      return;
+    }
     const url = `https://www.trackmarshal.app/events/${event.slug}?invite=1`;
-    navigator.clipboard.writeText(url).then(() => {
+    const finish = () => {
       setInviteCopied(true);
+      setToast({ message: "Lien d'invitation copié !", type: "success" });
       setTimeout(() => setInviteCopied(false), 2500);
-    });
+    };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(finish).catch(() => fallbackCopy(url, finish));
+    } else {
+      fallbackCopy(url, finish);
+    }
+  }
+
+  function fallbackCopy(text: string, onDone: () => void) {
+    const el = document.createElement("textarea");
+    el.value = text;
+    el.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+    document.body.appendChild(el);
+    el.focus();
+    el.select();
+    try { document.execCommand("copy"); onDone(); } catch { /* silent */ }
+    document.body.removeChild(el);
   }
 
   async function deleteEvent() {
