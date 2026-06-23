@@ -74,6 +74,7 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
   const [editForm, setEditForm] = useState<BlankForm>(blank);
   const [savingEdit, setSavingEdit] = useState(false);
   const [toast, setToast] = useState<ToastData>(null);
+  const [lang, setLang] = useState<"fr" | "en">("fr");
 
   useEffect(() => { load(); }, [id]);
 
@@ -194,8 +195,12 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <div className="flex rounded-xl border border-zinc-200 overflow-hidden text-xs font-bold">
+              <button onClick={() => setLang("fr")} className={`px-3 py-2 transition ${lang === "fr" ? "bg-zinc-900 text-white" : "bg-white text-zinc-500 hover:bg-zinc-50"}`}>FR</button>
+              <button onClick={() => setLang("en")} className={`px-3 py-2 transition ${lang === "en" ? "bg-zinc-900 text-white" : "bg-white text-zinc-500 hover:bg-zinc-50"}`}>EN</button>
+            </div>
             <a
-              href={`/admin/cv-lab/${id}/print`}
+              href={`/admin/cv-lab/${id}/print?lang=${lang}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-bold text-zinc-700 transition hover:bg-zinc-50"
