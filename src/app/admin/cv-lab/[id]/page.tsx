@@ -3,10 +3,11 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { ArrowLeft, CalendarDays, MapPin, Plus, Star, Trash2, X } from "lucide-react";
+import { ArrowLeft, CalendarDays, Download, MapPin, Plus, Star, Trash2, X } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
 const ROLES = [
+  "Commissaire de piste",
   "Commissaire de virage",
   "Commissaire de départ/arrivée",
   "Commissaire technique",
@@ -155,12 +156,22 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
               <h1 className="mt-0.5 text-xl font-black text-zinc-900">{profile.full_name}</h1>
             </div>
           </div>
-          <button
-            onClick={() => { setShowForm(true); window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); }}
-            className="flex items-center gap-2 rounded-2xl bg-[#FF5A1F] px-5 py-2.5 text-sm font-bold text-white transition hover:scale-105"
-          >
-            <Plus size={16} /> Ajouter une épreuve
-          </button>
+          <div className="flex items-center gap-2">
+            <a
+              href={`/admin/cv-lab/${id}/print`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-bold text-zinc-700 transition hover:bg-zinc-50"
+            >
+              <Download size={16} /> Exporter PDF
+            </a>
+            <button
+              onClick={() => { setShowForm(true); window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); }}
+              className="flex items-center gap-2 rounded-2xl bg-[#FF5A1F] px-5 py-2.5 text-sm font-bold text-white transition hover:scale-105"
+            >
+              <Plus size={16} /> Ajouter une épreuve
+            </button>
+          </div>
         </div>
       </header>
 
