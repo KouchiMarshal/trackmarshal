@@ -40,14 +40,14 @@ export async function POST(req: NextRequest) {
   if (!admin) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
 
   const body = await req.json();
-  const { userId, event_name, event_date, location, role, discipline, organizer_name, notes } = body;
+  const { userId, event_name, event_date, event_end_date, location, role, discipline, organizer_name, notes } = body;
   if (!userId || !event_name || !event_date || !role) {
     return NextResponse.json({ error: "Champs obligatoires manquants" }, { status: 400 });
   }
 
   const { data, error } = await supabaseAdmin
     .from("career_events")
-    .insert({ user_id: userId, event_name, event_date, location, role, discipline, organizer_name, notes, source: "manual" })
+    .insert({ user_id: userId, event_name, event_date, event_end_date: event_end_date || null, location, role, discipline, organizer_name, notes, source: "manual" })
     .select()
     .single();
 

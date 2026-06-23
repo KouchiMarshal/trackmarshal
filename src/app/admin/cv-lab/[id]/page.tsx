@@ -25,6 +25,7 @@ type CareerEvent = {
   id: string;
   event_name: string;
   event_date: string;
+  event_end_date: string | null;
   location: string | null;
   role: string;
   discipline: string | null;
@@ -46,6 +47,7 @@ type PlatformEvent = {
 type BlankForm = {
   event_name: string;
   event_date: string;
+  event_end_date: string;
   location: string;
   role: string;
   discipline: string;
@@ -53,7 +55,7 @@ type BlankForm = {
   notes: string;
 };
 
-const blank: BlankForm = { event_name: "", event_date: "", location: "", role: "", discipline: "", organizer_name: "", notes: "" };
+const blank: BlankForm = { event_name: "", event_date: "", event_end_date: "", location: "", role: "", discipline: "", organizer_name: "", notes: "" };
 
 export default function CvLabProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -262,7 +264,11 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
                   <p className="font-bold text-zinc-900 truncate">{e.event_name}</p>
                   <p className="mt-0.5 text-xs font-semibold text-[#FF5A1F]">{e.role}</p>
                   <div className="mt-1 flex flex-wrap gap-3 text-xs text-zinc-500">
-                    <span className="flex items-center gap-1"><CalendarDays size={11} />{new Date(e.event_date).toLocaleDateString("fr-FR")}</span>
+                    <span className="flex items-center gap-1">
+                      <CalendarDays size={11} />
+                      {new Date(e.event_date).toLocaleDateString("fr-FR")}
+                      {e.event_end_date && e.event_end_date !== e.event_date && ` → ${new Date(e.event_end_date).toLocaleDateString("fr-FR")}`}
+                    </span>
                     {e.location && <span className="flex items-center gap-1"><MapPin size={11} />{e.location}</span>}
                     {e.discipline && <span className="rounded-full bg-white border border-zinc-200 px-2 py-0.5">{e.discipline}</span>}
                     {e.organizer_name && <span>{e.organizer_name}</span>}
@@ -312,8 +318,13 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
                   className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30" />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-zinc-600">Date *</label>
+                <label className="mb-1.5 block text-xs font-semibold text-zinc-600">Date de début *</label>
                 <input type="date" value={form.event_date} onChange={(e) => setForm((f) => ({ ...f, event_date: e.target.value }))}
+                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30" />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-semibold text-zinc-600">Date de fin</label>
+                <input type="date" value={form.event_end_date} min={form.event_date || undefined} onChange={(e) => setForm((f) => ({ ...f, event_end_date: e.target.value }))}
                   className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30" />
               </div>
               <div>
