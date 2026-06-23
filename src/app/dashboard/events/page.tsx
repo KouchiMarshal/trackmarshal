@@ -27,23 +27,42 @@ export default function DashboardEventsPage() {
   const [calendarDate, setCalendarDate] = useState(new Date());
 
   useEffect(() => {
-    loadData();
+    let userId: string | null = null;
+
+    async function init() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      userId = user.id;
+      await loadData(user.id);
+
+      const channel = supabase
+        .channel("dashboard-applications")
+        .on("postgres_changes", { event: "*", schema: "public", table: "applications", filter: `marshal_id=eq.${user.id}` },
+          () => loadApplications(user.id))
+        .subscribe();
+
+      return () => { supabase.removeChannel(channel); };
+    }
+
+    init();
   }, []);
 
-  async function loadData() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
+  async function loadData(userId: string) {
     const [eventsRes, applicationsRes, licensesRes] = await Promise.all([
       supabase.from("events").select("*").order("event_date", { ascending: true }),
-      supabase.from("applications").select("*").eq("marshal_id", user.id),
-      supabase.from("licenses").select("category, verified").eq("user_id", user.id),
+      supabase.from("applications").select("*").eq("marshal_id", userId),
+      supabase.from("licenses").select("category, verified").eq("user_id", userId),
     ]);
 
     setEvents(eventsRes.data || []);
     setApplications(applicationsRes.data || []);
     setUserProfile(licensesRes.data || []);
     setLoading(false);
+  }
+
+  async function loadApplications(userId: string) {
+    const { data } = await supabase.from("applications").select("*").eq("marshal_id", userId);
+    setApplications(data || []);
   }
 
   async function applyToEvent(eventId: string, eventDiscipline?: string) {
@@ -66,7 +85,7 @@ export default function DashboardEventsPage() {
     }
 
     setToast({ message: "Candidature envoyée avec succès !", type: "success" });
-    loadData();
+    loadApplications(user.id);
   }
 
   const now = new Date();
