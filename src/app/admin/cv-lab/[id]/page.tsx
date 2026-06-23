@@ -288,24 +288,25 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
           )}
 
           <div className="space-y-3">
-            {/* Platform events */}
-            {platformEvents.map((e) => (
-              <div key={e.id} className="flex items-start gap-4 rounded-2xl border border-green-100 bg-green-50 px-5 py-4">
-                <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-green-500" />
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-zinc-900 truncate">{e.title}</p>
-                  <div className="mt-1 flex flex-wrap gap-3 text-xs text-zinc-500">
-                    {e.event_date && <span className="flex items-center gap-1"><CalendarDays size={11} />{new Date(e.event_date).toLocaleDateString("fr-FR")}</span>}
-                    {e.location && <span className="flex items-center gap-1"><MapPin size={11} />{e.location}</span>}
-                    {e.discipline && <span className="rounded-full bg-white border border-zinc-200 px-2 py-0.5">{e.discipline}</span>}
+            {[
+              ...platformEvents.map((e) => ({ key: `p-${e.id}`, date: e.event_date, source: "platform" as const, p: e })),
+              ...careerEvents.map((e) => ({ key: `c-${e.id}`, date: e.event_date, source: "manual" as const, c: e })),
+            ]
+              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+              .map((item) => item.source === "platform" ? (
+                <div key={item.key} className="flex items-start gap-4 rounded-2xl border border-green-100 bg-green-50 px-5 py-4">
+                  <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-green-500" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-zinc-900 truncate">{item.p!.title}</p>
+                    <div className="mt-1 flex flex-wrap gap-3 text-xs text-zinc-500">
+                      {item.p!.event_date && <span className="flex items-center gap-1"><CalendarDays size={11} />{new Date(item.p!.event_date).toLocaleDateString("fr-FR")}</span>}
+                      {item.p!.location && <span className="flex items-center gap-1"><MapPin size={11} />{item.p!.location}</span>}
+                      {item.p!.discipline && <span className="rounded-full bg-white border border-zinc-200 px-2 py-0.5">{item.p!.discipline}</span>}
+                    </div>
                   </div>
+                  <span className="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">Plateforme</span>
                 </div>
-                <span className="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">Plateforme</span>
-              </div>
-            ))}
-
-            {/* Manual career events */}
-            {careerEvents.map((e) => (
+              ) : (() => { const e = item.c!; return (
               <div key={e.id} className="rounded-2xl border border-zinc-200 bg-zinc-50 overflow-hidden">
                 {editingEventId === e.id ? (
                   <div className="p-5">
@@ -394,7 +395,7 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
                   </div>
                 )}
               </div>
-            ))}
+            ); })())}
           </div>
         </div>
 
