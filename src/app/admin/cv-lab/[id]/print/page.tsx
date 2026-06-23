@@ -7,13 +7,21 @@ type Props = { params: Promise<{ id: string }> };
 export default async function CvPrintPage({ params }: Props) {
   const { id } = await params;
 
-  const [{ data: profile }, { data: licenses }, { data: apps }, { data: careerEvts }, { data: reviews }] = await Promise.all([
+  const [{ data: profile }, { data: licenses }, { data: apps }, { data: reviews }] = await Promise.all([
     supabaseAdmin.from("profiles").select("*").eq("id", id).single(),
     supabaseAdmin.from("licenses").select("*").eq("user_id", id).order("created_at"),
     supabaseAdmin.from("applications").select("*, events(id, title, event_date, event_end_date, location, discipline)").eq("marshal_id", id).eq("status", "accepted").order("created_at", { ascending: false }),
-    supabaseAdmin.from("career_events").select("*").eq("user_id", id).order("event_date", { ascending: false }),
     supabaseAdmin.from("reviews").select("rating, comment, created_at").eq("marshal_id", id).order("created_at", { ascending: false }),
   ]);
+
+  // career_events table may not exist yet — fail gracefully
+  let careerEvts: any[] = [];
+  try {
+    const { data } = await supabaseAdmin.from("career_events").select("*").eq("user_id", id).order("event_date", { ascending: false });
+    careerEvts = data || [];
+  } catch {
+    careerEvts = [];
+  }
 
   if (!profile) return <p>Profil introuvable.</p>;
 
