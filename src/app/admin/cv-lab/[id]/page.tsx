@@ -292,7 +292,7 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
               ...platformEvents.map((e) => ({ key: `p-${e.id}`, date: e.event_date, source: "platform" as const, p: e })),
               ...careerEvents.map((e) => ({ key: `c-${e.id}`, date: e.event_date, source: "manual" as const, c: e })),
             ]
-              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+              .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
               .map((item) => item.source === "platform" ? (
                 <div key={item.key} className="flex items-start gap-4 rounded-2xl border border-green-100 bg-green-50 px-5 py-4">
                   <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-green-500" />

@@ -49,7 +49,7 @@ export default function CvPrintPage({ params }: Props) {
     }));
 
     const allEvents = [...platformEvents, ...careerEvents].sort(
-      (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+      (a, b) => new Date(b.start).getTime() - new Date(a.start).getTime()
     );
 
     const avgRating = reviews && reviews.length > 0
