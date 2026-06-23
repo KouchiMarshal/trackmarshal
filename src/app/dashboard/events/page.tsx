@@ -17,6 +17,7 @@ export default function DashboardEventsPage() {
   const [events, setEvents] = useState<any[]>([]);
   const [applications, setApplications] = useState<any[]>([]);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [acceptedCounts, setAcceptedCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<ToastData>(null);
 
@@ -54,9 +55,22 @@ export default function DashboardEventsPage() {
       supabase.from("licenses").select("category, verified").eq("user_id", userId),
     ]);
 
-    setEvents(eventsRes.data || []);
+    const evs = eventsRes.data || [];
+    setEvents(evs);
     setApplications(applicationsRes.data || []);
     setUserProfile(licensesRes.data || []);
+
+    if (evs.length > 0) {
+      const { data: accepted } = await supabase
+        .from("applications")
+        .select("event_id")
+        .in("event_id", evs.map((e: any) => e.id))
+        .eq("status", "accepted");
+      const counts: Record<string, number> = {};
+      (accepted || []).forEach((a: any) => { counts[a.event_id] = (counts[a.event_id] || 0) + 1; });
+      setAcceptedCounts(counts);
+    }
+
     setLoading(false);
   }
 
@@ -319,6 +333,8 @@ export default function DashboardEventsPage() {
                 <div className="grid gap-6 lg:grid-cols-2">
                   {filtered.map((event) => {
                     const app = applications.find((a) => a.event_id === event.id);
+                    const accepted = acceptedCounts[event.id] || 0;
+                    const remaining = Math.max(0, (event.marshals_needed || 0) - accepted);
 
                     return (
                       <div
@@ -366,7 +382,7 @@ export default function DashboardEventsPage() {
                             </div>
                             <div className="flex items-center gap-2">
                               <Users size={16} className="text-[#FF5A1F]" />
-                              <span>{event.marshals_needed || 0} commissaires recherchés</span>
+                              <span>{remaining} place{remaining !== 1 ? "s" : ""} disponible{remaining !== 1 ? "s" : ""} / {event.marshals_needed || 0}</span>
                             </div>
                           </div>
 
