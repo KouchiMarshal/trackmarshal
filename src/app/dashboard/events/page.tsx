@@ -34,15 +34,15 @@ export default function DashboardEventsPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const [eventsRes, applicationsRes, profileRes] = await Promise.all([
+    const [eventsRes, applicationsRes, licensesRes] = await Promise.all([
       supabase.from("events").select("*").order("event_date", { ascending: true }),
       supabase.from("applications").select("*").eq("marshal_id", user.id),
-      supabase.from("profiles").select("license_type, license_verified, license_type_2, license_verified_2").eq("id", user.id).single(),
+      supabase.from("licenses").select("category, verified").eq("user_id", user.id),
     ]);
 
     setEvents(eventsRes.data || []);
     setApplications(applicationsRes.data || []);
-    setUserProfile(profileRes.data || null);
+    setUserProfile(licensesRes.data || []);
     setLoading(false);
   }
 
