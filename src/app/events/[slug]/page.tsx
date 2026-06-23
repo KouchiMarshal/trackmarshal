@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Suspense } from "react";
 import type { Metadata } from "next";
 
 import { supabaseAdmin as supabase } from "@/lib/supabase-admin";
@@ -9,6 +10,7 @@ import PublicFooter from "@/components/layout/public-footer";
 import ApplyButton from "@/components/events/apply-button";
 import ShareButton from "@/components/events/share-button";
 import InviteButton from "@/components/events/invite-button";
+import InviteBanner from "@/components/events/invite-banner";
 
 type EventPageProps = {
   params: Promise<{
@@ -211,6 +213,10 @@ export default async function EventPage({
 
       {/* Content section — light */}
       <section className="relative z-20 mx-auto max-w-[1600px] px-5 py-14 sm:px-8 sm:py-24">
+
+        <Suspense>
+          <InviteBanner />
+        </Suspense>
 
         <div className="grid gap-8 lg:grid-cols-[1.5fr_420px] lg:gap-10">
 

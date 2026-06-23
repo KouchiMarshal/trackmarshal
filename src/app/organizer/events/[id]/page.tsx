@@ -11,6 +11,7 @@ import {
   Copy,
   FileSpreadsheet,
   FileText,
+  Link2,
   MapPin,
   MessageSquare,
   Pencil,
@@ -41,6 +42,7 @@ export default function OrganizerEventDetailsPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [bulkLoading, setBulkLoading] = useState(false);
+  const [inviteCopied, setInviteCopied] = useState(false);
 
   // Feature 1: Messagerie groupée
   const [showGroupMsg, setShowGroupMsg] = useState(false);
@@ -131,6 +133,15 @@ export default function OrganizerEventDetailsPage() {
       console.error(error);
     }
     setLoading(false);
+  }
+
+  function copyInviteLink() {
+    if (!event?.slug) return;
+    const url = `https://www.trackmarshal.app/events/${event.slug}?invite=1`;
+    navigator.clipboard.writeText(url).then(() => {
+      setInviteCopied(true);
+      setTimeout(() => setInviteCopied(false), 2500);
+    });
   }
 
   async function deleteEvent() {
@@ -654,6 +665,13 @@ export default function OrganizerEventDetailsPage() {
                 </Link>
                 <div className="flex items-center gap-2 lg:gap-3">
                   <NotificationBell />
+                  <button
+                    onClick={copyInviteLink}
+                    className="flex items-center gap-2 rounded-2xl bg-white/20 px-4 py-2 text-sm font-bold text-white backdrop-blur-xl transition hover:bg-white/30 lg:px-5 lg:py-3"
+                  >
+                    <Link2 size={16} />
+                    <span className="hidden sm:inline">{inviteCopied ? "Lien copié !" : "Lien d'invitation"}</span>
+                  </button>
                   <button
                     onClick={cloneEvent}
                     className="hidden items-center gap-2 rounded-2xl bg-white/20 px-5 py-3 font-bold text-white backdrop-blur-xl transition hover:bg-white/30 lg:flex"
