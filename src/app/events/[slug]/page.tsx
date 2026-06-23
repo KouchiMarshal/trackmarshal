@@ -11,6 +11,8 @@ import ApplyButton from "@/components/events/apply-button";
 import ShareButton from "@/components/events/share-button";
 import InviteButton from "@/components/events/invite-button";
 import InviteBanner from "@/components/events/invite-banner";
+import EventCounter from "@/components/events/event-counter";
+import LiveApplyButton from "@/components/events/live-apply-button";
 
 type EventPageProps = {
   params: Promise<{
@@ -365,33 +367,12 @@ export default async function EventPage({
 
                 </p>
 
-                <div className="mt-4 flex items-center justify-between text-sm text-zinc-500">
-                  <span>{acceptedCount || 0} / {event.marshals_needed} commissaires</span>
-                  {isFull && <span className="font-bold text-blue-600">Complet — liste d'attente ouverte</span>}
-                </div>
-
-                <div className="mt-4 h-2 w-full rounded-full bg-zinc-200">
-                  <div
-                    className="h-2 rounded-full bg-[#FF5A1F] transition-all"
-                    style={{ width: `${Math.min(100, Math.round(((acceptedCount || 0) / (event.marshals_needed || 1)) * 100))}%` }}
-                  />
-                </div>
-
-                {event.staff_roles && event.staff_roles.length > 1 && (
-                  <div className="mt-4 space-y-2">
-                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">Détail des postes</p>
-                    {event.staff_roles.map((r: {role:string,count:number}) => (
-                      <div key={r.role} className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2.5">
-                        <span className="text-sm font-medium text-zinc-700">{r.role}</span>
-                        <span className="text-sm font-bold text-zinc-900">{r.count} poste{r.count > 1 ? "s" : ""}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <div className="mt-8">
-                  <ApplyButton eventId={event.id} isFull={isFull} eventDiscipline={event.discipline} />
-                </div>
+                <EventCounter
+                  eventId={event.id}
+                  marshalsNeeded={event.marshals_needed}
+                  eventDiscipline={event.discipline}
+                  staffRoles={event.staff_roles}
+                />
 
               </div>
 
@@ -405,7 +386,7 @@ export default async function EventPage({
 
       {/* Bouton postuler fixe en bas sur mobile */}
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-white/90 p-4 backdrop-blur-xl lg:hidden">
-        <ApplyButton eventId={event.id} isFull={isFull} eventDiscipline={event.discipline} />
+        <LiveApplyButton eventId={event.id} marshalsNeeded={event.marshals_needed} eventDiscipline={event.discipline} />
       </div>
 
       <div className="h-20 lg:hidden" />
