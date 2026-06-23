@@ -20,10 +20,10 @@ const navItems = [
 
 const mobileNavItems = [
   { icon: Home, label: "Accueil", href: "/admin" },
-  { icon: BarChart3, label: "Stats", href: "/admin/analytics" },
   { icon: FileBadge2, label: "Licences", href: "/admin/licenses" },
+  { icon: BookOpen, label: "CV Lab", href: "/admin/cv-lab" },
   { icon: MessageSquare, label: "Messages", href: "/admin/messages" },
-  { icon: Megaphone, label: "Broadcast", href: "/admin/broadcast" },
+  { icon: Users, label: "Commissaires", href: "/admin/commissaires" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
