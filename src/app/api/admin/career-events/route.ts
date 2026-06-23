@@ -55,6 +55,25 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ event: data });
 }
 
+export async function PATCH(req: NextRequest) {
+  const admin = await getAdminUser(req);
+  if (!admin) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+
+  const body = await req.json();
+  const { id, event_name, event_date, event_end_date, location, role, discipline, organizer_name, notes } = body;
+  if (!id) return NextResponse.json({ error: "id manquant" }, { status: 400 });
+
+  const { data, error } = await supabaseAdmin
+    .from("career_events")
+    .update({ event_name, event_date, event_end_date: event_end_date || null, location, role, discipline, organizer_name, notes })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ event: data });
+}
+
 export async function DELETE(req: NextRequest) {
   const admin = await getAdminUser(req);
   if (!admin) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });

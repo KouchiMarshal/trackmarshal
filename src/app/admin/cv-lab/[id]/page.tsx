@@ -3,7 +3,7 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { ArrowLeft, CalendarDays, Download, MapPin, Plus, Star, Trash2, X } from "lucide-react";
+import { ArrowLeft, CalendarDays, Download, MapPin, Pencil, Plus, Save, Star, Trash2, X } from "lucide-react";
 import { Toast, type ToastData } from "@/components/ui/toast";
 
 const ROLES = [
@@ -70,6 +70,9 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<BlankForm>(blank);
   const [saving, setSaving] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<BlankForm>(blank);
+  const [savingEdit, setSavingEdit] = useState(false);
   const [toast, setToast] = useState<ToastData>(null);
 
   useEffect(() => { load(); }, [id]);
@@ -117,6 +120,40 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
     setForm(blank);
     setShowForm(false);
     setToast({ message: "Épreuve ajoutée.", type: "success" });
+  }
+
+  function startEditEvent(e: CareerEvent) {
+    setEditingEventId(e.id);
+    setEditForm({
+      event_name: e.event_name,
+      event_date: e.event_date,
+      event_end_date: e.event_end_date || "",
+      location: e.location || "",
+      role: e.role,
+      discipline: e.discipline || "",
+      organizer_name: e.organizer_name || "",
+      notes: e.notes || "",
+    });
+  }
+
+  async function saveEditEvent(eventId: string) {
+    if (!editForm.event_name || !editForm.event_date || !editForm.role) {
+      setToast({ message: "Nom, date et rôle sont obligatoires.", type: "error" });
+      return;
+    }
+    setSavingEdit(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    const res = await fetch("/api/admin/career-events", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session!.access_token}` },
+      body: JSON.stringify({ id: eventId, ...editForm }),
+    });
+    const json = await res.json();
+    setSavingEdit(false);
+    if (!res.ok) { setToast({ message: json.error, type: "error" }); return; }
+    setCareerEvents((prev) => prev.map((e) => e.id === eventId ? json.event : e));
+    setEditingEventId(null);
+    setToast({ message: "Épreuve modifiée.", type: "success" });
   }
 
   async function deleteEvent(eventId: string) {
@@ -269,29 +306,93 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
 
             {/* Manual career events */}
             {careerEvents.map((e) => (
-              <div key={e.id} className="flex items-start gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 px-5 py-4">
-                <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-zinc-400" />
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-zinc-900 truncate">{e.event_name}</p>
-                  <p className="mt-0.5 text-xs font-semibold text-[#FF5A1F]">{e.role}</p>
-                  <div className="mt-1 flex flex-wrap gap-3 text-xs text-zinc-500">
-                    <span className="flex items-center gap-1">
-                      <CalendarDays size={11} />
-                      {new Date(e.event_date).toLocaleDateString("fr-FR")}
-                      {e.event_end_date && e.event_end_date !== e.event_date && ` → ${new Date(e.event_end_date).toLocaleDateString("fr-FR")}`}
-                    </span>
-                    {e.location && <span className="flex items-center gap-1"><MapPin size={11} />{e.location}</span>}
-                    {e.discipline && <span className="rounded-full bg-white border border-zinc-200 px-2 py-0.5">{e.discipline}</span>}
-                    {e.organizer_name && <span>{e.organizer_name}</span>}
+              <div key={e.id} className="rounded-2xl border border-zinc-200 bg-zinc-50 overflow-hidden">
+                {editingEventId === e.id ? (
+                  <div className="p-5">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="sm:col-span-2">
+                        <label className="mb-1 block text-xs font-semibold text-zinc-600">Nom de l'épreuve *</label>
+                        <input type="text" value={editForm.event_name} onChange={(ev) => setEditForm((f) => ({ ...f, event_name: ev.target.value }))}
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-semibold text-zinc-600">Date de début *</label>
+                        <input type="date" value={editForm.event_date} onChange={(ev) => setEditForm((f) => ({ ...f, event_date: ev.target.value }))}
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-semibold text-zinc-600">Date de fin</label>
+                        <input type="date" value={editForm.event_end_date} min={editForm.event_date || undefined} onChange={(ev) => setEditForm((f) => ({ ...f, event_end_date: ev.target.value }))}
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-semibold text-zinc-600">Rôle *</label>
+                        <select value={editForm.role} onChange={(ev) => setEditForm((f) => ({ ...f, role: ev.target.value }))}
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30">
+                          <option value="">Sélectionner...</option>
+                          {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-semibold text-zinc-600">Discipline</label>
+                        <select value={editForm.discipline} onChange={(ev) => setEditForm((f) => ({ ...f, discipline: ev.target.value }))}
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30">
+                          <option value="">Sélectionner...</option>
+                          {DISCIPLINES.map((d) => <option key={d} value={d}>{d}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-semibold text-zinc-600">Lieu</label>
+                        <input type="text" value={editForm.location} onChange={(ev) => setEditForm((f) => ({ ...f, location: ev.target.value }))}
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30" />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-semibold text-zinc-600">Organisateur</label>
+                        <input type="text" value={editForm.organizer_name} onChange={(ev) => setEditForm((f) => ({ ...f, organizer_name: ev.target.value }))}
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30" />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <label className="mb-1 block text-xs font-semibold text-zinc-600">Notes</label>
+                        <textarea value={editForm.notes} onChange={(ev) => setEditForm((f) => ({ ...f, notes: ev.target.value }))} rows={2}
+                          className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#FF5A1F]/30" />
+                      </div>
+                    </div>
+                    <div className="mt-3 flex justify-end gap-2">
+                      <button onClick={() => setEditingEventId(null)} className="rounded-xl border border-zinc-200 px-4 py-2 text-xs font-bold text-zinc-600 hover:bg-zinc-100">Annuler</button>
+                      <button onClick={() => saveEditEvent(e.id)} disabled={savingEdit}
+                        className="flex items-center gap-1.5 rounded-xl bg-[#FF5A1F] px-4 py-2 text-xs font-bold text-white hover:scale-105 disabled:opacity-50">
+                        <Save size={13} />{savingEdit ? "Enregistrement…" : "Enregistrer"}
+                      </button>
+                    </div>
                   </div>
-                  {e.notes && <p className="mt-2 text-xs text-zinc-500 italic">{e.notes}</p>}
-                </div>
-                <button
-                  onClick={() => deleteEvent(e.id)}
-                  className="shrink-0 rounded-xl p-1.5 text-zinc-400 transition hover:bg-red-50 hover:text-red-500"
-                >
-                  <Trash2 size={14} />
-                </button>
+                ) : (
+                  <div className="flex items-start gap-4 px-5 py-4">
+                    <div className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-zinc-400" />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-zinc-900 truncate">{e.event_name}</p>
+                      <p className="mt-0.5 text-xs font-semibold text-[#FF5A1F]">{e.role}</p>
+                      <div className="mt-1 flex flex-wrap gap-3 text-xs text-zinc-500">
+                        <span className="flex items-center gap-1">
+                          <CalendarDays size={11} />
+                          {new Date(e.event_date).toLocaleDateString("fr-FR")}
+                          {e.event_end_date && e.event_end_date !== e.event_date && ` → ${new Date(e.event_end_date).toLocaleDateString("fr-FR")}`}
+                        </span>
+                        {e.location && <span className="flex items-center gap-1"><MapPin size={11} />{e.location}</span>}
+                        {e.discipline && <span className="rounded-full bg-white border border-zinc-200 px-2 py-0.5">{e.discipline}</span>}
+                        {e.organizer_name && <span>{e.organizer_name}</span>}
+                      </div>
+                      {e.notes && <p className="mt-2 text-xs text-zinc-500 italic">{e.notes}</p>}
+                    </div>
+                    <div className="flex shrink-0 gap-1">
+                      <button onClick={() => startEditEvent(e)} className="rounded-xl p-1.5 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700">
+                        <Pencil size={14} />
+                      </button>
+                      <button onClick={() => deleteEvent(e.id)} className="rounded-xl p-1.5 text-zinc-400 transition hover:bg-red-50 hover:text-red-500">
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
