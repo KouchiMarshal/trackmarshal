@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { Building2, CheckCircle2, Clock3, Users, FileBadge2 } from "lucide-react";
+import { Building2, CheckCircle2, Clock3, Users, FileBadge2, Dumbbell } from "lucide-react";
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({ total: 0, pending: 0, verified: 0, noLicense: 0 });
@@ -209,6 +209,13 @@ export default function AdminDashboardPage() {
               <h2 className="mt-6 text-2xl font-black text-zinc-900">Tous les commissaires</h2>
               <p className="mt-3 text-zinc-600">Consultez la liste complète des commissaires inscrits sur la plateforme.</p>
               <p className="mt-6 text-sm font-bold text-zinc-700 group-hover:underline">{stats.total} commissaires →</p>
+            </Link>
+
+            <Link href="/perf" className="group rounded-3xl border border-orange-200 bg-orange-50 p-8 transition hover:border-orange-300 hover:bg-orange-100">
+              <Dumbbell size={32} className="text-[#FF5A1F]" />
+              <h2 className="mt-6 text-2xl font-black text-zinc-900">Mon suivi muscu</h2>
+              <p className="mt-3 text-zinc-600">Suivi personnel de séances, charges et évolution du poids corporel.</p>
+              <p className="mt-6 text-sm font-bold text-[#FF5A1F] group-hover:underline">Accéder →</p>
             </Link>
           </div>
 
