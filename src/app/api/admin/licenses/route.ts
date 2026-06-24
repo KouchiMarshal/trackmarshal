@@ -53,18 +53,59 @@ export async function POST(req: NextRequest) {
   if (profileId && ["verify-legacy", "reject-legacy"].includes(action)) {
     const { data: profile } = await supabaseAdmin
       .from("profiles")
-      .select("id, full_name, email, license_type")
+      .select("id, full_name, email, license_type, license_url, license_url_2, license_type_2")
       .eq("id", profileId)
       .single();
 
     if (!profile) return NextResponse.json({ error: "Profil introuvable" }, { status: 404 });
 
     if (action === "verify-legacy") {
-      const { error } = await supabaseAdmin
+      // Migrate each old license URL into the new licenses table
+      const toMigrate = [
+        { type: profile.license_type, url: profile.license_url },
+        { type: profile.license_type_2, url: profile.license_url_2 },
+      ].filter((l) => l.url);
+
+      for (const l of toMigrate) {
+        // Check not already migrated
+        const { count } = await supabaseAdmin
+          .from("licenses")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", profileId)
+          .eq("url", l.url!);
+
+        if (!count || count === 0) {
+          const typeName: string = l.type || "";
+          const isMoto = /^(FFM|OFS|OFF)/i.test(typeName);
+          await supabaseAdmin.from("licenses").insert({
+            user_id: profileId,
+            type: typeName || null,
+            category: isMoto ? "moto" : "auto",
+            url: l.url,
+            verified: true,
+          });
+        } else {
+          // Already migrated — just mark as verified
+          await supabaseAdmin
+            .from("licenses")
+            .update({ verified: true })
+            .eq("user_id", profileId)
+            .eq("url", l.url!);
+        }
+      }
+
+      // Clear old profile columns so it no longer appears as "ancien système"
+      await supabaseAdmin
         .from("profiles")
-        .update({ license_verified: true })
+        .update({
+          license_verified: true,
+          license_url: null,
+          license_type: null,
+          license_url_2: null,
+          license_type_2: null,
+          license_verified_2: null,
+        })
         .eq("id", profileId);
-      if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
       await supabaseAdmin.from("notifications").insert({
         user_id: profileId,
@@ -78,7 +119,7 @@ export async function POST(req: NextRequest) {
     if (action === "reject-legacy") {
       const { error } = await supabaseAdmin
         .from("profiles")
-        .update({ license_verified: false, license_url: null, license_type: null })
+        .update({ license_verified: false, license_url: null, license_type: null, license_url_2: null, license_type_2: null })
         .eq("id", profileId);
       if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
