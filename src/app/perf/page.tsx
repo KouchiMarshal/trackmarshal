@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState, useId } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import {
   Dumbbell, Scale, Trophy, Plus, Trash2,
-  ChevronDown, ChevronUp, X, TrendingUp, Flame, Check,
+  ChevronDown, ChevronUp, X, TrendingUp, Flame, Check, Pencil,
 } from "lucide-react";
 
 const OWNER_EMAIL = "foussardk@gmail.com";
@@ -50,12 +50,16 @@ export default function PerfPage() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [bodyWeights, setBodyWeights] = useState<BodyWeight[]>([]);
 
-  // Session builder
+  // Session builder / editor
   const [sessionOpen, setSessionOpen] = useState(false);
   const [sessionDate, setSessionDate] = useState(new Date().toISOString().slice(0, 10));
+  const [editDate, setEditDate] = useState<string | null>(null);
   const [blocks, setBlocks] = useState<ExerciseBlock[]>([makeBlock()]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  // Workouts tab view mode
+  const [sessionViewMode, setSessionViewMode] = useState<"by-date" | "by-exercise">("by-date");
 
   // Body weight form
   const [showBForm, setShowBForm] = useState(false);
@@ -105,6 +109,48 @@ export default function PerfPage() {
   function addBlock() { setBlocks((prev) => [...prev, makeBlock()]); }
   function removeBlock(id: string) { setBlocks((prev) => prev.filter((b) => b.id !== id)); }
 
+  function closeSessionModal() {
+    setSessionOpen(false);
+    setEditDate(null);
+    setBlocks([makeBlock()]);
+    setSessionDate(new Date().toISOString().slice(0, 10));
+  }
+
+  function openNewSession() {
+    setEditDate(null);
+    setSessionDate(new Date().toISOString().slice(0, 10));
+    setBlocks([makeBlock()]);
+    setSessionOpen(true);
+  }
+
+  function openEditSession(date: string) {
+    const dayWorkouts = workouts.filter((w) => w.date === date);
+    // Group by exercise, preserving insertion order
+    const seen: string[] = [];
+    dayWorkouts.forEach((w) => { if (!seen.includes(w.exercise)) seen.push(w.exercise); });
+
+    const newBlocks: ExerciseBlock[] = seen.map((exercise) => {
+      const ws = dayWorkouts.filter((w) => w.exercise === exercise);
+      return {
+        id: Math.random().toString(36).slice(2),
+        name: EXERCISES.includes(exercise) ? exercise : "Autre",
+        custom: EXERCISES.includes(exercise) ? "" : exercise,
+        rows: ws.map((w) => ({
+          id: Math.random().toString(36).slice(2),
+          sets: w.sets?.toString() ?? "",
+          reps: w.reps?.toString() ?? "",
+          weight: w.weight_kg?.toString() ?? "",
+          notes: w.notes ?? "",
+        })),
+      };
+    });
+
+    setBlocks(newBlocks.length > 0 ? newBlocks : [makeBlock()]);
+    setSessionDate(date);
+    setEditDate(date);
+    setSessionOpen(true);
+  }
+
   async function saveSession() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
@@ -126,16 +172,28 @@ export default function PerfPage() {
     }
     if (rows.length === 0) return;
     setSaving(true);
+
+    if (editDate) {
+      // Replace all rows for the edited date
+      await supabase.from("fitness_workouts").delete().eq("user_id", user.id).eq("date", editDate);
+    }
+
     await supabase.from("fitness_workouts").insert(rows);
     await loadWorkouts(user.id);
     setSaving(false);
     setSaved(true);
     setTimeout(() => {
       setSaved(false);
-      setSessionOpen(false);
-      setBlocks([makeBlock()]);
+      closeSessionModal();
       setTab("workouts");
     }, 1200);
+  }
+
+  async function deleteSession(date: string) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    await supabase.from("fitness_workouts").delete().eq("user_id", user.id).eq("date", date);
+    setWorkouts((prev) => prev.filter((w) => w.date !== date));
   }
 
   async function saveBodyWeight() {
@@ -210,7 +268,7 @@ export default function PerfPage() {
               className="flex items-center gap-1.5 rounded-xl border border-zinc-700 px-3 py-2 text-xs font-bold text-zinc-300 transition hover:border-zinc-500">
               <Scale size={13} /> Poids
             </button>
-            <button onClick={() => { setSessionOpen(true); setTab("workouts"); }}
+            <button onClick={() => { openNewSession(); setTab("workouts"); }}
               className="flex items-center gap-1.5 rounded-xl bg-[#FF5A1F] px-3 py-2 text-xs font-bold text-white transition hover:opacity-90">
               <Plus size={13} /> Séance
             </button>
@@ -218,7 +276,7 @@ export default function PerfPage() {
         </div>
       </div>
 
-      {/* ── SESSION BUILDER MODAL ── */}
+      {/* ── SESSION BUILDER / EDITOR MODAL ── */}
       {sessionOpen && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-zinc-950/95 backdrop-blur-sm">
           <div className="mx-auto max-w-2xl px-4 py-6">
@@ -226,10 +284,14 @@ export default function PerfPage() {
             {/* Modal header */}
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-black text-white">Nouvelle séance</h2>
-                <p className="text-xs text-zinc-500">Ajoute tous tes exercices puis valide</p>
+                <h2 className="text-xl font-black text-white">
+                  {editDate ? "Modifier la séance" : "Nouvelle séance"}
+                </h2>
+                <p className="text-xs text-zinc-500">
+                  {editDate ? "Modifie les exercices puis valide pour enregistrer" : "Ajoute tous tes exercices puis valide"}
+                </p>
               </div>
-              <button onClick={() => setSessionOpen(false)} className="rounded-xl border border-zinc-700 p-2 text-zinc-400 hover:text-white">
+              <button onClick={closeSessionModal} className="rounded-xl border border-zinc-700 p-2 text-zinc-400 hover:text-white">
                 <X size={18} />
               </button>
             </div>
@@ -315,7 +377,7 @@ export default function PerfPage() {
             {/* Save */}
             <button onClick={saveSession} disabled={saving || saved}
               className={`mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-4 text-sm font-black transition ${saved ? "bg-green-500 text-white" : "bg-[#FF5A1F] text-white hover:opacity-90 disabled:opacity-50"}`}>
-              {saved ? <><Check size={16} /> Séance enregistrée !</> : saving ? "Enregistrement..." : "Valider la séance"}
+              {saved ? <><Check size={16} /> {editDate ? "Séance mise à jour !" : "Séance enregistrée !"}</> : saving ? "Enregistrement..." : editDate ? "Mettre à jour la séance" : "Valider la séance"}
             </button>
 
           </div>
@@ -408,7 +470,7 @@ export default function PerfPage() {
               <div className="rounded-2xl border border-dashed border-zinc-700 p-12 text-center">
                 <Dumbbell size={32} className="mx-auto mb-3 text-zinc-600" />
                 <p className="font-bold text-zinc-500">Aucune séance enregistrée.</p>
-                <button onClick={() => { setSessionOpen(true); }} className="mt-4 rounded-xl bg-[#FF5A1F] px-5 py-2.5 text-sm font-bold">
+                <button onClick={() => { openNewSession(); }} className="mt-4 rounded-xl bg-[#FF5A1F] px-5 py-2.5 text-sm font-bold">
                   Ajouter ma première séance
                 </button>
               </div>
@@ -419,70 +481,143 @@ export default function PerfPage() {
         {/* ── SÉANCES ── */}
         {tab === "workouts" && (
           <div className="space-y-4">
+            {/* View mode toggle */}
+            <div className="flex gap-1 rounded-2xl border border-zinc-800 bg-zinc-900 p-1">
+              <button onClick={() => setSessionViewMode("by-date")}
+                className={`flex-1 rounded-xl py-2 text-xs font-bold transition ${sessionViewMode === "by-date" ? "bg-zinc-700 text-white" : "text-zinc-500 hover:text-zinc-300"}`}>
+                Par séance
+              </button>
+              <button onClick={() => setSessionViewMode("by-exercise")}
+                className={`flex-1 rounded-xl py-2 text-xs font-bold transition ${sessionViewMode === "by-exercise" ? "bg-zinc-700 text-white" : "text-zinc-500 hover:text-zinc-300"}`}>
+                Par exercice
+              </button>
+            </div>
+
             {!sessionOpen && (
-              <button onClick={() => setSessionOpen(true)}
+              <button onClick={openNewSession}
                 className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-zinc-700 py-4 text-sm font-bold text-zinc-500 transition hover:border-[#FF5A1F]/50 hover:text-[#FF5A1F]">
                 <Plus size={16} /> Nouvelle séance
               </button>
             )}
 
-            {Object.keys(byExercise).length === 0 && (
-              <p className="py-8 text-center text-zinc-600">Aucune entrée enregistrée.</p>
+            {/* ── PAR SÉANCE ── */}
+            {sessionViewMode === "by-date" && (
+              <>
+                {sessionDates.length === 0 && (
+                  <p className="py-8 text-center text-zinc-600">Aucune séance enregistrée.</p>
+                )}
+                {sessionDates.map((date) => {
+                  const dayWorkouts = workouts.filter((w) => w.date === date);
+                  const exercises = [...new Set(dayWorkouts.map((w) => w.exercise))];
+                  return (
+                    <div key={date} className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
+                      <div className="mb-3 flex items-center justify-between">
+                        <p className="text-sm font-black capitalize text-white">
+                          {new Date(date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => openEditSession(date)}
+                            className="flex items-center gap-1.5 rounded-xl border border-zinc-700 px-3 py-1.5 text-xs font-bold text-zinc-400 transition hover:border-[#FF5A1F]/50 hover:text-[#FF5A1F]">
+                            <Pencil size={11} /> Modifier
+                          </button>
+                          <button
+                            onClick={() => deleteSession(date)}
+                            className="rounded-xl border border-zinc-800 p-1.5 text-zinc-600 transition hover:border-red-900/30 hover:bg-red-900/20 hover:text-red-400">
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        {exercises.map((ex) => {
+                          const exWorkouts = dayWorkouts.filter((w) => w.exercise === ex);
+                          const isPR = exWorkouts.some((w) => w.weight_kg !== null && w.weight_kg === prs[ex]);
+                          return (
+                            <div key={ex} className={`flex items-start justify-between rounded-xl px-3 py-2.5 ${isPR ? "bg-yellow-400/5" : "bg-zinc-800/50"}`}>
+                              <div className="flex items-center gap-2">
+                                {isPR && <Trophy size={11} className="mt-0.5 shrink-0 text-yellow-400" />}
+                                <span className={`text-sm font-semibold ${isPR ? "text-yellow-300" : "text-zinc-300"}`}>{ex}</span>
+                              </div>
+                              <div className="ml-4 text-right">
+                                {exWorkouts.map((w, i) => (
+                                  <p key={i} className="text-xs text-zinc-500">
+                                    {w.sets && w.reps ? `${w.sets}×${w.reps}` : ""}
+                                    {w.weight_kg ? ` @ ${w.weight_kg} kg` : ""}
+                                    {!w.sets && !w.reps && !w.weight_kg ? "—" : ""}
+                                  </p>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
             )}
 
-            {Object.entries(byExercise).map(([exercise, entries]) => {
-              const max = Math.max(...entries.map((e) => e.weight_kg || 0));
-              const isExpanded = expandedExercise === exercise;
-              return (
-                <div key={exercise} className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
-                  <button onClick={() => setExpandedExercise(isExpanded ? null : exercise)}
-                    className="flex w-full items-center justify-between px-5 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-800">
-                        <Dumbbell size={14} className="text-[#FF5A1F]" />
-                      </div>
-                      <div className="text-left">
-                        <p className="font-black text-white">{exercise}</p>
-                        <p className="text-xs text-zinc-500">{entries.length} entrée{entries.length > 1 ? "s" : ""}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {max > 0 && <span className="rounded-full bg-yellow-400/10 px-3 py-1 text-xs font-black text-yellow-400">🏆 {max} kg</span>}
-                      {isExpanded ? <ChevronUp size={16} className="text-zinc-500" /> : <ChevronDown size={16} className="text-zinc-500" />}
-                    </div>
-                  </button>
-
-                  {isExpanded && (
-                    <div className="border-t border-zinc-800 px-5 pb-4 pt-3 space-y-2">
-                      {entries.map((e) => {
-                        const isPR = e.weight_kg !== null && e.weight_kg === max;
-                        return (
-                          <div key={e.id} className={`flex items-center justify-between rounded-xl px-4 py-3 ${isPR ? "border border-yellow-400/20 bg-yellow-400/5" : "bg-zinc-800/50"}`}>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <span className="text-[11px] text-zinc-500">
-                                  {new Date(e.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
-                                </span>
-                                {isPR && <span className="text-[10px] font-black text-yellow-400">PR</span>}
-                              </div>
-                              <p className="mt-0.5 text-sm font-bold text-white">
-                                {e.sets && e.reps ? `${e.sets} × ${e.reps} reps` : ""}
-                                {e.weight_kg ? ` @ ${e.weight_kg} kg` : ""}
-                                {!e.sets && !e.reps && !e.weight_kg && "—"}
-                              </p>
-                              {e.notes && <p className="mt-0.5 text-xs italic text-zinc-500">{e.notes}</p>}
-                            </div>
-                            <button onClick={() => deleteWorkout(e.id)} className="ml-3 rounded-lg p-1.5 text-zinc-600 hover:bg-red-900/30 hover:text-red-400">
-                              <Trash2 size={13} />
-                            </button>
+            {/* ── PAR EXERCICE ── */}
+            {sessionViewMode === "by-exercise" && (
+              <>
+                {Object.keys(byExercise).length === 0 && (
+                  <p className="py-8 text-center text-zinc-600">Aucune entrée enregistrée.</p>
+                )}
+                {Object.entries(byExercise).map(([exercise, entries]) => {
+                  const max = Math.max(...entries.map((e) => e.weight_kg || 0));
+                  const isExpanded = expandedExercise === exercise;
+                  return (
+                    <div key={exercise} className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
+                      <button onClick={() => setExpandedExercise(isExpanded ? null : exercise)}
+                        className="flex w-full items-center justify-between px-5 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-800">
+                            <Dumbbell size={14} className="text-[#FF5A1F]" />
                           </div>
-                        );
-                      })}
+                          <div className="text-left">
+                            <p className="font-black text-white">{exercise}</p>
+                            <p className="text-xs text-zinc-500">{entries.length} entrée{entries.length > 1 ? "s" : ""}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {max > 0 && <span className="rounded-full bg-yellow-400/10 px-3 py-1 text-xs font-black text-yellow-400">🏆 {max} kg</span>}
+                          {isExpanded ? <ChevronUp size={16} className="text-zinc-500" /> : <ChevronDown size={16} className="text-zinc-500" />}
+                        </div>
+                      </button>
+
+                      {isExpanded && (
+                        <div className="border-t border-zinc-800 px-5 pb-4 pt-3 space-y-2">
+                          {entries.map((e) => {
+                            const isPR = e.weight_kg !== null && e.weight_kg === max;
+                            return (
+                              <div key={e.id} className={`flex items-center justify-between rounded-xl px-4 py-3 ${isPR ? "border border-yellow-400/20 bg-yellow-400/5" : "bg-zinc-800/50"}`}>
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-[11px] text-zinc-500">
+                                      {new Date(e.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
+                                    </span>
+                                    {isPR && <span className="text-[10px] font-black text-yellow-400">PR</span>}
+                                  </div>
+                                  <p className="mt-0.5 text-sm font-bold text-white">
+                                    {e.sets && e.reps ? `${e.sets} × ${e.reps} reps` : ""}
+                                    {e.weight_kg ? ` @ ${e.weight_kg} kg` : ""}
+                                    {!e.sets && !e.reps && !e.weight_kg && "—"}
+                                  </p>
+                                  {e.notes && <p className="mt-0.5 text-xs italic text-zinc-500">{e.notes}</p>}
+                                </div>
+                                <button onClick={() => deleteWorkout(e.id)} className="ml-3 rounded-lg p-1.5 text-zinc-600 hover:bg-red-900/30 hover:text-red-400">
+                                  <Trash2 size={13} />
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  );
+                })}
+              </>
+            )}
           </div>
         )}
 
