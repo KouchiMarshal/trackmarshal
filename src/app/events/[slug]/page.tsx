@@ -167,12 +167,6 @@ export default async function EventPage({
 
             </h1>
 
-            <p className="mt-8 max-w-3xl whitespace-pre-wrap text-lg leading-relaxed text-zinc-200 sm:mt-10 sm:text-xl lg:text-2xl">
-
-              {event.briefing || "Aucune description disponible."}
-
-            </p>
-
             <div className="mt-10 grid gap-4 sm:mt-14 sm:flex sm:flex-wrap sm:gap-5">
 
               <div className="rounded-3xl border border-white/10 bg-black/40 px-6 py-5 backdrop-blur-2xl sm:px-7 sm:py-6">
