@@ -11,8 +11,10 @@ import { Toast, type ToastData } from "@/components/ui/toast";
 
 export default function OrganizerApplicationsPage() {
   const [applications, setApplications] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [selectedEventId, setSelectedEventId] = useState("all");
   const [toast, setToast] = useState<ToastData>(null);
   const [postValues, setPostValues] = useState<Record<string, string>>({});
   const [postSaving, setPostSaving] = useState<Record<string, boolean>>({});
@@ -79,6 +81,7 @@ export default function OrganizerApplicationsPage() {
     }));
 
     setApplications(merged);
+    setEvents(eventsData || []);
 
     const initialPostValues: Record<string, string> = {};
     merged.forEach((a: any) => { if (a.post) initialPostValues[a.id] = a.post; });
@@ -190,13 +193,17 @@ export default function OrganizerApplicationsPage() {
     });
   }
 
-  const filtered = applications.filter((a) => filter === "all" || a.status === filter);
+  const eventFiltered = selectedEventId === "all"
+    ? applications
+    : applications.filter((a) => a.event_id === selectedEventId);
+
+  const filtered = eventFiltered.filter((a) => filter === "all" || a.status === filter);
 
   const counts = {
-    all: applications.length,
-    pending: applications.filter((a) => a.status === "pending").length,
-    accepted: applications.filter((a) => a.status === "accepted").length,
-    rejected: applications.filter((a) => a.status === "rejected").length,
+    all: eventFiltered.length,
+    pending: eventFiltered.filter((a) => a.status === "pending").length,
+    accepted: eventFiltered.filter((a) => a.status === "accepted").length,
+    rejected: eventFiltered.filter((a) => a.status === "rejected").length,
   };
 
   return (
@@ -242,6 +249,46 @@ export default function OrganizerApplicationsPage() {
 
             <div className="relative z-10 mx-auto max-w-[1600px] p-4 pb-24 sm:p-6 lg:p-10 lg:pb-10">
 
+              {/* Event selector */}
+              {events.length > 1 && (
+                <div className="mb-5">
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
+                    Événement
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => { setSelectedEventId("all"); setFilter("all"); }}
+                      className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
+                        selectedEventId === "all"
+                          ? "bg-zinc-900 text-white"
+                          : "border border-zinc-200 bg-white text-zinc-600 hover:text-zinc-900"
+                      }`}
+                    >
+                      Tous les événements
+                      <span className="rounded-full bg-black/10 px-2 py-0.5 text-xs">{applications.length}</span>
+                    </button>
+                    {events.map((ev) => {
+                      const evCount = applications.filter((a) => a.event_id === ev.id).length;
+                      return (
+                        <button
+                          key={ev.id}
+                          onClick={() => { setSelectedEventId(ev.id); setFilter("all"); }}
+                          className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-bold transition ${
+                            selectedEventId === ev.id
+                              ? "bg-[#FF5A1F] text-white"
+                              : "border border-zinc-200 bg-white text-zinc-600 hover:border-[#FF5A1F]/40 hover:text-zinc-900"
+                          }`}
+                        >
+                          {ev.title}
+                          <span className="rounded-full bg-black/10 px-2 py-0.5 text-xs">{evCount}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Status filters */}
               <div className="mb-8 flex flex-wrap gap-3">
                 {[
                   { key: "all", label: "Toutes", count: counts.all, active: "bg-[#FF5A1F] text-white" },
