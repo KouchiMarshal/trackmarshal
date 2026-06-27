@@ -146,7 +146,7 @@ export default function PublicNavbar() {
                     <Link
                       href="/admin"
                       onClick={() => setOpen(false)}
-                      className="flex h-13 items-center justify-center rounded-2xl border border-[#FF5A1F]/40 bg-[#FF5A1F]/10 font-black text-[#FF5A1F]"
+                      className="flex h-14 items-center justify-center rounded-2xl border border-[#FF5A1F]/40 bg-[#FF5A1F]/10 font-black text-[#FF5A1F]"
                     >
                       Admin
                     </Link>
@@ -154,7 +154,7 @@ export default function PublicNavbar() {
                   <Link
                     href="/dashboard"
                     onClick={() => setOpen(false)}
-                    className="flex h-13 items-center justify-center rounded-2xl bg-[#FF5A1F] font-black text-white"
+                    className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] font-black text-white"
                   >
                     Mon Dashboard
                   </Link>
@@ -164,14 +164,14 @@ export default function PublicNavbar() {
                   <Link
                     href="/login"
                     onClick={() => setOpen(false)}
-                    className="flex h-13 items-center justify-center rounded-2xl border border-zinc-300 font-bold text-zinc-800"
+                    className="flex h-14 items-center justify-center rounded-2xl border border-zinc-300 font-bold text-zinc-800"
                   >
                     Se connecter
                   </Link>
                   <Link
                     href="/register"
                     onClick={() => setOpen(false)}
-                    className="flex h-13 items-center justify-center rounded-2xl bg-[#FF5A1F] font-black text-white"
+                    className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] font-black text-white"
                   >
                     S'inscrire
                   </Link>

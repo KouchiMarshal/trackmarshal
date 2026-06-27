@@ -131,7 +131,7 @@ export default function HomePage() {
           </div>
 
           <div className="mt-12 text-center">
-            <Link href="/register" className="inline-flex h-16 items-center rounded-2xl bg-[#FF5A1F] px-10 text-lg font-black transition hover:scale-[1.02]">
+            <Link href="/register" className="inline-flex h-16 items-center rounded-2xl bg-[#FF5A1F] px-10 text-lg font-black text-white transition hover:scale-[1.02]">
               Rejoindre TrackMarshal
             </Link>
           </div>
