@@ -86,8 +86,8 @@ export default function HomePage() {
             {/* Trust badges */}
             <div className="mt-8 flex flex-wrap gap-3">
               {[
-                { label: "Licences FFSA reconnues", color: "bg-blue-50 text-blue-700 border-blue-200" },
-                { label: "Licences FFM reconnues", color: "bg-purple-50 text-purple-700 border-purple-200" },
+                { label: "Licences FFSA acceptées", color: "bg-blue-50 text-blue-700 border-blue-200" },
+                { label: "Licences FFM acceptées", color: "bg-purple-50 text-purple-700 border-purple-200" },
                 { label: "100% gratuit", color: "bg-green-50 text-green-700 border-green-200" },
                 { label: "Auto · Moto · Karting", color: "bg-orange-50 text-orange-700 border-orange-200" },
               ].map((b) => (

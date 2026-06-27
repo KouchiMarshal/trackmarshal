@@ -95,8 +95,8 @@ export default function AboutPage() {
               {[
                 { value: "Auto", label: "Rallye, circuit, karting, côte, endurance, drift, slalom…" },
                 { value: "Moto", label: "Motocross, enduro, trial, road racing, supermoto, rallye moto…" },
-                { value: "FFSA", label: "Licences et grades auto reconnus et vérifiés sur la plateforme" },
-                { value: "FFM", label: "Licences moto reconnues — un seul profil pour toutes les disciplines" },
+                { value: "FFSA", label: "Les commissaires peuvent renseigner et faire vérifier leur licence FFSA" },
+                { value: "FFM", label: "Les commissaires moto renseignent leur licence FFM sur leur profil" },
               ].map((item) => (
                 <div key={item.value} className="rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm">
                   <p className="text-3xl font-black text-[#FF5A1F]">{item.value}</p>
@@ -115,7 +115,7 @@ export default function AboutPage() {
             <p className="text-xs uppercase tracking-[0.35em] text-[#FF5A1F]">Ligues & Institutions</p>
             <h2 className="mt-6 text-4xl font-black lg:text-5xl">Vous représentez une ligue ou une ASA&nbsp;?</h2>
             <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-              TrackMarshal est conçu pour s'intégrer naturellement dans l'écosystème fédéral. Si vous représentez une ligue régionale, une ASA ou une fédération et souhaitez explorer comment la plateforme peut aider vos clubs à recruter leurs commissaires, contactez-nous directement.
+              TrackMarshal est un projet indépendant, créé sans lien officiel avec la FFSA ou la FFM. Si vous représentez une ligue régionale, une ASA ou une fédération et souhaitez explorer comment la plateforme peut aider vos clubs à recruter leurs commissaires, nous serions ravis d'échanger.
             </p>
             <Link
               href="/contact"
