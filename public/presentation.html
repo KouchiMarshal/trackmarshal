@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>TrackMarshal — Espace Organisateur</title>
+  <title>TrackMarshal — Présentation</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,56 +14,44 @@
       .page:last-child { page-break-after: auto; }
     }
     body { font-family: 'Inter', Arial, sans-serif; background: #ccc; }
+    .page { width:210mm; height:297mm; margin:0 auto 10mm; position:relative; overflow:hidden; display:flex; flex-direction:column; }
 
-    /* ── PAGE BASE ── */
-    .page {
-      width: 210mm;
-      height: 297mm;
-      margin: 0 auto 10mm;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ══════════════════════════════════════════
-       COUVERTURE
-    ══════════════════════════════════════════ */
-    .cover { background: #050505; color: #fff; }
-    .cover-stripe  { position:absolute; left:0; top:0; bottom:0; width:5px; background:#FF5A1F; z-index:3; }
-    .cover-glow    { position:absolute; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle,rgba(255,90,31,.30) 0%,transparent 68%); top:-80px; left:-60px; z-index:1; }
-    .cover-glow2   { position:absolute; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(255,90,31,.18) 0%,transparent 70%); bottom:40px; right:-60px; z-index:1; }
-    .cover-grid    { position:absolute; right:0; top:0; bottom:0; width:220px; background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px); background-size:32px 32px; z-index:1; }
-    .cover-lines   { position:absolute; left:0; bottom:0; right:0; height:180px; background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px); background-size:100% 28px; z-index:1; }
-    .cover-hdr     { position:relative; z-index:4; padding:28px 36px 0; display:flex; align-items:center; justify-content:space-between; }
-    .cover-logo    { height:34px; object-fit:contain; }
-    .cover-url     { font-size:8px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.3); }
-    .cover-body    { position:relative; z-index:4; flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 36px; }
-    .cover-eye     { font-size:8.5px; font-weight:900; letter-spacing:.32em; text-transform:uppercase; color:#FF5A1F; margin-bottom:20px; }
-    .cover-title   { font-size:60px; font-weight:900; line-height:.88; letter-spacing:-.05em; text-transform:uppercase; }
+    /* COUVERTURE */
+    .cover { background:#050505; color:#fff; }
+    .cover-stripe { position:absolute; left:0; top:0; bottom:0; width:5px; background:#FF5A1F; z-index:3; }
+    .cover-glow  { position:absolute; width:420px; height:420px; border-radius:50%; background:radial-gradient(circle,rgba(255,90,31,.30) 0%,transparent 68%); top:-80px; left:-60px; z-index:1; }
+    .cover-glow2 { position:absolute; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(255,90,31,.18) 0%,transparent 70%); bottom:40px; right:-60px; z-index:1; }
+    .cover-grid  { position:absolute; right:0; top:0; bottom:0; width:220px; background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px); background-size:32px 32px; z-index:1; }
+    .cover-hdr   { position:relative; z-index:4; padding:28px 36px 0; display:flex; align-items:center; justify-content:space-between; }
+    .cover-logo  { height:34px; object-fit:contain; }
+    .cover-url   { font-size:8px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.3); }
+    .cover-body  { position:relative; z-index:4; flex:1; display:flex; flex-direction:column; justify-content:center; padding:0 36px; }
+    .cover-eye   { font-size:8.5px; font-weight:900; letter-spacing:.32em; text-transform:uppercase; color:#FF5A1F; margin-bottom:20px; }
+    .cover-title { font-size:58px; font-weight:900; line-height:.88; letter-spacing:-.05em; text-transform:uppercase; }
     .cover-title em { color:#FF5A1F; font-style:normal; display:block; }
-    .cover-line    { width:56px; height:4px; background:#FF5A1F; margin:26px 0; }
-    .cover-desc    { font-size:13.5px; line-height:1.68; color:rgba(255,255,255,.58); max-width:380px; }
-    .cover-discs   { position:relative; z-index:4; padding:22px 36px; display:flex; flex-wrap:wrap; gap:7px; }
+    .cover-line  { width:56px; height:4px; background:#FF5A1F; margin:24px 0; }
+    .cover-two   { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }
+    .cover-col   { border-left:2px solid rgba(255,255,255,.08); padding-left:14px; }
+    .cover-col-l { font-size:7px; font-weight:900; letter-spacing:.2em; text-transform:uppercase; color:#FF5A1F; margin-bottom:6px; }
+    .cover-col-t { font-size:11px; font-weight:800; color:#fff; margin-bottom:4px; }
+    .cover-col-d { font-size:8.5px; color:rgba(255,255,255,.45); line-height:1.5; }
+    .cover-discs { position:relative; z-index:4; padding:18px 36px; display:flex; flex-wrap:wrap; gap:6px; }
     .disc { background:rgba(255,255,255,.055); border:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.6); font-size:7.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; padding:4px 12px; border-radius:99px; }
-    .cover-foot    { position:relative; z-index:4; border-top:1px solid rgba(255,255,255,.07); padding:15px 36px; display:flex; align-items:center; justify-content:space-between; }
-    .cover-foot-l  { font-size:7.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.25); }
-    .cover-dot-row { display:flex; align-items:center; gap:7px; }
+    .cover-foot  { position:relative; z-index:4; border-top:1px solid rgba(255,255,255,.07); padding:13px 36px; display:flex; align-items:center; justify-content:space-between; }
+    .cover-foot-l { font-size:7.5px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.25); }
     .odot { width:8px; height:8px; border-radius:50%; background:#FF5A1F; }
 
-    /* ══════════════════════════════════════════
-       PAGES INTÉRIEURES
-    ══════════════════════════════════════════ */
-    .inner   { padding:26px 32px 0; flex:1; display:flex; flex-direction:column; }
-    .pg-eye  { font-size:7.5px; font-weight:900; letter-spacing:.3em; text-transform:uppercase; color:#FF5A1F; margin-bottom:6px; }
-    .pg-title { font-size:22px; font-weight:900; letter-spacing:-.03em; line-height:1.05; color:#0a0a0a; }
-    .pg-sub  { font-size:10px; color:#666; line-height:1.6; margin-top:5px; max-width:480px; }
-    .pg-foot { border-top:1px solid #e8e8e8; padding:8px 32px; display:flex; align-items:center; justify-content:space-between; }
-    .pg-foot-logo { height:16px; object-fit:contain; }
+    /* PAGES INTÉRIEURES */
+    .inner   { padding:24px 30px 0; flex:1; display:flex; flex-direction:column; }
+    .pg-eye  { font-size:7.5px; font-weight:900; letter-spacing:.3em; text-transform:uppercase; color:#FF5A1F; margin-bottom:5px; }
+    .pg-title { font-size:21px; font-weight:900; letter-spacing:-.03em; line-height:1.05; color:#0a0a0a; }
+    .pg-sub  { font-size:9.5px; color:#666; line-height:1.6; margin-top:4px; max-width:490px; }
+    .pg-foot { border-top:1px solid #e8e8e8; padding:8px 30px; display:flex; align-items:center; justify-content:space-between; }
+    .pg-foot-logo { height:15px; object-fit:contain; }
     .pg-foot-url  { font-size:7px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:#bbb; }
     .pgn { font-size:8px; font-weight:800; color:#FF5A1F; }
 
-    /* ── BROWSER FRAME ── */
+    /* BROWSER FRAME */
     .browser { background:#1a1a1a; border-radius:9px; overflow:hidden; box-shadow:0 6px 30px rgba(0,0,0,.3); }
     .browser-bar { background:#252525; padding:7px 11px; display:flex; align-items:center; gap:9px; }
     .b-dots { display:flex; gap:4.5px; }
@@ -71,245 +59,293 @@
     .b-dot.r { background:#ff5f57; } .b-dot.y { background:#febc2e; } .b-dot.g { background:#28c840; }
     .b-addr { flex:1; background:#333; border-radius:4px; padding:3px 9px; font-size:7.5px; color:rgba(255,255,255,.4); font-family:monospace; }
 
-    /* ══════════════════════════════════════════
-       ORGANIZER UI — LIGHT THEME
-    ══════════════════════════════════════════ */
-
-    /* Full-page organizer layout */
+    /* SHARED ORGANIZER/COMMISSAIRE LIGHT UI */
     .o-layout { display:flex; background:#f5f5f5; }
-
-    /* Sidebar */
-    .o-sb { width:88px; background:#fff; border-right:1px solid #efefef; padding:8px 0; display:flex; flex-direction:column; flex-shrink:0; }
-    .o-sb-logo { padding:6px 8px 10px; display:flex; align-items:center; gap:4px; border-bottom:1px solid #f5f5f5; margin-bottom:6px; }
+    .o-sb { width:86px; background:#fff; border-right:1px solid #efefef; padding:8px 0; display:flex; flex-direction:column; flex-shrink:0; }
+    .o-sb-logo { padding:6px 8px 8px; display:flex; align-items:center; gap:4px; border-bottom:1px solid #f5f5f5; margin-bottom:5px; }
     .o-sb-logomark { width:18px; height:18px; border-radius:5px; background:#FF5A1F; display:flex; align-items:center; justify-content:center; font-size:8px; }
     .o-sb-wordmark { font-size:8px; font-weight:900; color:#111; }
     .o-sb-wordmark span { color:#FF5A1F; }
     .o-nav { padding:0 5px; display:flex; flex-direction:column; gap:1px; }
-    .o-nav-item { padding:5px 8px; font-size:7px; font-weight:600; color:#555; border-radius:7px; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+    .o-nav-item { padding:4.5px 7px; font-size:7px; font-weight:600; color:#555; border-radius:7px; display:flex; align-items:center; gap:4px; white-space:nowrap; }
     .o-nav-item.on { background:#FF5A1F; color:#fff; }
-    .o-nav-item .ni { font-size:9px; }
-    .o-sb-foot { margin-top:auto; padding:0 5px 6px; }
-    .o-nav-deco { padding:5px 8px; font-size:7px; font-weight:600; color:#aaa; display:flex; align-items:center; gap:5px; }
-
-    /* Main content area */
+    .o-nav-deco { padding:4.5px 7px; font-size:7px; font-weight:600; color:#bbb; display:flex; align-items:center; gap:4px; }
+    .o-sb-foot { margin-top:auto; padding:0 5px 5px; }
     .o-main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-    .o-topbar { background:#fff; border-bottom:1px solid #efefef; padding:7px 12px; display:flex; align-items:center; justify-content:space-between; }
+    .o-topbar { background:#fff; border-bottom:1px solid #efefef; padding:7px 11px; display:flex; align-items:center; justify-content:space-between; }
     .o-topbar-left { display:flex; flex-direction:column; }
     .o-topbar-eye { font-size:5.5px; font-weight:800; letter-spacing:.2em; text-transform:uppercase; color:#FF5A1F; }
     .o-topbar-title { font-size:12px; font-weight:900; color:#111; }
-    .o-topbar-right { display:flex; align-items:center; gap:7px; }
-    .o-bell { width:22px; height:22px; background:#f5f5f5; border:1px solid #eee; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:9px; }
-    .o-btn-primary { background:#FF5A1F; color:#fff; font-size:6.5px; font-weight:700; padding:5px 10px; border-radius:7px; display:flex; align-items:center; gap:3px; }
-    .o-content { flex:1; padding:10px 12px; overflow:hidden; background:#f9f9f9; }
+    .o-topbar-right { display:flex; align-items:center; gap:6px; }
+    .o-bell { width:22px; height:22px; background:#f5f5f5; border:1px solid #eee; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:9px; position:relative; }
+    .o-bell-badge { position:absolute; top:-3px; right:-3px; width:10px; height:10px; border-radius:50%; background:#FF5A1F; font-size:5px; font-weight:900; color:#fff; display:flex; align-items:center; justify-content:center; }
+    .o-btn-primary { background:#FF5A1F; color:#fff; font-size:6.5px; font-weight:700; padding:5px 10px; border-radius:7px; }
+    .o-btn-outline { background:#fff; border:1.5px solid #FF5A1F; color:#FF5A1F; font-size:6.5px; font-weight:700; padding:5px 10px; border-radius:7px; }
+    .o-content { flex:1; padding:9px 11px; overflow:hidden; background:#f9f9f9; }
 
-    /* Stats */
-    .o-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin-bottom:8px; }
+    /* STAT CARDS */
+    .o-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin-bottom:7px; }
     .o-stat { background:#fff; border:1px solid #eee; border-radius:9px; padding:7px 9px; }
     .o-stat-l { font-size:5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#aaa; margin-bottom:3px; }
     .o-stat-n { font-size:15px; font-weight:900; color:#111; line-height:1; }
     .o-stat-n.green { color:#22c55e; }
     .o-stat-n.orange { color:#FF5A1F; }
+    .o-stat-sub { font-size:5.5px; color:#aaa; margin-top:2px; }
+    .o-stat-lic { font-size:7px; font-weight:700; color:#333; display:flex; align-items:center; gap:3px; margin-top:2px; }
+    .o-stat-lic .chk { color:#22c55e; }
 
-    /* Analytics */
-    .o-analytics { background:#fff; border:1px solid #eee; border-radius:9px; padding:8px 10px; margin-bottom:8px; }
+    /* COMMISSAIRE HERO EVENT */
+    .c-hero-ev { position:relative; border-radius:10px; overflow:hidden; height:90px; margin-bottom:7px; }
+    .c-hero-bg { position:absolute; inset:0; background:linear-gradient(135deg,#0d1500,#192600); }
+    .c-hero-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.35) 55%,transparent 100%); }
+    .c-hero-badge { position:absolute; top:8px; left:8px; background:#FF5A1F; color:#fff; font-size:6px; font-weight:800; padding:2.5px 9px; border-radius:99px; letter-spacing:.06em; text-transform:uppercase; }
+    .c-hero-title { position:absolute; bottom:22px; left:10px; right:10px; font-size:12px; font-weight:900; color:#fff; line-height:1.1; }
+    .c-hero-meta  { position:absolute; bottom:8px; left:10px; font-size:6px; color:rgba(255,255,255,.65); display:flex; gap:10px; }
+    .c-hero-btn   { position:absolute; bottom:8px; right:9px; background:#FF5A1F; color:#fff; font-size:6.5px; font-weight:700; padding:3.5px 9px; border-radius:6px; }
+
+    /* COMMISSAIRE CANDIDATURE CARDS */
+    .c-app-card { background:#fff; border:1px solid #eee; border-radius:10px; padding:9px 10px; margin-bottom:5px; }
+    .c-app-hdr  { display:flex; align-items:flex-start; gap:8px; }
+    .c-app-thumb { width:42px; height:52px; border-radius:7px; overflow:hidden; flex-shrink:0; background:linear-gradient(135deg,#0d1500,#192600); position:relative; }
+    .c-app-thumb-text { position:absolute; bottom:3px; left:3px; font-size:5px; font-weight:800; color:rgba(255,255,255,.7); line-height:1.2; }
+    .c-app-info  { flex:1; }
+    .c-app-status { margin-bottom:2px; }
+    .c-app-badge  { display:inline-block; font-size:6px; font-weight:700; padding:2px 8px; border-radius:99px; }
+    .c-app-badge.green { background:#dcfce7; color:#16a34a; }
+    .c-app-badge.red   { background:#fee2e2; color:#dc2626; }
+    .c-app-title  { font-size:9px; font-weight:800; color:#111; margin-bottom:2px; line-height:1.2; }
+    .c-app-meta   { font-size:6px; color:#666; display:flex; flex-wrap:wrap; gap:8px; margin-bottom:3px; }
+    .c-app-poste  { font-size:6.5px; font-weight:700; color:#FF5A1F; display:flex; align-items:center; gap:2px; }
+    .c-app-actions { display:flex; flex-wrap:wrap; gap:3px; margin-top:6px; padding-top:5px; border-top:1px solid #f5f5f5; align-items:center; }
+    .c-app-btn    { background:#fff; border:1px solid #ddd; color:#555; font-size:5.5px; font-weight:600; padding:3px 7px; border-radius:5px; }
+    .c-app-btn-hl { background:rgba(255,90,31,.06); border:1px solid rgba(255,90,31,.3); color:#FF5A1F; font-size:5.5px; font-weight:700; padding:3px 7px; border-radius:5px; }
+    .c-app-cancel { margin-left:auto; background:#fff; border:1px solid #fca5a5; color:#dc2626; font-size:5.5px; font-weight:600; padding:3px 8px; border-radius:5px; }
+    .c-briefing-section { margin-top:7px; background:#fff8f6; border:1px solid rgba(255,90,31,.2); border-radius:8px; padding:6px 9px; }
+    .c-briefing-tabs { display:flex; gap:5px; margin-bottom:5px; }
+    .c-briefing-tab { font-size:7px; font-weight:700; padding:3px 8px; border-radius:5px; }
+    .c-briefing-tab.on { background:#111; color:#fff; }
+    .c-briefing-tab.off { color:#888; }
+    .c-briefing-link { font-size:7.5px; font-weight:700; color:#FF5A1F; display:flex; align-items:center; gap:4px; }
+
+    /* PROFILE FORM */
+    .c-profile-grid { display:grid; grid-template-columns:90px 1fr; gap:8px; }
+    .c-photo-box { border:1px solid #eee; border-radius:9px; padding:8px; text-align:center; background:#fff; }
+    .c-photo-img { width:52px; height:60px; border-radius:7px; background:linear-gradient(135deg,#c8d8e8,#a0b8c8); margin:0 auto 5px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:20px; }
+    .c-photo-lbl { font-size:5.5px; color:#aaa; }
+    .c-form-fields { display:flex; flex-direction:column; gap:5px; }
+    .c-field-row  { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+    .c-field { display:flex; flex-direction:column; gap:1.5px; }
+    .c-label { font-size:5.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#999; }
+    .c-input { background:#fff; border:1px solid #e5e5e5; border-radius:6px; padding:4px 7px; font-size:7.5px; color:#333; }
+    .c-input.blurred { color:transparent; text-shadow:0 0 6px rgba(0,0,0,.35); user-select:none; }
+    .c-textarea { background:#fff; border:1px solid #e5e5e5; border-radius:6px; padding:4px 7px; font-size:7px; color:#555; line-height:1.45; height:28px; }
+
+    /* LICENCE CARD */
+    .c-licence-section { margin-top:7px; }
+    .c-licence-hdr { display:flex; align-items:center; justify-content:space-between; margin-bottom:5px; }
+    .c-licence-title { font-size:6px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#888; }
+    .c-licence-add { background:#FF5A1F; color:#fff; font-size:6px; font-weight:700; padding:3px 9px; border-radius:6px; }
+    .c-licence-card { background:#fff8f6; border:1.5px solid rgba(255,90,31,.2); border-radius:9px; padding:8px 10px; }
+    .c-validated-badge { display:inline-flex; align-items:center; gap:3px; background:#dcfce7; border:1px solid #86efac; border-radius:99px; font-size:6px; font-weight:700; color:#16a34a; padding:2px 7px; margin-bottom:6px; }
+    .c-lic-form-row { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:5px; }
+    .c-lic-save { background:#FF5A1F; color:#fff; font-size:7px; font-weight:700; padding:4.5px 14px; border-radius:6px; display:inline-block; margin-top:5px; }
+
+    /* DISPONIBILITÉ */
+    .c-dispo-section { margin-top:6px; }
+    .c-dispo-lbl { font-size:5.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:#888; margin-bottom:2px; }
+    .c-dispo-desc { font-size:6px; color:#aaa; margin-bottom:5px; }
+    .c-dispo-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+    .c-dispo-btn { padding:6px; border-radius:8px; text-align:center; font-size:7.5px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:4px; }
+    .c-dispo-active   { background:#dcfce7; border:1.5px solid #86efac; color:#16a34a; }
+    .c-dispo-inactive { background:#f5f5f5; border:1.5px solid #e5e5e5; color:#aaa; }
+
+    /* HISTORIQUE */
+    .c-hist-lic { display:flex; align-items:center; justify-content:space-between; background:#fff8f6; border:1px solid rgba(255,90,31,.18); border-radius:8px; padding:6px 10px; margin-bottom:7px; }
+    .c-hist-lic-left { display:flex; align-items:center; gap:7px; }
+    .c-hist-lic-icon { font-size:13px; }
+    .c-hist-lic-name { font-size:7.5px; font-weight:800; color:#FF5A1F; }
+    .c-hist-lic-sub  { font-size:5.5px; color:#888; }
+    .c-hist-total-lbl { font-size:5.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#aaa; }
+    .c-hist-total-n   { font-size:12px; font-weight:900; color:#111; text-align:right; }
+    .c-hist-empty { background:#fff; border:1.5px dashed #e5e5e5; border-radius:9px; padding:20px 16px; text-align:center; }
+    .c-hist-empty-icon { font-size:22px; color:#e0e0e0; margin-bottom:6px; }
+    .c-hist-empty-t { font-size:8px; font-weight:700; color:#bbb; margin-bottom:3px; }
+    .c-hist-empty-s { font-size:6.5px; color:#ccc; max-width:130px; margin:0 auto; line-height:1.4; }
+
+    /* ANALYTICS */
+    .o-analytics { background:#fff; border:1px solid #eee; border-radius:9px; padding:8px 10px; margin-bottom:7px; }
     .o-analytics-l { font-size:5.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#aaa; margin-bottom:2px; }
-    .o-analytics-t { font-size:10px; font-weight:900; color:#111; margin-bottom:8px; }
-    .o-anl-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; }
-    .o-anl-item { }
+    .o-analytics-t { font-size:10px; font-weight:900; color:#111; margin-bottom:7px; }
+    .o-anl-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:7px; }
     .o-anl-label { font-size:5.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#aaa; margin-bottom:2px; }
-    .o-anl-val { font-size:14px; font-weight:900; line-height:1; margin-bottom:4px; }
+    .o-anl-val { font-size:13px; font-weight:900; line-height:1; margin-bottom:3px; }
     .o-anl-val.orange { color:#FF5A1F; }
     .o-anl-val.green { color:#22c55e; }
     .o-prog-bar { height:3px; background:#eee; border-radius:99px; }
     .o-prog-fill { height:3px; border-radius:99px; }
     .o-prog-fill.orange { background:#FF5A1F; }
     .o-prog-fill.green { background:#22c55e; }
-    .o-anl-sub { font-size:5.5px; color:#aaa; margin-top:3px; }
 
-    /* Recent sections */
+    /* RECENT SECTIONS */
     .o-recent-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
     .o-recent { background:#fff; border:1px solid #eee; border-radius:9px; padding:8px 10px; }
-    .o-recent-t { font-size:9px; font-weight:900; color:#111; margin-bottom:6px; }
+    .o-recent-t { font-size:9px; font-weight:900; color:#111; margin-bottom:5px; }
     .o-recent-l { font-size:5.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#aaa; margin-bottom:4px; }
     .o-event-row { display:flex; align-items:center; justify-content:space-between; background:#f9f9f9; border:1px solid #eee; border-radius:7px; padding:5px 7px; margin-bottom:4px; }
     .o-event-row-t { font-size:7.5px; font-weight:700; color:#111; }
     .o-event-row-s { font-size:6px; color:#888; }
-    .o-btn-mini { background:#FF5A1F; color:#fff; font-size:5.5px; font-weight:700; padding:3px 7px; border-radius:5px; }
-    .o-cand-row { display:flex; align-items:center; justify-content:space-between; padding:4.5px 0; border-bottom:1px solid #f5f5f5; }
+    .o-btn-mini { background:#FF5A1F; color:#fff; font-size:5.5px; font-weight:700; padding:2.5px 7px; border-radius:5px; }
+    .o-cand-row { display:flex; align-items:center; justify-content:space-between; padding:4px 0; border-bottom:1px solid #f5f5f5; }
     .o-cand-row:last-child { border-bottom:none; }
     .o-cand-name { font-size:7.5px; font-weight:700; color:#111; }
-    .o-cand-sub { font-size:6px; color:#888; }
+    .o-cand-sub  { font-size:6px; color:#888; }
     .o-badge { display:inline-block; font-size:5.5px; font-weight:700; padding:2px 6px; border-radius:99px; }
-    .o-badge.green { background:#dcfce7; color:#16a34a; }
+    .o-badge.green  { background:#dcfce7; color:#16a34a; }
     .o-badge.yellow { background:#fef9c3; color:#ca8a04; }
-    .o-badge.red { background:#fee2e2; color:#dc2626; }
     .o-badge.orange { background:#fff7ed; color:#FF5A1F; border:1px solid rgba(255,90,31,.25); }
 
-    /* Event creation form */
-    .o-form { padding:8px 10px; background:#f9f9f9; }
-    .o-form-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:6px; }
-    .o-form-field { display:flex; flex-direction:column; gap:2px; }
+    /* FORM ELEMENTS */
     .o-label { font-size:5.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#888; }
-    .o-input { background:#fff; border:1px solid #ddd; border-radius:7px; padding:5px 8px; font-size:7.5px; color:#333; font-family:Inter,Arial,sans-serif; }
-    .o-input-full { background:#fff; border:1px solid #ddd; border-radius:7px; padding:5px 8px; font-size:7.5px; color:#333; font-family:Inter,Arial,sans-serif; width:100%; margin-bottom:6px; }
-    .o-toggle-row { display:flex; align-items:center; gap:7px; background:#fff; border:1px solid #eee; border-radius:8px; padding:5px 9px; margin-bottom:4px; }
-    .o-toggle-row.on { border-color:rgba(255,90,31,.35); background:rgba(255,90,31,.03); }
-    .o-pill-on { width:22px; height:12px; border-radius:99px; background:#FF5A1F; position:relative; flex-shrink:0; }
-    .o-pill-on::after { content:''; position:absolute; right:2px; top:2px; width:8px; height:8px; border-radius:50%; background:#fff; }
+    .o-input  { background:#fff; border:1px solid #e0e0e0; border-radius:7px; padding:4.5px 8px; font-size:7.5px; color:#333; }
+    .o-input-full { background:#fff; border:1px solid #e0e0e0; border-radius:7px; padding:4.5px 8px; font-size:7.5px; color:#333; width:100%; margin-bottom:5px; }
+    .o-form-row { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-bottom:5px; }
+    .o-form-field { display:flex; flex-direction:column; gap:1.5px; }
+    .o-toggle-row { display:flex; align-items:center; gap:7px; background:#fff; border:1px solid #eee; border-radius:7px; padding:5px 8px; margin-bottom:4px; }
+    .o-toggle-row.on { border-color:rgba(255,90,31,.3); background:rgba(255,90,31,.02); }
+    .o-pill-on  { width:22px; height:12px; border-radius:99px; background:#FF5A1F; position:relative; flex-shrink:0; }
+    .o-pill-on::after  { content:''; position:absolute; right:2px; top:2px; width:8px; height:8px; border-radius:50%; background:#fff; }
     .o-pill-off { width:22px; height:12px; border-radius:99px; background:#ddd; position:relative; flex-shrink:0; }
     .o-pill-off::after { content:''; position:absolute; left:2px; top:2px; width:8px; height:8px; border-radius:50%; background:#fff; }
     .o-toggle-label { font-size:7.5px; font-weight:600; color:#333; flex:1; }
+    .o-toggle-label.off { color:#bbb; }
     .o-toggle-count { font-size:7px; font-weight:700; background:#f5f5f5; border:1px solid #eee; border-radius:5px; padding:2px 8px; color:#444; }
 
-    /* Event card */
-    .o-ev-card { background:#fff; border:1px solid #eee; border-radius:12px; overflow:hidden; }
-    .o-ev-img-wrap { position:relative; height:72px; background:linear-gradient(135deg,#0a0800,#1a1000); overflow:hidden; }
-    .o-ev-img-txt { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:flex-end; padding:6px 8px; background:linear-gradient(to top,rgba(0,0,0,.7),transparent 60%); }
-    .o-ev-chip-row { display:flex; gap:3px; position:absolute; top:6px; left:6px; }
+    /* ORGANIZER EVENT CARD */
+    .o-ev-card { background:#fff; border:1px solid #eee; border-radius:11px; overflow:hidden; }
+    .o-ev-img-wrap { height:62px; background:linear-gradient(135deg,#0d1500,#192600); position:relative; }
+    .o-ev-chip-row { display:flex; gap:3px; position:absolute; top:5px; left:6px; }
     .o-ev-chip { font-size:5.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:2px 6px; border-radius:99px; }
     .o-ev-chip.disc { background:#FF5A1F; color:#fff; }
     .o-ev-chip.stat { background:#fff; color:#111; }
-    .o-ev-body { padding:8px 10px 10px; }
-    .o-ev-title { font-size:9.5px; font-weight:900; color:#111; margin-bottom:5px; line-height:1.2; }
-    .o-ev-meta { font-size:6px; color:#666; display:flex; align-items:center; gap:3px; margin-bottom:2px; }
-    .o-ev-coms { font-size:6px; color:#888; margin-bottom:6px; }
-    .o-ev-btn { display:block; background:#FF5A1F; color:#fff; text-align:center; font-size:7px; font-weight:700; padding:5.5px; border-radius:7px; }
+    .o-ev-body  { padding:7px 9px 9px; }
+    .o-ev-title { font-size:9px; font-weight:900; color:#111; margin-bottom:4px; line-height:1.2; }
+    .o-ev-meta  { font-size:6px; color:#666; display:flex; align-items:center; gap:3px; margin-bottom:2px; }
+    .o-ev-coms  { font-size:6px; color:#888; margin-bottom:5px; }
+    .o-prog-bar-ev { height:3px; background:#eee; border-radius:99px; margin-bottom:5px; }
+    .o-ev-btn   { display:block; background:#FF5A1F; color:#fff; text-align:center; font-size:7px; font-weight:700; padding:5px; border-radius:7px; }
 
-    /* Candidature full view */
-    .o-cand-card { background:#fff; border:1px solid #eee; border-radius:10px; padding:9px 10px; margin-bottom:5px; display:flex; gap:9px; align-items:flex-start; }
-    .o-cand-poster { width:52px; flex-shrink:0; border-radius:7px; overflow:hidden; background:linear-gradient(135deg,#0a0800,#1a1000); height:68px; position:relative; }
-    .o-cand-poster-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,.6),transparent); }
-    .o-cand-body { flex:1; }
-    .o-cand-hdr { display:flex; align-items:center; gap:7px; margin-bottom:6px; }
-    .o-cand-avatar { width:28px; height:28px; border-radius:8px; background:#FF5A1F; display:flex; align-items:center; justify-content:center; color:#fff; font-size:9px; font-weight:900; flex-shrink:0; }
-    .o-cand-avatar.photo { background:linear-gradient(135deg,#eee,#ddd); }
-    .o-cand-info-name { font-size:9px; font-weight:800; color:#111; }
-    .o-cand-info-loc { font-size:6px; color:#FF5A1F; display:flex; align-items:center; gap:2px; }
-    .o-cand-info-email { font-size:6px; color:#888; }
-    .o-cand-info-exp { font-size:6px; color:#888; }
-    .o-cand-actions { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
-    .o-btn-accept { background:#fff; border:1px solid #ddd; color:#555; font-size:6.5px; font-weight:600; padding:4px 10px; border-radius:7px; }
-    .o-btn-refuse { background:#FF5A1F; color:#fff; font-size:6.5px; font-weight:700; padding:4px 10px; border-radius:7px; }
-    .o-btn-profile { background:#fff; border:1px solid #ddd; color:#555; font-size:6.5px; font-weight:600; padding:4px 10px; border-radius:7px; }
-    .o-post-row { display:flex; align-items:center; gap:6px; margin-top:5px; padding-top:5px; border-top:1px solid #f5f5f5; }
-    .o-post-l { font-size:5.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#aaa; white-space:nowrap; }
-    .o-post-input { flex:1; background:#f9f9f9; border:1px solid #eee; border-radius:5px; padding:3px 7px; font-size:7px; color:#555; }
-    .o-post-ok { background:#FF5A1F; color:#fff; font-size:6.5px; font-weight:700; padding:3px 9px; border-radius:5px; }
-
-    /* Tabs */
-    .o-tabs { display:flex; gap:3px; margin-bottom:8px; }
-    .o-tab { font-size:7px; font-weight:700; padding:4.5px 9px; border-radius:7px; display:flex; align-items:center; gap:3px; }
-    .o-tab.on { background:#FF5A1F; color:#fff; }
+    /* CANDIDATURE CARD (ORGANIZER SIDE) */
+    .o-tabs { display:flex; gap:3px; margin-bottom:7px; }
+    .o-tab  { font-size:7px; font-weight:700; padding:4px 8px; border-radius:6px; }
+    .o-tab.on  { background:#FF5A1F; color:#fff; }
     .o-tab.off { background:#fff; border:1px solid #eee; color:#666; }
-    .o-tab-count { font-size:6px; }
+    .o-cand-card { background:#fff; border:1px solid #eee; border-radius:9px; padding:8px 9px; margin-bottom:4px; display:flex; gap:8px; align-items:flex-start; }
+    .o-cand-poster { width:42px; flex-shrink:0; border-radius:6px; overflow:hidden; background:linear-gradient(135deg,#0d1500,#192600); height:58px; position:relative; }
+    .o-cand-body  { flex:1; }
+    .o-cand-hdr   { display:flex; align-items:center; gap:6px; margin-bottom:5px; }
+    .o-cand-avatar { width:25px; height:25px; border-radius:7px; background:#FF5A1F; display:flex; align-items:center; justify-content:center; color:#fff; font-size:8px; font-weight:900; flex-shrink:0; }
+    .o-cand-info-name { font-size:8.5px; font-weight:800; color:#111; }
+    .o-cand-info-loc  { font-size:6px; color:#FF5A1F; }
+    .o-cand-info-email { font-size:6px; color:#888; }
+    .o-cand-actions { display:flex; flex-direction:column; align-items:flex-end; gap:3px; flex-shrink:0; }
+    .o-btn-accept  { background:#fff; border:1px solid #ddd; color:#555; font-size:6px; font-weight:600; padding:3px 8px; border-radius:6px; }
+    .o-btn-refuse  { background:#FF5A1F; color:#fff; font-size:6px; font-weight:700; padding:3px 8px; border-radius:6px; }
+    .o-post-row   { display:flex; align-items:center; gap:5px; margin-top:5px; padding-top:5px; border-top:1px solid #f5f5f5; }
+    .o-post-l     { font-size:5.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#aaa; white-space:nowrap; }
+    .o-post-input { flex:1; background:#f9f9f9; border:1px solid #eee; border-radius:5px; padding:2.5px 6px; font-size:7px; color:#555; }
+    .o-post-ok    { background:#FF5A1F; color:#fff; font-size:6px; font-weight:700; padding:2.5px 8px; border-radius:5px; }
 
-    /* Toolbar */
-    .o-toolbar { display:flex; gap:3px; flex-wrap:wrap; margin-bottom:9px; }
-    .o-tbtn { display:flex; align-items:center; gap:3px; background:#fff; border:1px solid #ddd; color:#555; font-size:6px; font-weight:600; padding:4px 8px; border-radius:6px; }
-    .o-tbtn.hl { border-color:rgba(255,90,31,.35); color:#FF5A1F; background:rgba(255,90,31,.05); }
+    /* TOOLBAR */
+    .o-toolbar { display:flex; gap:3px; flex-wrap:wrap; margin-bottom:8px; }
+    .o-tbtn    { display:flex; align-items:center; gap:2px; background:#fff; border:1px solid #ddd; color:#555; font-size:5.5px; font-weight:600; padding:3.5px 7px; border-radius:6px; }
+    .o-tbtn.hl { border-color:rgba(255,90,31,.3); color:#FF5A1F; background:rgba(255,90,31,.04); }
 
-    /* Evaluation */
-    .o-eval { background:#fff; border:1px solid #eee; border-radius:10px; overflow:hidden; }
-    .o-eval-hdr { background:#FF5A1F; padding:7px 10px; }
-    .o-eval-title { font-size:8px; font-weight:900; color:#fff; }
-    .o-eval-body { padding:9px 10px; }
-    .o-eval-row { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
-    .o-eval-ava { width:24px; height:24px; border-radius:7px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:8px; font-weight:900; flex-shrink:0; }
+    /* EVALUATION */
+    .o-eval { background:#fff; border:1px solid #eee; border-radius:9px; overflow:hidden; }
+    .o-eval-hdr  { background:#FF5A1F; padding:6px 9px; }
+    .o-eval-title { font-size:7.5px; font-weight:900; color:#fff; }
+    .o-eval-body  { padding:8px 9px; }
+    .o-eval-row  { display:flex; align-items:center; gap:7px; margin-bottom:6px; }
+    .o-eval-ava  { width:22px; height:22px; border-radius:7px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:7px; font-weight:900; flex-shrink:0; }
     .o-eval-name { font-size:8px; font-weight:800; color:#111; }
-    .o-eval-event { font-size:6px; color:#888; }
-    .o-stars { display:flex; gap:2px; margin-bottom:5px; }
+    .o-eval-event { font-size:5.5px; color:#888; }
+    .o-stars { display:flex; gap:2px; margin-bottom:4px; }
     .o-star { font-size:11px; }
     .o-star.filled { color:#FF5A1F; }
-    .o-star.empty { color:#ddd; }
-    .o-eval-textarea { width:100%; background:#f9f9f9; border:1px solid #eee; border-radius:7px; padding:5px 8px; font-size:6.5px; color:#666; height:28px; font-family:Inter,Arial,sans-serif; }
-    .o-eval-submit { display:block; background:#FF5A1F; color:#fff; text-align:center; font-size:7px; font-weight:700; padding:5.5px; border-radius:7px; margin-top:6px; width:100%; }
+    .o-star.empty  { color:#ddd; }
+    .o-eval-textarea { width:100%; background:#f9f9f9; border:1px solid #eee; border-radius:6px; padding:4px 7px; font-size:6.5px; color:#666; height:24px; }
+    .o-eval-submit { display:block; background:#FF5A1F; color:#fff; text-align:center; font-size:7px; font-weight:700; padding:5px; border-radius:6px; margin-top:5px; }
 
-    /* Documents */
-    .o-docs { background:#fff; border:1px solid #eee; border-radius:10px; overflow:hidden; }
-    .o-docs-hdr { background:#111; padding:6px 10px; display:flex; align-items:center; gap:5px; }
-    .o-docs-title { font-size:7.5px; font-weight:800; color:#fff; }
-    .o-docs-body { padding:9px 10px; }
-    .o-dropzone { border:1.5px dashed #ddd; border-radius:8px; padding:12px; text-align:center; background:#fafafa; }
-    .o-dropzone-icon { font-size:16px; margin-bottom:4px; }
-    .o-dropzone-t { font-size:7px; font-weight:700; color:#333; margin-bottom:1px; }
-    .o-dropzone-s { font-size:6px; color:#aaa; }
-
-    /* Messages */
-    .o-msg { background:#fff; border:1px solid #eee; border-radius:10px; overflow:hidden; }
-    .o-msg-hdr { background:#FF5A1F; padding:6px 10px; }
-    .o-msg-title { font-size:7.5px; font-weight:800; color:#fff; }
-    .o-msg-convo { display:flex; }
-    .o-msg-list { width:70px; border-right:1px solid #f5f5f5; background:#fafafa; }
-    .o-msg-list-item { padding:5px 7px; border-bottom:1px solid #f5f5f5; }
-    .o-msg-list-item.active { background:#fff5f0; }
-    .o-msg-list-name { font-size:6.5px; font-weight:700; color:#111; }
-    .o-msg-list-preview { font-size:5.5px; color:#aaa; }
-    .o-msg-chat { flex:1; padding:7px 8px; }
-    .o-msg-bubble { max-width:80%; background:#f5f5f5; border-radius:0 7px 7px 7px; padding:4px 7px; font-size:6.5px; color:#333; margin-bottom:4px; }
-    .o-msg-bubble.mine { background:rgba(255,90,31,.12); margin-left:auto; border-radius:7px 0 7px 7px; color:#333; text-align:right; }
-
-    /* QR Check-in */
-    .o-qr-box { background:#fff; border:1px solid #eee; border-radius:10px; overflow:hidden; }
-    .o-qr-hdr { background:#111; padding:7px 10px; }
-    .o-qr-title { font-size:8px; font-weight:900; color:#fff; }
-    .o-qr-sub { font-size:6px; color:rgba(255,255,255,.5); margin-top:1px; }
-    .o-qr-body { padding:10px; text-align:center; }
-    .o-qr-code { width:60px; height:60px; background:#000; margin:0 auto 7px; display:flex; align-items:center; justify-content:center; border-radius:4px; }
-    .o-qr-inner { width:50px; height:50px; background:repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 8px 8px; }
-    .o-qr-date { display:flex; gap:3px; justify-content:center; margin-bottom:8px; }
-    .o-qr-day { background:#f5f5f5; border:1px solid #eee; border-radius:6px; padding:3px 7px; font-size:6.5px; font-weight:700; color:#555; }
-    .o-qr-day.active { background:rgba(255,90,31,.1); border-color:rgba(255,90,31,.35); color:#FF5A1F; }
-    .o-qr-url { font-size:6px; color:#aaa; }
-    .o-qr-scan-ok { display:flex; align-items:center; gap:5px; background:#dcfce7; border:1px solid #bbf7d0; border-radius:7px; padding:4px 8px; margin-top:6px; }
-    .o-qr-scan-ok-t { font-size:6.5px; font-weight:700; color:#16a34a; }
-
-    /* Emargement PDF */
-    .ema { background:#fff; padding:9px 11px; font-family:Arial,sans-serif; }
-    .ema-hdr { border-bottom:2.5px solid #FF5A1F; padding-bottom:7px; margin-bottom:8px; }
-    .ema-badge { display:inline-block; background:#FF5A1F; color:#fff; font-size:5px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; padding:2px 7px; border-radius:99px; margin-bottom:4px; }
-    .ema-title { font-size:10px; font-weight:900; color:#111; }
-    .ema-meta  { font-size:6.5px; color:#666; margin-top:2px; }
-    .ema-sub   { font-size:6.5px; color:#888; margin-bottom:5px; }
+    /* EMARGEMENT */
+    .ema { background:#fff; padding:8px 10px; font-family:Arial,sans-serif; }
+    .ema-hdr { border-bottom:2px solid #FF5A1F; padding-bottom:6px; margin-bottom:7px; }
+    .ema-badge { display:inline-block; background:#FF5A1F; color:#fff; font-size:5px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; padding:2px 6px; border-radius:99px; margin-bottom:3px; }
+    .ema-title { font-size:9.5px; font-weight:900; color:#111; }
+    .ema-meta  { font-size:6px; color:#666; margin-top:2px; }
+    .ema-sub   { font-size:6px; color:#888; margin-bottom:4px; }
     .ema-table { width:100%; border-collapse:collapse; }
-    .ema-table th { background:#111; color:#fff; padding:4px 5px; font-size:5.5px; text-transform:uppercase; letter-spacing:.06em; text-align:left; }
-    .ema-table td { padding:5px 5px; border-bottom:1px solid #eee; vertical-align:middle; font-size:6.5px; color:#333; }
+    .ema-table th { background:#111; color:#fff; padding:3.5px 4px; font-size:5px; text-transform:uppercase; letter-spacing:.06em; text-align:left; }
+    .ema-table td { padding:4.5px 4px; border-bottom:1px solid #eee; font-size:6px; color:#333; }
     .ema-table tr:nth-child(even) td { background:#fafafa; }
-    .ema-sig-cell { height:20px; min-width:40px; border-left:1px solid #eee; }
-    .ema-qr-cell { text-align:center; font-size:7px; color:#16a34a; font-weight:700; background:#f0fdf4; }
-    .ema-foot { margin-top:7px; font-size:5.5px; color:#aaa; text-align:center; padding-top:5px; border-top:1px solid #eee; }
+    .ema-sig-cell { min-width:36px; }
+    .ema-qr-cell  { text-align:center; font-size:6.5px; color:#16a34a; font-weight:700; background:#f0fdf4; }
+    .ema-foot { margin-top:5px; font-size:5px; color:#aaa; text-align:center; padding-top:4px; border-top:1px solid #eee; }
 
-    /* Feature mini cards */
-    .fc { background:#f7f7f7; border-radius:11px; padding:11px 13px; }
+    /* QR CHECK-IN */
+    .o-qr-box { background:#fff; border:1px solid #eee; border-radius:9px; overflow:hidden; }
+    .o-qr-hdr { background:#111; padding:6px 9px; }
+    .o-qr-title { font-size:7.5px; font-weight:900; color:#fff; }
+    .o-qr-sub   { font-size:5.5px; color:rgba(255,255,255,.4); margin-top:1px; }
+    .o-qr-body  { padding:9px 10px; text-align:center; }
+    .o-qr-date  { display:flex; gap:3px; justify-content:center; margin-bottom:7px; }
+    .o-qr-day   { background:#f5f5f5; border:1px solid #eee; border-radius:6px; padding:3px 7px; font-size:6.5px; font-weight:700; color:#555; }
+    .o-qr-day.active { background:rgba(255,90,31,.1); border-color:rgba(255,90,31,.3); color:#FF5A1F; }
+    .o-qr-code  { width:56px; height:56px; background:#000; margin:0 auto 7px; border-radius:4px; display:flex; align-items:center; justify-content:center; }
+    .o-qr-inner { width:46px; height:46px; background:repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 8px 8px; }
+    .o-qr-url   { font-size:5.5px; color:#aaa; }
+    .o-qr-ok    { display:flex; align-items:center; gap:5px; background:#dcfce7; border:1px solid #bbf7d0; border-radius:7px; padding:4px 7px; margin-top:6px; text-align:left; }
+    .o-qr-ok-t  { font-size:6.5px; font-weight:700; color:#16a34a; }
+    .o-qr-ok-s  { font-size:5.5px; color:#166534; }
+
+    /* QR STEPS */
+    .qr-step { display:flex; align-items:flex-start; gap:6px; margin-bottom:6px; }
+    .qr-step-num { width:17px; height:17px; border-radius:99px; background:#FF5A1F; display:flex; align-items:center; justify-content:center; font-size:7px; font-weight:900; color:#fff; flex-shrink:0; }
+    .qr-step-num.done { background:#22c55e; }
+    .qr-step-t { font-size:7px; font-weight:700; color:#fff; margin-bottom:1px; }
+    .qr-step-s { font-size:6px; color:rgba(255,255,255,.45); }
+
+    /* FEATURE CARDS */
+    .fc { background:#f7f7f7; border-radius:10px; padding:10px 12px; }
     .fc.dk { background:#0a0a0a; }
     .fc.or { background:#FF5A1F; }
-    .fc-icon { font-size:15px; margin-bottom:5px; }
-    .fc-t { font-size:10px; font-weight:800; color:#0a0a0a; margin-bottom:2px; }
+    .fc-icon { font-size:14px; margin-bottom:4px; }
+    .fc-t { font-size:9.5px; font-weight:800; color:#0a0a0a; margin-bottom:2px; }
     .fc.dk .fc-t, .fc.or .fc-t { color:#fff; }
-    .fc-d { font-size:8px; color:#666; line-height:1.5; }
+    .fc-d { font-size:7.5px; color:#666; line-height:1.5; }
     .fc.dk .fc-d { color:rgba(255,255,255,.45); }
     .fc.or .fc-d { color:rgba(255,255,255,.8); }
 
-    /* ── CTA PAGE ── */
+    /* CTA PAGE */
     .cta { background:#050505; color:#fff; }
     .cta-glow  { position:absolute; width:460px; height:460px; border-radius:50%; background:radial-gradient(circle,rgba(255,90,31,.2) 0%,transparent 65%); top:50%; left:50%; transform:translate(-50%,-50%); }
     .cta-gbg   { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px); background-size:38px 38px; }
-    .cta-inner { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:36px 40px; text-align:center; }
-    .cta-eye  { font-size:8px; font-weight:900; letter-spacing:.3em; text-transform:uppercase; color:#FF5A1F; margin-bottom:16px; }
-    .cta-t    { font-size:50px; font-weight:900; line-height:.88; letter-spacing:-.05em; text-transform:uppercase; margin-bottom:18px; }
-    .cta-t em { color:#FF5A1F; font-style:normal; }
-    .cta-d    { font-size:12px; line-height:1.65; color:rgba(255,255,255,.5); max-width:310px; margin-bottom:32px; }
-    .cta-box  { background:rgba(255,255,255,.05); border:1.5px solid rgba(255,255,255,.12); border-radius:13px; padding:14px 30px; margin-bottom:12px; }
-    .cta-bl   { font-size:6.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:4px; }
-    .cta-bv   { font-size:21px; font-weight:900; color:#FF5A1F; }
-    .cta-links { display:flex; gap:12px; }
-    .cta-lbox  { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:10px; padding:9px 16px; }
-    .cta-ll   { font-size:6px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.28); margin-bottom:3px; }
-    .cta-lv   { font-size:10px; font-weight:800; color:#fff; }
-    .cta-tags { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-top:24px; }
-    .cta-tag  { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.42); font-size:7px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; padding:4px 11px; border-radius:99px; }
-    .cta-foot { position:relative; z-index:2; border-top:1px solid rgba(255,255,255,.07); padding:13px 40px; display:flex; align-items:center; justify-content:space-between; }
-    .cta-fl   { height:20px; }
-    .cta-ft   { font-size:7px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.22); }
+    .cta-inner { position:relative; z-index:2; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 40px; text-align:center; }
+    .cta-eye   { font-size:8px; font-weight:900; letter-spacing:.3em; text-transform:uppercase; color:#FF5A1F; margin-bottom:14px; }
+    .cta-t     { font-size:46px; font-weight:900; line-height:.88; letter-spacing:-.05em; text-transform:uppercase; margin-bottom:16px; }
+    .cta-t em  { color:#FF5A1F; font-style:normal; }
+    .cta-d     { font-size:11.5px; line-height:1.65; color:rgba(255,255,255,.5); max-width:310px; margin-bottom:26px; }
+    .cta-box   { background:rgba(255,255,255,.05); border:1.5px solid rgba(255,255,255,.12); border-radius:12px; padding:13px 28px; margin-bottom:11px; }
+    .cta-bl    { font-size:6.5px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.3); margin-bottom:3px; }
+    .cta-bv    { font-size:20px; font-weight:900; color:#FF5A1F; }
+    .cta-links { display:flex; gap:10px; }
+    .cta-lbox  { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:9px; padding:8px 14px; }
+    .cta-ll    { font-size:6px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.28); margin-bottom:2px; }
+    .cta-lv    { font-size:9.5px; font-weight:800; color:#fff; }
+    .cta-tags  { display:flex; flex-wrap:wrap; justify-content:center; gap:5px; margin-top:22px; }
+    .cta-tag   { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.42); font-size:6.5px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; padding:3px 10px; border-radius:99px; }
+    .cta-foot  { position:relative; z-index:2; border-top:1px solid rgba(255,255,255,.07); padding:12px 40px; display:flex; align-items:center; justify-content:space-between; }
+    .cta-fl    { height:18px; }
+    .cta-ft    { font-size:7px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.22); }
   </style>
 </head>
 <body>
@@ -322,7 +358,6 @@
   <div class="cover-glow"></div>
   <div class="cover-glow2"></div>
   <div class="cover-grid"></div>
-  <div class="cover-lines"></div>
 
   <div class="cover-hdr">
     <img src="/logo.png" alt="TrackMarshal" class="cover-logo" />
@@ -330,69 +365,438 @@
   </div>
 
   <div class="cover-body">
-    <p class="cover-eye">Espace organisateur — La plateforme motorsport</p>
-    <h1 class="cover-title">Recrutez.<br/>Gérez.<br/><em>Organisez.</em></h1>
-    <div class="cover-line"></div>
-    <p class="cover-desc">TrackMarshal donne aux organisateurs un outil complet pour publier leurs événements, gérer leurs équipes de commissaires et produire leurs documents officiels — en quelques clics.</p>
+    <p class="cover-eye">La plateforme motorsport — France</p>
+    <h1 class="cover-title">Votre équipe<br/>commissaires,<br/><em>enfin simple.</em></h1>
+    <div class="cover-two">
+      <div class="cover-col">
+        <div class="cover-col-l">Commissaires</div>
+        <div class="cover-col-t">Trouvez, postulez, gérez votre saison</div>
+        <div class="cover-col-d">Événements, candidatures, profil licence, historique, disponibilité — tout en un.</div>
+      </div>
+      <div class="cover-col">
+        <div class="cover-col-l">Organisateurs</div>
+        <div class="cover-col-t">Publiez, recrutez, gérez votre équipe</div>
+        <div class="cover-col-d">Création d'événement, candidatures, outils de gestion, émargement PDF, QR check-in.</div>
+      </div>
+    </div>
   </div>
 
   <div class="cover-discs">
-    <span class="disc">Rallye</span>
-    <span class="disc">Circuit</span>
-    <span class="disc">Karting</span>
-    <span class="disc">Drift</span>
-    <span class="disc">Endurance</span>
-    <span class="disc">Moto Cross</span>
-    <span class="disc">Enduro</span>
-    <span class="disc">Trial</span>
-    <span class="disc">Road Racing</span>
-    <span class="disc">Supermoto</span>
+    <span class="disc">Rallye</span><span class="disc">Circuit</span><span class="disc">Karting</span>
+    <span class="disc">Drift</span><span class="disc">Endurance</span><span class="disc">Moto Cross</span>
+    <span class="disc">Enduro</span><span class="disc">Trial</span><span class="disc">Road Racing</span><span class="disc">Supermoto</span>
   </div>
 
   <div class="cover-foot">
-    <span class="cover-foot-l">Présentation — Espace Organisateur</span>
-    <div class="cover-dot-row">
+    <span class="cover-foot-l">Présentation de la plateforme</span>
+    <div style="display:flex;align-items:center;gap:7px;">
       <div class="odot"></div>
-      <span style="font-size:7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);">France — Accès gratuit</span>
+      <span style="font-size:7px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.28);">Accès gratuit — 🇫🇷 Made in France</span>
     </div>
   </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════
-     PAGE 2 — DASHBOARD ORGANISATEUR
+     PAGE 2 — COMMISSAIRE : DASHBOARD
 ═══════════════════════════════════════════════ -->
 <div class="page" style="background:#fff;">
   <div class="inner">
-    <p class="pg-eye">Espace organisateur — 1 / 5</p>
-    <h2 class="pg-title">Tout votre pilotage en un coup d'œil.</h2>
-    <p class="pg-sub">Le dashboard centralise vos événements, vos candidatures et vos analytics de performance dès la connexion.</p>
+    <p class="pg-eye">Espace commissaire — 1 / 3</p>
+    <h2 class="pg-title">Votre tableau de bord commissaire.</h2>
+    <p class="pg-sub">Candidatures en cours, taux d'acceptation, licence vérifiée, prochain événement — tout s'affiche dès la connexion.</p>
 
-    <div style="margin-top:12px;flex:1;">
+    <div style="margin-top:11px;flex:1;">
       <div class="browser">
         <div class="browser-bar">
           <div class="b-dots"><span class="b-dot r"></span><span class="b-dot y"></span><span class="b-dot g"></span></div>
-          <div class="b-addr">trackmarshal.app/organizer/dashboard</div>
+          <div class="b-addr">trackmarshal.app/dashboard</div>
         </div>
-        <div class="o-layout" style="height:210px;">
-          <!-- Sidebar -->
+        <div class="o-layout" style="height:205px;">
           <div class="o-sb">
             <div class="o-sb-logo">
               <div class="o-sb-logomark">🏁</div>
               <div class="o-sb-wordmark">Track<span>Marshal</span></div>
             </div>
             <div class="o-nav">
-              <div class="o-nav-item on"><span class="ni">🏠</span> Dashboard</div>
-              <div class="o-nav-item"><span class="ni">📅</span> Mes événements</div>
-              <div class="o-nav-item"><span class="ni">📋</span> Candidatures</div>
-              <div class="o-nav-item"><span class="ni">👤</span> Annuaire</div>
-              <div class="o-nav-item"><span class="ni">💬</span> Messages</div>
-              <div class="o-nav-item"><span class="ni">⚙️</span> Paramètres</div>
+              <div class="o-nav-item on">🏠 Dashboard</div>
+              <div class="o-nav-item">📅 Événements</div>
+              <div class="o-nav-item">📋 Mes candidatures</div>
+              <div class="o-nav-item">🗓 Disponibilités</div>
+              <div class="o-nav-item">🏆 Mon historique</div>
+              <div class="o-nav-item">❤️ Favoris</div>
+              <div class="o-nav-item">💬 Messages</div>
+              <div class="o-nav-item">👤 Mon profil</div>
+              <div class="o-nav-item">⚙️ Paramètres</div>
             </div>
-            <div class="o-sb-foot">
-              <div class="o-nav-deco"><span class="ni">→</span> Déconnexion</div>
+            <div class="o-sb-foot"><div class="o-nav-deco">→ Déconnexion</div></div>
+          </div>
+          <div class="o-main">
+            <div class="o-topbar">
+              <div class="o-topbar-left">
+                <span class="o-topbar-eye">Dashboard commissaire</span>
+                <span class="o-topbar-title">Bonjour, Thomas Marchand 👋</span>
+              </div>
+              <div class="o-topbar-right">
+                <div class="o-bell">🔔<div class="o-bell-badge">6</div></div>
+                <div class="o-btn-outline">Modifier mon profil</div>
+              </div>
+            </div>
+            <div class="o-content">
+              <div class="o-stats-grid">
+                <div class="o-stat">
+                  <div class="o-stat-l">Candidatures</div>
+                  <div class="o-stat-n">5</div>
+                  <div class="o-stat-sub">3 acceptées · 1 en attente</div>
+                </div>
+                <div class="o-stat">
+                  <div class="o-stat-l">Taux d'acceptation</div>
+                  <div class="o-stat-n green">75%</div>
+                  <div class="o-stat-sub">3 sur 4 événements</div>
+                </div>
+                <div class="o-stat">
+                  <div class="o-stat-l">Licences</div>
+                  <div class="o-stat-lic">
+                    <span style="color:#22c55e;">●</span> EICOB — Com. B
+                    <span class="o-stat-lic chk">✓</span>
+                  </div>
+                </div>
+                <div class="o-stat">
+                  <div class="o-stat-l">Événements à venir</div>
+                  <div class="o-stat-n orange">2</div>
+                  <div class="o-stat-sub" style="color:#22c55e;">● Disponible</div>
+                </div>
+              </div>
+              <div class="c-hero-ev">
+                <div class="c-hero-bg"></div>
+                <div style="position:absolute;inset:0;background:url('') center/cover;opacity:.4;"></div>
+                <div class="c-hero-overlay"></div>
+                <span class="c-hero-badge">ÉVÉNEMENT ACCEPTÉ</span>
+                <div class="c-hero-title">Rallye de la Normandie 2026<br/>— Épreuve Régionale</div>
+                <div class="c-hero-meta">
+                  <span>📅 19 – 20 septembre 2026</span>
+                  <span>📍 Alençon — Forêt d'Écouves, Orne (61)</span>
+                </div>
+                <div class="c-hero-btn">Voir l'événement</div>
+              </div>
             </div>
           </div>
-          <!-- Main -->
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;">
+      <div class="fc"><div class="fc-icon">📊</div><div class="fc-t">Vue globale</div><div class="fc-d">Candidatures, taux d'acceptation, licence et agenda en un coup d'œil.</div></div>
+      <div class="fc"><div class="fc-icon">🏆</div><div class="fc-t">Prochain événement</div><div class="fc-d">L'événement accepté le plus proche mis en avant dès le dashboard.</div></div>
+      <div class="fc dk"><div class="fc-icon">🔔</div><div class="fc-t">Notifications</div><div class="fc-d">Alertes en temps réel : candidature acceptée, message, rappel.</div></div>
+      <div class="fc or"><div class="fc-icon">✔</div><div class="fc-t">Licence vérifiée</div><div class="fc-d">Badge visible sur votre profil dès validation par l'équipe TrackMarshal.</div></div>
+    </div>
+  </div>
+  <div class="pg-foot">
+    <img src="/logo.png" alt="TrackMarshal" class="pg-foot-logo" />
+    <span class="pg-foot-url">trackmarshal.app</span><span class="pgn">02</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 3 — COMMISSAIRE : PROFIL & LICENCES
+═══════════════════════════════════════════════ -->
+<div class="page" style="background:#fff;">
+  <div class="inner">
+    <p class="pg-eye">Espace commissaire — 2 / 3</p>
+    <h2 class="pg-title">Profil, licences et disponibilité.</h2>
+    <p class="pg-sub">Renseignez votre profil motorsport complet — photo, biographie, disciplines, langues — et déposez votre licence pour obtenir un badge vérifié visible par les organisateurs.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:11px;flex:1;">
+
+      <!-- Profil -->
+      <div>
+        <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Mon profil commissaire</div>
+        <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:9px 10px;">
+          <div style="font-size:6px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#FF5A1F;margin-bottom:2px;">Profil commissaire</div>
+          <div style="font-size:11px;font-weight:900;color:#111;margin-bottom:3px;">Mon Profil</div>
+          <div style="font-size:6.5px;color:#666;margin-bottom:8px;">Complétez votre profil professionnel motorsport afin d'être visible et recruté par les organisateurs.</div>
+          <div class="c-profile-grid">
+            <div class="c-photo-box">
+              <div class="c-photo-img">👤</div>
+              <div class="c-photo-lbl">Photo de profil</div>
+              <div style="margin-top:5px;font-size:5.5px;color:#aaa;">Parcourir...</div>
+            </div>
+            <div class="c-form-fields">
+              <div class="c-field-row">
+                <div class="c-field">
+                  <div class="c-label">Nom complet</div>
+                  <div class="c-input">Thomas Marchand</div>
+                </div>
+                <div class="c-field">
+                  <div class="c-label">Téléphone</div>
+                  <div class="c-input blurred">07 •• •• •• ••</div>
+                </div>
+              </div>
+              <div class="c-field-row">
+                <div class="c-field">
+                  <div class="c-label">Pays</div>
+                  <div class="c-input">France</div>
+                </div>
+                <div class="c-field">
+                  <div class="c-label">Ville</div>
+                  <div class="c-input">Caen</div>
+                </div>
+              </div>
+              <div class="c-field">
+                <div class="c-label">Biographie</div>
+                <div class="c-textarea">Commissaire de piste depuis 2021. Passionné de motorsport, j'ai officié sur des événements régionaux et nationaux (rallye, circuit). Licencié FFSA.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disponibilité -->
+        <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:8px 10px;margin-top:7px;">
+          <div class="c-dispo-section">
+            <div class="c-dispo-lbl">Statut de disponibilité</div>
+            <div class="c-dispo-desc">Visible sur votre profil public. Les organisateurs filtrent par disponibilité.</div>
+            <div class="c-dispo-grid">
+              <div class="c-dispo-btn c-dispo-active">● Disponible</div>
+              <div class="c-dispo-btn c-dispo-inactive">○ Indisponible</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Licences -->
+      <div>
+        <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Mes licences</div>
+        <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:9px 10px;">
+          <div class="c-licence-hdr">
+            <div class="c-licence-title">Mes licences</div>
+            <div class="c-licence-add">+ Ajouter une licence</div>
+          </div>
+
+          <div class="c-licence-card">
+            <span class="c-validated-badge">● Validée</span>
+            <div class="c-lic-form-row">
+              <div class="c-field">
+                <div class="c-label">Fédération</div>
+                <div class="c-input">FFSA (Auto) ∨</div>
+              </div>
+              <div class="c-field">
+                <div class="c-label">Intitulé de la licence</div>
+                <div class="c-input" style="border-color:rgba(255,90,31,.4);">EICOB - Commissaire international B</div>
+              </div>
+            </div>
+            <div class="c-lic-form-row">
+              <div class="c-field">
+                <div class="c-label">Numéro de licence</div>
+                <div class="c-input blurred">••••••</div>
+              </div>
+              <div class="c-field">
+                <div class="c-label">ASA</div>
+                <div class="c-input" style="color:#aaa;">ex : ASA Lyon, ASA Côte d'Azur…</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+              <span style="font-size:6.5px;color:#FF5A1F;font-weight:700;">📎 Voir le document</span>
+              <span style="font-size:6px;color:#aaa;">Remplacer</span>
+            </div>
+            <div style="text-align:right;margin-top:6px;">
+              <div class="c-lic-save">Sauvegarder</div>
+            </div>
+          </div>
+
+          <div style="margin-top:9px;background:#f9f9f9;border:1.5px dashed #ddd;border-radius:8px;padding:9px 10px;text-align:center;">
+            <div style="font-size:14px;margin-bottom:4px;">🏍️</div>
+            <div style="font-size:7.5px;font-weight:700;color:#666;margin-bottom:2px;">Licence FFM (Moto)</div>
+            <div style="font-size:6.5px;color:#aaa;">Ajoutez une seconde licence pour les disciplines moto (MX, Enduro, Trial…)</div>
+            <div style="background:#111;color:#fff;font-size:6.5px;font-weight:700;padding:4px 12px;border-radius:6px;display:inline-block;margin-top:6px;">+ Ajouter licence FFM</div>
+          </div>
+        </div>
+
+        <div style="margin-top:7px;background:#0a0a0a;border-radius:9px;padding:9px 11px;">
+          <div style="font-size:7.5px;font-weight:700;color:#FF5A1F;margin-bottom:4px;">🏆 Mon historique de participations</div>
+          <div class="c-hist-lic">
+            <div class="c-hist-lic-left">
+              <div class="c-hist-lic-icon">🏆</div>
+              <div>
+                <div class="c-hist-lic-name">EICOB — Commissaire international B (FFSA)</div>
+                <div class="c-hist-lic-sub" style="color:rgba(255,255,255,.4);">Vos participations validées par les organisateurs</div>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div class="c-hist-total-lbl">Total</div>
+              <div class="c-hist-total-n">4</div>
+            </div>
+          </div>
+          <div style="font-size:6.5px;color:rgba(255,255,255,.4);font-style:italic;">Les participations apparaissent ici une fois que l'organisateur a validé votre présence dans le bilan post-événement.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;">
+      <div class="fc"><div class="fc-icon">🪪</div><div class="fc-t">Profil complet</div><div class="fc-d">Photo, bio, disciplines, langues, expériences — visible par tous les organisateurs.</div></div>
+      <div class="fc"><div class="fc-icon">✔</div><div class="fc-t">Badge vérifié</div><div class="fc-d">Déposez votre licence — badge vert visible dès validation par TrackMarshal.</div></div>
+      <div class="fc dk"><div class="fc-icon">🔁</div><div class="fc-t">Multi-licences</div><div class="fc-d">FFSA et FFM sur le même profil — auto et moto en parallèle.</div></div>
+      <div class="fc or"><div class="fc-icon">🟢</div><div class="fc-t">Disponibilité</div><div class="fc-d">Signalez votre dispo aux organisateurs. Indisponible = masqué des annuaires.</div></div>
+    </div>
+  </div>
+  <div class="pg-foot">
+    <img src="/logo.png" alt="TrackMarshal" class="pg-foot-logo" />
+    <span class="pg-foot-url">trackmarshal.app</span><span class="pgn">03</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 4 — COMMISSAIRE : MES CANDIDATURES
+═══════════════════════════════════════════════ -->
+<div class="page" style="background:#fff;">
+  <div class="inner">
+    <p class="pg-eye">Espace commissaire — 3 / 3</p>
+    <h2 class="pg-title">Suivez toutes vos candidatures.</h2>
+    <p class="pg-sub">Statut en temps réel, poste assigné, accès au PDF de l'événement, export agenda Google ou ICS, briefing à lire — tout depuis la même page.</p>
+
+    <div style="margin-top:11px;flex:1;">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="b-dots"><span class="b-dot r"></span><span class="b-dot y"></span><span class="b-dot g"></span></div>
+          <div class="b-addr">trackmarshal.app/mes-candidatures</div>
+        </div>
+        <div class="o-layout" style="height:210px;">
+          <div class="o-sb">
+            <div class="o-sb-logo">
+              <div class="o-sb-logomark">🏁</div>
+              <div class="o-sb-wordmark">Track<span>Marshal</span></div>
+            </div>
+            <div class="o-nav">
+              <div class="o-nav-item">🏠 Dashboard</div>
+              <div class="o-nav-item">📅 Événements</div>
+              <div class="o-nav-item on">📋 Mes candidatures</div>
+              <div class="o-nav-item">🗓 Disponibilités</div>
+              <div class="o-nav-item">🏆 Mon historique</div>
+              <div class="o-nav-item">❤️ Favoris</div>
+              <div class="o-nav-item">💬 Messages</div>
+              <div class="o-nav-item">👤 Mon profil</div>
+            </div>
+          </div>
+          <div class="o-main">
+            <div class="o-topbar">
+              <div class="o-topbar-left">
+                <span class="o-topbar-eye">Dashboard commissaire</span>
+                <span class="o-topbar-title">Mes candidatures</span>
+              </div>
+              <div class="o-topbar-right">
+                <div class="o-bell">🔔<div class="o-bell-badge">6</div></div>
+              </div>
+            </div>
+            <div class="o-content" style="padding:8px 10px;">
+              <!-- Accepté -->
+              <div class="c-app-card">
+                <div class="c-app-hdr">
+                  <div class="c-app-thumb">
+                    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);"></div>
+                    <div class="c-app-thumb-text">Rallye<br/>Normandie</div>
+                  </div>
+                  <div class="c-app-info">
+                    <div class="c-app-status"><span class="c-app-badge green">ACCEPTÉ</span></div>
+                    <div class="c-app-title">Rallye de la Normandie 2026 — Épreuve Régionale</div>
+                    <div class="c-app-meta">
+                      <span>📅 19 – 20 sept. 2026</span>
+                      <span>📍 Alençon — Forêt d'Écouves, Orne (61)</span>
+                    </div>
+                    <div class="c-app-poste">📌 Poste 1 — Commissaire de piste</div>
+                  </div>
+                </div>
+                <div class="c-app-actions">
+                  <span class="c-app-btn">Voir l'événement</span>
+                  <span class="c-app-btn">📄 PDF</span>
+                  <span class="c-app-btn">📅 Agenda</span>
+                  <span class="c-app-btn">🗓 Google</span>
+                  <span class="c-app-btn-hl">📋 Briefing à lire</span>
+                  <span class="c-app-cancel">Demander l'annulation</span>
+                </div>
+                <div class="c-briefing-section">
+                  <div class="c-briefing-tabs">
+                    <span class="c-briefing-tab off">Briefing</span>
+                    <span class="c-briefing-tab on">Covoiturage</span>
+                  </div>
+                  <div style="margin-top:6px;background:#f9f9f9;border-radius:7px;padding:7px 9px;">
+                    <div style="font-size:6px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;">Proposer un trajet</div>
+                    <div style="display:flex;gap:4px;margin-bottom:4px;">
+                      <div style="flex:1;background:#fff;border:1px solid #e5e5e5;border-radius:5px;padding:4px 7px;font-size:6.5px;color:#bbb;">Ville de départ</div>
+                      <div style="background:#fff;border:1px solid #e5e5e5;border-radius:5px;padding:4px 7px;font-size:6.5px;color:#555;white-space:nowrap;">1 place ▾</div>
+                    </div>
+                    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:5px;padding:4px 7px;font-size:6.5px;color:#bbb;margin-bottom:5px;">Heure de départ, point de RDV… (optionnel)</div>
+                    <button style="background:#e5e5e5;border:none;border-radius:5px;padding:4px 10px;font-size:6.5px;font-weight:700;color:#555;cursor:pointer;">Proposer</button>
+                    <div style="margin-top:5px;font-size:6px;color:#bbb;text-align:center;">Aucun trajet proposé</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Refusé -->
+              <div class="c-app-card">
+                <div class="c-app-hdr">
+                  <div class="c-app-thumb" style="background:linear-gradient(135deg,#1a0808,#300010);"></div>
+                  <div class="c-app-info">
+                    <div class="c-app-status"><span class="c-app-badge red">REFUSÉ</span></div>
+                    <div class="c-app-title">10ème Rallye de Beuzeville-Honfleur 2026</div>
+                    <div class="c-app-meta">
+                      <span>📅 6 – 8 novembre 2026</span>
+                      <span>📍 Beuzeville</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="c-app-actions">
+                  <span class="c-app-btn">Voir l'événement</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px;">
+      <div class="fc"><div class="fc-icon">🟢</div><div class="fc-t">Statut temps réel</div><div class="fc-d">Accepté / En attente / Refusé mis à jour instantanément.</div></div>
+      <div class="fc"><div class="fc-icon">📄</div><div class="fc-t">PDF événement</div><div class="fc-d">Téléchargez le récapitulatif complet de votre mission.</div></div>
+      <div class="fc"><div class="fc-icon">📅</div><div class="fc-t">Export agenda</div><div class="fc-d">Ajoutez l'événement à Google Calendar ou fichier ICS.</div></div>
+      <div class="fc dk"><div class="fc-icon">📋</div><div class="fc-t">Briefing</div><div class="fc-d">Lisez les consignes de sécurité directement dans l'app.</div></div>
+      <div class="fc or"><div class="fc-icon">🚗</div><div class="fc-t">Covoiturage</div><div class="fc-d">Coordonnez le trajet avec les autres commissaires de l'événement.</div></div>
+    </div>
+  </div>
+  <div class="pg-foot">
+    <img src="/logo.png" alt="TrackMarshal" class="pg-foot-logo" />
+    <span class="pg-foot-url">trackmarshal.app</span><span class="pgn">04</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE 5 — ORGANISATEUR : DASHBOARD
+═══════════════════════════════════════════════ -->
+<div class="page" style="background:#fff;">
+  <div class="inner">
+    <p class="pg-eye">Espace organisateur — 1 / 4</p>
+    <h2 class="pg-title">Dashboard organisateur — pilotez en temps réel.</h2>
+    <p class="pg-sub">Événements, candidatures, analytics de performance et dernières activités — tout centralisé dès la connexion.</p>
+
+    <div style="margin-top:11px;flex:1;">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="b-dots"><span class="b-dot r"></span><span class="b-dot y"></span><span class="b-dot g"></span></div>
+          <div class="b-addr">trackmarshal.app/organizer/dashboard</div>
+        </div>
+        <div class="o-layout" style="height:210px;">
+          <div class="o-sb">
+            <div class="o-sb-logo">
+              <div class="o-sb-logomark">🏁</div>
+              <div class="o-sb-wordmark">Track<span>Marshal</span></div>
+            </div>
+            <div class="o-nav">
+              <div class="o-nav-item on">🏠 Dashboard</div>
+              <div class="o-nav-item">📅 Mes événements</div>
+              <div class="o-nav-item">📋 Candidatures</div>
+              <div class="o-nav-item">👤 Annuaire</div>
+              <div class="o-nav-item">💬 Messages</div>
+              <div class="o-nav-item">⚙️ Paramètres</div>
+            </div>
+            <div class="o-sb-foot"><div class="o-nav-deco">→ Déconnexion</div></div>
+          </div>
           <div class="o-main">
             <div class="o-topbar">
               <div class="o-topbar-left">
@@ -406,72 +810,33 @@
             </div>
             <div class="o-content">
               <div class="o-stats-grid">
-                <div class="o-stat">
-                  <div class="o-stat-l">Événements créés</div>
-                  <div class="o-stat-n">3</div>
-                </div>
-                <div class="o-stat">
-                  <div class="o-stat-l">Candidatures reçues</div>
-                  <div class="o-stat-n">47</div>
-                </div>
-                <div class="o-stat">
-                  <div class="o-stat-l">Commissaires</div>
-                  <div class="o-stat-n">38</div>
-                </div>
-                <div class="o-stat">
-                  <div class="o-stat-l">Validation</div>
-                  <div class="o-stat-n green">Active</div>
-                </div>
+                <div class="o-stat"><div class="o-stat-l">Événements créés</div><div class="o-stat-n">3</div></div>
+                <div class="o-stat"><div class="o-stat-l">Candidatures reçues</div><div class="o-stat-n">47</div></div>
+                <div class="o-stat"><div class="o-stat-l">Commissaires</div><div class="o-stat-n">38</div></div>
+                <div class="o-stat"><div class="o-stat-l">Validation</div><div class="o-stat-n green">Active</div></div>
               </div>
               <div class="o-analytics">
                 <div class="o-analytics-l">Analytics</div>
                 <div class="o-analytics-t">Performance</div>
                 <div class="o-anl-grid">
-                  <div class="o-anl-item">
-                    <div class="o-anl-label">Taux de remplissage</div>
-                    <div class="o-anl-val orange">84%</div>
-                    <div class="o-prog-bar"><div class="o-prog-fill orange" style="width:84%;"></div></div>
-                  </div>
-                  <div class="o-anl-item">
-                    <div class="o-anl-label">Taux d'acceptation</div>
-                    <div class="o-anl-val green">100%</div>
-                    <div class="o-prog-bar"><div class="o-prog-fill green" style="width:100%;"></div></div>
-                  </div>
-                  <div class="o-anl-item">
-                    <div class="o-anl-label">Événements populaires</div>
-                    <div style="font-size:7px;color:#333;font-weight:700;margin-top:2px;">Rallye de la Normandie</div>
-                    <div class="o-anl-sub">34 candidatures</div>
-                  </div>
+                  <div><div class="o-anl-label">Taux de remplissage</div><div class="o-anl-val orange">84%</div><div class="o-prog-bar"><div class="o-prog-fill orange" style="width:84%;"></div></div></div>
+                  <div><div class="o-anl-label">Taux d'acceptation</div><div class="o-anl-val green">100%</div><div class="o-prog-bar"><div class="o-prog-fill green" style="width:100%;"></div></div></div>
+                  <div><div class="o-anl-label">Événements populaires</div><div style="font-size:7px;color:#333;font-weight:700;margin-top:3px;">Rallye de la Normandie</div><div style="font-size:5.5px;color:#aaa;margin-top:1px;">34 candidatures</div></div>
                 </div>
               </div>
               <div class="o-recent-grid">
                 <div class="o-recent">
                   <div class="o-recent-l">Derniers événements</div>
                   <div class="o-recent-t">Gestion événements</div>
-                  <div class="o-event-row">
-                    <div><div class="o-event-row-t">Rallye de la Normandie 2026</div><div class="o-event-row-s">Alençon — Forêt d'Écouves</div></div>
-                    <div class="o-btn-mini">Gérer</div>
-                  </div>
-                  <div class="o-event-row">
-                    <div><div class="o-event-row-t">Circuit Haute-Provence</div><div class="o-event-row-s">Lédenon — 15 sept. 2026</div></div>
-                    <div class="o-btn-mini">Gérer</div>
-                  </div>
+                  <div class="o-event-row"><div><div class="o-event-row-t">Rallye de la Normandie 2026</div><div class="o-event-row-s">Alençon — Forêt d'Écouves</div></div><div class="o-btn-mini">Gérer</div></div>
+                  <div class="o-event-row"><div><div class="o-event-row-t">Circuit Haute-Provence</div><div class="o-event-row-s">Lédenon — 15 sept.</div></div><div class="o-btn-mini">Gérer</div></div>
                 </div>
                 <div class="o-recent">
                   <div class="o-recent-l">Dernières candidatures</div>
                   <div class="o-recent-t">Commissaires</div>
-                  <div class="o-cand-row">
-                    <div><div class="o-cand-name">M. Dupont</div><div class="o-cand-sub">Rallye de la Normandie 2026</div></div>
-                    <span class="o-badge green">Accepté</span>
-                  </div>
-                  <div class="o-cand-row">
-                    <div><div class="o-cand-name">S. Martin</div><div class="o-cand-sub">Rallye de la Normandie 2026</div></div>
-                    <span class="o-badge green">Accepté</span>
-                  </div>
-                  <div class="o-cand-row">
-                    <div><div class="o-cand-name">A. Leblanc</div><div class="o-cand-sub">Rallye de la Normandie 2026</div></div>
-                    <span class="o-badge yellow">En attente</span>
-                  </div>
+                  <div class="o-cand-row"><div><div class="o-cand-name">M. Dupont</div><div class="o-cand-sub">Rallye de la Normandie 2026</div></div><span class="o-badge green">Accepté</span></div>
+                  <div class="o-cand-row"><div><div class="o-cand-name">S. Martin</div><div class="o-cand-sub">Rallye de la Normandie 2026</div></div><span class="o-badge green">Accepté</span></div>
+                  <div class="o-cand-row"><div><div class="o-cand-name">A. Leblanc</div><div class="o-cand-sub">Rallye de la Normandie 2026</div></div><span class="o-badge yellow">En attente</span></div>
                 </div>
               </div>
             </div>
@@ -480,308 +845,106 @@
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:11px;">
-      <div class="fc"><div class="fc-icon">📊</div><div class="fc-t">Vue globale</div><div class="fc-d">Tous vos indicateurs en un seul écran — événements, candidatures, taux de remplissage.</div></div>
-      <div class="fc"><div class="fc-icon">✅</div><div class="fc-t">Validation</div><div class="fc-d">Statut de votre compte visible en direct — publication activée dès validation.</div></div>
-      <div class="fc dk"><div class="fc-icon">🔔</div><div class="fc-t">Notifications</div><div class="fc-d">Alerte instantanée à chaque nouvelle candidature reçue.</div></div>
-      <div class="fc or"><div class="fc-icon">📈</div><div class="fc-t">Analytics</div><div class="fc-d">Taux d'acceptation, popularité des événements, remplissage en temps réel.</div></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;">
+      <div class="fc"><div class="fc-icon">📊</div><div class="fc-t">Vue globale</div><div class="fc-d">Tous vos indicateurs — événements, candidatures, taux de remplissage.</div></div>
+      <div class="fc"><div class="fc-icon">✅</div><div class="fc-t">Validation compte</div><div class="fc-d">Statut de votre compte visible — publication activée dès validation.</div></div>
+      <div class="fc dk"><div class="fc-icon">📈</div><div class="fc-t">Analytics</div><div class="fc-d">Taux d'acceptation, popularité des événements, remplissage en temps réel.</div></div>
+      <div class="fc or"><div class="fc-icon">🔔</div><div class="fc-t">Notifications</div><div class="fc-d">Alerte instantanée à chaque nouvelle candidature reçue.</div></div>
     </div>
   </div>
   <div class="pg-foot">
     <img src="/logo.png" alt="TrackMarshal" class="pg-foot-logo" />
-    <span class="pg-foot-url">trackmarshal.app</span>
-    <span class="pgn">02</span>
+    <span class="pg-foot-url">trackmarshal.app</span><span class="pgn">05</span>
   </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════
-     PAGE 3 — CRÉER UN ÉVÉNEMENT
+     PAGE 6 — ORGANISATEUR : CRÉER + CANDIDATURES
 ═══════════════════════════════════════════════ -->
 <div class="page" style="background:#fff;">
   <div class="inner">
-    <p class="pg-eye">Espace organisateur — 2 / 5</p>
-    <h2 class="pg-title">Publiez votre événement en 5 minutes.</h2>
-    <p class="pg-sub">Nom, lieu, dates, discipline, personnel recherché. Choisissez les rôles dont vous avez besoin avec un simple interrupteur et définissez les quotas.</p>
+    <p class="pg-eye">Espace organisateur — 2 / 4</p>
+    <h2 class="pg-title">Publiez en 5 min — gérez les candidatures.</h2>
+    <p class="pg-sub">Formulaire de création complet avec rôles activables par toggle. Acceptez, refusez et assignez un poste à chaque commissaire en un clic.</p>
 
-    <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:11px;margin-top:12px;flex:1;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px;flex:1;">
 
-      <!-- Form mockup -->
+      <!-- Création -->
       <div>
-        <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Formulaire de création</div>
-        <div class="browser">
-          <div class="browser-bar">
-            <div class="b-dots"><span class="b-dot r"></span><span class="b-dot y"></span><span class="b-dot g"></span></div>
-            <div class="b-addr">trackmarshal.app/organizer/events/new</div>
+        <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;">Créer un événement</div>
+        <div style="background:#f9f9f9;border:1px solid #eee;border-radius:10px;padding:9px 10px;">
+          <div class="o-label" style="margin-bottom:3px;">Nom de l'événement</div>
+          <div class="o-input-full">Rallye de la Normandie 2026 — Épreuve Régionale</div>
+          <div class="o-form-row">
+            <div class="o-form-field"><div class="o-label">Pays</div><div class="o-input">France</div></div>
+            <div class="o-form-field"><div class="o-label">Lieu</div><div class="o-input">📍 Alençon — Forêt d'Écouves</div></div>
           </div>
-          <div style="background:#f9f9f9;padding:10px 11px;">
-            <div class="o-label" style="margin-bottom:3px;">Nom de l'événement</div>
-            <div class="o-input-full">Rallye de la Normandie 2026 — Épreuve Régionale</div>
-            <div class="o-form-row">
-              <div class="o-form-field">
-                <div class="o-label">Pays</div>
-                <div class="o-input">France</div>
-              </div>
-              <div class="o-form-field">
-                <div class="o-label">Lieu</div>
-                <div class="o-input">📍 Alençon — Forêt d'Écouves</div>
-              </div>
-            </div>
-            <div class="o-form-row">
-              <div class="o-form-field">
-                <div class="o-label">Date de début</div>
-                <div class="o-input">📅 19/09/2026</div>
-              </div>
-              <div class="o-form-field">
-                <div class="o-label">Date de fin (optionnel)</div>
-                <div class="o-input">📅 20/09/2026</div>
-              </div>
-            </div>
-            <div class="o-form-field" style="margin-bottom:8px;">
-              <div class="o-label">Discipline</div>
-              <div class="o-input">Rallye ∨</div>
-            </div>
-            <div class="o-label" style="margin-bottom:5px;">Personnel recherché</div>
-            <div class="o-toggle-row on">
-              <div class="o-pill-on"></div>
-              <div class="o-toggle-label">Commissaire de piste</div>
-              <div class="o-toggle-count">18</div>
-            </div>
-            <div class="o-toggle-row on">
-              <div class="o-pill-on"></div>
-              <div class="o-toggle-label">Commissaire technique</div>
-              <div class="o-toggle-count">2</div>
-            </div>
-            <div class="o-toggle-row on">
-              <div class="o-pill-on"></div>
-              <div class="o-toggle-label">Commissaire chef de poste</div>
-              <div class="o-toggle-count">3</div>
-            </div>
-            <div class="o-toggle-row">
-              <div class="o-pill-off"></div>
-              <div class="o-toggle-label" style="color:#aaa;">Chronométreur</div>
-            </div>
+          <div class="o-form-row" style="margin-top:4px;">
+            <div class="o-form-field"><div class="o-label">Date de début</div><div class="o-input">📅 19/09/2026</div></div>
+            <div class="o-form-field"><div class="o-label">Date de fin</div><div class="o-input">📅 20/09/2026</div></div>
           </div>
-        </div>
-      </div>
-
-      <!-- Preview + features -->
-      <div style="display:flex;flex-direction:column;gap:9px;">
-        <div>
-          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Aperçu en direct</div>
-          <div class="o-ev-card">
-            <div class="o-ev-img-wrap">
-              <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1500,#192600);display:flex;align-items:center;justify-content:center;">
-                <div style="text-align:center;color:rgba(255,255,255,.12);font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;">Affiche<br/>rallye</div>
-              </div>
-              <div class="o-ev-chip-row">
-                <span class="o-ev-chip disc">Rallye</span>
-                <span class="o-ev-chip stat">Ouvert</span>
-              </div>
-            </div>
-            <div class="o-ev-body">
-              <div class="o-ev-title">Rallye de la Normandie 2026 — Épreuve Régionale</div>
-              <div class="o-ev-meta">📅 19 – 20 septembre 2026</div>
-              <div class="o-ev-meta">📍 Alençon — Forêt d'Écouves</div>
-              <div class="o-ev-coms">👥 23 commissaires recherchés</div>
-              <div class="o-ev-btn">Voir l'événement →</div>
-            </div>
-          </div>
-        </div>
-
-        <div style="background:#0a0a0a;border-radius:11px;padding:11px 12px;">
-          <div style="font-size:9px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#FF5A1F;margin-bottom:8px;">À personnaliser</div>
-          <div style="display:flex;flex-direction:column;gap:5px;">
-            <div style="display:flex;align-items:flex-start;gap:6px;">
-              <span style="font-size:10px;">🖼️</span>
-              <div><div style="font-size:7.5px;font-weight:700;color:#fff;margin-bottom:1px;">Affiche de l'événement</div><div style="font-size:6.5px;color:rgba(255,255,255,.45);">Uploadez votre visuel officiel</div></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:6px;">
-              <span style="font-size:10px;">📝</span>
-              <div><div style="font-size:7.5px;font-weight:700;color:#fff;margin-bottom:1px;">Description & planning</div><div style="font-size:6.5px;color:rgba(255,255,255,.45);">Briefing, spéciales, programme</div></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:6px;">
-              <span style="font-size:10px;">🏨</span>
-              <div><div style="font-size:7.5px;font-weight:700;color:#fff;margin-bottom:1px;">Conditions : héb., repas, défraiement</div><div style="font-size:6.5px;color:rgba(255,255,255,.45);">Informations affichées aux commissaires</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:11px;">
-      <div class="fc"><div class="fc-icon">🎚️</div><div class="fc-t">Rôles modulables</div><div class="fc-d">Activez / désactivez chaque type de commissaire avec un seul clic.</div></div>
-      <div class="fc"><div class="fc-icon">🔢</div><div class="fc-t">Quotas par rôle</div><div class="fc-d">Définissez combien de commissaires de chaque type vous recherchez.</div></div>
-      <div class="fc dk"><div class="fc-icon">👁️</div><div class="fc-t">Aperçu en direct</div><div class="fc-d">Visualisez la carte qui sera publiée avant même de valider.</div></div>
-      <div class="fc or"><div class="fc-icon">⚡</div><div class="fc-t">Publication immédiate</div><div class="fc-d">L'événement est visible par tous les commissaires dès la validation.</div></div>
-    </div>
-  </div>
-  <div class="pg-foot">
-    <img src="/logo.png" alt="TrackMarshal" class="pg-foot-logo" />
-    <span class="pg-foot-url">trackmarshal.app</span>
-    <span class="pgn">03</span>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════
-     PAGE 4 — MES ÉVÉNEMENTS + CANDIDATURES
-═══════════════════════════════════════════════ -->
-<div class="page" style="background:#fff;">
-  <div class="inner">
-    <p class="pg-eye">Espace organisateur — 3 / 5</p>
-    <h2 class="pg-title">Gérez vos événements et vos candidatures.</h2>
-    <p class="pg-sub">Retrouvez tous vos événements en cours, accédez aux candidatures reçues, acceptez ou refusez en un clic et assignez un poste à chaque commissaire.</p>
-
-    <div style="display:grid;grid-template-columns:0.8fr 1.2fr;gap:11px;margin-top:12px;flex:1;">
-
-      <!-- Mes événements -->
-      <div>
-        <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Mes événements</div>
-        <div class="browser">
-          <div class="browser-bar">
-            <div class="b-dots"><span class="b-dot r"></span><span class="b-dot y"></span><span class="b-dot g"></span></div>
-            <div class="b-addr">trackmarshal.app/organizer/events</div>
-          </div>
-          <div class="o-layout" style="height:195px;">
-            <div class="o-sb">
-              <div class="o-sb-logo">
-                <div class="o-sb-logomark">🏁</div>
-                <div class="o-sb-wordmark">Track<span>Marshal</span></div>
-              </div>
-              <div class="o-nav">
-                <div class="o-nav-item"><span class="ni">🏠</span> Dashboard</div>
-                <div class="o-nav-item on"><span class="ni">📅</span> Mes événements</div>
-                <div class="o-nav-item"><span class="ni">📋</span> Candidatures</div>
-                <div class="o-nav-item"><span class="ni">👤</span> Annuaire</div>
-                <div class="o-nav-item"><span class="ni">💬</span> Messages</div>
-              </div>
-            </div>
-            <div class="o-main">
-              <div class="o-topbar">
-                <div class="o-topbar-left">
-                  <span class="o-topbar-eye">Dashboard organisateur</span>
-                  <span class="o-topbar-title">Mes événements</span>
-                </div>
-                <div class="o-topbar-right">
-                  <div class="o-btn-primary">+ Créer un événement</div>
-                </div>
-              </div>
-              <div class="o-content">
-                <div class="o-tabs">
-                  <div class="o-tab on">Tous</div>
-                  <div class="o-tab off">Ouverts</div>
-                  <div class="o-tab off">Complets</div>
-                  <div class="o-tab off">Terminés</div>
-                </div>
-                <div class="o-ev-card">
-                  <div class="o-ev-img-wrap" style="height:60px;">
-                    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1500,#192600);"></div>
-                    <div class="o-ev-chip-row">
-                      <span class="o-ev-chip disc">Rallye</span>
-                      <span class="o-ev-chip stat">Ouvert</span>
-                    </div>
-                  </div>
-                  <div class="o-ev-body">
-                    <div class="o-ev-title">Rallye de la Normandie 2026</div>
-                    <div class="o-ev-meta">📅 19 – 20 septembre 2026</div>
-                    <div class="o-ev-meta">📍 Alençon — Forêt d'Écouves</div>
-                    <div class="o-ev-coms">👥 2 / 23 commissaires</div>
-                    <div class="o-prog-bar"><div class="o-prog-fill orange" style="width:9%;"></div></div>
-                    <div class="o-ev-btn" style="margin-top:5px;">👁 Gérer</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div class="o-form-field" style="margin-top:4px;margin-bottom:7px;"><div class="o-label">Discipline</div><div class="o-input">Rallye ∨</div></div>
+          <div class="o-label" style="margin-bottom:4px;">Personnel recherché</div>
+          <div class="o-toggle-row on"><div class="o-pill-on"></div><div class="o-toggle-label">Commissaire de piste</div><div class="o-toggle-count">18</div></div>
+          <div class="o-toggle-row on"><div class="o-pill-on"></div><div class="o-toggle-label">Commissaire technique</div><div class="o-toggle-count">2</div></div>
+          <div class="o-toggle-row on"><div class="o-pill-on"></div><div class="o-toggle-label">Chef de poste</div><div class="o-toggle-count">3</div></div>
+          <div class="o-toggle-row"><div class="o-pill-off"></div><div class="o-toggle-label off">Chronométreur</div></div>
         </div>
       </div>
 
       <!-- Candidatures -->
       <div>
-        <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Candidatures reçues</div>
-        <div class="browser">
-          <div class="browser-bar">
-            <div class="b-dots"><span class="b-dot r"></span><span class="b-dot y"></span><span class="b-dot g"></span></div>
-            <div class="b-addr">trackmarshal.app/organizer/events/[id]/candidatures</div>
+        <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;">Gestion des candidatures</div>
+        <div style="background:#f9f9f9;border:1px solid #eee;border-radius:10px;padding:9px 10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div style="font-size:9px;font-weight:900;color:#111;">Candidatures reçues</div>
+            <div style="display:flex;gap:4px;">
+              <span style="background:#f5f5f5;border:1px solid #eee;border-radius:6px;font-size:6.5px;font-weight:700;color:#333;padding:2.5px 8px;">Total <strong>47</strong></span>
+              <span class="o-badge yellow" style="padding:3px 7px;font-size:6px;">En attente 5</span>
+              <span class="o-badge green" style="padding:3px 7px;font-size:6px;">Acceptées 40</span>
+            </div>
           </div>
-          <div class="o-layout" style="height:195px;">
-            <div class="o-sb">
-              <div class="o-sb-logo">
-                <div class="o-sb-logomark">🏁</div>
-                <div class="o-sb-wordmark">Track<span>Marshal</span></div>
+          <div class="o-tabs">
+            <div class="o-tab on">Toutes 47</div>
+            <div class="o-tab off">En attente 5</div>
+            <div class="o-tab off">Acceptées 40</div>
+            <div class="o-tab off">Refusées 2</div>
+          </div>
+          <div class="o-cand-card">
+            <div class="o-cand-poster"><div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1500,#192600);"></div></div>
+            <div class="o-cand-body">
+              <div class="o-cand-hdr">
+                <div class="o-cand-avatar">MD</div>
+                <div style="flex:1;">
+                  <div class="o-cand-info-name">Marc Dupont <span style="background:#dcfce7;color:#16a34a;font-size:5px;padding:1.5px 5px;border-radius:3px;font-weight:700;">✔ Licence FFSA</span></div>
+                  <div class="o-cand-info-loc">📍 Caen · Circuit · Rallye · 5 ans</div>
+                  <div class="o-cand-info-email">📧 m.dupont@exemple.fr</div>
+                </div>
+                <div class="o-cand-actions">
+                  <span class="o-badge green">Accepté</span>
+                  <span class="o-btn-accept">Voir profil</span>
+                  <span class="o-btn-refuse" style="font-size:5.5px;padding:2.5px 7px;">Refuser</span>
+                </div>
               </div>
-              <div class="o-nav">
-                <div class="o-nav-item"><span class="ni">🏠</span> Dashboard</div>
-                <div class="o-nav-item"><span class="ni">📅</span> Mes événements</div>
-                <div class="o-nav-item on"><span class="ni">📋</span> Candidatures</div>
-                <div class="o-nav-item"><span class="ni">👤</span> Annuaire</div>
-                <div class="o-nav-item"><span class="ni">💬</span> Messages</div>
+              <div class="o-post-row">
+                <span class="o-post-l">Poste :</span>
+                <div class="o-post-input">Commissaire de piste — Poste 3</div>
+                <div class="o-post-ok">OK</div>
               </div>
             </div>
-            <div class="o-main">
-              <div class="o-topbar">
-                <div class="o-topbar-left">
-                  <span class="o-topbar-eye">Dashboard organisateur</span>
-                  <span class="o-topbar-title">Candidatures reçues</span>
+          </div>
+          <div class="o-cand-card" style="opacity:.75;">
+            <div class="o-cand-poster"><div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1500,#192600);"></div></div>
+            <div class="o-cand-body">
+              <div class="o-cand-hdr">
+                <div class="o-cand-avatar" style="background:linear-gradient(135deg,#1a3060,#0a1830);">SM</div>
+                <div style="flex:1;">
+                  <div class="o-cand-info-name">Sophie Martin</div>
+                  <div class="o-cand-info-loc">📍 Rouen · Rallye · 3 ans d'exp.</div>
                 </div>
-                <div class="o-topbar-right">
-                  <span class="o-stat" style="font-size:6.5px;font-weight:700;color:#111;padding:3px 8px;">Total <strong>47</strong></span>
-                  <span class="o-badge yellow" style="padding:3px 8px;font-size:6.5px;">En attente 5</span>
-                  <span class="o-badge green" style="padding:3px 8px;font-size:6.5px;">Acceptées 40</span>
-                </div>
-              </div>
-              <div class="o-content" style="padding:8px 9px;">
-                <div class="o-tabs">
-                  <div class="o-tab on">Toutes <span class="o-tab-count">47</span></div>
-                  <div class="o-tab off">En attente <span class="o-tab-count">5</span></div>
-                  <div class="o-tab off">Acceptées <span class="o-tab-count">40</span></div>
-                  <div class="o-tab off">Refusées <span class="o-tab-count">2</span></div>
-                </div>
-                <div class="o-cand-card">
-                  <div class="o-cand-poster">
-                    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1500,#192600);"></div>
-                    <div class="o-cand-poster-overlay"></div>
-                    <div style="position:absolute;bottom:4px;left:4px;font-size:5px;font-weight:800;color:#fff;letter-spacing:.05em;text-transform:uppercase;line-height:1.2;">Rallye de la<br/>Normandie</div>
-                  </div>
-                  <div class="o-cand-body">
-                    <div class="o-cand-hdr">
-                      <div class="o-cand-avatar">MD</div>
-                      <div style="flex:1;">
-                        <div class="o-cand-info-name">Marc Dupont</div>
-                        <div class="o-cand-info-loc">📍 Caen, France</div>
-                        <div class="o-cand-info-email">📧 m.dupont@exemple.fr</div>
-                        <div class="o-cand-info-exp">⏳ 5 ans d'expérience</div>
-                      </div>
-                      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
-                        <span class="o-badge green">Accepté</span>
-                        <span class="o-btn-accept" style="font-size:6px;padding:3px 7px;">Voir profil</span>
-                        <span class="o-btn-refuse" style="font-size:6px;padding:3px 7px;">Refuser</span>
-                      </div>
-                    </div>
-                    <div class="o-post-row">
-                      <span class="o-post-l">Poste assigné :</span>
-                      <div class="o-post-input">Commissaire de piste — Poste 3</div>
-                      <div class="o-post-ok">OK</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="o-cand-card" style="opacity:.7;">
-                  <div class="o-cand-poster">
-                    <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1500,#192600);"></div>
-                  </div>
-                  <div class="o-cand-body">
-                    <div class="o-cand-hdr">
-                      <div class="o-cand-avatar" style="background:linear-gradient(135deg,#1a3060,#0a1830);">SM</div>
-                      <div style="flex:1;">
-                        <div class="o-cand-info-name">Sophie Martin</div>
-                        <div class="o-cand-info-loc">📍 Rouen, France</div>
-                        <div class="o-cand-info-exp">⏳ 3 ans d'expérience</div>
-                      </div>
-                      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
-                        <span class="o-badge green">Accepté</span>
-                        <span class="o-badge orange" style="margin-top:1px;">Chef de poste</span>
-                      </div>
-                    </div>
-                  </div>
+                <div class="o-cand-actions">
+                  <span class="o-badge green">Accepté</span>
+                  <span class="o-badge orange">Chef de poste</span>
                 </div>
               </div>
             </div>
@@ -790,42 +953,41 @@
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:11px;">
-      <div class="fc"><div class="fc-icon">🗂️</div><div class="fc-t">Filtres par statut</div><div class="fc-d">Toutes / En attente / Acceptées / Refusées — navigation instantanée.</div></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;">
+      <div class="fc"><div class="fc-icon">🎚️</div><div class="fc-t">Rôles modulables</div><div class="fc-d">Activez chaque type de commissaire avec un toggle, définissez le quota.</div></div>
       <div class="fc"><div class="fc-icon">✅</div><div class="fc-t">Accepter / Refuser</div><div class="fc-d">Le commissaire est notifié par email instantanément.</div></div>
-      <div class="fc dk"><div class="fc-icon">📌</div><div class="fc-t">Attribution de poste</div><div class="fc-d">Assignez un poste précis à chaque commissaire accepté.</div></div>
-      <div class="fc or"><div class="fc-icon">👤</div><div class="fc-t">Voir profil complet</div><div class="fc-d">Licence, expérience, disciplines, évaluations passées en un clic.</div></div>
+      <div class="fc dk"><div class="fc-icon">📌</div><div class="fc-t">Attribution poste</div><div class="fc-d">Assignez un poste précis à chaque commissaire accepté.</div></div>
+      <div class="fc or"><div class="fc-icon">👤</div><div class="fc-t">Profil complet</div><div class="fc-d">Licence, expérience, disciplines, évaluations passées en un clic.</div></div>
     </div>
   </div>
   <div class="pg-foot">
     <img src="/logo.png" alt="TrackMarshal" class="pg-foot-logo" />
-    <span class="pg-foot-url">trackmarshal.app</span>
-    <span class="pgn">04</span>
+    <span class="pg-foot-url">trackmarshal.app</span><span class="pgn">06</span>
   </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════
-     PAGE 5 — OUTILS DE GESTION AVANCÉE
+     PAGE 7 — ORGANISATEUR : OUTILS DE GESTION
 ═══════════════════════════════════════════════ -->
 <div class="page" style="background:#fff;">
   <div class="inner">
-    <p class="pg-eye">Espace organisateur — 4 / 5</p>
+    <p class="pg-eye">Espace organisateur — 3 / 4</p>
     <h2 class="pg-title">Évaluez, communiquez, partagez les documents.</h2>
-    <p class="pg-sub">Chaque commissaire accepté dispose d'un espace dédié : évaluation post-événement, documents partagés et messagerie directe intégrée.</p>
+    <p class="pg-sub">Toolbar complète par événement : évaluation étoiles, documents partagés, messagerie directe, canal groupé, rappels automatiques, exports CSV et PDF.</p>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:13px;flex:1;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:11px;flex:1;">
 
-      <!-- Toolbar + Evaluation -->
-      <div style="display:flex;flex-direction:column;gap:8px;">
+      <!-- Évaluation -->
+      <div style="display:flex;flex-direction:column;gap:7px;">
         <div>
-          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Toolbar de gestion par événement</div>
-          <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:8px 10px;">
-            <div style="font-size:7.5px;font-weight:800;color:#111;margin-bottom:6px;">Rallye de la Normandie 2026</div>
+          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;">Toolbar de gestion</div>
+          <div style="background:#fff;border:1px solid #eee;border-radius:9px;padding:7px 9px;">
+            <div style="font-size:7px;font-weight:800;color:#111;margin-bottom:5px;">Rallye de la Normandie 2026</div>
             <div class="o-toolbar">
               <span class="o-tbtn">⭐ Évaluer</span>
-              <span class="o-tbtn hl">📄 Documents</span>
+              <span class="o-tbtn hl">📄 Docs</span>
               <span class="o-tbtn">💬 Message</span>
-              <span class="o-tbtn">📣 Canal d'équipe</span>
+              <span class="o-tbtn">📣 Canal</span>
               <span class="o-tbtn hl">🔔 Rappels</span>
               <span class="o-tbtn">📋 Émargement</span>
               <span class="o-tbtn">📁 CSV</span>
@@ -833,152 +995,127 @@
             </div>
           </div>
         </div>
-
         <div>
-          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Évaluation post-événement</div>
+          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;">Évaluation post-événement</div>
           <div class="o-eval">
-            <div class="o-eval-hdr">
-              <div class="o-eval-title">⭐ Évaluer un commissaire</div>
-            </div>
+            <div class="o-eval-hdr"><div class="o-eval-title">⭐ Évaluer un commissaire</div></div>
             <div class="o-eval-body">
               <div class="o-eval-row">
                 <div class="o-eval-ava" style="background:linear-gradient(135deg,#FF5A1F,#a33000);">MD</div>
-                <div>
-                  <div class="o-eval-name">Marc Dupont</div>
-                  <div class="o-eval-event">Rallye de la Normandie 2026</div>
-                </div>
+                <div><div class="o-eval-name">Marc Dupont</div><div class="o-eval-event">Rallye de la Normandie 2026</div></div>
               </div>
               <div class="o-stars">
-                <span class="o-star filled">★</span>
-                <span class="o-star filled">★</span>
-                <span class="o-star filled">★</span>
-                <span class="o-star filled">★</span>
+                <span class="o-star filled">★</span><span class="o-star filled">★</span>
+                <span class="o-star filled">★</span><span class="o-star filled">★</span>
                 <span class="o-star empty">★</span>
               </div>
-              <div class="o-eval-textarea">Très professionnel, ponctuel et réactif. Excellente connaissance du poste. À recontacter.</div>
+              <div class="o-eval-textarea">Très professionnel, ponctuel. À recontacter.</div>
               <div class="o-eval-submit">Enregistrer l'avis</div>
             </div>
+          </div>
+        </div>
+        <div style="background:#f7f7f7;border-radius:9px;padding:9px 10px;">
+          <div style="font-size:9px;font-weight:800;color:#111;margin-bottom:4px;">📁 Exports</div>
+          <div style="display:flex;gap:5px;">
+            <div style="flex:1;background:#0a0a0a;border-radius:7px;padding:6px 8px;text-align:center;"><div style="font-size:8px;font-weight:700;color:#fff;">📊 CSV</div><div style="font-size:5.5px;color:rgba(255,255,255,.4);">Excel / Sheets</div></div>
+            <div style="flex:1;background:#FF5A1F;border-radius:7px;padding:6px 8px;text-align:center;"><div style="font-size:8px;font-weight:700;color:#fff;">📄 PDF</div><div style="font-size:5.5px;color:rgba(255,255,255,.8);">Liste officielle</div></div>
           </div>
         </div>
       </div>
 
       <!-- Documents -->
-      <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;flex-direction:column;gap:7px;">
         <div>
-          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Documents partagés</div>
-          <div class="o-docs">
-            <div class="o-docs-hdr">
-              <span style="font-size:10px;">📁</span>
-              <div class="o-docs-title">Documents — Rallye de la Normandie</div>
-            </div>
-            <div class="o-docs-body">
-              <div class="o-dropzone">
-                <div class="o-dropzone-icon">📎</div>
-                <div class="o-dropzone-t">Déposer un document ici</div>
-                <div class="o-dropzone-s">Carte de positionnement, consignes, planning…</div>
+          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;">Documents partagés</div>
+          <div style="background:#fff;border:1px solid #eee;border-radius:9px;overflow:hidden;">
+            <div style="background:#111;padding:5px 9px;display:flex;align-items:center;gap:5px;"><span style="font-size:10px;">📁</span><span style="font-size:7px;font-weight:800;color:#fff;">Documents — Rallye de la Normandie</span></div>
+            <div style="padding:8px 9px;">
+              <div style="border:1.5px dashed #ddd;border-radius:7px;padding:10px;text-align:center;background:#fafafa;margin-bottom:7px;">
+                <div style="font-size:14px;margin-bottom:3px;">📎</div>
+                <div style="font-size:6.5px;font-weight:700;color:#333;">Déposer un document</div>
+                <div style="font-size:5.5px;color:#aaa;">Carte, consignes, planning…</div>
               </div>
-              <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px;">
-                <div style="display:flex;align-items:center;gap:6px;background:#f9f9f9;border:1px solid #eee;border-radius:7px;padding:5px 8px;">
-                  <span style="font-size:10px;">📄</span>
-                  <div style="flex:1;"><div style="font-size:7px;font-weight:700;color:#111;">Plan_positionnement_speciales.pdf</div><div style="font-size:5.5px;color:#aaa;">248 Ko — Partagé avec tous les commissaires acceptés</div></div>
-                </div>
-                <div style="display:flex;align-items:center;gap:6px;background:#f9f9f9;border:1px solid #eee;border-radius:7px;padding:5px 8px;">
-                  <span style="font-size:10px;">📋</span>
-                  <div style="flex:1;"><div style="font-size:7px;font-weight:700;color:#111;">Consignes_securite_2026.pdf</div><div style="font-size:5.5px;color:#aaa;">85 Ko — Partagé avec tous les commissaires acceptés</div></div>
-                </div>
+              <div style="display:flex;align-items:center;gap:5px;background:#f9f9f9;border:1px solid #eee;border-radius:6px;padding:4.5px 7px;margin-bottom:4px;">
+                <span style="font-size:10px;">📄</span>
+                <div style="flex:1;"><div style="font-size:6.5px;font-weight:700;color:#111;">Plan_positionnement_speciales.pdf</div><div style="font-size:5.5px;color:#aaa;">248 Ko — Partagé avec les commissaires acceptés</div></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;background:#f9f9f9;border:1px solid #eee;border-radius:6px;padding:4.5px 7px;">
+                <span style="font-size:10px;">📋</span>
+                <div style="flex:1;"><div style="font-size:6.5px;font-weight:700;color:#111;">Consignes_securite_2026.pdf</div><div style="font-size:5.5px;color:#aaa;">85 Ko</div></div>
               </div>
             </div>
           </div>
         </div>
-
-        <div style="background:#0a0a0a;border-radius:10px;padding:10px 11px;">
-          <div style="font-size:9px;font-weight:900;color:#FF5A1F;margin-bottom:5px;">📣 Canal d'équipe</div>
-          <div style="font-size:7.5px;color:rgba(255,255,255,.7);line-height:1.5;margin-bottom:5px;">Envoyez un message groupé à tous les commissaires acceptés en une seule action.</div>
-          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:5px 8px;font-size:7px;color:rgba(255,255,255,.4);">RDV à 7h00 à l'entrée de la forêt pour le briefing...</div>
-          <div style="background:#FF5A1F;color:#fff;font-size:7px;font-weight:700;padding:5px;border-radius:7px;text-align:center;margin-top:5px;">Envoyer à tous (40 commissaires)</div>
-        </div>
-      </div>
-
-      <!-- Messagerie -->
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div>
-          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Messagerie directe</div>
-          <div class="o-msg">
-            <div class="o-msg-hdr">
-              <div class="o-msg-title">💬 Messages</div>
-            </div>
-            <div class="o-msg-convo" style="height:90px;">
-              <div class="o-msg-list">
-                <div class="o-msg-list-item active">
-                  <div class="o-msg-list-name">Marc Dupont</div>
-                  <div class="o-msg-list-preview">Parfait, merci !</div>
-                </div>
-                <div class="o-msg-list-item">
-                  <div class="o-msg-list-name">Sophie Martin</div>
-                  <div class="o-msg-list-preview">Je serai là à 7h</div>
-                </div>
-                <div class="o-msg-list-item">
-                  <div class="o-msg-list-name">A. Leblanc</div>
-                  <div class="o-msg-list-preview">D'accord pour le...</div>
-                </div>
-              </div>
-              <div class="o-msg-chat">
-                <div class="o-msg-bubble">Bonjour, vous êtes positionné au Poste 3. RDV vendredi à 7h.</div>
-                <div class="o-msg-bubble mine">Parfait, merci pour les infos !</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style="background:#f7f7f7;border-radius:10px;padding:10px 11px;">
-          <div style="font-size:9px;font-weight:800;color:#111;margin-bottom:5px;">🔔 Rappels automatiques</div>
-          <div style="font-size:7.5px;color:#666;line-height:1.5;">Un email de rappel est envoyé automatiquement à tous les commissaires acceptés avant le début de l'événement.</div>
-          <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;">
+        <div style="background:#f7f7f7;border-radius:9px;padding:9px 10px;">
+          <div style="font-size:9px;font-weight:800;color:#111;margin-bottom:4px;">🔔 Rappels automatiques</div>
+          <div style="font-size:7px;color:#666;line-height:1.45;margin-bottom:5px;">Email de rappel envoyé à tous les commissaires acceptés avant l'événement.</div>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;">
             <span style="background:#fff;border:1px solid #eee;border-radius:99px;font-size:6px;font-weight:700;color:#555;padding:2px 8px;">📧 J-7</span>
             <span style="background:#FF5A1F;border-radius:99px;font-size:6px;font-weight:700;color:#fff;padding:2px 8px;">📧 J-1</span>
             <span style="background:#fff;border:1px solid #eee;border-radius:99px;font-size:6px;font-weight:700;color:#555;padding:2px 8px;">📧 Jour J</span>
           </div>
         </div>
+      </div>
 
-        <div style="background:#f7f7f7;border-radius:10px;padding:10px 11px;">
-          <div style="font-size:9px;font-weight:800;color:#111;margin-bottom:5px;">📁 Exports</div>
-          <div style="display:flex;gap:5px;">
-            <div style="flex:1;background:#0a0a0a;border-radius:8px;padding:6px 8px;text-align:center;">
-              <div style="font-size:8px;font-weight:700;color:#fff;margin-bottom:1px;">📊 CSV</div>
-              <div style="font-size:5.5px;color:rgba(255,255,255,.4);">Excel / Sheets</div>
-            </div>
-            <div style="flex:1;background:#FF5A1F;border-radius:8px;padding:6px 8px;text-align:center;">
-              <div style="font-size:8px;font-weight:700;color:#fff;margin-bottom:1px;">📄 PDF</div>
-              <div style="font-size:5.5px;color:rgba(255,255,255,.8);">Liste officielle</div>
+      <!-- Messages -->
+      <div style="display:flex;flex-direction:column;gap:7px;">
+        <div>
+          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;">Messagerie directe</div>
+          <div style="background:#fff;border:1px solid #eee;border-radius:9px;overflow:hidden;">
+            <div style="background:#FF5A1F;padding:6px 9px;font-size:7.5px;font-weight:800;color:#fff;">💬 Messages</div>
+            <div style="display:flex;height:80px;">
+              <div style="width:70px;border-right:1px solid #f5f5f5;background:#fafafa;">
+                <div style="padding:5px 7px;border-bottom:1px solid #f5f5f5;background:#fff5f0;">
+                  <div style="font-size:6.5px;font-weight:700;color:#111;">Marc Dupont</div>
+                  <div style="font-size:5.5px;color:#aaa;">Parfait, merci !</div>
+                </div>
+                <div style="padding:5px 7px;border-bottom:1px solid #f5f5f5;">
+                  <div style="font-size:6.5px;font-weight:700;color:#111;">Sophie Martin</div>
+                  <div style="font-size:5.5px;color:#aaa;">Je serai là à 7h</div>
+                </div>
+                <div style="padding:5px 7px;">
+                  <div style="font-size:6.5px;font-weight:700;color:#111;">A. Leblanc</div>
+                  <div style="font-size:5.5px;color:#aaa;">D'accord…</div>
+                </div>
+              </div>
+              <div style="flex:1;padding:7px 8px;">
+                <div style="max-width:80%;background:#f5f5f5;border-radius:0 7px 7px 7px;padding:4px 7px;font-size:6.5px;color:#333;margin-bottom:4px;">Bonjour, vous êtes positionné au Poste 3. RDV vendredi à 7h.</div>
+                <div style="max-width:80%;background:rgba(255,90,31,.12);border-radius:7px 0 7px 7px;padding:4px 7px;font-size:6.5px;color:#333;margin-left:auto;text-align:right;">Parfait, merci !</div>
+              </div>
             </div>
           </div>
+        </div>
+        <div style="background:#0a0a0a;border-radius:9px;padding:9px 11px;">
+          <div style="font-size:9px;font-weight:900;color:#FF5A1F;margin-bottom:5px;">📣 Canal d'équipe</div>
+          <div style="font-size:7px;color:rgba(255,255,255,.7);line-height:1.45;margin-bottom:5px;">Message groupé envoyé à tous les commissaires acceptés en une seule action.</div>
+          <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:7px;padding:4px 8px;font-size:7px;color:rgba(255,255,255,.4);margin-bottom:5px;">RDV à 7h00 à l'entrée de la forêt pour le briefing...</div>
+          <div style="background:#FF5A1F;color:#fff;font-size:7px;font-weight:700;padding:5px;border-radius:6px;text-align:center;">Envoyer à tous (40 commissaires)</div>
         </div>
       </div>
     </div>
   </div>
   <div class="pg-foot">
     <img src="/logo.png" alt="TrackMarshal" class="pg-foot-logo" />
-    <span class="pg-foot-url">trackmarshal.app</span>
-    <span class="pgn">05</span>
+    <span class="pg-foot-url">trackmarshal.app</span><span class="pgn">07</span>
   </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════
-     PAGE 6 — ÉMARGEMENT PDF + QR CHECK-IN
+     PAGE 8 — ORGANISATEUR : ÉMARGEMENT + QR CHECK-IN
 ═══════════════════════════════════════════════ -->
 <div class="page" style="background:#fff;">
   <div class="inner">
-    <p class="pg-eye">Espace organisateur — 5 / 5</p>
-    <h2 class="pg-title">Présences : feuille d'émargement &amp; QR Check-in.</h2>
-    <p class="pg-sub">Deux modes au choix : la feuille d'émargement PDF à imprimer avec une colonne de signature par jour, ou le QR code que chaque commissaire scanne pour confirmer sa présence automatiquement.</p>
+    <p class="pg-eye">Espace organisateur — 4 / 4</p>
+    <h2 class="pg-title">Feuille d'émargement &amp; QR Check-in.</h2>
+    <p class="pg-sub">Deux modes complémentaires : la feuille PDF avec une colonne de signature par jour, et le QR code que chaque commissaire scanne pour confirmer sa présence automatiquement.</p>
 
-    <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:12px;margin-top:13px;flex:1;">
+    <div style="display:grid;grid-template-columns:1.15fr 0.85fr;gap:11px;margin-top:11px;flex:1;">
 
       <!-- Emargement PDF -->
       <div>
-        <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">Feuille d'émargement PDF — générée en 1 clic</div>
-        <div style="border:1.5px solid #ddd;border-radius:10px;overflow:hidden;box-shadow:0 3px 14px rgba(0,0,0,.07);">
-          <div style="background:#FF5A1F;padding:5px 11px;font-size:7px;font-weight:800;color:#fff;letter-spacing:.06em;text-transform:uppercase;">📄 Impression directe — 1 signature par jour</div>
+        <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;">Feuille d'émargement PDF — générée en 1 clic</div>
+        <div style="border:1.5px solid #ddd;border-radius:9px;overflow:hidden;box-shadow:0 3px 14px rgba(0,0,0,.07);">
+          <div style="background:#FF5A1F;padding:4.5px 10px;font-size:6.5px;font-weight:800;color:#fff;letter-spacing:.06em;text-transform:uppercase;">📄 Impression directe — 1 colonne de signature par jour</div>
           <div class="ema">
             <div class="ema-hdr">
               <span class="ema-badge">🏁 TrackMarshal</span>
@@ -989,71 +1126,70 @@
             <table class="ema-table">
               <thead>
                 <tr>
-                  <th style="width:14px;">#</th>
+                  <th style="width:12px;">#</th>
                   <th>Commissaire</th>
                   <th>Poste assigné</th>
-                  <th style="text-align:center;width:40px;">Sam. 19</th>
-                  <th style="text-align:center;width:40px;">Dim. 20</th>
-                  <th style="text-align:center;width:36px;">QR</th>
+                  <th style="text-align:center;width:38px;">Sam. 19</th>
+                  <th style="text-align:center;width:38px;">Dim. 20</th>
+                  <th style="text-align:center;width:32px;">QR</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td style="text-align:center;color:#aaa;">1</td>
                   <td><strong>Marc Dupont</strong><br/><span style="color:#999;font-size:5px;">FFSA B10042</span></td>
-                  <td style="color:#FF5A1F;font-size:6px;">Poste 3 — Pied de côte</td>
+                  <td style="color:#FF5A1F;font-size:5.5px;">Poste 3 — Pied de côte</td>
                   <td class="ema-qr-cell">✓ QR</td>
                   <td class="ema-sig-cell"></td>
-                  <td class="ema-qr-cell" style="font-size:6px;color:#16a34a;">Sam ✓</td>
+                  <td class="ema-qr-cell" style="font-size:5.5px;color:#16a34a;">Sam ✓</td>
                 </tr>
                 <tr>
                   <td style="text-align:center;color:#aaa;">2</td>
                   <td><strong>Sophie Martin</strong><br/><span style="color:#999;font-size:5px;">FFM MX2847</span></td>
-                  <td style="color:#FF5A1F;font-size:6px;">Chef de poste — SS1</td>
+                  <td style="color:#FF5A1F;font-size:5.5px;">Chef de poste — SS1</td>
                   <td class="ema-sig-cell"></td>
                   <td class="ema-sig-cell"></td>
-                  <td style="text-align:center;font-size:6.5px;color:#aaa;">—</td>
+                  <td style="text-align:center;font-size:6px;color:#aaa;">—</td>
                 </tr>
                 <tr>
                   <td style="text-align:center;color:#aaa;">3</td>
-                  <td><strong>Antoine Leblanc</strong><br/><span style="color:#999;font-size:5px;">FFSA A20415</span></td>
-                  <td style="color:#888;font-size:6px;">—</td>
-                  <td class="ema-sig-cell"></td>
-                  <td class="ema-sig-cell"></td>
-                  <td style="text-align:center;font-size:6.5px;color:#aaa;">—</td>
+                  <td><strong>Claire Rousseau</strong><br/><span style="color:#999;font-size:5px;">FFSA B18821</span></td>
+                  <td style="color:#FF5A1F;font-size:5.5px;">Vigie — Épingle SS3</td>
+                  <td class="ema-qr-cell">✓ QR</td>
+                  <td class="ema-qr-cell">✓ QR</td>
+                  <td class="ema-qr-cell" style="font-size:5.5px;color:#16a34a;">2 j ✓</td>
                 </tr>
                 <tr>
                   <td style="text-align:center;color:#aaa;">4</td>
-                  <td><strong>Claire Rousseau</strong><br/><span style="color:#999;font-size:5px;">FFSA B18821</span></td>
-                  <td style="color:#FF5A1F;font-size:6px;">Vigie — Épingle SS3</td>
-                  <td class="ema-qr-cell">✓ QR</td>
-                  <td class="ema-qr-cell">✓ QR</td>
-                  <td class="ema-qr-cell" style="font-size:6px;color:#16a34a;">2 j ✓</td>
+                  <td><strong>Antoine Leblanc</strong><br/><span style="color:#999;font-size:5px;">FFSA A20415</span></td>
+                  <td style="color:#888;font-size:5.5px;">—</td>
+                  <td class="ema-sig-cell"></td>
+                  <td class="ema-sig-cell"></td>
+                  <td style="text-align:center;font-size:6px;color:#aaa;">—</td>
                 </tr>
                 <tr>
                   <td style="text-align:center;color:#aaa;">5</td>
                   <td><strong>Julien Ferrand</strong><br/><span style="color:#999;font-size:5px;">FFM R40523</span></td>
-                  <td style="color:#888;font-size:6px;">—</td>
+                  <td style="color:#888;font-size:5.5px;">—</td>
                   <td class="ema-sig-cell"></td>
                   <td class="ema-sig-cell"></td>
-                  <td style="text-align:center;font-size:6.5px;color:#aaa;">—</td>
+                  <td style="text-align:center;font-size:6px;color:#aaa;">—</td>
                 </tr>
               </tbody>
             </table>
-            <div style="margin-top:5px;font-size:5.5px;color:#888;">✓ QR = Check-in scanner via QR code · Case vide = signature papier attendue</div>
-            <div class="ema-foot">Document généré via TrackMarshal — trackmarshal.app</div>
+            <div style="margin-top:4px;font-size:5px;color:#888;">✓ QR = check-in scanner · Case vide = signature papier attendue</div>
+            <div class="ema-foot">Généré via TrackMarshal — trackmarshal.app</div>
           </div>
         </div>
-        <div style="margin-top:7px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:7px 10px;font-size:7.5px;color:#166534;">
-          ✔ Les colonnes QR se remplissent automatiquement dès que le commissaire scanne. Les cases vides restent pour la signature papier.
+        <div style="margin-top:6px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:6px 9px;font-size:7px;color:#166534;">
+          ✔ Hybride : les colonnes QR se remplissent automatiquement dès que le commissaire scanne. Les cases vides restent pour la signature papier.
         </div>
       </div>
 
       <!-- QR Check-in -->
-      <div style="display:flex;flex-direction:column;gap:9px;">
-
+      <div style="display:flex;flex-direction:column;gap:8px;">
         <div>
-          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:6px;">QR Check-in — côté organisateur</div>
+          <div style="font-size:7px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:5px;">QR Check-in — côté organisateur</div>
           <div class="o-qr-box">
             <div class="o-qr-hdr">
               <div class="o-qr-title">Check-in QR — Rallye de la Normandie</div>
@@ -1064,41 +1200,25 @@
                 <span class="o-qr-day active">Sam. 19 sept.</span>
                 <span class="o-qr-day">Dim. 20 sept.</span>
               </div>
-              <div class="o-qr-code">
-                <div class="o-qr-inner"></div>
-              </div>
+              <div class="o-qr-code"><div class="o-qr-inner"></div></div>
               <div class="o-qr-url">trackmarshal.app/checkin?event=…&amp;date=2026-09-19</div>
-              <div class="o-qr-scan-ok">
-                <span style="font-size:12px;">✅</span>
-                <div>
-                  <div class="o-qr-scan-ok-t">Marc Dupont — Présence enregistrée</div>
-                  <div style="font-size:5.5px;color:#166534;">Samedi 19 sept. 2026 à 07:42</div>
-                </div>
+              <div class="o-qr-ok">
+                <span style="font-size:13px;">✅</span>
+                <div><div class="o-qr-ok-t">Marc Dupont — Présence enregistrée</div><div class="o-qr-ok-s">Samedi 19 sept. 2026 à 07:42</div></div>
               </div>
             </div>
           </div>
         </div>
 
-        <div style="background:#0a0a0a;border-radius:11px;padding:10px 12px;">
-          <div style="font-size:9px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#FF5A1F;margin-bottom:8px;">Comment ça marche</div>
-          <div style="display:flex;flex-direction:column;gap:7px;">
-            <div style="display:flex;align-items:flex-start;gap:7px;">
-              <div style="width:18px;height:18px;border-radius:99px;background:#FF5A1F;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:900;color:#fff;flex-shrink:0;">1</div>
-              <div><div style="font-size:7.5px;font-weight:700;color:#fff;margin-bottom:1px;">L'organisateur affiche le QR</div><div style="font-size:6.5px;color:rgba(255,255,255,.45);">Un QR différent par jour, généré automatiquement.</div></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:7px;">
-              <div style="width:18px;height:18px;border-radius:99px;background:#FF5A1F;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:900;color:#fff;flex-shrink:0;">2</div>
-              <div><div style="font-size:7.5px;font-weight:700;color:#fff;margin-bottom:1px;">Le commissaire scanne depuis son téléphone</div><div style="font-size:6.5px;color:rgba(255,255,255,.45);">Connexion à son compte TrackMarshal, clic sur "Confirmer".</div></div>
-            </div>
-            <div style="display:flex;align-items:flex-start;gap:7px;">
-              <div style="width:18px;height:18px;border-radius:99px;background:#4ade80;display:flex;align-items:center;justify-content:center;font-size:7.5px;font-weight:900;color:#fff;flex-shrink:0;">✓</div>
-              <div><div style="font-size:7.5px;font-weight:700;color:#fff;margin-bottom:1px;">La présence est enregistrée automatiquement</div><div style="font-size:6.5px;color:rgba(255,255,255,.45);">La feuille d'émargement se met à jour en temps réel.</div></div>
-            </div>
-          </div>
+        <div style="background:#0a0a0a;border-radius:9px;padding:9px 11px;">
+          <div style="font-size:8px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FF5A1F;margin-bottom:7px;">Comment ça marche</div>
+          <div class="qr-step"><div class="qr-step-num">1</div><div><div class="qr-step-t">L'organisateur affiche le QR</div><div class="qr-step-s">Un QR différent par jour, généré automatiquement.</div></div></div>
+          <div class="qr-step"><div class="qr-step-num">2</div><div><div class="qr-step-t">Le commissaire scanne depuis son téléphone</div><div class="qr-step-s">Connexion à son compte, clic sur "Confirmer".</div></div></div>
+          <div class="qr-step" style="margin-bottom:0;"><div class="qr-step-num done">✓</div><div><div class="qr-step-t">Présence enregistrée automatiquement</div><div class="qr-step-s">La feuille d'émargement se met à jour en temps réel.</div></div></div>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-          <div class="fc"><div class="fc-icon">🔄</div><div class="fc-t">Hybride</div><div class="fc-d">QR et papier fonctionnent ensemble sur la même feuille.</div></div>
+          <div class="fc"><div class="fc-icon">🔄</div><div class="fc-t">Hybride</div><div class="fc-d">QR et signature papier coexistent sur la même feuille.</div></div>
           <div class="fc or"><div class="fc-icon">⚡</div><div class="fc-t">Temps réel</div><div class="fc-d">Chaque scan met la feuille à jour instantanément.</div></div>
         </div>
       </div>
@@ -1106,34 +1226,33 @@
   </div>
   <div class="pg-foot">
     <img src="/logo.png" alt="TrackMarshal" class="pg-foot-logo" />
-    <span class="pg-foot-url">trackmarshal.app</span>
-    <span class="pgn">06</span>
+    <span class="pg-foot-url">trackmarshal.app</span><span class="pgn">08</span>
   </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════
-     PAGE 7 — CTA
+     PAGE 9 — CTA
 ═══════════════════════════════════════════════ -->
 <div class="page cta">
   <div class="cover-stripe"></div>
   <div class="cta-glow"></div>
   <div class="cta-gbg"></div>
   <div class="cta-inner">
-    <p class="cta-eye">Organisateurs Motorsport</p>
-    <h2 class="cta-t">Prêt à<br/><em>recruter</em><br/>votre équipe ?</h2>
-    <p class="cta-d">Créez votre compte organisateur gratuitement et publiez votre premier événement en quelques minutes. Accédez à un vivier de commissaires qualifiés partout en France.</p>
+    <p class="cta-eye">Commissaires &amp; Organisateurs</p>
+    <h2 class="cta-t">Prêt à<br/><em>démarrer</em><br/>?</h2>
+    <p class="cta-d">Commissaire ou organisateur, créez votre compte gratuitement et faites partie de la plateforme de référence du motorsport français.</p>
     <div class="cta-box">
       <div class="cta-bl">Accès à la plateforme</div>
       <div class="cta-bv">trackmarshal.app</div>
     </div>
     <div class="cta-links">
       <div class="cta-lbox">
-        <div class="cta-ll">Espace organisateur</div>
-        <div class="cta-lv">trackmarshal.app/organizer</div>
+        <div class="cta-ll">Espace commissaire</div>
+        <div class="cta-lv">trackmarshal.app/events</div>
       </div>
       <div class="cta-lbox">
-        <div class="cta-ll">Annuaire commissaires</div>
-        <div class="cta-lv">trackmarshal.app/marshals</div>
+        <div class="cta-ll">Espace organisateur</div>
+        <div class="cta-lv">trackmarshal.app/organizer</div>
       </div>
     </div>
     <div class="cta-tags">
@@ -1147,7 +1266,7 @@
   <div class="cta-foot">
     <img src="/logo.png" alt="TrackMarshal" class="cta-fl" />
     <span class="cta-ft">La plateforme des commissaires motorsport</span>
-    <span style="font-size:7.5px;font-weight:700;color:rgba(255,255,255,.22);">07</span>
+    <span style="font-size:7.5px;font-weight:700;color:rgba(255,255,255,.22);">09</span>
   </div>
 </div>
 
