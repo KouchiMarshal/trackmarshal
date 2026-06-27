@@ -429,21 +429,20 @@ export default function OrganizerEventDetailsPage() {
     const isMultiDay = days.length > 1;
 
     const dayHeaders = isMultiDay
-      ? days.map((d) => `<th style="width:54px;text-align:center;">${d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })}</th>`).join("")
-      : `<th style="width:60px;">Présence</th>`;
+      ? days.map((d) => `<th style="width:100px;text-align:center;">${d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })}<br/><span style="font-size:9px;font-weight:normal;letter-spacing:0;opacity:0.7;text-transform:none;">Signature</span></th>`).join("")
+      : `<th style="width:120px;">Signature</th>`;
 
     const rows = accepted.map((app, idx) => {
       const p = app.profiles || {};
-      const checkboxCells = isMultiDay
-        ? days.map(() => `<td style="text-align:center;font-size:18px;">☐</td>`).join("")
-        : `<td style="text-align:center;font-size:18px;">☐</td>`;
+      const signatureCells = isMultiDay
+        ? days.map(() => `<td style="height:56px;"></td>`).join("")
+        : `<td style="height:56px;"></td>`;
       return `
         <tr>
           <td style="text-align:center;">${idx + 1}</td>
           <td><strong>${escapeHtml(p.full_name)}</strong><br/><span style="color:#888;font-size:10px;">${escapeHtml(p.license_type)} ${escapeHtml(p.license_number)}${p.asa ? ` — ${escapeHtml(p.asa)}` : ""}${p.license_type_2 ? ` · ${escapeHtml(p.license_type_2)}` : ""}${app.desired_role ? `<br/><em style="color:#FF5A1F;font-style:normal;font-weight:bold;">${escapeHtml(app.desired_role)}</em>` : ""}</span></td>
           <td>${escapeHtml(app.post) !== "—" ? escapeHtml(app.post) : '<span style="color:#bbb;">—</span>'}</td>
-          ${checkboxCells}
-          <td></td>
+          ${signatureCells}
         </tr>
       `;
     }).join("");
@@ -476,7 +475,6 @@ export default function OrganizerEventDetailsPage() {
           <th>Commissaire</th>
           <th>Poste assigné</th>
           ${dayHeaders}
-          <th>Signature</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
