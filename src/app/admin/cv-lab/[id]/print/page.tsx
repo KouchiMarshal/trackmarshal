@@ -173,118 +173,106 @@ export default function CvPrintPage({ params }: Props) {
       </div>
 
       {/* CV A4 */}
-      <div className="cv-wrapper" style={{ maxWidth: "794px", margin: "0 auto", padding: "64px 0 32px", background: "white" }}>
+      <div className="cv-wrapper" style={{ width: "100%", maxWidth: "794px", margin: "0 auto", padding: "56px 0 24px", background: "white" }}>
 
         {/* Header */}
-        <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", borderBottom: "2px solid #FF5A1F", paddingBottom: "16px", marginBottom: "16px" }}>
+        <div style={{ display: "flex", gap: "18px", alignItems: "center", paddingBottom: "14px", marginBottom: "14px", borderBottom: "2.5px solid #FF5A1F" }}>
           {profile.avatar_url && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={profile.avatar_url} alt={profile.full_name} style={{ width: "88px", height: "88px", borderRadius: "12px", objectFit: "cover", flexShrink: 0 }} />
+            <img src={profile.avatar_url} alt={profile.full_name} style={{ width: "76px", height: "76px", borderRadius: "10px", objectFit: "cover", flexShrink: 0 }} />
           )}
           <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-              <div>
-                <h1 style={{ fontSize: "24px", fontWeight: 900, color: "#18181b", lineHeight: 1.1 }}>{profile.full_name}</h1>
-                <p style={{ fontSize: "11px", color: "#FF5A1F", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginTop: "4px" }}>
-                  {t.jobTitle}
-                </p>
+            <h1 style={{ fontSize: "22pt", fontWeight: 900, color: "#18181b", lineHeight: 1.1 }}>{profile.full_name}</h1>
+            <p style={{ fontSize: "8pt", color: "#FF5A1F", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginTop: "3px" }}>{t.jobTitle}</p>
+            <p style={{ fontSize: "8pt", color: "#71717a", marginTop: "2px" }}>{[profile.city, profile.country].filter(Boolean).join(", ")}{profile.years_experience ? ` · ${t.yearsExp(profile.years_experience)}` : ""}</p>
+          </div>
+          <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+            {[
+              { label: t.statEvents, value: allEvents.length },
+              avgRating ? { label: t.statRating, value: `${avgRating}/5 ★` } : null,
+              { label: t.statReviews, value: reviews.length },
+            ].filter(Boolean).map((s: any) => (
+              <div key={s.label} style={{ background: "#f4f4f5", borderRadius: "8px", padding: "6px 12px", textAlign: "center", minWidth: "52px" }}>
+                <p style={{ fontSize: "14pt", fontWeight: 900, color: "#FF5A1F", lineHeight: 1 }}>{s.value}</p>
+                <p style={{ fontSize: "7pt", textTransform: "uppercase", letterSpacing: "0.08em", color: "#71717a", marginTop: "2px" }}>{s.label}</p>
               </div>
-              <div style={{ textAlign: "right", fontSize: "10px", color: "#71717a" }}>
-                <p>{[profile.city, profile.country].filter(Boolean).join(", ")}</p>
-                {profile.years_experience && <p style={{ marginTop: "2px" }}>{t.yearsExp(profile.years_experience)}</p>}
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-              {[
-                { label: t.statEvents, value: allEvents.length },
-                avgRating ? { label: t.statRating, value: `${avgRating}/5 ★` } : null,
-                { label: t.statReviews, value: reviews.length },
-              ].filter(Boolean).map((s: any) => (
-                <div key={s.label} style={{ background: "#f4f4f5", borderRadius: "8px", padding: "5px 12px", textAlign: "center" }}>
-                  <p style={{ fontSize: "15px", fontWeight: 900, color: "#FF5A1F" }}>{s.value}</p>
-                  <p style={{ fontSize: "9px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#71717a" }}>{s.label}</p>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Body */}
-        <div style={{ display: "grid", gridTemplateColumns: "190px 1fr", gap: "20px" }}>
-
-          {/* Left */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+        {/* Info strip — bio, disciplines, licences side by side */}
+        {(profile.bio || profile.disciplines || verifiedLicenses.length > 0 || reviews.filter((r: any) => r.comment).length > 0) && (
+          <div style={{ display: "flex", gap: "16px", marginBottom: "14px", paddingBottom: "14px", borderBottom: "1px solid #e4e4e7" }}>
             {profile.bio && (
-              <div>
-                <p style={{ fontSize: "9px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#FF5A1F", marginBottom: "5px" }}>{t.bio}</p>
-                <p style={{ color: "#3f3f46", lineHeight: 1.6 }}>{profile.bio}</p>
+              <div style={{ flex: 2 }}>
+                <p style={{ fontSize: "7pt", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#FF5A1F", marginBottom: "4px" }}>{t.bio}</p>
+                <p style={{ fontSize: "8pt", color: "#3f3f46", lineHeight: 1.55 }}>{profile.bio}</p>
               </div>
             )}
-            {profile.disciplines && (
-              <div>
-                <p style={{ fontSize: "9px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#FF5A1F", marginBottom: "5px" }}>{t.disciplines}</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                  {profile.disciplines.split(",").map((d: string) => (
-                    <span key={d} style={{ background: "#fff1ec", border: "1px solid #ffd5c5", borderRadius: "99px", padding: "2px 8px", fontSize: "9px", fontWeight: 700, color: "#FF5A1F", textTransform: "uppercase" }}>{d.trim()}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-            {verifiedLicenses.length > 0 && (
-              <div>
-                <p style={{ fontSize: "9px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#FF5A1F", marginBottom: "5px" }}>{t.verifiedLicenses}</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                  {verifiedLicenses.map((l: any) => (
-                    <div key={l.id} style={{ border: "1px solid #e4e4e7", borderRadius: "8px", padding: "6px 8px" }}>
-                      <p style={{ fontWeight: 700, color: "#18181b", fontSize: "10px" }}>{l.type || "—"}</p>
-                      <p style={{ fontSize: "9px", color: "#71717a" }}>{l.category === "moto" ? "FFM" : "FFSA"}{l.number ? ` · ${t.licenseNo} ${l.number}` : ""}{l.asa ? ` · ${l.asa}` : ""}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {reviews.filter((r: any) => r.comment).length > 0 && (
-              <div>
-                <p style={{ fontSize: "9px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#FF5A1F", marginBottom: "5px" }}>{t.organizerReviews}</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                  {reviews.filter((r: any) => r.comment).slice(0, 3).map((r: any, i: number) => (
-                    <div key={i} style={{ border: "1px solid #e4e4e7", borderRadius: "8px", padding: "6px 8px" }}>
-                      <p style={{ fontSize: "9px", color: "#FF5A1F", fontWeight: 700, marginBottom: "2px" }}>{"★".repeat(r.rating || 0)}{"☆".repeat(5 - (r.rating || 0))}</p>
-                      <p style={{ color: "#52525b", lineHeight: 1.5, fontSize: "9px" }}>"{r.comment}"</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Right — events */}
-          <div>
-            <p style={{ fontSize: "9px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", color: "#FF5A1F", marginBottom: "8px" }}>
-              {t.eventHistory(allEvents.length)}
-            </p>
-            {allEvents.length === 0 && <p style={{ color: "#a1a1aa", fontStyle: "italic" }}>{t.noEvents}</p>}
-            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-              {allEvents.map((e: any, i: number) => (
-                <div key={i} style={{ display: "flex", gap: "10px", borderLeft: `2px solid ${e.source === "platform" ? "#22c55e" : "#d4d4d8"}`, paddingLeft: "8px", paddingTop: "3px", paddingBottom: "3px" }}>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontWeight: 700, color: "#18181b", fontSize: "10px" }}>{e.title}</p>
-                    {e.role && <p style={{ color: "#FF5A1F", fontSize: "9px", fontWeight: 600 }}>{e.role}</p>}
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "2px", color: "#71717a", fontSize: "9px" }}>
-                      <span>{fmtDateRange(e.start, e.end, t.dateLocale, t.dateTbd)}</span>
-                      {e.location && <span>· {e.location}</span>}
-                      {e.discipline && <span>· {e.discipline}</span>}
-                    </div>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "10px" }}>
+              {profile.disciplines && (
+                <div>
+                  <p style={{ fontSize: "7pt", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#FF5A1F", marginBottom: "4px" }}>{t.disciplines}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "3px" }}>
+                    {profile.disciplines.split(",").map((d: string) => (
+                      <span key={d} style={{ background: "#fff1ec", border: "1px solid #ffd5c5", borderRadius: "99px", padding: "1px 7px", fontSize: "7.5pt", fontWeight: 700, color: "#FF5A1F", textTransform: "uppercase" }}>{d.trim()}</span>
+                    ))}
                   </div>
                 </div>
-              ))}
+              )}
+              {verifiedLicenses.length > 0 && (
+                <div>
+                  <p style={{ fontSize: "7pt", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#FF5A1F", marginBottom: "4px" }}>{t.verifiedLicenses}</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    {verifiedLicenses.map((l: any) => (
+                      <div key={l.id} style={{ border: "1px solid #e4e4e7", borderRadius: "6px", padding: "4px 8px" }}>
+                        <p style={{ fontWeight: 700, color: "#18181b", fontSize: "8pt" }}>{l.type || "—"}</p>
+                        <p style={{ fontSize: "7.5pt", color: "#71717a" }}>{l.category === "moto" ? "FFM" : "FFSA"}{l.number ? ` · ${t.licenseNo} ${l.number}` : ""}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+            {reviews.filter((r: any) => r.comment).length > 0 && (
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: "7pt", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#FF5A1F", marginBottom: "4px" }}>{t.organizerReviews}</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                  {reviews.filter((r: any) => r.comment).slice(0, 2).map((r: any, i: number) => (
+                    <div key={i} style={{ border: "1px solid #e4e4e7", borderRadius: "6px", padding: "4px 8px" }}>
+                      <p style={{ fontSize: "8pt", color: "#FF5A1F", fontWeight: 700 }}>{"★".repeat(r.rating || 0)}{"☆".repeat(5 - (r.rating || 0))}</p>
+                      <p style={{ color: "#52525b", lineHeight: 1.4, fontSize: "7.5pt" }}>"{r.comment}"</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+        )}
 
+        {/* Events — 2 columns to maximise space usage */}
+        <div>
+          <p style={{ fontSize: "7pt", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", color: "#FF5A1F", marginBottom: "8px" }}>
+            {t.eventHistory(allEvents.length)}
+          </p>
+          {allEvents.length === 0 && <p style={{ color: "#a1a1aa", fontStyle: "italic", fontSize: "8pt" }}>{t.noEvents}</p>}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5px 16px" }}>
+            {allEvents.map((e: any, i: number) => (
+              <div key={i} style={{ borderLeft: `2px solid ${e.source === "platform" ? "#22c55e" : "#d4d4d8"}`, paddingLeft: "7px", paddingTop: "3px", paddingBottom: "3px", pageBreakInside: "avoid" }}>
+                <p style={{ fontWeight: 700, color: "#18181b", fontSize: "8.5pt", lineHeight: 1.2 }}>{e.title}</p>
+                {e.role && <p style={{ color: "#FF5A1F", fontSize: "7.5pt", fontWeight: 600 }}>{e.role}</p>}
+                <p style={{ color: "#71717a", fontSize: "7.5pt", marginTop: "1px" }}>
+                  {fmtDateRange(e.start, e.end, t.dateLocale, t.dateTbd)}
+                  {e.location ? ` · ${e.location}` : ""}
+                  {e.discipline ? ` · ${e.discipline}` : ""}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Footer */}
-        <div style={{ marginTop: "24px", paddingTop: "10px", borderTop: "1px solid #e4e4e7", display: "flex", justifyContent: "space-between", color: "#a1a1aa", fontSize: "9px" }}>
+        <div style={{ marginTop: "20px", paddingTop: "8px", borderTop: "1px solid #e4e4e7", display: "flex", justifyContent: "space-between", color: "#a1a1aa", fontSize: "7pt" }}>
           <span>{t.generated}</span>
           <span>{new Date().toLocaleDateString(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })}</span>
         </div>
