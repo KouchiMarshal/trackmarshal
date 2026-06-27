@@ -154,14 +154,17 @@ export default function CvPrintPage({ params }: Props) {
   return (
     <>
       <style>{`
-        @page { size: A4 portrait; margin: 12mm 14mm; }
-        @media print {
-          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; padding: 0; }
-          .no-print { display: none !important; }
-          .cv-wrapper { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-        }
+        @page { size: A4 portrait; margin: 14mm 16mm; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', system-ui, sans-serif; background: white; color: #18181b; font-size: 11px; line-height: 1.5; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: white; color: #18181b; font-size: 10pt; line-height: 1.5; }
+        @media screen {
+          .cv-wrapper { max-width: 794px; margin: 0 auto; padding: 56px 0 24px; }
+        }
+        @media print {
+          html, body { width: 100%; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .no-print { display: none !important; }
+          .cv-wrapper { width: 100%; max-width: none; margin: 0; padding: 0; }
+        }
       `}</style>
 
       {/* Actions bar — hidden on print */}
@@ -173,7 +176,7 @@ export default function CvPrintPage({ params }: Props) {
       </div>
 
       {/* CV A4 */}
-      <div className="cv-wrapper" style={{ width: "100%", maxWidth: "794px", margin: "0 auto", padding: "56px 0 24px", background: "white" }}>
+      <div className="cv-wrapper" style={{ background: "white" }}>
 
         {/* Header */}
         <div style={{ display: "flex", gap: "18px", alignItems: "center", paddingBottom: "14px", marginBottom: "14px", borderBottom: "2.5px solid #FF5A1F" }}>
