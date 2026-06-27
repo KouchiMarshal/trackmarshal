@@ -154,10 +154,11 @@ export default function CvPrintPage({ params }: Props) {
   return (
     <>
       <style>{`
-        @page { size: A4; margin: 12mm 14mm; }
+        @page { size: A4 portrait; margin: 12mm 14mm; }
         @media print {
-          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; padding: 0; }
           .no-print { display: none !important; }
+          .cv-wrapper { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', system-ui, sans-serif; background: white; color: #18181b; font-size: 11px; line-height: 1.5; }
@@ -172,8 +173,7 @@ export default function CvPrintPage({ params }: Props) {
       </div>
 
       {/* CV A4 */}
-      <div style={{ maxWidth: "794px", margin: "0 auto", padding: "64px 0 32px", background: "white" }}>
-        <style>{`@media print { div { padding-top: 0 !important; } }`}</style>
+      <div className="cv-wrapper" style={{ maxWidth: "794px", margin: "0 auto", padding: "64px 0 32px", background: "white" }}>
 
         {/* Header */}
         <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", borderBottom: "2px solid #FF5A1F", paddingBottom: "16px", marginBottom: "16px" }}>

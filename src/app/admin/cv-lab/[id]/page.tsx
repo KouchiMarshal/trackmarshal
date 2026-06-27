@@ -221,7 +221,7 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
 
         {/* CV Header */}
         <div className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm">
-          <div className="h-24 bg-gradient-to-r from-zinc-900 to-zinc-700" />
+          <div className="h-24 bg-gradient-to-r from-[#FF5A1F] to-orange-400" />
           <div className="px-8 pb-8">
             <div className="-mt-12 flex items-end gap-6">
               <img
