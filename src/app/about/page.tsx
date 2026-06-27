@@ -74,6 +74,59 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Origine du projet */}
+      <section className="border-t border-zinc-200 bg-zinc-50 py-20 lg:py-32">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div>
+              <p className="text-xs uppercase tracking-[0.35em] text-[#FF5A1F]">Né du terrain</p>
+              <h2 className="mt-6 text-4xl font-black leading-tight lg:text-5xl">
+                Créé par un commissaire.<br />
+                <span className="text-[#FF5A1F]">Pour les commissaires.</span>
+              </h2>
+              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
+                TrackMarshal est né de la frustration d'un commissaire FFSA confronté à la réalité du terrain : événements impossibles à trouver, inscriptions par email, licences vérifiées à la main, groupes WhatsApp… Le projet a été lancé avec une conviction simple — le bénévolat motorsport mérite des outils modernes.
+              </p>
+              <p className="mt-4 text-lg leading-relaxed text-zinc-600">
+                La plateforme est entièrement <strong className="text-zinc-900">gratuite</strong>, conçue pour aider les ASA et les organisateurs à recruter plus facilement, et pour rendre la communauté des commissaires plus visible et plus accessible.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {[
+                { value: "Auto", label: "Rallye, circuit, karting, côte, endurance, drift, slalom…" },
+                { value: "Moto", label: "Motocross, enduro, trial, road racing, supermoto, rallye moto…" },
+                { value: "FFSA", label: "Licences et grades auto reconnus et vérifiés sur la plateforme" },
+                { value: "FFM", label: "Licences moto reconnues — un seul profil pour toutes les disciplines" },
+              ].map((item) => (
+                <div key={item.value} className="rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm">
+                  <p className="text-3xl font-black text-[#FF5A1F]">{item.value}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-600">{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pour les institutions */}
+      <section className="border-t border-zinc-200 bg-white py-20 lg:py-28">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl">
+            <p className="text-xs uppercase tracking-[0.35em] text-[#FF5A1F]">Ligues & Institutions</p>
+            <h2 className="mt-6 text-4xl font-black lg:text-5xl">Vous représentez une ligue ou une ASA&nbsp;?</h2>
+            <p className="mt-6 text-lg leading-relaxed text-zinc-600">
+              TrackMarshal est conçu pour s'intégrer naturellement dans l'écosystème fédéral. Si vous représentez une ligue régionale, une ASA ou une fédération et souhaitez explorer comment la plateforme peut aider vos clubs à recruter leurs commissaires, contactez-nous directement.
+            </p>
+            <Link
+              href="/contact"
+              className="mt-8 inline-flex h-14 items-center rounded-2xl bg-[#FF5A1F] px-8 font-black text-white transition hover:scale-[1.02] lg:h-16 lg:text-lg"
+            >
+              Nous contacter
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="border-t border-zinc-200 bg-zinc-50 py-20 lg:py-28">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">

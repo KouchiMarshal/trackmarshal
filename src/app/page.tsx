@@ -61,7 +61,7 @@ export default function HomePage() {
                 priority
               />
               <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">
-                Plateforme Motorsport Premium
+                Plateforme Motorsport · 100% Gratuit
               </p>
             </div>
 
@@ -83,9 +83,24 @@ export default function HomePage() {
                 Créer un compte
               </Link>
             </div>
+            {/* Trust badges */}
+            <div className="mt-8 flex flex-wrap gap-3">
+              {[
+                { label: "Licences FFSA reconnues", color: "bg-blue-50 text-blue-700 border-blue-200" },
+                { label: "Licences FFM reconnues", color: "bg-purple-50 text-purple-700 border-purple-200" },
+                { label: "100% gratuit", color: "bg-green-50 text-green-700 border-green-200" },
+                { label: "Auto · Moto · Karting", color: "bg-orange-50 text-orange-700 border-orange-200" },
+              ].map((b) => (
+                <span key={b.label} className={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold ${b.color}`}>
+                  <span className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
+                  {b.label}
+                </span>
+              ))}
+            </div>
+
             <Link
               href="/devenir-commissaire/devenir-commissaire"
-              className="mt-5 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-[#FF5A1F]"
+              className="mt-6 inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-[#FF5A1F]"
             >
               <span>Pas encore commissaire ?</span>
               <span className="font-bold text-[#FF5A1F]">Comment devenir commissaire de piste →</span>
