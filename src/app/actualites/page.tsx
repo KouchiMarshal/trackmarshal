@@ -88,13 +88,21 @@ async function fetchFeed(
   useItemSource = false
 ): Promise<Article[]> {
   try {
-    const res = await fetch(url, {
-      next: { revalidate: 3600 },
-      headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-        "Accept": "application/rss+xml, application/xml, text/xml, */*",
-      },
-    });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 4000);
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        signal: controller.signal,
+        next: { revalidate: 3600 },
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+          "Accept": "application/rss+xml, application/xml, text/xml, */*",
+        },
+      });
+    } finally {
+      clearTimeout(timer);
+    }
     if (!res.ok) return [];
     const text = await res.text();
     const items = text.match(/<item>([\s\S]*?)<\/item>/g) ?? [];

@@ -167,9 +167,25 @@ export default function OrganizerEventsPage() {
                         <MapPin size={16} />
                         {event.location}, {event.country}
                       </div>
-                      <div className="flex items-center gap-3">
-                        <Users size={16} />
-                        {event.marshals_needed} commissaires
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2 text-zinc-600">
+                            <Users size={16} />
+                            <span>{event.accepted_count || 0} / {event.marshals_needed} commissaires</span>
+                          </div>
+                          {(() => {
+                            const remaining = Math.max(0, (event.marshals_needed || 0) - (event.accepted_count || 0));
+                            return remaining > 0 ? (
+                              <span className="text-xs font-bold text-[#FF5A1F]">{remaining} place{remaining > 1 ? "s" : ""} restante{remaining > 1 ? "s" : ""}</span>
+                            ) : null;
+                          })()}
+                        </div>
+                        <div className="h-1.5 w-full rounded-full bg-zinc-100">
+                          <div
+                            className="h-1.5 rounded-full bg-[#FF5A1F] transition-all"
+                            style={{ width: `${Math.min(100, Math.round(((event.accepted_count || 0) / (event.marshals_needed || 1)) * 100))}%` }}
+                          />
+                        </div>
                       </div>
                     </div>
                     <div className="mt-8">

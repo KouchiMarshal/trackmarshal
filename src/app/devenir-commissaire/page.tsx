@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     title: "Espace pédagogique — Devenir commissaire motorsport",
     description:
       "Drapeaux, procédures, licences, équipement, rôles — toutes les ressources pour devenir commissaire de piste motorsport en France.",
+    url: "https://www.trackmarshal.app/devenir-commissaire",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Devenir commissaire motorsport — TrackMarshal" }],
   },
 };
 
