@@ -1,12 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import PublicNavbar from "@/components/layout/public-navbar";
 
 export default function CheckinPage() {
+  return (
+    <main className="min-h-screen bg-zinc-50 text-zinc-900">
+      <PublicNavbar />
+      <Suspense fallback={<div className="flex min-h-screen items-center justify-center pt-20 text-zinc-400">Chargement...</div>}>
+        <CheckinContent />
+      </Suspense>
+    </main>
+  );
+}
+
+function CheckinContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const eventId = searchParams.get("event");
@@ -68,10 +79,7 @@ export default function CheckinPage() {
     : "";
 
   return (
-    <main className="min-h-screen bg-zinc-50 text-zinc-900">
-      <PublicNavbar />
-
-      <div className="flex min-h-screen items-center justify-center px-4 pt-20">
+    <div className="flex min-h-screen items-center justify-center px-4 pt-20">
         <div className="w-full max-w-md">
 
           {status === "loading" && (
@@ -168,6 +176,5 @@ export default function CheckinPage() {
 
         </div>
       </div>
-    </main>
   );
 }
