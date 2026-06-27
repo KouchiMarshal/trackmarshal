@@ -41,6 +41,14 @@ export default function FranceMap() {
   return (
     <div className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-sm sm:rounded-[40px]">
 
+      {/* Demo banner */}
+      <div className="flex items-center gap-3 border-b border-amber-200 bg-amber-50 px-6 py-3 sm:px-8">
+        <span className="text-base">🧪</span>
+        <p className="text-xs font-bold text-amber-700">
+          Données de démonstration — ces chiffres sont fictifs et illustrent le potentiel de la plateforme. Les vraies données s'afficheront ici dès que les commissaires auront renseigné leur région.
+        </p>
+      </div>
+
       {/* Header */}
       <div className="border-b border-zinc-200 p-6 sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -135,8 +143,8 @@ export default function FranceMap() {
               {totalMoto} Moto
             </span>
           </div>
-          <p className="text-[10px] font-medium text-zinc-300 italic">
-            Données indicatives — juin 2026
+          <p className="text-[10px] font-bold text-amber-500 italic">
+            ⚠ Chiffres fictifs à titre de démonstration
           </p>
         </div>
       </div>
