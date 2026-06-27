@@ -438,11 +438,33 @@ export default function OrganizerEventDetailsPage() {
       ? days.map((d) => `<th style="width:100px;text-align:center;">${d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })}<br/><span style="font-size:9px;font-weight:normal;letter-spacing:0;opacity:0.7;text-transform:none;">Signature</span></th>`).join("")
       : `<th style="width:120px;">Signature</th>`;
 
+    // Build set of QR check-in dates per application
+    function getQrDates(attendedNote: string): Set<string> {
+      const s = new Set<string>();
+      (attendedNote || "").split("\n").forEach((line) => {
+        const m = line.match(/^QR: (\d{4}-\d{2}-\d{2})$/);
+        if (m) s.add(m[1]);
+      });
+      return s;
+    }
+
+    const hasAnyQr = accepted.some((a) => (a.attended_note || "").includes("QR:"));
+
     const rows = accepted.map((app, idx) => {
       const p = app.profiles || {};
+      const qrDates = getQrDates(app.attended_note || "");
+
       const signatureCells = isMultiDay
-        ? days.map(() => `<td style="height:56px;"></td>`).join("")
-        : `<td style="height:56px;"></td>`;
+        ? days.map((d) => {
+            const iso = d.toISOString().slice(0, 10);
+            return qrDates.has(iso)
+              ? `<td style="height:56px;text-align:center;background:#f0fdf4;"><span style="color:#16a34a;font-size:16px;">✓</span><br/><span style="font-size:8px;color:#16a34a;font-weight:bold;">QR SCAN</span></td>`
+              : `<td style="height:56px;"></td>`;
+          }).join("")
+        : qrDates.size > 0
+          ? `<td style="height:56px;text-align:center;background:#f0fdf4;"><span style="color:#16a34a;font-size:16px;">✓</span><br/><span style="font-size:8px;color:#16a34a;font-weight:bold;">QR SCAN</span></td>`
+          : `<td style="height:56px;"></td>`;
+
       return `
         <tr>
           <td style="text-align:center;">${idx + 1}</td>
@@ -452,6 +474,10 @@ export default function OrganizerEventDetailsPage() {
         </tr>
       `;
     }).join("");
+
+    const qrLegend = hasAnyQr
+      ? `<p style="margin:8px 0 0;font-size:10px;color:#16a34a;">✓ QR SCAN = présence confirmée via QR code. Les cases vides restent à signer manuellement.</p>`
+      : "";
 
     const eventDate = formatDateRange(event.event_date, event.event_end_date);
 
@@ -475,6 +501,7 @@ export default function OrganizerEventDetailsPage() {
         <p style="margin:0;color:#555;">📅 ${eventDate} &nbsp;·&nbsp; 📍 ${escapeHtml(event.location)}</p>
       </div>
       <p style="color:#555;">Feuille d'émargement — ${accepted.length} commissaire(s) accepté(s)</p>
+      ${qrLegend}
       <table>
         <thead><tr>
           <th style="width:32px;">#</th>
@@ -816,20 +843,25 @@ export default function OrganizerEventDetailsPage() {
                         <Bell size={14} />
                         {sendingReminders ? "..." : "Rappels"}
                       </button>
-                      <button
-                        onClick={() => { setShowQR(true); setQrDayIndex(0); }}
-                        className="flex items-center gap-1.5 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
-                      >
-                        <QrCode size={14} />
-                        QR Check-in
-                      </button>
-                      <button
-                        onClick={exportEmargement}
-                        className="flex items-center gap-1.5 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
-                      >
-                        <ClipboardCheck size={14} />
-                        Émargement
-                      </button>
+                      <div className="flex items-center gap-1.5 rounded-2xl border border-zinc-200 bg-zinc-50 p-1">
+                        <button
+                          onClick={() => { setShowQR(true); setQrDayIndex(0); }}
+                          className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-bold text-zinc-700 transition hover:bg-white hover:text-[#FF5A1F]"
+                          title="Mode numérique — les commissaires scannent le QR avec leur téléphone"
+                        >
+                          <QrCode size={14} />
+                          QR
+                        </button>
+                        <span className="text-xs text-zinc-300">|</span>
+                        <button
+                          onClick={exportEmargement}
+                          className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-bold text-zinc-700 transition hover:bg-white hover:text-[#FF5A1F]"
+                          title="Mode papier — impression d'une feuille à signer sur site"
+                        >
+                          <ClipboardCheck size={14} />
+                          Papier
+                        </button>
+                      </div>
                       <button
                         onClick={exportCSV}
                         className="flex items-center gap-1.5 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
@@ -1306,7 +1338,7 @@ export default function OrganizerEventDetailsPage() {
                 </div>
                 <p className="text-center text-sm font-bold capitalize text-zinc-700">{activeDay.label}</p>
                 <p className="text-center text-xs text-zinc-400">
-                  Les commissaires scannent ce QR avec leur téléphone pour confirmer leur présence.
+                  Les commissaires scannent avec leur téléphone pour confirmer leur présence. Si vous utilisez ce QR, pas besoin de feuille papier.
                 </p>
                 <button
                   onClick={() => window.print()}
