@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Award, CalendarDays, Shield, Users } from "lucide-react";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
+import FranceMap from "@/components/about/FranceMap";
 
 export default function AboutPage() {
   return (
@@ -142,6 +143,20 @@ export default function AboutPage() {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Carte du vivier */}
+      <section className="bg-zinc-50 py-20 lg:py-32">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+          <div className="mb-10">
+            <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">France</p>
+            <h2 className="mt-4 text-4xl font-black lg:text-6xl">Le vivier commissaires</h2>
+            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
+              Des commissaires TrackMarshal présents dans toutes les régions de France, toutes disciplines confondues.
+            </p>
+          </div>
+          <FranceMap />
         </div>
       </section>
 
