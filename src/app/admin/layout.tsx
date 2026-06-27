@@ -65,7 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="flex min-h-screen bg-zinc-50 text-zinc-900">
 
       {/* Sidebar */}
-      <aside className="hidden h-screen w-[280px] shrink-0 sticky top-0 flex-col border-r border-zinc-200 bg-white lg:flex overflow-y-auto">
+      <aside className="hidden print:hidden h-screen w-[280px] shrink-0 sticky top-0 flex-col border-r border-zinc-200 bg-white lg:flex overflow-y-auto">
         <div className="border-b border-zinc-200 p-8">
           <Link href="/" className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
@@ -115,7 +115,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
 
       {/* Bottom nav mobile */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-white lg:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 bg-white lg:hidden print:hidden">
         <div className="grid grid-cols-5">
           {mobileNavItems.map((item) => (
             <Link
