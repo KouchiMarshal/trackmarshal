@@ -15,12 +15,14 @@ import {
   MapPin,
   MessageSquare,
   Pencil,
+  QrCode,
   Users,
   Trash2,
   X,
   CheckCircle2,
   XCircle,
 } from "lucide-react";
+import QRCode from "react-qr-code";
 import { supabase } from "@/lib/supabase";
 import OrganizerSidebar from "@/components/layout/organizer-sidebar";
 import NotificationBell from "@/components/notifications/notification-bell";
@@ -63,6 +65,10 @@ export default function OrganizerEventDetailsPage() {
   const [bilanAttended, setBilanAttended] = useState<Record<string, boolean | null>>({});
   const [bilanNotes, setBilanNotes] = useState<Record<string, string>>({});
   const [bilanSaving, setBilanSaving] = useState<Record<string, boolean>>({});
+
+  // Feature 6: QR Check-in
+  const [showQR, setShowQR] = useState(false);
+  const [qrDayIndex, setQrDayIndex] = useState(0);
 
   useEffect(() => {
     if (!eventId) return;
@@ -811,6 +817,13 @@ export default function OrganizerEventDetailsPage() {
                         {sendingReminders ? "..." : "Rappels"}
                       </button>
                       <button
+                        onClick={() => { setShowQR(true); setQrDayIndex(0); }}
+                        className="flex items-center gap-1.5 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                      >
+                        <QrCode size={14} />
+                        QR Check-in
+                      </button>
+                      <button
                         onClick={exportEmargement}
                         className="flex items-center gap-1.5 rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
                       >
@@ -1243,6 +1256,71 @@ export default function OrganizerEventDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* QR Check-in modal */}
+      {showQR && event && (() => {
+        const days: { date: Date; label: string; iso: string }[] = [];
+        const start = new Date(event.event_date);
+        const end = event.event_end_date ? new Date(event.event_end_date) : new Date(event.event_date);
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+          const iso = d.toISOString().slice(0, 10);
+          const label = d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" });
+          days.push({ date: new Date(d), label, iso });
+        }
+        const activeDay = days[qrDayIndex] ?? days[0];
+        const qrUrl = `${typeof window !== "undefined" ? window.location.origin : "https://www.trackmarshal.app"}/checkin?event=${event.id}&date=${activeDay.iso}`;
+
+        return (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" onClick={() => setShowQR(false)}>
+            <div className="w-full max-w-sm overflow-hidden rounded-[32px] bg-white shadow-2xl" onClick={(e) => e.stopPropagation()}>
+
+              <div className="flex items-center justify-between border-b border-zinc-200 bg-[#FF5A1F] px-6 py-5">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">QR Check-in</p>
+                  <p className="mt-0.5 font-black text-white">{event.title}</p>
+                </div>
+                <button onClick={() => setShowQR(false)} className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-white hover:bg-white/30">
+                  <X size={18} />
+                </button>
+              </div>
+
+              {days.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto border-b border-zinc-100 px-4 py-3">
+                  {days.map((d, i) => (
+                    <button
+                      key={d.iso}
+                      onClick={() => setQrDayIndex(i)}
+                      className={`shrink-0 rounded-xl px-3 py-1.5 text-xs font-bold capitalize transition ${
+                        qrDayIndex === i ? "bg-[#FF5A1F] text-white" : "border border-zinc-200 text-zinc-600 hover:border-[#FF5A1F]/50"
+                      }`}
+                    >
+                      {d.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex flex-col items-center gap-4 p-8">
+                <div className="rounded-2xl border-4 border-zinc-100 bg-white p-4">
+                  <QRCode value={qrUrl} size={200} />
+                </div>
+                <p className="text-center text-sm font-bold capitalize text-zinc-700">{activeDay.label}</p>
+                <p className="text-center text-xs text-zinc-400">
+                  Les commissaires scannent ce QR avec leur téléphone pour confirmer leur présence.
+                </p>
+                <button
+                  onClick={() => window.print()}
+                  className="flex h-10 w-full items-center justify-center rounded-2xl border border-zinc-200 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]"
+                >
+                  Imprimer
+                </button>
+              </div>
+
+            </div>
+          </div>
+        );
+      })()}
+
     </main>
   );
 }
