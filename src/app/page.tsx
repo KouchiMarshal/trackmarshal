@@ -138,6 +138,65 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Pour les organisateurs */}
+      <section className="border-t border-zinc-200 bg-white py-20 lg:py-32">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+          <div className="lg:flex lg:items-center lg:gap-20">
+
+            {/* Left: text */}
+            <div className="lg:w-1/2">
+              <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Organisateurs &amp; ASA</p>
+              <h2 className="mt-4 text-4xl font-black leading-tight lg:text-6xl">
+                Vous organisez<br />des épreuves&nbsp;?
+              </h2>
+              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
+                Fini les tableurs et les groupes WhatsApp. Publiez votre événement, recevez les candidatures avec licences vérifiées, et gérez votre équipe de commissaires en quelques clics — entièrement gratuit.
+              </p>
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                <Link href="/register" className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-black text-white transition hover:scale-[1.02] lg:h-16 lg:text-lg">
+                  Publier mon premier événement
+                </Link>
+                <Link href="/events" className="flex h-14 items-center justify-center rounded-2xl border border-zinc-300 bg-zinc-50 px-8 font-black text-zinc-700 transition hover:border-[#FF5A1F]/40 lg:h-16 lg:text-lg">
+                  Voir les événements →
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: feature cards */}
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-0 lg:w-1/2">
+              {[
+                {
+                  emoji: "📋",
+                  title: "Publication en quelques minutes",
+                  desc: "Décrivez votre événement, vos besoins en commissaires, les conditions (repas, hébergement, défraiement). Visible immédiatement par tous les commissaires inscrits.",
+                },
+                {
+                  emoji: "✅",
+                  title: "Licences vérifiées",
+                  desc: "Chaque candidature arrive avec le profil complet du commissaire — licence FFSA ou FFM, grade, disciplines, historique d'épreuves.",
+                },
+                {
+                  emoji: "💬",
+                  title: "Tout centralisé",
+                  desc: "Acceptez, refusez, envoyez le briefing PDF et échangez via la messagerie intégrée. Zéro email externe, zéro WhatsApp.",
+                },
+                {
+                  emoji: "🆓",
+                  title: "100% gratuit pour les ASA",
+                  desc: "Aucun abonnement, aucune commission. TrackMarshal est un projet indépendant pensé pour aider la communauté motorsport.",
+                },
+              ].map((item) => (
+                <div key={item.title} className="rounded-[28px] border border-zinc-200 bg-zinc-50 p-6">
+                  <span className="text-3xl">{item.emoji}</span>
+                  <h3 className="mt-4 text-lg font-black text-zinc-900">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-600">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Espace pédagogique */}
       <section className="border-t border-zinc-200 bg-white py-20 lg:py-32">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
