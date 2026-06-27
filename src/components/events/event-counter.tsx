@@ -13,6 +13,7 @@ type Props = {
 
 export default function EventCounter({ eventId, marshalsNeeded, eventDiscipline, staffRoles }: Props) {
   const [count, setCount] = useState<number | null>(null);
+  const [roleCounts, setRoleCounts] = useState<Record<string, number>>({});
 
   useEffect(() => {
     fetchCount();
@@ -24,12 +25,20 @@ export default function EventCounter({ eventId, marshalsNeeded, eventDiscipline,
   }, [eventId]);
 
   async function fetchCount() {
-    const { count: c } = await supabase
+    const { data, count: c } = await supabase
       .from("applications")
-      .select("id", { count: "exact", head: true })
+      .select("desired_role", { count: "exact" })
       .eq("event_id", eventId)
       .eq("status", "accepted");
+
     setCount(c ?? 0);
+
+    const counts: Record<string, number> = {};
+    (data || []).forEach((a) => {
+      const role = a.desired_role || "";
+      counts[role] = (counts[role] || 0) + 1;
+    });
+    setRoleCounts(counts);
   }
 
   const accepted = count ?? 0;
@@ -50,12 +59,24 @@ export default function EventCounter({ eventId, marshalsNeeded, eventDiscipline,
       {staffRoles && staffRoles.length > 1 && (
         <div className="mt-4 space-y-2">
           <p className="text-xs font-bold uppercase tracking-[0.15em] text-zinc-500">Détail des postes</p>
-          {staffRoles.map((r) => (
-            <div key={r.role} className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2.5">
-              <span className="text-sm font-medium text-zinc-700">{r.role}</span>
-              <span className="text-sm font-bold text-zinc-900">{r.count} poste{r.count > 1 ? "s" : ""}</span>
-            </div>
-          ))}
+          {staffRoles.map((r) => {
+            const acceptedForRole = roleCounts[r.role] || 0;
+            const remaining = Math.max(0, r.count - acceptedForRole);
+            const full = remaining === 0;
+            return (
+              <div key={r.role} className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2.5">
+                <span className="text-sm font-medium text-zinc-700">{r.role}</span>
+                <div className="flex items-center gap-2">
+                  {full && (
+                    <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">Complet</span>
+                  )}
+                  <span className={`text-sm font-bold ${full ? "text-green-700" : "text-zinc-900"}`}>
+                    {acceptedForRole} / {r.count}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
