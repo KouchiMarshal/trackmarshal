@@ -61,6 +61,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     );
   }
 
+  // Print pages need a bare wrapper — no sidebar, no flex container
+  if (pathname.includes("/print")) {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex min-h-screen bg-zinc-50 text-zinc-900">
 
