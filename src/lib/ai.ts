@@ -1,7 +1,9 @@
 // Intégration IA via Google Gemini (offre gratuite, sans SDK : appels REST).
 // Clé requise : process.env.GEMINI_API_KEY (Google AI Studio).
 
-export const GEMINI_MODEL = "gemini-2.0-flash";
+// Modèle configurable via variable d'environnement (permet d'en changer
+// sans toucher au code si le quota gratuit varie selon le modèle/compte).
+export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-1.5-flash";
 const BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
 export function hasGeminiKey(): boolean {
