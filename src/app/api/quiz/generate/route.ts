@@ -16,29 +16,6 @@ const THEMES = [
   "Sécurité et interventions",
 ];
 
-// Schéma de sortie JSON imposé au modèle (format Gemini : types en MAJUSCULES).
-const QUIZ_SCHEMA = {
-  type: "OBJECT",
-  properties: {
-    questions: {
-      type: "ARRAY",
-      items: {
-        type: "OBJECT",
-        properties: {
-          question: { type: "STRING" },
-          options: { type: "ARRAY", items: { type: "STRING" } },
-          correct: { type: "INTEGER" },
-          explanation: { type: "STRING" },
-          topic: { type: "STRING" },
-        },
-        required: ["question", "options", "correct", "explanation", "topic"],
-        propertyOrdering: ["question", "options", "correct", "explanation", "topic"],
-      },
-    },
-  },
-  required: ["questions"],
-};
-
 export async function POST(req: NextRequest) {
   if (!hasGeminiKey()) {
     return Response.json({ error: "Génération indisponible (configuration manquante)." }, { status: 503 });
@@ -75,16 +52,27 @@ Thème : ${theme}.
 ${adaptiveInstruction}
 ${avoidInstruction}
 
+Réponds UNIQUEMENT avec un objet JSON valide, sans texte autour, de la forme exacte :
+{
+  "questions": [
+    {
+      "question": "énoncé de la question",
+      "options": ["proposition A", "proposition B", "proposition C", "proposition D"],
+      "correct": 0,
+      "explanation": "explication courte de la bonne réponse",
+      "topic": "thème (ex. Drapeaux, Procédures, Sécurité)"
+    }
+  ]
+}
+
 Contraintes :
 - En français, niveau accessible aux débutants mais rigoureux.
-- Pour chaque question : exactement 4 propositions dans "options", une seule correcte.
+- Exactement 4 propositions par question, une seule correcte.
 - "correct" est l'index (0 à 3) de la bonne réponse dans "options".
-- "explanation" : explication courte et pédagogique de la bonne réponse.
-- "topic" : thème de la question (ex. Drapeaux, Procédures, Sécurité).
 - Ne reprends pas mot pour mot la base de connaissances ; reformule en questions.`;
 
   try {
-    const data = await geminiJSON({ system: SYSTEM, prompt, schema: QUIZ_SCHEMA });
+    const data = await geminiJSON({ system: SYSTEM, prompt });
     const raw: any[] = Array.isArray(data?.questions) ? data.questions : [];
 
     // Validation/normalisation défensive avant envoi au client.
@@ -114,8 +102,11 @@ Contraintes :
     }
 
     return Response.json({ questions });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Quiz generation error:", err);
-    return Response.json({ error: "Une erreur est survenue lors de la génération." }, { status: 500 });
+    return Response.json(
+      { error: "Génération impossible : " + (err?.message || "erreur inconnue") },
+      { status: 500 },
+    );
   }
 }

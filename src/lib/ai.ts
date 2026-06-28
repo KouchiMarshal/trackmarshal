@@ -34,11 +34,14 @@ export function geminiStream(opts: {
   });
 }
 
-/** Appel non-streaming avec sortie JSON imposée (schéma Gemini). */
+/**
+ * Appel non-streaming en mode JSON (responseMimeType uniquement, sans schéma
+ * strict : plus robuste selon les modèles). Le format attendu est décrit dans
+ * le prompt. Renvoie l'objet JSON parsé.
+ */
 export async function geminiJSON(opts: {
   system: string;
   prompt: string;
-  schema: unknown;
   maxOutputTokens?: number;
   temperature?: number;
 }): Promise<any> {
@@ -50,8 +53,7 @@ export async function geminiJSON(opts: {
       contents: [{ role: "user", parts: [{ text: opts.prompt }] }],
       generationConfig: {
         responseMimeType: "application/json",
-        responseSchema: opts.schema,
-        maxOutputTokens: opts.maxOutputTokens ?? 4000,
+        maxOutputTokens: opts.maxOutputTokens ?? 6000,
         temperature: opts.temperature ?? 0.8,
       },
     }),
@@ -64,8 +66,13 @@ export async function geminiJSON(opts: {
 
   const data = await res.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error("Réponse Gemini vide.");
-  return JSON.parse(text);
+  if (!text) {
+    const reason = data?.candidates?.[0]?.finishReason || "inconnue";
+    throw new Error(`Réponse Gemini vide (finishReason: ${reason}).`);
+  }
+  // Filet de sécurité : on isole le bloc JSON même si le modèle l'entoure de texte.
+  const cleaned = text.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+  return JSON.parse(cleaned);
 }
 
 /**
