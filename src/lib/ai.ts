@@ -106,6 +106,45 @@ export async function geminiJSON(opts: {
   throw lastErr ?? new Error("Échec de génération Gemini.");
 }
 
+/** Appel non-streaming renvoyant du texte brut (avec bascule de modèle). */
+export async function geminiText(opts: {
+  system: string;
+  prompt: string;
+  maxOutputTokens?: number;
+  temperature?: number;
+}): Promise<string> {
+  const body = JSON.stringify({
+    system_instruction: { parts: [{ text: opts.system }] },
+    contents: [{ role: "user", parts: [{ text: opts.prompt }] }],
+    generationConfig: {
+      maxOutputTokens: opts.maxOutputTokens ?? 1500,
+      temperature: opts.temperature ?? 0.7,
+    },
+  });
+
+  let lastErr: Error | null = null;
+  for (const model of modelChain()) {
+    const res = await fetch(`${BASE}/${model}:generateContent`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
+      body,
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) return String(text).trim();
+      lastErr = new Error("Réponse Gemini vide.");
+      continue;
+    }
+
+    const detail = await res.text().catch(() => "");
+    lastErr = new Error(`Gemini ${res.status}: ${detail.slice(0, 200)}`);
+    if (TRANSIENT.has(res.status)) await sleep(250);
+  }
+  throw lastErr ?? new Error("Échec de génération Gemini.");
+}
+
 /**
  * Base de connaissances « commissaire de piste » (France, FFSA/FFM).
  * Socle factuel du chatbot pédagogique et du générateur de quiz.

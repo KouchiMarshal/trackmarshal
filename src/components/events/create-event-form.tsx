@@ -24,6 +24,30 @@ export default function CreateEventForm() {
   const [schedule, setSchedule] = useState("");
   const [organizerContact, setOrganizerContact] = useState("");
 
+  const [genBriefing, setGenBriefing] = useState(false);
+
+  async function handleGenerateBriefing() {
+    setGenBriefing(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/generate-briefing", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ title, discipline, location, country, eventDate, marshalsNeeded, schedule }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur");
+      setBriefing(data.briefing);
+    } catch (e: any) {
+      alert(e?.message || "Génération impossible.");
+    } finally {
+      setGenBriefing(false);
+    }
+  }
+
   async function handleImageUpload(
     e: React.ChangeEvent<HTMLInputElement>
   ) {
@@ -275,11 +299,23 @@ export default function CreateEventForm() {
 
       </div>
 
+      <div className="mt-8 flex items-center justify-between gap-3">
+        <p className="text-sm font-bold uppercase tracking-[0.2em] text-white/60">Briefing</p>
+        <button
+          type="button"
+          onClick={handleGenerateBriefing}
+          disabled={genBriefing}
+          className="rounded-full border border-[#FF5A1F]/40 bg-[#FF5A1F]/10 px-4 py-2 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20 disabled:opacity-50"
+        >
+          {genBriefing ? "Génération…" : "✨ Générer avec l'IA"}
+        </button>
+      </div>
+
       <textarea
         placeholder="Briefing de l'événement"
         value={briefing}
         onChange={(e) => setBriefing(e.target.value)}
-        className="mt-8 min-h-[160px] w-full rounded-[32px] border border-white/10 bg-white/5 p-6 text-white outline-none backdrop-blur-xl"
+        className="mt-3 min-h-[160px] w-full rounded-[32px] border border-white/10 bg-white/5 p-6 text-white outline-none backdrop-blur-xl"
       />
 
       <textarea

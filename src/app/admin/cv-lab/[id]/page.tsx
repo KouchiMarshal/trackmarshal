@@ -75,8 +75,58 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
   const [savingEdit, setSavingEdit] = useState(false);
   const [toast, setToast] = useState<ToastData>(null);
   const [lang, setLang] = useState<"fr" | "en">("fr");
+  const [genBio, setGenBio] = useState(false);
+  const [bioDraft, setBioDraft] = useState<string | null>(null);
+  const [savingBio, setSavingBio] = useState(false);
 
   useEffect(() => { load(); }, [id]);
+
+  async function handleGenerateBio() {
+    setGenBio(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/admin/generate-bio", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ marshalId: id, lang }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur");
+      setBioDraft(data.bio);
+    } catch (e: any) {
+      setToast({ message: e?.message || "Génération impossible.", type: "error" });
+    } finally {
+      setGenBio(false);
+    }
+  }
+
+  async function handleSaveBio() {
+    if (bioDraft === null) return;
+    setSavingBio(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/admin/save-bio", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ marshalId: id, bio: bioDraft }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur");
+      setProfile((p: any) => ({ ...p, bio: bioDraft }));
+      setBioDraft(null);
+      setToast({ message: "Bio enregistrée.", type: "success" });
+    } catch (e: any) {
+      setToast({ message: e?.message || "Enregistrement impossible.", type: "error" });
+    } finally {
+      setSavingBio(false);
+    }
+  }
 
   async function load() {
     const { data: { session } } = await supabase.auth.getSession();
@@ -249,9 +299,56 @@ export default function CvLabProfilePage({ params }: { params: Promise<{ id: str
               ))}
             </div>
 
-            {profile.bio && (
-              <p className="mt-6 text-zinc-600 leading-relaxed">{profile.bio}</p>
-            )}
+            {/* Bio + génération IA (admin) */}
+            <div className="mt-6">
+              {bioDraft === null ? (
+                <>
+                  {profile.bio && <p className="text-zinc-600 leading-relaxed">{profile.bio}</p>}
+                  <button
+                    type="button"
+                    onClick={handleGenerateBio}
+                    disabled={genBio}
+                    className="mt-3 rounded-full border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-4 py-2 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20 disabled:opacity-50"
+                  >
+                    {genBio ? "Génération…" : profile.bio ? "✨ Régénérer la bio (IA)" : "✨ Générer la bio (IA)"}
+                  </button>
+                </>
+              ) : (
+                <div className="rounded-2xl border border-[#FF5A1F]/30 bg-[#FF5A1F]/5 p-4">
+                  <p className="mb-2 text-xs font-bold uppercase tracking-[0.15em] text-[#FF5A1F]">Bio générée — à relire avant d'enregistrer</p>
+                  <textarea
+                    value={bioDraft}
+                    onChange={(e) => setBioDraft(e.target.value)}
+                    className="min-h-[120px] w-full rounded-xl border border-zinc-200 bg-white p-3 text-sm text-zinc-800 outline-none focus:border-[#FF5A1F]"
+                  />
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveBio}
+                      disabled={savingBio}
+                      className="rounded-xl bg-[#FF5A1F] px-4 py-2 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-50"
+                    >
+                      {savingBio ? "Enregistrement…" : "Enregistrer"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleGenerateBio}
+                      disabled={genBio}
+                      className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-bold text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-50"
+                    >
+                      {genBio ? "Génération…" : "Régénérer"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setBioDraft(null)}
+                      className="rounded-xl px-4 py-2 text-sm font-bold text-zinc-500 transition hover:text-zinc-800"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {profile.disciplines && (
               <div className="mt-4 flex flex-wrap gap-2">
