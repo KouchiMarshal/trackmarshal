@@ -6,6 +6,16 @@
 export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 const BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
+// Modèles à essayer dans l'ordre : le principal, puis une bascule en cas de
+// surcharge temporaire (503/429). Tous deux gratuits sur le compte cible.
+const FALLBACK_MODELS = ["gemini-2.5-flash"];
+function modelChain(): string[] {
+  return Array.from(new Set([GEMINI_MODEL, ...FALLBACK_MODELS]));
+}
+
+const TRANSIENT = new Set([429, 500, 502, 503, 504]);
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 export function hasGeminiKey(): boolean {
   return !!process.env.GEMINI_API_KEY;
 }
@@ -13,25 +23,43 @@ export function hasGeminiKey(): boolean {
 export type GeminiRole = "user" | "model";
 export type GeminiContent = { role: GeminiRole; parts: { text: string }[] };
 
-/** Appel streaming (SSE) — renvoie la réponse fetch brute à parser par l'appelant. */
-export function geminiStream(opts: {
+/**
+ * Appel streaming (SSE) — renvoie la première réponse fetch OK, en basculant
+ * sur un modèle de secours si le principal est temporairement indisponible.
+ */
+export async function geminiStream(opts: {
   system: string;
   contents: GeminiContent[];
   maxOutputTokens?: number;
   temperature?: number;
 }): Promise<Response> {
-  return fetch(`${BASE}/${GEMINI_MODEL}:streamGenerateContent?alt=sse`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: opts.system }] },
-      contents: opts.contents,
-      generationConfig: {
-        maxOutputTokens: opts.maxOutputTokens ?? 1024,
-        temperature: opts.temperature ?? 0.6,
-      },
-    }),
+  const body = JSON.stringify({
+    system_instruction: { parts: [{ text: opts.system }] },
+    contents: opts.contents,
+    generationConfig: {
+      maxOutputTokens: opts.maxOutputTokens ?? 1024,
+      temperature: opts.temperature ?? 0.6,
+    },
   });
+
+  let last: Response | null = null;
+  for (const model of modelChain()) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const res = await fetch(`${BASE}/${model}:streamGenerateContent?alt=sse`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
+        body,
+      });
+      if (res.ok) return res;
+      last = res;
+      if (TRANSIENT.has(res.status)) {
+        await sleep(600 * (attempt + 1));
+        continue; // on réessaie, puis on passera au modèle suivant
+      }
+      break; // erreur non transitoire : modèle suivant
+    }
+  }
+  return last!;
 }
 
 /**
@@ -45,34 +73,47 @@ export async function geminiJSON(opts: {
   maxOutputTokens?: number;
   temperature?: number;
 }): Promise<any> {
-  const res = await fetch(`${BASE}/${GEMINI_MODEL}:generateContent`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
-    body: JSON.stringify({
-      system_instruction: { parts: [{ text: opts.system }] },
-      contents: [{ role: "user", parts: [{ text: opts.prompt }] }],
-      generationConfig: {
-        responseMimeType: "application/json",
-        maxOutputTokens: opts.maxOutputTokens ?? 6000,
-        temperature: opts.temperature ?? 0.8,
-      },
-    }),
+  const body = JSON.stringify({
+    system_instruction: { parts: [{ text: opts.system }] },
+    contents: [{ role: "user", parts: [{ text: opts.prompt }] }],
+    generationConfig: {
+      responseMimeType: "application/json",
+      maxOutputTokens: opts.maxOutputTokens ?? 6000,
+      temperature: opts.temperature ?? 0.8,
+    },
   });
 
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    throw new Error(`Gemini ${res.status}: ${detail.slice(0, 300)}`);
-  }
+  let lastErr: Error | null = null;
+  for (const model of modelChain()) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const res = await fetch(`${BASE}/${model}:generateContent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
+        body,
+      });
 
-  const data = await res.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) {
-    const reason = data?.candidates?.[0]?.finishReason || "inconnue";
-    throw new Error(`Réponse Gemini vide (finishReason: ${reason}).`);
+      if (res.ok) {
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) {
+          const reason = data?.candidates?.[0]?.finishReason || "inconnue";
+          lastErr = new Error(`Réponse vide (finishReason: ${reason}).`);
+          break; // modèle suivant
+        }
+        const cleaned = text.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+        return JSON.parse(cleaned);
+      }
+
+      const detail = await res.text().catch(() => "");
+      lastErr = new Error(`Gemini ${res.status}: ${detail.slice(0, 200)}`);
+      if (TRANSIENT.has(res.status)) {
+        await sleep(600 * (attempt + 1));
+        continue; // réessai, puis modèle suivant
+      }
+      break; // erreur non transitoire : modèle suivant
+    }
   }
-  // Filet de sécurité : on isole le bloc JSON même si le modèle l'entoure de texte.
-  const cleaned = text.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
-  return JSON.parse(cleaned);
+  throw lastErr ?? new Error("Échec de génération Gemini.");
 }
 
 /**
