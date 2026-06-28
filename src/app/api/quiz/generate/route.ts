@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getAnthropic, AI_MODEL, MARSHAL_KNOWLEDGE, NO_OFFICIAL_PARTNERSHIP } from "@/lib/anthropic";
+import { geminiJSON, hasGeminiKey, MARSHAL_KNOWLEDGE, NO_OFFICIAL_PARTNERSHIP } from "@/lib/ai";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,40 +16,31 @@ const THEMES = [
   "Sécurité et interventions",
 ];
 
-// Schéma de sortie structurée imposé au modèle via un outil forcé.
-const QUIZ_TOOL = {
-  name: "proposer_quiz",
-  description: "Renvoie une liste de questions de quiz à choix multiple pour commissaires de piste.",
-  input_schema: {
-    type: "object" as const,
-    properties: {
-      questions: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            question: { type: "string", description: "L'énoncé de la question, en français." },
-            options: {
-              type: "array",
-              items: { type: "string" },
-              minItems: 4,
-              maxItems: 4,
-              description: "Exactement 4 propositions de réponse.",
-            },
-            correct: { type: "integer", minimum: 0, maximum: 3, description: "Index (0-3) de la bonne réponse dans options." },
-            explanation: { type: "string", description: "Explication courte de la bonne réponse." },
-            topic: { type: "string", description: "Thème de la question (ex. Drapeaux, Procédures, Sécurité)." },
-          },
-          required: ["question", "options", "correct", "explanation", "topic"],
+// Schéma de sortie JSON imposé au modèle (format Gemini : types en MAJUSCULES).
+const QUIZ_SCHEMA = {
+  type: "OBJECT",
+  properties: {
+    questions: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: {
+          question: { type: "STRING" },
+          options: { type: "ARRAY", items: { type: "STRING" } },
+          correct: { type: "INTEGER" },
+          explanation: { type: "STRING" },
+          topic: { type: "STRING" },
         },
+        required: ["question", "options", "correct", "explanation", "topic"],
+        propertyOrdering: ["question", "options", "correct", "explanation", "topic"],
       },
     },
-    required: ["questions"],
   },
+  required: ["questions"],
 };
 
 export async function POST(req: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!hasGeminiKey()) {
     return Response.json({ error: "Génération indisponible (configuration manquante)." }, { status: 503 });
   }
 
@@ -73,7 +64,12 @@ export async function POST(req: NextRequest) {
     ? `Ne répète AUCUNE de ces questions déjà posées :\n- ${previous.join("\n- ")}`
     : "";
 
-  const prompt = `Génère ${count} questions de quiz à choix multiple pour des commissaires de piste (sport auto/moto, France).
+  const SYSTEM = `Tu es formateur de commissaires de piste (sport auto/moto, France). Tu génères des questions de quiz à choix multiple en français, rigoureuses et fidèles aux conventions officielles. ${NO_OFFICIAL_PARTNERSHIP}
+
+BASE DE CONNAISSANCES DE RÉFÉRENCE
+${MARSHAL_KNOWLEDGE}`;
+
+  const prompt = `Génère ${count} questions de quiz à choix multiple pour des commissaires de piste.
 
 Thème : ${theme}.
 ${adaptiveInstruction}
@@ -81,31 +77,16 @@ ${avoidInstruction}
 
 Contraintes :
 - En français, niveau accessible aux débutants mais rigoureux.
-- Exactement 4 propositions par question, une seule correcte.
-- Explication courte et pédagogique pour chaque bonne réponse.
-- Reste strictement fidèle aux conventions ci-dessous. N'invente pas de règle.
-- ${NO_OFFICIAL_PARTNERSHIP}
-
-BASE DE CONNAISSANCES DE RÉFÉRENCE
-${MARSHAL_KNOWLEDGE}
-
-Appelle l'outil proposer_quiz avec les questions.`;
+- Pour chaque question : exactement 4 propositions dans "options", une seule correcte.
+- "correct" est l'index (0 à 3) de la bonne réponse dans "options".
+- "explanation" : explication courte et pédagogique de la bonne réponse.
+- "topic" : thème de la question (ex. Drapeaux, Procédures, Sécurité).
+- Ne reprends pas mot pour mot la base de connaissances ; reformule en questions.`;
 
   try {
-    const response = await getAnthropic().messages.create({
-      model: AI_MODEL,
-      max_tokens: 4000,
-      tools: [QUIZ_TOOL],
-      tool_choice: { type: "tool", name: "proposer_quiz" },
-      messages: [{ role: "user", content: prompt }],
-    });
+    const data = await geminiJSON({ system: SYSTEM, prompt, schema: QUIZ_SCHEMA });
+    const raw: any[] = Array.isArray(data?.questions) ? data.questions : [];
 
-    const toolUse = response.content.find((b) => b.type === "tool_use");
-    if (!toolUse || toolUse.type !== "tool_use") {
-      return Response.json({ error: "Génération impossible pour le moment." }, { status: 502 });
-    }
-
-    const raw = (toolUse.input as { questions?: any[] }).questions || [];
     // Validation/normalisation défensive avant envoi au client.
     const questions = raw
       .filter(

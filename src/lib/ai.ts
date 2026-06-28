@@ -1,22 +1,74 @@
-import Anthropic from "@anthropic-ai/sdk";
+// Intégration IA via Google Gemini (offre gratuite, sans SDK : appels REST).
+// Clé requise : process.env.GEMINI_API_KEY (Google AI Studio).
 
-// Construction paresseuse : le SDK lève une erreur si ANTHROPIC_API_KEY est
-// absent. On ne crée donc le client qu'au premier appel réel (après le
-// garde-fou de configuration dans les routes), jamais au chargement du module.
-let _client: Anthropic | null = null;
-export function getAnthropic(): Anthropic {
-  if (!_client) _client = new Anthropic();
-  return _client;
+export const GEMINI_MODEL = "gemini-2.0-flash";
+const BASE = "https://generativelanguage.googleapis.com/v1beta/models";
+
+export function hasGeminiKey(): boolean {
+  return !!process.env.GEMINI_API_KEY;
 }
 
-// Modèle par défaut pour les fonctionnalités IA du site.
-export const AI_MODEL = "claude-opus-4-8";
+export type GeminiRole = "user" | "model";
+export type GeminiContent = { role: GeminiRole; parts: { text: string }[] };
+
+/** Appel streaming (SSE) — renvoie la réponse fetch brute à parser par l'appelant. */
+export function geminiStream(opts: {
+  system: string;
+  contents: GeminiContent[];
+  maxOutputTokens?: number;
+  temperature?: number;
+}): Promise<Response> {
+  return fetch(`${BASE}/${GEMINI_MODEL}:streamGenerateContent?alt=sse`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: opts.system }] },
+      contents: opts.contents,
+      generationConfig: {
+        maxOutputTokens: opts.maxOutputTokens ?? 1024,
+        temperature: opts.temperature ?? 0.6,
+      },
+    }),
+  });
+}
+
+/** Appel non-streaming avec sortie JSON imposée (schéma Gemini). */
+export async function geminiJSON(opts: {
+  system: string;
+  prompt: string;
+  schema: unknown;
+  maxOutputTokens?: number;
+  temperature?: number;
+}): Promise<any> {
+  const res = await fetch(`${BASE}/${GEMINI_MODEL}:generateContent`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
+    body: JSON.stringify({
+      system_instruction: { parts: [{ text: opts.system }] },
+      contents: [{ role: "user", parts: [{ text: opts.prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        responseSchema: opts.schema,
+        maxOutputTokens: opts.maxOutputTokens ?? 4000,
+        temperature: opts.temperature ?? 0.8,
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(`Gemini ${res.status}: ${detail.slice(0, 300)}`);
+  }
+
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error("Réponse Gemini vide.");
+  return JSON.parse(text);
+}
 
 /**
  * Base de connaissances « commissaire de piste » (France, FFSA/FFM).
- * Sert de socle factuel au chatbot pédagogique et au générateur de quiz.
- * Volontairement synthétique : couvre les fondamentaux enseignés dans
- * l'espace pédagogique du site.
+ * Socle factuel du chatbot pédagogique et du générateur de quiz.
  */
 export const MARSHAL_KNOWLEDGE = `
 RÔLE DU COMMISSAIRE DE PISTE
@@ -73,7 +125,6 @@ SPÉCIFICITÉS RALLYE
 - Postes commissaires répartis le long de l'ES, zones spectateurs à faire respecter.
 `.trim();
 
-// Mention légale à respecter dans toutes les réponses IA.
 export const NO_OFFICIAL_PARTNERSHIP =
   "TrackMarshal n'est pas officiellement partenaire de la FFSA ni de la FFM. " +
   "Ne jamais laisser entendre une affiliation ou un agrément officiel de ces fédérations.";

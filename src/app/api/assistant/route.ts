@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { getAnthropic, AI_MODEL, MARSHAL_KNOWLEDGE, NO_OFFICIAL_PARTNERSHIP } from "@/lib/anthropic";
+import { geminiStream, hasGeminiKey, MARSHAL_KNOWLEDGE, NO_OFFICIAL_PARTNERSHIP, type GeminiContent } from "@/lib/ai";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,7 +23,7 @@ BASE DE CONNAISSANCES
 ${MARSHAL_KNOWLEDGE}`;
 
 export async function POST(req: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!hasGeminiKey()) {
     return Response.json({ error: "Assistant indisponible (configuration manquante)." }, { status: 503 });
   }
 
@@ -35,31 +35,55 @@ export async function POST(req: NextRequest) {
   }
 
   const history = Array.isArray(body.messages) ? body.messages : [];
-  // On borne l'historique et on nettoie les entrées.
-  const messages = history
+  const cleaned = history
     .filter((m) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string" && m.content.trim())
-    .slice(-12)
-    .map((m) => ({ role: m.role, content: m.content.slice(0, 4000) }));
+    .slice(-12);
 
-  if (messages.length === 0 || messages[messages.length - 1].role !== "user") {
+  if (cleaned.length === 0 || cleaned[cleaned.length - 1].role !== "user") {
     return Response.json({ error: "Aucun message à traiter." }, { status: 400 });
   }
 
+  // Gemini utilise les rôles "user" et "model".
+  const contents: GeminiContent[] = cleaned.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content.slice(0, 4000) }],
+  }));
+
   const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
 
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        const llmStream = getAnthropic().messages.stream({
-          model: AI_MODEL,
-          max_tokens: 1024,
-          system: SYSTEM,
-          messages,
-        });
+        const upstream = await geminiStream({ system: SYSTEM, contents, maxOutputTokens: 1024 });
+        if (!upstream.ok || !upstream.body) {
+          controller.enqueue(encoder.encode("⚠️ L'assistant est momentanément indisponible."));
+          controller.close();
+          return;
+        }
 
-        for await (const event of llmStream) {
-          if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-            controller.enqueue(encoder.encode(event.delta.text));
+        const reader = upstream.body.getReader();
+        let buffer = "";
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+
+          // Flux SSE : des lignes "data: { ... }" séparées par des sauts de ligne.
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith("data:")) continue;
+            const payload = trimmed.slice(5).trim();
+            if (!payload || payload === "[DONE]") continue;
+            try {
+              const json = JSON.parse(payload);
+              const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (text) controller.enqueue(encoder.encode(text));
+            } catch {
+              // fragment incomplet : ignoré, sera complété au prochain chunk
+            }
           }
         }
       } catch (err) {
