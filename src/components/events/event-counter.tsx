@@ -9,19 +9,33 @@ type Props = {
   marshalsNeeded: number;
   eventDiscipline?: string | null;
   staffRoles?: { role: string; count: number }[];
+  initialCount?: number;
+  initialRoleCounts?: Record<string, number>;
 };
 
-export default function EventCounter({ eventId, marshalsNeeded, eventDiscipline, staffRoles }: Props) {
-  const [count, setCount] = useState<number | null>(null);
-  const [roleCounts, setRoleCounts] = useState<Record<string, number>>({});
+export default function EventCounter({ eventId, marshalsNeeded, eventDiscipline, staffRoles, initialCount = 0, initialRoleCounts = {} }: Props) {
+  // Valeurs calculées côté serveur (clé admin) : correctes pour tout le monde,
+  // y compris les visiteurs non connectés que le RLS empêche de lire.
+  const [count, setCount] = useState<number>(initialCount);
+  const [roleCounts, setRoleCounts] = useState<Record<string, number>>(initialRoleCounts);
 
   useEffect(() => {
-    fetchCount();
-    const channel = supabase
-      .channel(`event-counter-${eventId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "applications", filter: `event_id=eq.${eventId}` }, fetchCount)
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
+    let active = true;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
+    // La requête live dépend du RLS : un visiteur anonyme obtiendrait 0 et
+    // écraserait les bonnes valeurs serveur. On ne l'active donc que pour
+    // les utilisateurs connectés, qui bénéficient du suivi temps réel.
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!active || !session) return;
+      fetchCount();
+      channel = supabase
+        .channel(`event-counter-${eventId}`)
+        .on("postgres_changes", { event: "*", schema: "public", table: "applications", filter: `event_id=eq.${eventId}` }, fetchCount)
+        .subscribe();
+    });
+
+    return () => { active = false; if (channel) supabase.removeChannel(channel); };
   }, [eventId]);
 
   async function fetchCount() {
@@ -41,14 +55,14 @@ export default function EventCounter({ eventId, marshalsNeeded, eventDiscipline,
     setRoleCounts(counts);
   }
 
-  const accepted = count ?? 0;
+  const accepted = count;
   const isFull = accepted >= (marshalsNeeded || 0);
   const pct = Math.min(100, Math.round((accepted / (marshalsNeeded || 1)) * 100));
 
   return (
     <>
       <div className="mt-4 flex items-center justify-between text-sm text-zinc-500">
-        <span>{count === null ? "…" : accepted} / {marshalsNeeded} commissaires</span>
+        <span>{accepted} / {marshalsNeeded} commissaires</span>
         {isFull && <span className="font-bold text-blue-600">Complet — liste d'attente ouverte</span>}
       </div>
 

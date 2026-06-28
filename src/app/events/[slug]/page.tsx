@@ -58,11 +58,19 @@ export default async function EventPage({
     .eq("slug", slug)
     .single();
 
-  const { count: acceptedCount } = await supabase
+  const { data: acceptedApps, count: acceptedCount } = await supabase
     .from("applications")
-    .select("id", { count: "exact", head: true })
+    .select("desired_role", { count: "exact" })
     .eq("event_id", event?.id)
     .eq("status", "accepted");
+
+  // Détail par poste calculé côté serveur (clé admin) pour rester correct
+  // même pour les visiteurs non connectés, que le RLS empêche de lire.
+  const initialRoleCounts: Record<string, number> = {};
+  (acceptedApps || []).forEach((a) => {
+    const role = a.desired_role || "";
+    initialRoleCounts[role] = (initialRoleCounts[role] || 0) + 1;
+  });
 
   const { data: organizerProfile } = event?.organizer_id
     ? await supabase.from("profiles").select("id, full_name, avatar_url, organizer_verified").eq("id", event.organizer_id).single()
@@ -360,6 +368,8 @@ export default async function EventPage({
                   marshalsNeeded={event.marshals_needed}
                   eventDiscipline={event.discipline}
                   staffRoles={event.staff_roles}
+                  initialCount={acceptedCount || 0}
+                  initialRoleCounts={initialRoleCounts}
                 />
 
               </div>
