@@ -3,7 +3,7 @@
 
 // Modèle configurable via variable d'environnement (permet d'en changer
 // sans toucher au code si le quota gratuit varie selon le modèle/compte).
-export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash-lite";
 const BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
 export function hasGeminiKey(): boolean {
