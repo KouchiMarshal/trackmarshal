@@ -43,21 +43,16 @@ export async function geminiStream(opts: {
   });
 
   let last: Response | null = null;
+  // Une tentative par modèle, bascule rapide en cas de surcharge.
   for (const model of modelChain()) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const res = await fetch(`${BASE}/${model}:streamGenerateContent?alt=sse`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
-        body,
-      });
-      if (res.ok) return res;
-      last = res;
-      if (TRANSIENT.has(res.status)) {
-        await sleep(600 * (attempt + 1));
-        continue; // on réessaie, puis on passera au modèle suivant
-      }
-      break; // erreur non transitoire : modèle suivant
-    }
+    const res = await fetch(`${BASE}/${model}:streamGenerateContent?alt=sse`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
+      body,
+    });
+    if (res.ok) return res;
+    last = res;
+    if (TRANSIENT.has(res.status)) await sleep(250); // petite pause avant la bascule
   }
   return last!;
 }
@@ -84,34 +79,29 @@ export async function geminiJSON(opts: {
   });
 
   let lastErr: Error | null = null;
+  // Une tentative par modèle, bascule rapide en cas de surcharge.
   for (const model of modelChain()) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const res = await fetch(`${BASE}/${model}:generateContent`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
-        body,
-      });
+    const res = await fetch(`${BASE}/${model}:generateContent`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": process.env.GEMINI_API_KEY! },
+      body,
+    });
 
-      if (res.ok) {
-        const data = await res.json();
-        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) {
-          const reason = data?.candidates?.[0]?.finishReason || "inconnue";
-          lastErr = new Error(`Réponse vide (finishReason: ${reason}).`);
-          break; // modèle suivant
-        }
-        const cleaned = text.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
-        return JSON.parse(cleaned);
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) {
+        const reason = data?.candidates?.[0]?.finishReason || "inconnue";
+        lastErr = new Error(`Réponse vide (finishReason: ${reason}).`);
+        continue; // modèle suivant
       }
-
-      const detail = await res.text().catch(() => "");
-      lastErr = new Error(`Gemini ${res.status}: ${detail.slice(0, 200)}`);
-      if (TRANSIENT.has(res.status)) {
-        await sleep(600 * (attempt + 1));
-        continue; // réessai, puis modèle suivant
-      }
-      break; // erreur non transitoire : modèle suivant
+      const cleaned = text.trim().replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+      return JSON.parse(cleaned);
     }
+
+    const detail = await res.text().catch(() => "");
+    lastErr = new Error(`Gemini ${res.status}: ${detail.slice(0, 200)}`);
+    if (TRANSIENT.has(res.status)) await sleep(250); // petite pause avant la bascule
   }
   throw lastErr ?? new Error("Échec de génération Gemini.");
 }

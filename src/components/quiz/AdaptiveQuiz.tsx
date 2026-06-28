@@ -49,7 +49,7 @@ export default function AdaptiveQuiz() {
       const res = await fetch("/api/quiz/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ theme, count: 6, weakTopics: opts.weak, previousQuestions: opts.asked }),
+        body: JSON.stringify({ theme, count: 5, weakTopics: opts.weak, previousQuestions: opts.asked }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur de génération.");
