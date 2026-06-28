@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "TrackMarshal",
+    "slug": "trackmarshal",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FF5A1F"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.trackmarshal.mobile",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Utilisé pour scanner les QR codes de check-in aux événements.",
+        "NSUserNotificationsUsageDescription": "Notifications pour vos candidatures et événements."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FF5A1F"
+      },
+      "package": "app.trackmarshal.mobile",
+      "permissions": ["CAMERA", "RECEIVE_BOOT_COMPLETED", "VIBRATE"]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-camera",
+        { "cameraPermission": "Utilisé pour scanner les QR codes de check-in." }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#FF5A1F"
+        }
+      ]
+    ],
+    "scheme": "trackmarshal",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
