@@ -96,6 +96,31 @@ export default function CreateEventPage() {
   const [toast, setToast] =
     useState<ToastData>(null);
 
+  const [genBriefing, setGenBriefing] = useState(false);
+
+  async function handleGenerateBriefing() {
+    setGenBriefing(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/generate-briefing", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
+        body: JSON.stringify({ title, discipline, location, country, eventDate: date, marshalsNeeded, schedule }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur");
+      setDescription(data.briefing);
+      setToast({ message: "Briefing généré — relis et ajuste si besoin.", type: "success" });
+    } catch (e: any) {
+      setToast({ message: e?.message || "Génération impossible.", type: "error" });
+    } finally {
+      setGenBriefing(false);
+    }
+  }
+
   function toggleExtraRole(index: number) {
     setExtraRoles(prev => prev.map((r, i) => i === index ? { ...r, enabled: !r.enabled, count: r.enabled ? "" : r.count } : r));
   }
@@ -717,11 +742,22 @@ export default function CreateEventPage() {
 
               <div>
 
-                <p className="mb-3 text-xs uppercase tracking-[0.2em] text-zinc-500">
+                <div className="mb-3 flex items-center justify-between gap-3">
 
-                  Description / Briefing
+                  <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">
+                    Description / Briefing
+                  </p>
 
-                </p>
+                  <button
+                    type="button"
+                    onClick={handleGenerateBriefing}
+                    disabled={genBriefing}
+                    className="rounded-full border border-[#FF5A1F]/30 bg-[#FF5A1F]/10 px-4 py-2 text-xs font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20 disabled:opacity-50"
+                  >
+                    {genBriefing ? "Génération…" : "✨ Générer avec l'IA"}
+                  </button>
+
+                </div>
 
                 <textarea
                   rows={8}
