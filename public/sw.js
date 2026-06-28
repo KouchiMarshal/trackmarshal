@@ -1,4 +1,4 @@
-const CACHE = "trackmarshal-v1";
+const CACHE = "trackmarshal-v2";
 const OFFLINE_URL = "/offline.html";
 
 self.addEventListener("install", (event) => {
