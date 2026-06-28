@@ -105,7 +105,28 @@ export default function QuizPage() {
             Testez vos connaissances avant de passer votre licence ou pour maintenir vos réflexes sur le terrain.
           </p>
 
-          <div className="mt-12 space-y-4">
+          {/* Quiz adaptatif IA — mis en avant */}
+          <Link
+            href="/devenir-commissaire/quiz/adaptatif"
+            className="group mt-12 flex flex-col gap-4 rounded-[28px] border-2 border-[#FF5A1F]/40 bg-gradient-to-br from-orange-50 to-white p-6 shadow-sm transition hover:border-[#FF5A1F]/70 sm:flex-row sm:items-center lg:p-8"
+          >
+            <span className="text-5xl shrink-0">🤖</span>
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-3">
+                <h2 className="text-xl font-black text-zinc-900">Quiz adaptatif</h2>
+                <span className="rounded-full bg-[#FF5A1F] px-3 py-1 text-xs font-bold text-white">Nouveau · IA</span>
+              </div>
+              <p className="mt-1 text-zinc-600">
+                Des questions générées par l&apos;IA qui s&apos;adaptent à tes erreurs : chaque manche cible tes points faibles.
+              </p>
+              <p className="mt-2 text-sm text-zinc-500">Entraînement personnalisé · illimité</p>
+            </div>
+            <span className="shrink-0 rounded-2xl bg-[#FF5A1F] px-5 py-3 text-center text-sm font-bold text-white transition group-hover:opacity-90 sm:self-center">
+              Commencer →
+            </span>
+          </Link>
+
+          <div className="mt-4 space-y-4">
             {quizzes.map((q) => (
               <Link
                 key={q.href}
