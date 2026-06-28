@@ -57,6 +57,8 @@ export async function POST(req: NextRequest) {
       try {
         const upstream = await geminiStream({ system: SYSTEM, contents, maxOutputTokens: 1024 });
         if (!upstream.ok || !upstream.body) {
+          const detail = await upstream.text().catch(() => "");
+          console.error("Gemini assistant upstream error:", upstream.status, detail.slice(0, 800));
           controller.enqueue(encoder.encode("⚠️ L'assistant est momentanément indisponible."));
           controller.close();
           return;
