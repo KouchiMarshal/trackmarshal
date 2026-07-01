@@ -40,7 +40,14 @@ export async function generateMetadata({ params }: EventPageProps): Promise<Meta
       title: `${title} | TrackMarshal`,
       description,
       url: `https://www.trackmarshal.app/events/${slug}`,
-      images: event.image_url ? [{ url: event.image_url, width: 1200, height: 630, alt: title }] : [],
+      // La vignette est générée dynamiquement par opengraph-image.tsx
+      // (image de l'événement, ou carte de marque avec titre/date/lieu).
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | TrackMarshal`,
+      description,
+      images: [`/events/${slug}/opengraph-image`],
     },
     alternates: { canonical: `/events/${slug}` },
   };
