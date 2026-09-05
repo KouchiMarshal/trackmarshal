@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
+import { faqs } from "./faqs";
 
 const stepsFFSA = [
   {
@@ -128,32 +129,7 @@ const licenses = [
   },
 ];
 
-const faqs = [
-  {
-    q: "Quel âge minimum pour être commissaire ?",
-    a: "16 ans pour commencer en tant qu'observateur, 18 ans pour officier avec une licence.",
-  },
-  {
-    q: "Faut-il avoir un permis de conduire ?",
-    a: "Non, le permis de conduire n'est pas obligatoire pour être commissaire de piste.",
-  },
-  {
-    q: "Est-ce que c'est payant ?",
-    a: "La formation initiale et la licence ont un coût modique (cotisation ASA + licence FFSA, généralement entre 50 et 150€/an). Sur les épreuves, les organisateurs prennent en charge les repas et parfois l'hébergement.",
-  },
-  {
-    q: "Combien de temps faut-il pour obtenir sa première licence ?",
-    a: "Comptez une saison complète : formation théorique, participations en observateur, puis demande de licence. La majorité des commissaires obtiennent leur ENCOC dans leur première année.",
-  },
-  {
-    q: "Peut-on officier sur plusieurs disciplines ?",
-    a: "Oui. Avec une licence FFSA, vous pouvez officier sur circuit, rallye, course de côte et karting. Pour les épreuves moto, il faut une licence FFM distincte.",
-  },
-  {
-    q: "Y a-t-il une tenue vestimentaire obligatoire ?",
-    a: "Oui. La combinaison en coton orange est la tenue de référence sur circuit — elle protège du feu et identifie le commissaire. Le rouge et le jaune sont explicitement proscrits par la réglementation FFSA (risque de confusion avec la signalisation). Sur épreuves route et karting, une chasuble facilement identifiable est souvent utilisée. L'organisateur précise la tenue attendue au briefing.",
-  },
-];
+// FAQ importée depuis ./faqs (partagée avec le layout pour les données structurées)
 
 export default function DevenirCommissairePage() {
   const [sportMode, setSportMode] = useState<"auto" | "moto">("auto");

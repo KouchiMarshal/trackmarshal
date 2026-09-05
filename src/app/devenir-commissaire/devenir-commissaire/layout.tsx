@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { faqs } from "./faqs";
 
 export const metadata: Metadata = {
   title: "Comment devenir commissaire de piste motorsport — FFSA et FFM",
@@ -52,12 +53,26 @@ const howToSchema = {
   ],
 };
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       {children}
     </>
