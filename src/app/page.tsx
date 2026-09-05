@@ -60,14 +60,14 @@ export default function HomePage() {
                 priority
               />
               <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">
-                Apprendre le commissariat · 100% Gratuit
+                Devenir commissaire de piste · 100% Gratuit
               </p>
             </div>
 
-            <h1 className="mt-6 text-5xl font-black uppercase leading-[0.92] tracking-[-0.05em] text-zinc-900 sm:text-6xl lg:text-[9rem]">
+            <h1 className="mt-6 text-5xl font-black uppercase leading-[0.92] tracking-[-0.05em] text-zinc-900 sm:text-6xl lg:text-[7rem]">
               Apprends.<br />
               Entraîne-toi.<br />
-              <span className="text-[#FF5A1F]">Deviens commissaire.</span>
+              <span className="text-[#FF5A1F]">Deviens commissaire de piste.</span>
             </h1>
 
             <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-600 sm:text-xl lg:text-2xl">
@@ -114,7 +114,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
             <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F]">Simple et progressif</p>
-            <h2 className="mt-4 text-4xl font-black lg:text-6xl">Ton parcours</h2>
+            <h2 className="mt-4 text-4xl font-black lg:text-6xl">Ton parcours de commissaire de piste</h2>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-3">

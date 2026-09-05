@@ -4,12 +4,12 @@ import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 
 export const metadata: Metadata = {
-  title: "Espace pédagogique — Devenir commissaire motorsport",
+  title: "Devenir commissaire de piste — l'espace pédagogique",
   description:
     "Toutes les ressources pour devenir commissaire de piste : drapeaux, procédures FFSA/FFM, licences, équipement, rôles et quiz interactifs. Gratuit et accessible à tous.",
   alternates: { canonical: "/devenir-commissaire" },
   openGraph: {
-    title: "Espace pédagogique — Devenir commissaire motorsport",
+    title: "Devenir commissaire de piste — l'espace pédagogique",
     description:
       "Drapeaux, procédures, licences, équipement, rôles — toutes les ressources pour devenir commissaire de piste motorsport en France.",
     url: "https://www.trackmarshal.app/devenir-commissaire",
@@ -105,8 +105,8 @@ export default function ApprendrePage() {
               Espace pédagogique
             </p>
             <h1 className="mt-6 text-5xl font-black leading-tight text-zinc-900 lg:text-7xl">
-              Apprendre le<br />
-              <span className="text-[#FF5A1F]">commissariat</span>
+              Devenir<br />
+              <span className="text-[#FF5A1F]">commissaire de piste</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600 lg:text-xl">
               Tout ce qu'il faut savoir pour devenir commissaire de piste motorsport —
