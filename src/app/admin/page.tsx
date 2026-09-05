@@ -33,7 +33,7 @@ export default function AdminDashboard() {
 
   const actions = [
     { icon: MapPin, title: "Répertoire « Où s'inscrire »", desc: "Ajoute clubs, ASA, circuits et Grands Prix, avec démarches et contacts.", href: "/admin/clubs", cta: "Gérer le répertoire →" },
-    { icon: ShoppingBag, title: "Équipement recommandé", desc: "Gère les produits et tes liens d'affiliation Amazon affichés sur la page équipement.", href: "/admin/equipement", cta: "Gérer l'équipement →" },
+    { icon: ShoppingBag, title: "Équipement recommandé", desc: "Gère les produits et tes liens d'affiliation Amazon affichés sur la page « Notre sélection ».", href: "/admin/equipement", cta: "Gérer l'équipement →" },
     { icon: BarChart3, title: "Statistiques d'audience", desc: "Suis la fréquentation du site (Google Analytics est déjà connecté).", href: "/admin/analytics", cta: "Voir les analytiques →" },
   ];
 

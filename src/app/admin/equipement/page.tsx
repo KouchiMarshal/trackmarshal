@@ -60,7 +60,7 @@ export default function AdminEquipementPage() {
     <div className="mx-auto max-w-3xl p-6 lg:p-10">
       <h1 className="text-3xl font-black text-zinc-900">Équipement recommandé</h1>
       <p className="mt-2 text-zinc-600">
-        Gère les produits affichés sur la page équipement (avec tes liens d&apos;affiliation Amazon).
+        Gère les produits affichés sur la page « Notre sélection » (avec tes liens d&apos;affiliation Amazon).
         Laisse le lien vide pour n&apos;afficher que le conseil, sans bouton.
       </p>
 

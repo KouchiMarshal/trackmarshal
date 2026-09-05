@@ -73,6 +73,15 @@ const sections = [
     badgeColor: "bg-yellow-100 text-yellow-700",
   },
   {
+    href: "/devenir-commissaire/boutique",
+    emoji: "🛒",
+    title: "Notre sélection",
+    description: "Combinaison, gants, veste de pluie, chaise pliante, sac... nos repères pour t'équiper au bon niveau, avec des liens pour trouver chaque produit.",
+    badge: "S'équiper",
+    color: "border-orange-200 bg-orange-50 hover:border-orange-300 hover:bg-orange-100",
+    badgeColor: "bg-orange-100 text-orange-700",
+  },
+  {
     href: "/devenir-commissaire/lexique",
     emoji: "📖",
     title: "Lexique motorsport",

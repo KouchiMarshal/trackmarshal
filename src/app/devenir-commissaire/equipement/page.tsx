@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
-import { supabaseAdmin } from "@/lib/supabase-admin";
-import { DEFAULT_EQUIPMENT } from "@/lib/equipment";
 
 export const metadata: Metadata = {
   title: "Équipement du commissaire de piste — Matériel obligatoire",
@@ -122,19 +120,7 @@ const essentielsItems = [
   },
 ];
 
-// La liste d'équipement est gérée en base (admin) ; si la table est vide,
-// on affiche la liste par défaut (DEFAULT_EQUIPMENT).
-export const dynamic = "force-dynamic";
-
-export default async function EquipementPage() {
-  let shopItems: { title: string; tip: string | null; url: string | null }[] = DEFAULT_EQUIPMENT;
-  try {
-    const { data } = await supabaseAdmin.from("equipment").select("title, tip, url, position").order("position").order("created_at");
-    if (data && data.length > 0) shopItems = data;
-  } catch {
-    /* garde la liste par défaut */
-  }
-
+export default function EquipementPage() {
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
@@ -268,44 +254,24 @@ export default async function EquipementPage() {
             </Link>
           </div>
 
-        </div>
-      </section>
-
-      {/* Où s'équiper — recommandations (affiliation) */}
-      <section className="border-t border-zinc-200 bg-zinc-50 py-16 lg:py-24">
-        <div className="mx-auto max-w-[1000px] px-6 lg:px-10">
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF5A1F]">Où s&apos;équiper</p>
-          <h2 className="mt-4 text-3xl font-black text-zinc-900 lg:text-4xl">Équipement recommandé</h2>
-          <p className="mt-4 max-w-2xl leading-relaxed text-zinc-600">
-            Nos repères pour t&apos;équiper au bon niveau, poste par poste. Vérifie toujours les
-            exigences de l&apos;organisateur au briefing.
-          </p>
-
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {shopItems.map((item) => (
-              <div key={item.title} className="flex flex-col rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm">
-                <h3 className="text-lg font-black text-zinc-900">{item.title}</h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-600">{item.tip}</p>
-                {item.url && (
-                  <a
-                    href={item.url}
-                    target="_blank"
-                    rel="sponsored nofollow noopener"
-                    className="mt-4 inline-flex w-fit items-center gap-2 rounded-xl bg-[#FF5A1F] px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
-                  >
-                    Voir des modèles →
-                  </a>
-                )}
-              </div>
-            ))}
+          {/* Vers la sélection de matériel (boutique) */}
+          <div className="mt-12 flex flex-col gap-4 rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between lg:p-8">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF5A1F]">Notre sélection</p>
+              <h2 className="mt-2 text-xl font-black text-zinc-900 lg:text-2xl">Besoin de t&apos;équiper ?</h2>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-600">
+                On a réuni nos repères — combinaison, gants, veste de pluie, chaise, sac… — sur une
+                page dédiée, avec des liens pour trouver chaque produit.
+              </p>
+            </div>
+            <Link
+              href="/devenir-commissaire/boutique"
+              className="inline-flex w-fit shrink-0 items-center gap-2 rounded-2xl bg-[#FF5A1F] px-6 py-3 font-bold text-white transition hover:opacity-90"
+            >
+              Voir notre sélection →
+            </Link>
           </div>
 
-          <p className="mt-8 text-xs leading-relaxed text-zinc-400">
-            <strong className="font-semibold text-zinc-500">En tant que Partenaire Amazon, je réalise un bénéfice sur les achats remplissant les conditions requises.</strong>{" "}
-            Les liens ci-dessus sont des liens partenaires : un achat effectué via ces liens peut nous
-            reverser une commission, sans surcoût pour toi. Cela soutient le contenu gratuit du site, et
-            TrackMarshal reste indépendant dans ses recommandations.
-          </p>
         </div>
       </section>
 
