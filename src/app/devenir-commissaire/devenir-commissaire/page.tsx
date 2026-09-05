@@ -187,6 +187,23 @@ export default function DevenirCommissairePage() {
             </div>
           </div>
 
+          {/* Passer à l'action — trouver son club */}
+          <div className="mt-12 flex flex-col gap-4 rounded-[28px] border-2 border-[#FF5A1F]/30 bg-gradient-to-br from-orange-50 to-white p-6 sm:flex-row sm:items-center sm:justify-between lg:p-8">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#FF5A1F]">Passer à l&apos;action</p>
+              <h2 className="mt-2 text-2xl font-black text-zinc-900">Tout commence par ton club local</h2>
+              <p className="mt-2 max-w-xl text-zinc-600">
+                ASA pour l&apos;auto, club FFM pour la moto : trouve celui près de chez toi et contacte-le pour t&apos;inscrire.
+              </p>
+            </div>
+            <Link
+              href="/devenir-commissaire/clubs"
+              className="shrink-0 rounded-2xl bg-[#FF5A1F] px-6 py-4 text-center font-black text-white transition hover:scale-[1.02]"
+            >
+              Trouver mon club →
+            </Link>
+          </div>
+
           {/* Étapes */}
           <div className="mt-16">
             <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Les étapes</h2>

@@ -19,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/devenir-commissaire/epreuves`, priority: 0.7, changeFrequency: "monthly" },
     { url: `${BASE}/devenir-commissaire/lexique`, priority: 0.6, changeFrequency: "monthly" },
     { url: `${BASE}/devenir-commissaire/quiz`, priority: 0.6, changeFrequency: "monthly" },
+    { url: `${BASE}/devenir-commissaire/clubs`, priority: 0.8, changeFrequency: "weekly" },
     // Autres
     { url: `${BASE}/about`, priority: 0.5, changeFrequency: "monthly" },
     { url: `${BASE}/partenaires`, priority: 0.5, changeFrequency: "monthly" },
