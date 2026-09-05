@@ -135,6 +135,7 @@ const shopItems: { title: string; tip: string; url: string }[] = [
   { title: "Lampe frontale", tip: "Indispensable pour les épreuves de nuit et les liaisons.", url: "#" },
   { title: "Chaise pliante", tip: "Pour les longues journées en poste ; légère, compacte et vite déployée entre deux passages.", url: "https://amzn.to/3SUPjTM" },
   { title: "Cafetière portative sur batterie", tip: "Le petit plus pour les matins froids en bord de piste : un café chaud sans prise de courant.", url: "https://amzn.to/3SIJfOl" },
+  { title: "Veste de pluie", tip: "Imperméable et respirante : les épreuves ne s'arrêtent pas sous la pluie, toi non plus.", url: "https://amzn.to/4x5Bznh" },
   { title: "Sac commissaire", tip: "Pour tout emporter, prêt dès la veille de l'épreuve.", url: "https://amzn.to/4hbiDi9" },
 ];
 
