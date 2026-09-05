@@ -1,17 +1,56 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Types d'épreuves motorsport — Circuit, Rallye, Karting, Motocross",
+  title: "Les épreuves motorsport : circuit, rallye, côte, karting",
   description:
-    "Spécificités de chaque discipline pour le commissaire de piste : circuit asphalte, rallye, course de côte, karting, autocross, drift, vitesse moto, motocross, enduro, trial.",
+    "Circuit, rallye, course de côte, karting, rallycross, drift… Les spécificités de chaque discipline du sport automobile et le rôle du commissaire de piste dans chacune.",
+  keywords: [
+    "disciplines sport automobile",
+    "épreuves motorsport",
+    "course de côte",
+    "rallye commissaire",
+    "karting commissaire",
+    "types de courses automobiles",
+  ],
   alternates: { canonical: "/devenir-commissaire/epreuves" },
   openGraph: {
-    title: "Types d'épreuves motorsport — Guide commissaire de piste",
+    title: "Les épreuves motorsport : circuit, rallye, côte, karting | TrackMarshal",
     description:
-      "Circuit, rallye, côte, karting, motocross, enduro — les particularités de chaque discipline vues par le commissaire. Auto FFSA et moto FFM.",
+      "Découvrez les disciplines du sport automobile et le rôle du commissaire de piste dans chacune.",
+    url: "https://www.trackmarshal.app/devenir-commissaire/epreuves",
+    type: "article",
   },
 };
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LearningResource",
+      name: "Les épreuves motorsport",
+      description: "Les disciplines du sport automobile et le rôle du commissaire de piste.",
+      url: "https://www.trackmarshal.app/devenir-commissaire/epreuves",
+      learningResourceType: "Guide",
+      educationalLevel: "Intermédiaire",
+      inLanguage: "fr",
+      isAccessibleForFree: true,
+      provider: { "@type": "Organization", name: "TrackMarshal", url: "https://www.trackmarshal.app" },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Espace pédagogique", item: "https://www.trackmarshal.app/devenir-commissaire" },
+        { "@type": "ListItem", position: 2, name: "Les épreuves", item: "https://www.trackmarshal.app/devenir-commissaire/epreuves" },
+      ],
+    },
+  ],
+};
+
+export default function EpreuvesLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      {children}
+    </>
+  );
 }
