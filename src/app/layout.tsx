@@ -12,11 +12,11 @@ const GA_ID = "G-0035L7HCJK";
 
 export const metadata: Metadata = {
   title: {
-    default: "TrackMarshal — La plateforme des commissaires motorsport",
+    default: "TrackMarshal — Apprendre le métier de commissaire de piste",
     template: "%s | TrackMarshal",
   },
   description:
-    "TrackMarshal connecte commissaires (FFSA/FFM) et organisateurs d'événements motorsport en France. Missions, candidatures et licences vérifiées.",
+    "Apprenez le métier de commissaire de piste : drapeaux, procédures, sécurité, quiz d'entraînement et assistant IA. Gratuit et sans inscription — auto, moto, karting.",
   keywords: [
     "commissaire motorsport",
     "commissaire auto",
@@ -47,9 +47,9 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: "https://www.trackmarshal.app",
     siteName: "TrackMarshal",
-    title: "TrackMarshal — La plateforme des commissaires motorsport",
+    title: "TrackMarshal — Apprendre le métier de commissaire de piste",
     description:
-      "Connectez-vous avec des organisateurs motorsport, trouvez des missions de commissaire de piste et gérez votre licence FFSA.",
+      "Drapeaux, procédures, sécurité, quiz d'entraînement et assistant IA pour apprendre le commissariat de piste. Gratuit, sans inscription.",
     images: [
       {
         url: "/opengraph-image",
@@ -61,9 +61,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "TrackMarshal — La plateforme des commissaires motorsport",
+    title: "TrackMarshal — Apprendre le métier de commissaire de piste",
     description:
-      "Trouvez des missions de commissaire de piste motorsport en France.",
+      "Apprenez le commissariat de piste : drapeaux, procédures, quiz et assistant IA. Gratuit.",
     images: ["/opengraph-image"],
   },
   robots: {

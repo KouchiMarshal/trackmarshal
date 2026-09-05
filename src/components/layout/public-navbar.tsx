@@ -10,11 +10,10 @@ import NotificationBell from "@/components/notifications/notification-bell";
 
 const links = [
   { href: "/", label: "Accueil" },
-  { href: "/events", label: "Événements" },
-  { href: "/devenir-commissaire", label: "Espace pédagogique" },
+  { href: "/devenir-commissaire", label: "Se former" },
+  { href: "/actualites", label: "Actualités" },
   { href: "/about", label: "À propos" },
   { href: "/contact", label: "Contact" },
-  { href: "/actualites", label: "Actualités" },
 ];
 
 export default function PublicNavbar() {
@@ -76,20 +75,12 @@ export default function PublicNavbar() {
                 </Link>
               </>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="hidden h-10 items-center rounded-xl border border-zinc-300 px-5 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/50 hover:text-[#FF5A1F] lg:flex"
-                >
-                  Se connecter
-                </Link>
-                <Link
-                  href="/register"
-                  className="hidden h-10 items-center rounded-xl bg-[#FF5A1F] px-5 text-sm font-bold text-white transition hover:opacity-90 lg:flex lg:h-11 lg:px-7"
-                >
-                  S'inscrire
-                </Link>
-              </>
+              <Link
+                href="/devenir-commissaire"
+                className="hidden h-10 items-center rounded-xl bg-[#FF5A1F] px-5 text-sm font-bold text-white transition hover:opacity-90 lg:flex lg:h-11 lg:px-7"
+              >
+                Commencer
+              </Link>
             )}
 
             <button
@@ -160,22 +151,13 @@ export default function PublicNavbar() {
                   </Link>
                 </>
               ) : (
-                <>
-                  <Link
-                    href="/login"
-                    onClick={() => setOpen(false)}
-                    className="flex h-14 items-center justify-center rounded-2xl border border-zinc-300 font-bold text-zinc-800"
-                  >
-                    Se connecter
-                  </Link>
-                  <Link
-                    href="/register"
-                    onClick={() => setOpen(false)}
-                    className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] font-black text-white"
-                  >
-                    S'inscrire
-                  </Link>
-                </>
+                <Link
+                  href="/devenir-commissaire"
+                  onClick={() => setOpen(false)}
+                  className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] font-black text-white"
+                >
+                  Commencer à me former
+                </Link>
               )}
             </div>
           </div>
