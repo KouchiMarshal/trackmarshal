@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
+import { supabaseAdmin } from "@/lib/supabase-admin";
+import { DEFAULT_EQUIPMENT } from "@/lib/equipment";
 
 export const metadata: Metadata = {
   title: "Équipement du commissaire de piste — Matériel obligatoire",
@@ -120,26 +122,19 @@ const essentielsItems = [
   },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────
-// AFFILIATION — remplace chaque "#" par ton lien partenaire (Amazon, boutique
-// spécialisée, etc.). Tant qu'un lien vaut "#", son bouton reste masqué : la
-// section affiche juste le conseil, sans lien mort. Ajoute tes liens au fur et
-// à mesure de tes partenariats.
-const shopItems: { title: string; tip: string; url: string }[] = [
-  { title: "Combinaison ignifugée orange", tip: "En coton, couleur orange réglementaire, avec bandes de visibilité pour le nocturne.", url: "https://amzn.to/46HC5Nt" },
-  { title: "Gants de protection", tip: "Gants type soudeur ou cuir épais ; diélectriques si véhicules électriques/hybrides.", url: "https://amzn.to/4qWKaHm" },
-  { title: "Chaussures montantes / bottes", tip: "Bon maintien de cheville, semelle fermée ; bottes imperméables pour la pluie.", url: "#" },
-  { title: "Extincteur portatif", tip: "Poudre ABC, à portée de main en poste.", url: "#" },
-  { title: "Coupe-sangle & sifflet", tip: "Pour dégager rapidement un pilote et se signaler.", url: "#" },
-  { title: "Radio & oreillette", tip: "Souvent fournie, mais une oreillette perso améliore le confort en poste.", url: "#" },
-  { title: "Lampe frontale", tip: "Indispensable pour les épreuves de nuit et les liaisons.", url: "#" },
-  { title: "Chaise pliante", tip: "Pour les longues journées en poste ; légère, compacte et vite déployée entre deux passages.", url: "https://amzn.to/3SUPjTM" },
-  { title: "Cafetière portative sur batterie", tip: "Le petit plus pour les matins froids en bord de piste : un café chaud sans prise de courant.", url: "https://amzn.to/3SIJfOl" },
-  { title: "Veste de pluie", tip: "Imperméable et respirante : les épreuves ne s'arrêtent pas sous la pluie, toi non plus.", url: "https://amzn.to/4x5Bznh" },
-  { title: "Sac commissaire", tip: "Pour tout emporter, prêt dès la veille de l'épreuve.", url: "https://amzn.to/4hbiDi9" },
-];
+// La liste d'équipement est gérée en base (admin) ; si la table est vide,
+// on affiche la liste par défaut (DEFAULT_EQUIPMENT).
+export const dynamic = "force-dynamic";
 
-export default function EquipementPage() {
+export default async function EquipementPage() {
+  let shopItems: { title: string; tip: string | null; url: string | null }[] = DEFAULT_EQUIPMENT;
+  try {
+    const { data } = await supabaseAdmin.from("equipment").select("title, tip, url, position").order("position").order("created_at");
+    if (data && data.length > 0) shopItems = data;
+  } catch {
+    /* garde la liste par défaut */
+  }
+
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
       <PublicNavbar />
@@ -291,7 +286,7 @@ export default function EquipementPage() {
               <div key={item.title} className="flex flex-col rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm">
                 <h3 className="text-lg font-black text-zinc-900">{item.title}</h3>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-600">{item.tip}</p>
-                {item.url !== "#" && (
+                {item.url && (
                   <a
                     href={item.url}
                     target="_blank"

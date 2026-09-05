@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { BarChart3, ExternalLink, Lightbulb, MapPin, Sparkles } from "lucide-react";
+import { BarChart3, ExternalLink, Lightbulb, MapPin, ShoppingBag, Sparkles } from "lucide-react";
 
 export default function AdminDashboard() {
   const [counts, setCounts] = useState({ clubs: 0, suggestions: 0 });
@@ -33,6 +33,7 @@ export default function AdminDashboard() {
 
   const actions = [
     { icon: MapPin, title: "Répertoire « Où s'inscrire »", desc: "Ajoute clubs, ASA, circuits et Grands Prix, avec démarches et contacts.", href: "/admin/clubs", cta: "Gérer le répertoire →" },
+    { icon: ShoppingBag, title: "Équipement recommandé", desc: "Gère les produits et tes liens d'affiliation Amazon affichés sur la page équipement.", href: "/admin/equipement", cta: "Gérer l'équipement →" },
     { icon: BarChart3, title: "Statistiques d'audience", desc: "Suis la fréquentation du site (Google Analytics est déjà connecté).", href: "/admin/analytics", cta: "Voir les analytiques →" },
   ];
 
@@ -63,7 +64,7 @@ export default function AdminDashboard() {
       )}
 
       {/* Actions principales */}
-      <div className="mt-8 grid gap-5 sm:grid-cols-2">
+      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {actions.map((a) => (
           <Link key={a.href} href={a.href} className="group rounded-3xl border border-zinc-200 bg-white p-7 shadow-sm transition hover:border-[#FF5A1F]/40">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
