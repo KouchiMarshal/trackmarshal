@@ -142,18 +142,6 @@ export default function ClubsClient({ clubs }: { clubs: Club[] }) {
     <section className="bg-white pb-24 pt-6">
       <div className="mx-auto max-w-[1000px] px-4 sm:px-6 lg:px-8">
 
-        {/* Aiguillage */}
-        <div className="mb-8 grid gap-3 sm:grid-cols-2">
-          <button onClick={() => setTab("club")} className={`rounded-2xl border-2 p-4 text-left transition ${tab === "club" ? "border-[#FF5A1F] bg-orange-50" : "border-zinc-200 bg-white hover:border-zinc-300"}`}>
-            <p className="font-black text-zinc-900">🎓 Je débute</p>
-            <p className="mt-1 text-sm text-zinc-600">Trouve ton club / ASA pour te former et te licencier.</p>
-          </button>
-          <button onClick={() => setTab("circuit")} className={`rounded-2xl border-2 p-4 text-left transition ${tab === "circuit" || tab === "evenement" ? "border-[#FF5A1F] bg-orange-50" : "border-zinc-200 bg-white hover:border-zinc-300"}`}>
-            <p className="font-black text-zinc-900">🏁 Je suis licencié</p>
-            <p className="mt-1 text-sm text-zinc-600">Officie sur un circuit ou un grand événement.</p>
-          </button>
-        </div>
-
         {/* Filtres */}
         <div className="sticky top-16 z-20 -mx-4 mb-8 border-b border-zinc-200 bg-white/90 px-4 py-4 backdrop-blur lg:top-20">
           <input
