@@ -23,7 +23,7 @@ type Cat = "club" | "circuit" | "evenement";
 const SECTIONS: { key: Cat; label: string; emoji: string }[] = [
   { key: "club", label: "Débuter — clubs & ASA", emoji: "🎓" },
   { key: "circuit", label: "Officier sur un circuit", emoji: "🏁" },
-  { key: "evenement", label: "Grands événements & Grands Prix", emoji: "🏆" },
+  { key: "evenement", label: "Grands événements", emoji: "🏆" },
 ];
 
 // Categorie effective : utilise le champ, sinon deduit du type (retrocompat).
@@ -53,6 +53,12 @@ function flagOf(region: string | null): string {
   return FLAGS[region.toLowerCase().trim()] ?? "🇫🇷";
 }
 
+// Les Grands Prix sont affichés uniquement sur la page dédiée /grands-prix-f1,
+// pas dans l'annuaire "Où s'inscrire".
+function isGP(c: Club): boolean {
+  return (c.type ?? "").toLowerCase().includes("grand prix");
+}
+
 export default function ClubsClient({ clubs }: { clubs: Club[] }) {
   const [search, setSearch] = useState("");
   const [region, setRegion] = useState("Toutes");
@@ -60,20 +66,23 @@ export default function ClubsClient({ clubs }: { clubs: Club[] }) {
   const [open, setOpen] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
 
+  // On retire les Grands Prix de l'annuaire (ils vivent sur /grands-prix-f1).
+  const pool = useMemo(() => clubs.filter((c) => !isGP(c)), [clubs]);
+
   const regions = useMemo(
-    () => ["Toutes", ...Array.from(new Set(clubs.map((c) => c.region).filter(Boolean) as string[])).sort()],
-    [clubs],
+    () => ["Toutes", ...Array.from(new Set(pool.map((c) => c.region).filter(Boolean) as string[])).sort()],
+    [pool],
   );
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
-    return clubs.filter((c) => {
+    return pool.filter((c) => {
       const matchQ = !q || c.name.toLowerCase().includes(q) || (c.city ?? "").toLowerCase().includes(q) || (c.description ?? "").toLowerCase().includes(q);
       const matchR = region === "Toutes" || c.region === region;
       const matchT = tab === "all" || catOf(c) === tab;
       return matchQ && matchR && matchT;
     });
-  }, [clubs, search, region, tab]);
+  }, [pool, search, region, tab]);
 
   function card(c: Club) {
     const place = [c.city, c.department, c.region].filter(Boolean).join(" · ");
@@ -157,7 +166,7 @@ export default function ClubsClient({ clubs }: { clubs: Club[] }) {
             <div className="flex flex-wrap gap-1 rounded-xl border border-zinc-300 bg-white p-1">
               {(["all", "club", "circuit", "evenement"] as const).map((t) => (
                 <button key={t} onClick={() => setTab(t)} className={`rounded-lg px-3 py-1.5 text-sm font-bold transition ${tab === t ? "bg-[#FF5A1F] text-white" : "text-zinc-600 hover:bg-zinc-100"}`}>
-                  {t === "all" ? "Tout" : t === "club" ? "Clubs & ASA" : t === "circuit" ? "Circuits" : "Événements & GP"}
+                  {t === "all" ? "Tout" : t === "club" ? "Clubs & ASA" : t === "circuit" ? "Circuits" : "Grands événements"}
                 </button>
               ))}
             </div>
@@ -171,7 +180,7 @@ export default function ClubsClient({ clubs }: { clubs: Club[] }) {
         </div>
 
         {/* Liste */}
-        {clubs.length === 0 ? (
+        {pool.length === 0 ? (
           <div className="rounded-[28px] border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center">
             <p className="text-4xl">📍</p>
             <p className="mt-4 text-lg font-bold text-zinc-700">Le répertoire arrive bientôt.</p>

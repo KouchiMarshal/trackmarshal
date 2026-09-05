@@ -46,7 +46,11 @@ const steps = [
 export default async function GrandsPrixF1Page() {
   let gps: any[] = [];
   try {
-    const { data } = await supabaseAdmin.from("clubs").select("*").eq("category", "evenement").order("name");
+    const { data } = await supabaseAdmin
+      .from("clubs")
+      .select("*")
+      .or("type.ilike.%grand prix%,type.ilike.%formule 1%")
+      .order("name");
     gps = data || [];
   } catch {
     gps = [];
