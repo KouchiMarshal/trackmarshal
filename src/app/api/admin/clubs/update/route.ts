@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Paramètres manquants." }, { status: 400 });
   }
 
-  const allowed = ["name", "type", "region", "department", "city", "description", "registration_steps", "website", "email", "phone"];
+  const allowed = ["name", "type", "category", "license_required", "region", "department", "city", "description", "registration_steps", "website", "email", "phone"];
   const update: Record<string, any> = {};
   for (const k of allowed) {
     if (k in body.fields) {

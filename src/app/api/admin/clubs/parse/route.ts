@@ -34,8 +34,10 @@ export async function POST(req: NextRequest) {
   "clubs": [
     {
       "name": "nom du circuit / organisateur / club / ASA",
-      "type": "Circuit | Organisateur | ASA | Club FFM | Ligue | null",
-      "region": "région française si déductible, sinon null",
+      "type": "Circuit | Organisateur | ASA | Club FFM | Grand Prix | Ligue | null",
+      "category": "club (ASA/club local pour débuter et se licencier) | circuit (circuit permanent) | evenement (Grand Prix, grande épreuve, événement international)",
+      "license_required": "niveau de licence exigé si mentionné (ex. 'Licence Internationale B'), sinon null",
+      "region": "région française, ou pays si à l'étranger, si déductible, sinon null",
       "department": "département si présent, sinon null",
       "city": "ville si présente, sinon null",
       "description": "courte présentation si présente, sinon null",
@@ -63,6 +65,8 @@ ${text}`;
       .map((c) => ({
         name: String(c.name).slice(0, 160),
         type: typeof c.type === "string" ? c.type.slice(0, 40) : null,
+        category: ["club", "circuit", "evenement"].includes(c.category) ? c.category : null,
+        license_required: typeof c.license_required === "string" ? c.license_required.slice(0, 120) : null,
         region: typeof c.region === "string" ? c.region.slice(0, 60) : null,
         department: typeof c.department === "string" ? c.department.slice(0, 60) : null,
         city: typeof c.city === "string" ? c.city.slice(0, 80) : null,

@@ -8,6 +8,8 @@ export const dynamic = "force-dynamic";
 type Club = {
   name?: string;
   type?: string | null;
+  category?: string | null;
+  license_required?: string | null;
   region?: string | null;
   department?: string | null;
   city?: string | null;
@@ -36,6 +38,8 @@ export async function POST(req: NextRequest) {
     .map((c) => ({
       name: c.name!.slice(0, 160),
       type: c.type ? String(c.type).slice(0, 40) : null,
+      category: c.category && ["club", "circuit", "evenement"].includes(c.category) ? c.category : null,
+      license_required: c.license_required ? String(c.license_required).slice(0, 120) : null,
       region: c.region ? String(c.region).slice(0, 60) : null,
       department: c.department ? String(c.department).slice(0, 60) : null,
       city: c.city ? String(c.city).slice(0, 80) : null,
