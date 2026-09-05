@@ -120,6 +120,22 @@ const essentielsItems = [
   },
 ];
 
+// ─────────────────────────────────────────────────────────────────────────
+// AFFILIATION — remplace chaque "#" par ton lien partenaire (Amazon, boutique
+// spécialisée, etc.). Tant qu'un lien vaut "#", son bouton reste masqué : la
+// section affiche juste le conseil, sans lien mort. Ajoute tes liens au fur et
+// à mesure de tes partenariats.
+const shopItems: { title: string; tip: string; url: string }[] = [
+  { title: "Combinaison ignifugée orange", tip: "En coton, couleur orange réglementaire, avec bandes de visibilité pour le nocturne.", url: "#" },
+  { title: "Gants de protection", tip: "Gants type soudeur ou cuir épais ; diélectriques si véhicules électriques/hybrides.", url: "#" },
+  { title: "Chaussures montantes / bottes", tip: "Bon maintien de cheville, semelle fermée ; bottes imperméables pour la pluie.", url: "#" },
+  { title: "Extincteur portatif", tip: "Poudre ABC, à portée de main en poste.", url: "#" },
+  { title: "Coupe-sangle & sifflet", tip: "Pour dégager rapidement un pilote et se signaler.", url: "#" },
+  { title: "Radio & oreillette", tip: "Souvent fournie, mais une oreillette perso améliore le confort en poste.", url: "#" },
+  { title: "Lampe frontale", tip: "Indispensable pour les épreuves de nuit et les liaisons.", url: "#" },
+  { title: "Sac commissaire", tip: "Pour tout emporter, prêt dès la veille de l'épreuve.", url: "#" },
+];
+
 export default function EquipementPage() {
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
@@ -254,6 +270,43 @@ export default function EquipementPage() {
             </Link>
           </div>
 
+        </div>
+      </section>
+
+      {/* Où s'équiper — recommandations (affiliation) */}
+      <section className="border-t border-zinc-200 bg-zinc-50 py-16 lg:py-24">
+        <div className="mx-auto max-w-[1000px] px-6 lg:px-10">
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF5A1F]">Où s&apos;équiper</p>
+          <h2 className="mt-4 text-3xl font-black text-zinc-900 lg:text-4xl">Équipement recommandé</h2>
+          <p className="mt-4 max-w-2xl leading-relaxed text-zinc-600">
+            Nos repères pour t&apos;équiper au bon niveau, poste par poste. Vérifie toujours les
+            exigences de l&apos;organisateur au briefing.
+          </p>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            {shopItems.map((item) => (
+              <div key={item.title} className="flex flex-col rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm">
+                <h3 className="text-lg font-black text-zinc-900">{item.title}</h3>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-600">{item.tip}</p>
+                {item.url !== "#" && (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="sponsored nofollow noopener"
+                    className="mt-4 inline-flex w-fit items-center gap-2 rounded-xl bg-[#FF5A1F] px-4 py-2 text-sm font-bold text-white transition hover:opacity-90"
+                  >
+                    Voir des modèles →
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-8 text-xs leading-relaxed text-zinc-400">
+            Certains liens ci-dessus sont des liens partenaires : un achat effectué via ces liens
+            peut nous reverser une commission, sans surcoût pour toi. Cela soutient le contenu
+            gratuit du site. TrackMarshal reste indépendant dans ses recommandations.
+          </p>
         </div>
       </section>
 

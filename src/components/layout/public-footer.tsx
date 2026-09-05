@@ -37,6 +37,7 @@ export default function PublicFooter() {
             <Link href="/devenir-commissaire/drapeaux" className="transition hover:text-[#FF5A1F]">Les drapeaux</Link>
             <Link href="/devenir-commissaire/quiz" className="transition hover:text-[#FF5A1F]">Quiz</Link>
             <Link href="/actualites" className="transition hover:text-[#FF5A1F]">Actualités</Link>
+            <Link href="/partenaires" className="transition hover:text-[#FF5A1F]">Partenaires</Link>
             <Link href="/contact" className="transition hover:text-[#FF5A1F]">Contact</Link>
           </div>
 

@@ -20,6 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/devenir-commissaire/quiz`, priority: 0.6, changeFrequency: "monthly" },
     // Autres
     { url: `${BASE}/about`, priority: 0.5, changeFrequency: "monthly" },
+    { url: `${BASE}/partenaires`, priority: 0.5, changeFrequency: "monthly" },
     { url: `${BASE}/mentions-legales`, priority: 0.2, changeFrequency: "yearly" },
     { url: `${BASE}/confidentialite`, priority: 0.2, changeFrequency: "yearly" },
     { url: `${BASE}/cgu`, priority: 0.2, changeFrequency: "yearly" },
