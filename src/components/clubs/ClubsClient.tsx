@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import SuggestForm from "./SuggestForm";
 
 type Club = {
   id: string;
@@ -186,7 +187,7 @@ export default function ClubsClient({ clubs }: { clubs: Club[] }) {
               {showForm ? "Fermer" : "➕ Proposer un ajout"}
             </button>
           </div>
-          {showForm && <SuggestForm onDone={() => setShowForm(false)} />}
+          {showForm && <SuggestForm kind="annuaire" onDone={() => setShowForm(false)} />}
         </div>
 
         <p className="mt-8 text-xs leading-relaxed text-zinc-400">
@@ -195,56 +196,5 @@ export default function ClubsClient({ clubs }: { clubs: Club[] }) {
         </p>
       </div>
     </section>
-  );
-}
-
-function SuggestForm({ onDone }: { onDone: () => void }) {
-  const [form, setForm] = useState({ name: "", category: "", region: "", city: "", contact: "", message: "", website: "" });
-  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
-  const [err, setErr] = useState("");
-
-  function set(k: string, v: string) { setForm((f) => ({ ...f, [k]: v })); }
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setState("sending"); setErr("");
-    try {
-      const res = await fetch("/api/club-suggestions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Erreur");
-      setState("done");
-    } catch (e: any) { setErr(e?.message || "Envoi impossible."); setState("error"); }
-  }
-
-  if (state === "done") {
-    return (
-      <div className="mt-6 rounded-2xl border border-green-300 bg-green-50 p-5 text-center">
-        <p className="text-2xl">✅</p>
-        <p className="mt-2 font-bold text-green-800">Merci ! Ta proposition a bien été envoyée.</p>
-        <button onClick={onDone} className="mt-3 text-sm font-bold text-green-700 hover:underline">Fermer</button>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={submit} className="mt-6 grid gap-3 sm:grid-cols-2">
-      <input value={form.name} onChange={(e) => set("name", e.target.value)} placeholder="Nom du club / circuit / épreuve *" className="rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm sm:col-span-2" />
-      <select value={form.category} onChange={(e) => set("category", e.target.value)} className="rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm font-bold text-zinc-700">
-        <option value="">Type…</option>
-        <option value="club">Club / ASA</option>
-        <option value="circuit">Circuit</option>
-        <option value="evenement">Événement / Grand Prix</option>
-      </select>
-      <input value={form.region} onChange={(e) => set("region", e.target.value)} placeholder="Région / pays" className="rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm" />
-      <input value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ville" className="rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm" />
-      <input value={form.contact} onChange={(e) => set("contact", e.target.value)} placeholder="Contact (site, email, tél)" className="rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm" />
-      <textarea value={form.message} onChange={(e) => set("message", e.target.value)} placeholder="Infos / démarches (facultatif)" rows={2} className="rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm sm:col-span-2" />
-      {/* Honeypot anti-bot (masqué) */}
-      <input value={form.website} onChange={(e) => set("website", e.target.value)} tabIndex={-1} autoComplete="off" aria-hidden className="hidden" />
-      {state === "error" && <p className="text-sm font-medium text-red-600 sm:col-span-2">{err}</p>}
-      <button type="submit" disabled={state === "sending"} className="rounded-xl bg-[#FF5A1F] px-6 py-2.5 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-50 sm:col-span-2 sm:w-fit">
-        {state === "sending" ? "Envoi…" : "Envoyer ma proposition"}
-      </button>
-    </form>
   );
 }

@@ -63,17 +63,11 @@ export default function PublicNavbar() {
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className="hidden h-10 items-center rounded-xl border border-[#FF5A1F]/40 bg-[#FF5A1F]/10 px-4 text-sm font-bold text-[#FF5A1F] transition hover:bg-[#FF5A1F]/20 lg:flex"
+                    className="flex h-10 items-center rounded-xl bg-[#FF5A1F] px-5 text-sm font-bold text-white transition hover:opacity-90 lg:h-11 lg:px-7"
                   >
                     Admin
                   </Link>
                 )}
-                <Link
-                  href="/dashboard"
-                  className="flex h-10 items-center rounded-xl bg-[#FF5A1F] px-5 text-sm font-bold text-white transition hover:opacity-90 lg:h-11 lg:px-7"
-                >
-                  Dashboard
-                </Link>
               </>
             ) : (
               <Link
@@ -133,24 +127,15 @@ export default function PublicNavbar() {
 
             <div className="space-y-3">
               {user ? (
-                <>
-                  {isAdmin && (
-                    <Link
-                      href="/admin"
-                      onClick={() => setOpen(false)}
-                      className="flex h-14 items-center justify-center rounded-2xl border border-[#FF5A1F]/40 bg-[#FF5A1F]/10 font-black text-[#FF5A1F]"
-                    >
-                      Admin
-                    </Link>
-                  )}
+                isAdmin ? (
                   <Link
-                    href="/dashboard"
+                    href="/admin"
                     onClick={() => setOpen(false)}
                     className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] font-black text-white"
                   >
-                    Mon Dashboard
+                    Admin
                   </Link>
-                </>
+                ) : null
               ) : (
                 <Link
                   href="/devenir-commissaire"

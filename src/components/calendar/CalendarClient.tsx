@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import SuggestForm from "@/components/clubs/SuggestForm";
 
 type CalEvent = {
   id: string;
@@ -27,6 +28,7 @@ export default function CalendarClient({ events }: { events: CalEvent[] }) {
   const [search, setSearch] = useState("");
   const [discipline, setDiscipline] = useState("Toutes");
   const [region, setRegion] = useState("Toutes");
+  const [showForm, setShowForm] = useState(false);
 
   const disciplines = useMemo(
     () => ["Toutes", ...Array.from(new Set(events.map((e) => e.discipline).filter(Boolean) as string[])).sort()],
@@ -124,6 +126,20 @@ export default function CalendarClient({ events }: { events: CalEvent[] }) {
             })}
           </div>
         )}
+
+        {/* Proposer une épreuve / une date */}
+        <div className="mt-14 rounded-[28px] border border-zinc-200 bg-zinc-50 p-6 lg:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-black text-zinc-900">Une épreuve manque au calendrier ?</h2>
+              <p className="mt-1 text-zinc-600">Propose une date : on l&apos;ajoutera après vérification.</p>
+            </div>
+            <button onClick={() => setShowForm((v) => !v)} className="rounded-2xl bg-[#FF5A1F] px-6 py-3 font-black text-white transition hover:opacity-90">
+              {showForm ? "Fermer" : "➕ Proposer une épreuve"}
+            </button>
+          </div>
+          {showForm && <SuggestForm kind="calendrier" onDone={() => setShowForm(false)} />}
+        </div>
       </div>
     </section>
   );

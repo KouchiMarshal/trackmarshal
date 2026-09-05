@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 // Route publique : un visiteur propose un club / un contact. Stocké pour
 // modération admin (aucune lecture publique). Garde-fous basiques anti-spam.
 export async function POST(req: NextRequest) {
-  let body: { name?: string; category?: string; region?: string; city?: string; contact?: string; message?: string; website?: string };
+  let body: { kind?: string; name?: string; category?: string; region?: string; city?: string; contact?: string; message?: string; website?: string };
   try {
     body = await req.json();
   } catch {
@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
   }
 
   const row = {
+    kind: ["annuaire", "calendrier"].includes(body.kind || "") ? body.kind : "annuaire",
     name: name.slice(0, 160),
     category: ["club", "circuit", "evenement"].includes(body.category || "") ? body.category : null,
     region: (body.region || "").slice(0, 80) || null,

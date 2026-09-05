@@ -18,7 +18,7 @@ type Club = {
   phone: string | null;
 };
 type SavedClub = Club & { id: string };
-type Suggestion = { id: string; name: string; category: string | null; region: string | null; city: string | null; contact: string | null; message: string | null; created_at: string };
+type Suggestion = { id: string; kind: string | null; name: string; category: string | null; region: string | null; city: string | null; contact: string | null; message: string | null; created_at: string };
 
 const FIELDS: { key: keyof Club; ph: string }[] = [
   { key: "name", ph: "Nom (circuit, organisateur, club, ASA…)" },
@@ -158,7 +158,12 @@ export default function AdminClubsPage() {
               <div key={s.id} className="rounded-xl border border-amber-200 bg-amber-50 p-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-bold text-zinc-900">{s.name}{s.category ? ` · ${s.category}` : ""}</p>
+                    <p className="text-sm font-bold text-zinc-900">
+                      <span className="mr-1.5 rounded-full bg-white px-2 py-0.5 text-[10px] font-black uppercase text-zinc-500">
+                        {s.kind === "calendrier" ? "📅 Date" : "📍 Contact"}
+                      </span>
+                      {s.name}{s.category ? ` · ${s.category}` : ""}
+                    </p>
                     <p className="text-xs text-zinc-600">{[s.city, s.region].filter(Boolean).join(", ")}</p>
                     {s.contact && <p className="mt-1 text-xs text-zinc-700">Contact : {s.contact}</p>}
                     {s.message && <p className="mt-1 text-xs text-zinc-600">{s.message}</p>}
