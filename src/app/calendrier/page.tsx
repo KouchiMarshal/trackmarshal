@@ -24,8 +24,8 @@ export const metadata: Metadata = {
   },
 };
 
-// Rafraîchit la page toutes les heures (le calendrier evolue).
-export const revalidate = 3600;
+// Rendu dynamique : les ajouts admin apparaissent immédiatement.
+export const dynamic = "force-dynamic";
 
 export default async function CalendrierPage() {
   const today = new Date().toISOString().slice(0, 10);

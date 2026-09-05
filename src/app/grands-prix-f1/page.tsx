@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 const steps = [
   { n: "01", t: "Deviens commissaire dans ton pays", d: "On ne commence jamais en F1. En France, rejoins une ASA (auto) via ta ligue FFSA, suis la formation et obtiens ta licence de commissaire." },
