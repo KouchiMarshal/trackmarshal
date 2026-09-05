@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contactez l'équipe TrackMarshal pour toute question sur la plateforme commissaires motorsport.",
+    "Une question sur la formation au commissariat de piste, une suggestion ou un partenariat club/ASA ? Contactez l'équipe TrackMarshal.",
   openGraph: {
     title: "Contact — TrackMarshal",
     description:
-      "Contactez l'équipe TrackMarshal pour toute question sur la plateforme commissaires motorsport.",
+      "Une question sur la formation au commissariat de piste ou un partenariat club/ASA ? Contactez l'équipe TrackMarshal.",
     url: "https://www.trackmarshal.app/contact",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "TrackMarshal — Contact" }],
   },

@@ -42,6 +42,10 @@ export default function ContactPage() {
             Une question ?<br />
             <span className="text-[#FF5A1F]">Écrivez-nous.</span>
           </h1>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600">
+            Une question sur la formation, une suggestion, une erreur à signaler, ou un projet de
+            partenariat (club, ASA, école) ? On vous répond avec plaisir.
+          </p>
 
           <div className="mt-16 grid gap-12 lg:grid-cols-2">
 
