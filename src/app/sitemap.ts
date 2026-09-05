@@ -7,7 +7,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     { url: BASE, priority: 1.0, changeFrequency: "weekly" },
     { url: `${BASE}/events`, priority: 0.9, changeFrequency: "daily" },
-    { url: `${BASE}/calendrier`, priority: 0.9, changeFrequency: "daily" },
     { url: `${BASE}/commissaires`, priority: 0.8, changeFrequency: "daily" },
     // Espace pédagogique
     { url: `${BASE}/devenir-commissaire`, priority: 0.9, changeFrequency: "monthly" },
@@ -29,19 +28,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/cgu`, priority: 0.2, changeFrequency: "yearly" },
   ];
 
-  const [{ data: events }, { data: marshals }, calendarRes] = await Promise.all([
+  const [{ data: events }, { data: marshals }] = await Promise.all([
     supabaseAdmin.from("events").select("slug, updated_at"),
     supabaseAdmin.from("profiles").select("slug, id, updated_at").eq("role", "marshal"),
-    supabaseAdmin.from("calendar_events").select("slug, start_date").not("slug", "is", null),
   ]);
-
-  const calendarPages: MetadataRoute.Sitemap = ((calendarRes?.data as { slug: string }[] | null) || [])
-    .filter((c) => c.slug)
-    .map((c) => ({
-      url: `${BASE}/calendrier/${c.slug}`,
-      priority: 0.7,
-      changeFrequency: "weekly" as const,
-    }));
 
   const eventPages: MetadataRoute.Sitemap = (events || []).map((e) => ({
     url: `${BASE}/events/${e.slug}`,
@@ -57,5 +47,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly",
   }));
 
-  return [...staticPages, ...calendarPages, ...eventPages, ...marshalPages];
+  return [...staticPages, ...eventPages, ...marshalPages];
 }

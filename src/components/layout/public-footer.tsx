@@ -36,7 +36,6 @@ export default function PublicFooter() {
             <Link href="/devenir-commissaire" className="transition hover:text-[#FF5A1F]">Devenir commissaire</Link>
             <Link href="/devenir-commissaire/drapeaux" className="transition hover:text-[#FF5A1F]">Les drapeaux</Link>
             <Link href="/devenir-commissaire/quiz" className="transition hover:text-[#FF5A1F]">Quiz</Link>
-            <Link href="/calendrier" className="transition hover:text-[#FF5A1F]">Calendrier</Link>
             <Link href="/devenir-commissaire/clubs" className="transition hover:text-[#FF5A1F]">Où s'inscrire</Link>
             <Link href="/grands-prix-f1" className="transition hover:text-[#FF5A1F]">Commissaire F1</Link>
             <Link href="/actualites" className="transition hover:text-[#FF5A1F]">Actualités</Link>
