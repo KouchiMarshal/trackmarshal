@@ -127,7 +127,7 @@ const essentielsItems = [
 // à mesure de tes partenariats.
 const shopItems: { title: string; tip: string; url: string }[] = [
   { title: "Combinaison ignifugée orange", tip: "En coton, couleur orange réglementaire, avec bandes de visibilité pour le nocturne.", url: "#" },
-  { title: "Gants de protection", tip: "Gants type soudeur ou cuir épais ; diélectriques si véhicules électriques/hybrides.", url: "#" },
+  { title: "Gants de protection", tip: "Gants type soudeur ou cuir épais ; diélectriques si véhicules électriques/hybrides.", url: "https://amzn.to/4qWKaHm" },
   { title: "Chaussures montantes / bottes", tip: "Bon maintien de cheville, semelle fermée ; bottes imperméables pour la pluie.", url: "#" },
   { title: "Extincteur portatif", tip: "Poudre ABC, à portée de main en poste.", url: "#" },
   { title: "Coupe-sangle & sifflet", tip: "Pour dégager rapidement un pilote et se signaler.", url: "#" },
@@ -303,9 +303,10 @@ export default function EquipementPage() {
           </div>
 
           <p className="mt-8 text-xs leading-relaxed text-zinc-400">
-            Certains liens ci-dessus sont des liens partenaires : un achat effectué via ces liens
-            peut nous reverser une commission, sans surcoût pour toi. Cela soutient le contenu
-            gratuit du site. TrackMarshal reste indépendant dans ses recommandations.
+            <strong className="font-semibold text-zinc-500">En tant que Partenaire Amazon, je réalise un bénéfice sur les achats remplissant les conditions requises.</strong>{" "}
+            Les liens ci-dessus sont des liens partenaires : un achat effectué via ces liens peut nous
+            reverser une commission, sans surcoût pour toi. Cela soutient le contenu gratuit du site, et
+            TrackMarshal reste indépendant dans ses recommandations.
           </p>
         </div>
       </section>
