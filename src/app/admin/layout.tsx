@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { BarChart3, BookOpen, Building2, FileBadge2, Home, LogOut, Megaphone, MessageSquare, Users } from "lucide-react";
+import { BarChart3, BookOpen, Building2, CalendarDays, FileBadge2, Home, LogOut, Megaphone, MessageSquare, Users } from "lucide-react";
 
 const navItems = [
   { icon: Home, label: "Tableau de bord", href: "/admin" },
+  { icon: CalendarDays, label: "Calendrier", href: "/admin/calendrier" },
   { icon: BarChart3, label: "Analytiques", href: "/admin/analytics" },
   { icon: FileBadge2, label: "Licences à valider", href: "/admin/licenses" },
   { icon: Users, label: "Tous les commissaires", href: "/admin/commissaires" },

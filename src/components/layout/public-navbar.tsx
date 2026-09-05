@@ -11,6 +11,7 @@ import NotificationBell from "@/components/notifications/notification-bell";
 const links = [
   { href: "/", label: "Accueil" },
   { href: "/devenir-commissaire", label: "Se former" },
+  { href: "/calendrier", label: "Calendrier" },
   { href: "/actualites", label: "Actualités" },
   { href: "/about", label: "À propos" },
   { href: "/contact", label: "Contact" },
