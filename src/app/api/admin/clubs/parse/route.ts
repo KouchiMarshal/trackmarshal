@@ -29,25 +29,28 @@ export async function POST(req: NextRequest) {
   const SYSTEM =
     "Tu extrais des clubs de sport automobile (ASA) ou moto (clubs FFM) depuis un texte brut. Tu renvoies uniquement du JSON, sans jamais inventer de coordonnées.";
 
-  const prompt = `Analyse cette liste de clubs / ASA et renvoie UNIQUEMENT un objet JSON :
+  const prompt = `Analyse ce texte listant des circuits, organisateurs, ASA ou clubs où l'on peut s'inscrire comme commissaire de piste, et renvoie UNIQUEMENT un objet JSON :
 {
   "clubs": [
     {
-      "name": "nom du club ou de l'ASA",
-      "type": "ASA | Club FFM | Ligue | Écurie | null",
+      "name": "nom du circuit / organisateur / club / ASA",
+      "type": "Circuit | Organisateur | ASA | Club FFM | Ligue | null",
       "region": "région française si déductible, sinon null",
       "department": "département si présent, sinon null",
       "city": "ville si présente, sinon null",
-      "website": "URL du site si présente, sinon null",
-      "email": "email si présent, sinon null",
+      "description": "courte présentation si présente, sinon null",
+      "registration_steps": "les démarches pour s'inscrire, telles qu'écrites (peut inclure plusieurs emails/étapes), sinon null",
+      "website": "URL du site officiel d'inscription si présente, sinon null",
+      "email": "email de contact principal si présent, sinon null",
       "phone": "téléphone si présent, sinon null"
     }
   ]
 }
 
 Règles STRICTES :
-- N'invente JAMAIS d'email, de téléphone, d'URL ou de ville. Mets null si absent du texte.
-- Garde uniquement les vrais clubs/ASA (ignore les entêtes, titres de section).
+- N'invente JAMAIS d'email, de téléphone, d'URL, de ville ni de démarche. Mets null si l'information est absente du texte.
+- Reprends les démarches fidèlement au texte (ne les reformule pas au point d'en changer le sens).
+- Garde uniquement les vraies entrées (ignore les entêtes, titres de section, textes décoratifs).
 
 TEXTE :
 ${text}`;
@@ -63,6 +66,8 @@ ${text}`;
         region: typeof c.region === "string" ? c.region.slice(0, 60) : null,
         department: typeof c.department === "string" ? c.department.slice(0, 60) : null,
         city: typeof c.city === "string" ? c.city.slice(0, 80) : null,
+        description: typeof c.description === "string" ? c.description.slice(0, 600) : null,
+        registration_steps: typeof c.registration_steps === "string" ? c.registration_steps.slice(0, 3000) : null,
         website: typeof c.website === "string" && /^https?:\/\//.test(c.website) ? c.website : null,
         email: typeof c.email === "string" && /@/.test(c.email) ? c.email.slice(0, 120) : null,
         phone: typeof c.phone === "string" ? c.phone.slice(0, 40) : null,

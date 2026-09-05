@@ -11,6 +11,8 @@ type Club = {
   region?: string | null;
   department?: string | null;
   city?: string | null;
+  description?: string | null;
+  registration_steps?: string | null;
   website?: string | null;
   email?: string | null;
   phone?: string | null;
@@ -37,6 +39,8 @@ export async function POST(req: NextRequest) {
       region: c.region ? String(c.region).slice(0, 60) : null,
       department: c.department ? String(c.department).slice(0, 60) : null,
       city: c.city ? String(c.city).slice(0, 80) : null,
+      description: c.description ? String(c.description).slice(0, 600) : null,
+      registration_steps: c.registration_steps ? String(c.registration_steps).slice(0, 3000) : null,
       website: c.website && /^https?:\/\//.test(c.website) ? c.website : null,
       email: c.email && /@/.test(c.email) ? c.email.slice(0, 120) : null,
       phone: c.phone ? String(c.phone).slice(0, 40) : null,

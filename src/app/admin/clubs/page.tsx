@@ -9,6 +9,8 @@ type Club = {
   region: string | null;
   department: string | null;
   city: string | null;
+  description: string | null;
+  registration_steps: string | null;
   website: string | null;
   email: string | null;
   phone: string | null;
@@ -16,12 +18,12 @@ type Club = {
 type SavedClub = Club & { id: string };
 
 const FIELDS: { key: keyof Club; ph: string }[] = [
-  { key: "name", ph: "Nom du club / ASA" },
-  { key: "type", ph: "Type (ASA, Club FFM…)" },
+  { key: "name", ph: "Nom (circuit, organisateur, club, ASA…)" },
+  { key: "type", ph: "Type (Circuit, ASA, Club FFM…)" },
   { key: "region", ph: "Région" },
   { key: "department", ph: "Département" },
   { key: "city", ph: "Ville" },
-  { key: "website", ph: "https://site…" },
+  { key: "website", ph: "https://site-inscription…" },
   { key: "email", ph: "Email" },
   { key: "phone", ph: "Téléphone" },
 ];
@@ -116,6 +118,8 @@ export default function AdminClubsPage() {
                 {FIELDS.map((f) => (
                   <input key={f.key} value={(c[f.key] as string) ?? ""} onChange={(e) => editRow(i, f.key, e.target.value)} placeholder={f.ph} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
                 ))}
+                <input value={c.description ?? ""} onChange={(e) => editRow(i, "description", e.target.value)} placeholder="Courte description" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+                <textarea value={c.registration_steps ?? ""} onChange={(e) => editRow(i, "registration_steps", e.target.value)} placeholder="Démarches d'inscription (étapes, emails, liens…)" rows={3} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
               </div>
             ))}
           </div>
@@ -142,6 +146,8 @@ export default function AdminClubsPage() {
                     {FIELDS.map((f) => (
                       <input key={f.key} value={(editForm[f.key] as string) ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, [f.key]: e.target.value }))} placeholder={f.ph} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
                     ))}
+                    <input value={editForm.description ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))} placeholder="Courte description" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+                    <textarea value={editForm.registration_steps ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, registration_steps: e.target.value }))} placeholder="Démarches d'inscription" rows={4} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
                   </div>
                   <button onClick={saveEdit} className="mt-2 rounded-lg bg-[#FF5A1F] px-4 py-2 text-sm font-bold text-white transition hover:opacity-90">Enregistrer</button>
                 </div>

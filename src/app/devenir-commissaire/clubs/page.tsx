@@ -5,20 +5,20 @@ import ClubsClient from "@/components/clubs/ClubsClient";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export const metadata: Metadata = {
-  title: "Trouver une ASA ou un club pour devenir commissaire",
+  title: "Où s'inscrire comme commissaire : circuits, clubs & ASA",
   description:
-    "L'annuaire des ASA (auto) et clubs FFM (moto) où t'engager comme commissaire de piste, par région. Contacte le club près de chez toi pour t'inscrire et te former.",
+    "Le répertoire des circuits, organisateurs, ASA (auto) et clubs FFM (moto) où s'inscrire comme commissaire de piste : démarches, contacts et liens officiels, par région.",
   keywords: [
+    "s'inscrire commissaire de piste",
+    "devenir commissaire circuit",
     "ASA sport automobile",
     "club moto commissaire",
-    "s'inscrire commissaire de piste",
-    "association sportive automobile région",
-    "devenir commissaire club",
+    "inscription commissaire Monaco Paul Ricard Le Mans",
   ],
   alternates: { canonical: "/devenir-commissaire/clubs" },
   openGraph: {
-    title: "Trouver une ASA ou un club près de chez soi | TrackMarshal",
-    description: "L'annuaire des ASA et clubs FFM par région pour s'engager comme commissaire de piste.",
+    title: "Où s'inscrire comme commissaire de piste | TrackMarshal",
+    description: "Circuits, organisateurs, ASA et clubs : démarches et contacts pour s'inscrire comme commissaire, par région.",
     url: "https://www.trackmarshal.app/devenir-commissaire/clubs",
   },
 };
@@ -43,11 +43,11 @@ export default async function ClubsPage() {
         <div className="relative z-10 mx-auto max-w-[1000px] px-4 pb-6 sm:px-6 lg:px-8">
           <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">Passer à l'action</p>
           <h1 className="mt-6 text-4xl font-black leading-[0.95] tracking-[-0.04em] text-zinc-900 sm:text-5xl lg:text-6xl">
-            Trouve ton club<br /><span className="text-[#FF5A1F]">et inscris-toi</span>
+            Où s'inscrire<br /><span className="text-[#FF5A1F]">comme commissaire</span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-600">
-            Pour devenir commissaire, tout commence par ton <strong className="text-zinc-900">club local</strong> :
-            une ASA pour l'auto, un club FFM pour la moto. Trouve celui près de chez toi et contacte-le pour t'inscrire et te former.
+            Circuits, organisateurs, ASA (auto) et clubs FFM (moto) : retrouve <strong className="text-zinc-900">où et comment
+            t'inscrire</strong> pour officier, avec les démarches et les liens officiels. Filtre par région et trouve le tien.
           </p>
         </div>
       </section>
