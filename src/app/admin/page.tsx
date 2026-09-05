@@ -3,390 +3,131 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { Building2, CheckCircle2, Clock3, Users, FileBadge2, Dumbbell } from "lucide-react";
+import { BarChart3, CalendarDays, ExternalLink, Lightbulb, MapPin, Sparkles } from "lucide-react";
 
-export default function AdminDashboardPage() {
-  const [stats, setStats] = useState({ total: 0, pending: 0, verified: 0, noLicense: 0 });
-  const [orgStats, setOrgStats] = useState({ total: 0, pending: 0, verified: 0 });
-  const [licenseStats, setLicenseStats] = useState<{ type: string; count: number }[]>([]);
-  const [asaStats, setAsaStats] = useState<{ asa: string; count: number }[]>([]);
-  const [monthlyStats, setMonthlyStats] = useState<{ key: string; label: string; count: number }[]>([]);
-  const [disciplineStats, setDisciplineStats] = useState<{ disc: string; count: number }[]>([]);
-  const [topOrganizers, setTopOrganizers] = useState<any[]>([]);
-  const [totalEvents, setTotalEvents] = useState(0);
-  const [asaExpanded, setAsaExpanded] = useState(false);
+export default function AdminDashboard() {
+  const [counts, setCounts] = useState({ epreuves: 0, clubs: 0, suggestions: 0 });
 
-  useEffect(() => {
-    async function load() {
-      const now = new Date();
-      const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1).toISOString();
+  useEffect(() => { load(); }, []);
 
-      const [marshals, licensesRes, organizers, eventsRes, monthlyRes] = await Promise.all([
-        supabase.from("profiles").select("id, license_url, license_verified, license_url_2, license_verified_2").eq("role", "marshal"),
-        supabase.from("licenses").select("user_id, type, asa, url, verified"),
-        supabase.from("profiles").select("organizer_verified").eq("role", "organizer"),
-        supabase.from("events").select("organizer_id, discipline"),
-        supabase.from("profiles").select("created_at").eq("role", "marshal").gte("created_at", twelveMonthsAgo),
-      ]);
+  async function load() {
+    const today = new Date().toISOString().slice(0, 10);
 
-      // --- Commissaires ---
-      const marshalData = marshals.data || [];
-      const licensesData = licensesRes.data || [];
-      const total = marshalData.length;
+    // Épreuves à venir + clubs : lecture publique (RLS).
+    const [{ count: epreuves }, { count: clubs }] = await Promise.all([
+      supabase.from("calendar_events").select("id", { count: "exact", head: true }).or(`start_date.gte.${today},end_date.gte.${today}`),
+      supabase.from("clubs").select("id", { count: "exact", head: true }),
+    ]);
 
-      // IDs of marshals who have at least one document uploaded anywhere
-      const idsWithDoc = new Set<string>([
-        ...licensesData.filter((l: any) => l.url).map((l: any) => l.user_id as string),
-        ...marshalData.filter((p: any) => p.license_url || p.license_url_2).map((p: any) => p.id as string),
-      ]);
-
-      const marshalIdsWithLicense = new Set(licensesData.map((l: any) => l.user_id));
-      const oldOnlyMarshals = marshalData.filter((p: any) =>
-        !marshalIdsWithLicense.has(p.id) && (p.license_url || p.license_url_2)
-      );
-      const pending = licensesData.filter((l: any) => l.url && !l.verified).length
-        + oldOnlyMarshals.filter((p: any) => (!p.license_url || !p.license_verified) && (!p.license_url_2 || !p.license_verified_2)).length;
-      const verified = licensesData.filter((l: any) => l.verified).length
-        + oldOnlyMarshals.filter((p: any) => p.license_verified || p.license_verified_2).length;
-      const noLicense = marshalData.filter((p: any) => !idsWithDoc.has(p.id)).length;
-      setStats({ total, pending, verified, noLicense });
-
-      const ltMap: Record<string, number> = {};
-      licensesData.forEach((l) => {
-        const t = l.type || "Non renseigné";
-        ltMap[t] = (ltMap[t] || 0) + 1;
+    // Suggestions : via route admin (pas de lecture publique).
+    let suggestions = 0;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/admin/clubs/suggestions", {
+        headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {},
       });
-      setLicenseStats(
-        Object.entries(ltMap).map(([type, count]) => ({ type, count })).sort((a, b) => b.count - a.count)
-      );
+      if (res.ok) { const d = await res.json(); suggestions = (d.suggestions ?? []).length; }
+    } catch { /* ignore */ }
 
-      const asaMap: Record<string, number> = {};
-      licensesData.forEach((l) => {
-        if (l.asa) { const a = l.asa.trim(); asaMap[a] = (asaMap[a] || 0) + 1; }
-      });
-      setAsaStats(
-        Object.entries(asaMap).map(([asa, count]) => ({ asa, count })).sort((a, b) => b.count - a.count).slice(0, 15)
-      );
+    setCounts({ epreuves: epreuves ?? 0, clubs: clubs ?? 0, suggestions });
+  }
 
-      // --- Organisateurs ---
-      const orgData = organizers.data || [];
-      setOrgStats({
-        total: orgData.length,
-        pending: orgData.filter((o) => !o.organizer_verified).length,
-        verified: orgData.filter((o) => o.organizer_verified).length,
-      });
+  const stats = [
+    { label: "Épreuves à venir", value: counts.epreuves, color: "text-[#FF5A1F]", href: "/admin/calendrier" },
+    { label: "Clubs, circuits & GP", value: counts.clubs, color: "text-zinc-900", href: "/admin/clubs" },
+    { label: "Suggestions à traiter", value: counts.suggestions, color: counts.suggestions > 0 ? "text-amber-600" : "text-zinc-400", href: "/admin/clubs" },
+  ];
 
-      // --- Événements ---
-      const eventsData = eventsRes.data || [];
-      setTotalEvents(eventsData.length);
-
-      // Discipline breakdown
-      const discMap: Record<string, number> = {};
-      eventsData.forEach((e) => {
-        const d = e.discipline || "Non renseigné";
-        discMap[d] = (discMap[d] || 0) + 1;
-      });
-      setDisciplineStats(
-        Object.entries(discMap).map(([disc, count]) => ({ disc, count })).sort((a, b) => b.count - a.count)
-      );
-
-      // Top organisateurs par nombre d'événements
-      const orgEventMap: Record<string, number> = {};
-      eventsData.forEach((e) => {
-        if (e.organizer_id) orgEventMap[e.organizer_id] = (orgEventMap[e.organizer_id] || 0) + 1;
-      });
-      const topOrgIds = Object.entries(orgEventMap).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([id]) => id);
-      if (topOrgIds.length > 0) {
-        const { data: orgProfiles } = await supabase
-          .from("profiles")
-          .select("id, full_name, organization_name, avatar_url")
-          .in("id", topOrgIds);
-        const profileMap: Record<string, any> = {};
-        (orgProfiles || []).forEach((p) => { profileMap[p.id] = p; });
-        setTopOrganizers(
-          Object.entries(orgEventMap)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 10)
-            .map(([id, count]) => ({ ...profileMap[id], eventCount: count }))
-            .filter((o) => o.id)
-        );
-      }
-
-      // --- Inscriptions par mois (12 derniers mois) ---
-      const monthMap: Record<string, number> = {};
-      (monthlyRes.data || []).forEach((p) => {
-        const d = new Date(p.created_at);
-        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-        monthMap[key] = (monthMap[key] || 0) + 1;
-      });
-      const months: { key: string; label: string; count: number }[] = [];
-      for (let i = 11; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-        const label = d.toLocaleDateString("fr-FR", { month: "short" });
-        months.push({ key, label, count: monthMap[key] || 0 });
-      }
-      setMonthlyStats(months);
-    }
-    load();
-  }, []);
-
-  const maxMonthCount = Math.max(...monthlyStats.map((m) => m.count), 1);
-  const maxDisciplineCount = Math.max(...disciplineStats.map((d) => d.count), 1);
+  const actions = [
+    { icon: CalendarDays, title: "Calendrier des épreuves", desc: "Importe des épreuves (colle un calendrier, l'IA le structure), édite et publie.", href: "/admin/calendrier", cta: "Gérer le calendrier →" },
+    { icon: MapPin, title: "Répertoire « Où s'inscrire »", desc: "Ajoute clubs, ASA, circuits et Grands Prix, avec démarches et contacts.", href: "/admin/clubs", cta: "Gérer le répertoire →" },
+    { icon: BarChart3, title: "Statistiques d'audience", desc: "Suis la fréquentation du site (Google Analytics est déjà connecté).", href: "/admin/analytics", cta: "Voir les analytiques →" },
+  ];
 
   return (
-    <div>
-      <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
-        <div className="flex h-20 items-center px-6 lg:px-10">
-          <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Administration</p>
-            <h1 className="mt-1 text-2xl font-black text-zinc-900 lg:text-3xl">Tableau de bord</h1>
-          </div>
+    <div className="mx-auto max-w-5xl p-6 lg:p-10">
+      <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF5A1F]">Administration</p>
+      <h1 className="mt-1 text-2xl font-black text-zinc-900 lg:text-3xl">Tableau de bord</h1>
+      <p className="mt-2 text-zinc-600">Pilote le contenu du site : calendrier, répertoire d&apos;inscription et propositions de la communauté.</p>
+
+      {/* Stats */}
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        {stats.map((s) => (
+          <Link key={s.label} href={s.href} className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:border-[#FF5A1F]/40">
+            <p className="text-sm text-zinc-600">{s.label}</p>
+            <p className={`mt-4 text-5xl font-black ${s.color}`}>{s.value}</p>
+          </Link>
+        ))}
+      </div>
+
+      {/* Alerte suggestions */}
+      {counts.suggestions > 0 && (
+        <Link href="/admin/clubs" className="mt-6 flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 transition hover:bg-amber-100">
+          <Lightbulb size={20} className="text-amber-600" />
+          <p className="text-sm font-bold text-amber-800">
+            {counts.suggestions} proposition{counts.suggestions > 1 ? "s" : ""} de la communauté à vérifier →
+          </p>
+        </Link>
+      )}
+
+      {/* Actions principales */}
+      <div className="mt-8 grid gap-5 lg:grid-cols-3">
+        {actions.map((a) => (
+          <Link key={a.href} href={a.href} className="group rounded-3xl border border-zinc-200 bg-white p-7 shadow-sm transition hover:border-[#FF5A1F]/40">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
+              <a.icon size={22} className="text-[#FF5A1F]" />
+            </div>
+            <h2 className="mt-5 text-lg font-black text-zinc-900">{a.title}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-600">{a.desc}</p>
+            <p className="mt-5 text-sm font-bold text-[#FF5A1F] group-hover:underline">{a.cta}</p>
+          </Link>
+        ))}
+      </div>
+
+      {/* Voir le site */}
+      <div className="mt-10">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Voir côté public</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {[
+            { label: "Espace pédagogique", href: "/devenir-commissaire" },
+            { label: "Calendrier", href: "/calendrier" },
+            { label: "Où s'inscrire", href: "/devenir-commissaire/clubs" },
+          ].map((l) => (
+            <Link key={l.href} href={l.href} target="_blank" className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]">
+              {l.label} <ExternalLink size={13} />
+            </Link>
+          ))}
         </div>
-      </header>
+      </div>
 
-      <div className="relative overflow-hidden">
-        <div className="mx-auto max-w-[1400px] p-6 pb-32 lg:p-10 lg:pb-10 space-y-10">
+      {/* Outils IA */}
+      <div className="mt-10 rounded-3xl border border-zinc-200 bg-gradient-to-br from-orange-50 to-white p-6 lg:p-7">
+        <div className="flex items-center gap-2">
+          <Sparkles size={18} className="text-[#FF5A1F]" />
+          <h2 className="text-lg font-black text-zinc-900">Outils IA actifs</h2>
+        </div>
+        <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+          Chatbot pédagogique, quiz adaptatif, génération de bio et import assisté (calendrier / annuaire) —
+          propulsés par l&apos;IA. Si une fonction répond « indisponible », vérifie que la clé
+          <span className="font-mono text-xs"> GEMINI_API_KEY </span> est bien définie sur Vercel.
+        </p>
+      </div>
 
-          {/* Compteurs globaux */}
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-3xl border border-zinc-200 bg-white shadow-sm p-8">
-              <div className="flex items-center gap-3">
-                <Users size={20} className="text-zinc-500" />
-                <p className="text-sm text-zinc-600">Total commissaires</p>
-              </div>
-              <p className="mt-6 text-5xl font-black text-zinc-900">{stats.total}</p>
-            </div>
-
-            <div className="rounded-3xl border border-yellow-200 bg-yellow-50 p-8">
-              <div className="flex items-center gap-3">
-                <Clock3 size={20} className="text-yellow-600" />
-                <p className="text-sm text-yellow-700">En attente de validation</p>
-              </div>
-              <p className="mt-6 text-5xl font-black text-yellow-600">{stats.pending}</p>
-              {stats.pending > 0 && (
-                <Link href="/admin/licenses" className="mt-4 inline-block text-xs font-bold text-yellow-600 underline underline-offset-4">
-                  Valider maintenant →
-                </Link>
-              )}
-            </div>
-
-            <div className="rounded-3xl border border-green-200 bg-green-50 p-8">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 size={20} className="text-green-600" />
-                <p className="text-sm text-green-700">Licences vérifiées</p>
-              </div>
-              <p className="mt-6 text-5xl font-black text-green-600">{stats.verified}</p>
-            </div>
-
-            <div className="rounded-3xl border border-zinc-200 bg-white shadow-sm p-8">
-              <div className="flex items-center gap-3">
-                <FileBadge2 size={20} className="text-zinc-500" />
-                <p className="text-sm text-zinc-600">Sans licence uploadée</p>
-              </div>
-              <p className="mt-6 text-5xl font-black text-zinc-500">{stats.noLicense}</p>
-            </div>
-          </div>
-
-          {/* Liens rapides */}
-          <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-            <Link href="/admin/licenses" className="group rounded-3xl border border-yellow-200 bg-yellow-50 p-8 transition hover:border-yellow-300 hover:bg-yellow-100">
-              <Clock3 size={32} className="text-yellow-600" />
-              <h2 className="mt-6 text-2xl font-black text-zinc-900">Licences à valider</h2>
-              <p className="mt-3 text-zinc-600">Vérifiez les licences des commissaires et validez-les après vérification.</p>
-              <p className="mt-6 text-sm font-bold text-yellow-600 group-hover:underline">{stats.pending} en attente →</p>
+      {/* Historique marketplace */}
+      <div className="mt-10">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Espace historique (marketplace)</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {[
+            { label: "Licences", href: "/admin/licenses" },
+            { label: "Commissaires", href: "/admin/commissaires" },
+            { label: "Organisateurs", href: "/admin/organizers" },
+            { label: "Messages", href: "/admin/messages" },
+            { label: "CV Lab", href: "/admin/cv-lab" },
+          ].map((l) => (
+            <Link key={l.href} href={l.href} className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-500 transition hover:text-zinc-800">
+              {l.label}
             </Link>
-
-            <Link href="/admin/organizers" className="group rounded-3xl border border-blue-200 bg-blue-50 p-8 transition hover:border-blue-300 hover:bg-blue-100">
-              <Building2 size={32} className="text-blue-600" />
-              <h2 className="mt-6 text-2xl font-black text-zinc-900">Organisateurs</h2>
-              <p className="mt-3 text-zinc-600">Vérifiez les comptes organisateurs (ASA/ASK) avant qu'ils puissent publier des événements.</p>
-              <p className="mt-6 text-sm font-bold text-blue-600 group-hover:underline">{orgStats.pending} en attente · {orgStats.total} total →</p>
-            </Link>
-
-            <Link href="/admin/commissaires" className="group rounded-3xl border border-zinc-200 bg-white shadow-sm p-8 transition hover:border-zinc-300 hover:bg-zinc-50">
-              <Users size={32} className="text-zinc-600" />
-              <h2 className="mt-6 text-2xl font-black text-zinc-900">Tous les commissaires</h2>
-              <p className="mt-3 text-zinc-600">Consultez la liste complète des commissaires inscrits sur la plateforme.</p>
-              <p className="mt-6 text-sm font-bold text-zinc-700 group-hover:underline">{stats.total} commissaires →</p>
-            </Link>
-
-            <Link href="/perf" className="group rounded-3xl border border-orange-200 bg-orange-50 p-8 transition hover:border-orange-300 hover:bg-orange-100">
-              <Dumbbell size={32} className="text-[#FF5A1F]" />
-              <h2 className="mt-6 text-2xl font-black text-zinc-900">Mon suivi muscu</h2>
-              <p className="mt-3 text-zinc-600">Suivi personnel de séances, charges et évolution du poids corporel.</p>
-              <p className="mt-6 text-sm font-bold text-[#FF5A1F] group-hover:underline">Accéder →</p>
-            </Link>
-          </div>
-
-          {/* Inscriptions par mois */}
-          <div className="rounded-3xl border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
-            <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
-                <h2 className="mt-2 text-2xl font-black text-zinc-900">Nouvelles inscriptions</h2>
-                <p className="mt-1 text-sm text-zinc-500">Commissaires — 12 derniers mois</p>
-              </div>
-              <p className="text-4xl font-black text-[#FF5A1F]">
-                {monthlyStats.reduce((s, m) => s + m.count, 0)}
-                <span className="ml-2 text-sm font-normal text-zinc-500">cette période</span>
-              </p>
-            </div>
-
-            <div className="flex items-end gap-1.5 sm:gap-2">
-              {monthlyStats.map((m) => (
-                <div key={m.key} className="group flex flex-1 flex-col items-center gap-1">
-                  <span className={`text-[10px] font-black text-[#FF5A1F] transition ${m.count === 0 ? "opacity-0" : ""}`}>
-                    {m.count}
-                  </span>
-                  <div
-                    className="w-full rounded-t-lg bg-[#FF5A1F] transition-all group-hover:opacity-80"
-                    style={{
-                      height: `${Math.max(4, Math.round((m.count / maxMonthCount) * 80))}px`,
-                      opacity: m.count === 0 ? 0.15 : 1,
-                    }}
-                  />
-                  <span className="text-[9px] text-zinc-500 sm:text-[10px]">{m.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Licence + ASA */}
-          <div className="grid gap-6 lg:grid-cols-2">
-
-            <div className="rounded-3xl border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
-              <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
-              <h2 className="mt-2 text-2xl font-black text-zinc-900">Répartition par licence</h2>
-              <div className="mt-6 space-y-3">
-                {licenseStats.length === 0 && <p className="text-sm text-zinc-500">Aucune donnée.</p>}
-                {licenseStats.map(({ type, count }) => (
-                  <Link
-                    key={type}
-                    href={`/admin/commissaires?filter=license_type&value=${encodeURIComponent(type)}`}
-                    className="group flex items-center gap-3 rounded-2xl p-2 -mx-2 transition hover:bg-zinc-50"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-bold truncate text-zinc-900 group-hover:text-[#FF5A1F] transition">{type}</span>
-                        <span className="ml-3 shrink-0 text-sm font-black text-[#FF5A1F]">{count}</span>
-                      </div>
-                      <div className="h-1.5 w-full rounded-full bg-zinc-200">
-                        <div className="h-1.5 rounded-full bg-[#FF5A1F]" style={{ width: `${Math.round((count / stats.total) * 100)}%` }} />
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
-              <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
-              <h2 className="mt-2 text-2xl font-black text-zinc-900">Répartition par ASA</h2>
-              {asaStats.length === 0 ? (
-                <p className="mt-6 text-sm text-zinc-500">Aucune ASA renseignée pour le moment.</p>
-              ) : (
-                <div className="mt-6 space-y-3">
-                  {(asaExpanded ? asaStats : asaStats.slice(0, 6)).map(({ asa, count }) => (
-                    <Link
-                      key={asa}
-                      href={`/admin/commissaires?filter=asa&value=${encodeURIComponent(asa)}`}
-                      className="group flex items-center gap-3 rounded-2xl p-2 -mx-2 transition hover:bg-zinc-50"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-bold truncate text-zinc-900 group-hover:text-[#FF5A1F] transition">{asa}</span>
-                          <span className="ml-3 shrink-0 text-sm font-black text-[#FF5A1F]">{count}</span>
-                        </div>
-                        <div className="h-1.5 w-full rounded-full bg-zinc-200">
-                          <div className="h-1.5 rounded-full bg-[#FF5A1F]" style={{ width: `${Math.round((count / stats.total) * 100)}%` }} />
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                  {asaStats.length > 6 && (
-                    <button
-                      onClick={() => setAsaExpanded((v) => !v)}
-                      className="mt-1 flex w-full items-center justify-center gap-2 rounded-2xl border border-zinc-200 py-2.5 text-sm font-bold text-zinc-600 transition hover:border-zinc-300 hover:text-zinc-900"
-                    >
-                      {asaExpanded ? "Réduire ↑" : `··· ${asaStats.length - 6} de plus`}
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-
-          </div>
-
-          {/* Discipline + Top organisateurs */}
-          <div className="grid gap-6 lg:grid-cols-2">
-
-            {/* Répartition par discipline */}
-            <div className="rounded-3xl border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
-              <div className="flex items-end justify-between mb-6">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
-                  <h2 className="mt-2 text-2xl font-black text-zinc-900">Répartition par discipline</h2>
-                </div>
-                <p className="text-3xl font-black text-zinc-500">{totalEvents} <span className="text-sm font-normal text-zinc-500">événements</span></p>
-              </div>
-              {disciplineStats.length === 0 ? (
-                <p className="text-sm text-zinc-500">Aucun événement publié.</p>
-              ) : (
-                <div className="space-y-3">
-                  {disciplineStats.map(({ disc, count }) => (
-                    <div key={disc} className="flex items-center gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-bold truncate text-zinc-900">{disc}</span>
-                          <span className="ml-3 shrink-0 text-sm font-black text-[#FF5A1F]">{count}</span>
-                        </div>
-                        <div className="h-1.5 w-full rounded-full bg-zinc-200">
-                          <div className="h-1.5 rounded-full bg-[#FF5A1F]" style={{ width: `${Math.round((count / maxDisciplineCount) * 100)}%` }} />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Top organisateurs */}
-            <div className="rounded-3xl border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
-              <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Statistiques</p>
-              <h2 className="mt-2 text-2xl font-black text-zinc-900">Top organisateurs</h2>
-              <p className="mt-1 mb-6 text-sm text-zinc-500">Par nombre d'événements publiés</p>
-              {topOrganizers.length === 0 ? (
-                <p className="text-sm text-zinc-500">Aucun événement publié.</p>
-              ) : (
-                <div className="space-y-3">
-                  {topOrganizers.map((org, i) => (
-                    <div key={org.id} className="flex items-center gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
-                      <span className="shrink-0 w-7 text-center text-lg font-black text-zinc-500">
-                        {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`}
-                      </span>
-                      <img
-                        src={org.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(org.full_name || org.organization_name || "O")}&background=f4f4f5&color=FF5A1F&size=80`}
-                        alt=""
-                        className="h-9 w-9 shrink-0 rounded-xl object-cover"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="truncate text-sm font-black text-zinc-900">{org.organization_name || org.full_name || "Organisateur"}</p>
-                        {org.organization_name && org.full_name && (
-                          <p className="truncate text-xs text-zinc-500">{org.full_name}</p>
-                        )}
-                      </div>
-                      <span className="shrink-0 rounded-xl border border-[#FF5A1F]/20 bg-orange-50 px-3 py-1.5 text-sm font-black text-[#FF5A1F]">
-                        {org.eventCount} event{org.eventCount > 1 ? "s" : ""}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-          </div>
-
+          ))}
         </div>
       </div>
     </div>
