@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Award, CalendarDays, Shield, Users } from "lucide-react";
+import { BookOpen, MessageSquare, Sparkles, Target } from "lucide-react";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
-import FranceMap from "@/components/about/FranceMap";
 
 export default function AboutPage() {
   return (
@@ -13,7 +12,7 @@ export default function AboutPage() {
       <PublicNavbar />
 
       <section className="relative overflow-hidden bg-zinc-50 pt-32 lg:pt-40">
-        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/6 blur-[160px] pointer-events-none" />
+        <div className="absolute right-0 top-0 h-[400px] w-[400px] rounded-full bg-[#FF5A1F]/6 blur-[120px] pointer-events-none" />
 
         <div className="relative z-10 mx-auto max-w-[1600px] px-4 pb-20 sm:px-6 lg:px-8">
           <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">À propos</p>
@@ -22,8 +21,8 @@ export default function AboutPage() {
             <span className="text-[#FF5A1F]">mission.</span>
           </h1>
           <p className="mt-8 max-w-3xl text-lg leading-relaxed text-zinc-600 lg:text-2xl">
-            TrackMarshal connecte organisateurs et commissaires motorsport
-            à travers une plateforme moderne, fiable et pensée pour le terrain.
+            Rendre l'apprentissage du métier de commissaire de piste accessible à tous —
+            gratuitement, simplement, et pour toutes les disciplines du sport automobile et moto.
           </p>
         </div>
       </section>
@@ -34,33 +33,31 @@ export default function AboutPage() {
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
             <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-8 lg:p-12">
               <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">Le problème</p>
-              <h2 className="mt-6 text-4xl font-black lg:text-5xl">Recruter des commissaires était compliqué.</h2>
+              <h2 className="mt-6 text-4xl font-black lg:text-5xl">Apprendre le métier était compliqué.</h2>
               <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-                Appels téléphoniques, emails éparpillés, tableurs Excel,
-                groupes WhatsApp… Les organisateurs perdaient un temps précieux
-                à trouver et gérer leurs équipes. Les commissaires ne savaient
-                pas quels événements étaient ouverts ni comment postuler.
+                Drapeaux, procédures de sécurité, rôles, licences… Les informations sont
+                dispersées, souvent techniques et difficiles d'accès pour un débutant. Beaucoup
+                de passionnés renoncent faute d'un point d'entrée clair pour se former.
               </p>
             </div>
 
             <div className="rounded-[32px] border border-zinc-200 bg-white shadow-sm p-8 lg:p-12">
               <p className="text-xs uppercase tracking-[0.3em] text-[#FF5A1F]">La solution</p>
-              <h2 className="mt-6 text-4xl font-black lg:text-5xl">Une plateforme dédiée au motorsport.</h2>
+              <h2 className="mt-6 text-4xl font-black lg:text-5xl">Un espace pour se former, gratuit.</h2>
               <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-                TrackMarshal centralise tout : publication d'événements,
-                candidatures, gestion des profils et licences, messagerie
-                intégrée. Du rallye au circuit, de la première prise de
-                contact à la validation finale.
+                TrackMarshal réunit tout au même endroit : des fiches claires sur les drapeaux,
+                les procédures et la sécurité, des quiz pour s'entraîner, et un assistant IA qui
+                répond à toutes tes questions. Du circuit au rallye, à ton rythme.
               </p>
             </div>
           </div>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { icon: CalendarDays, title: "Événements publiés", text: "Les organisateurs publient leurs besoins en quelques minutes." },
-              { icon: Users, title: "Profils vérifiés", text: "Licences, expériences et disciplines centralisées pour chaque commissaire." },
-              { icon: Shield, title: "Candidatures suivies", text: "Statut en temps réel : en attente, accepté ou refusé." },
-              { icon: Award, title: "Communication directe", text: "Messagerie intégrée entre organisateurs et commissaires acceptés." },
+              { icon: BookOpen, title: "Fiches pédagogiques", text: "Drapeaux, procédures, rôles, équipement, lexique — expliqués simplement." },
+              { icon: Target, title: "Quiz d'entraînement", text: "Des quiz par thème et un quiz adaptatif qui cible tes points faibles." },
+              { icon: MessageSquare, title: "Assistant IA", text: "Une question ? L'assistant répond à toute heure, en français." },
+              { icon: Sparkles, title: "Gratuit & ouvert", text: "Tout le contenu est accessible librement, sans inscription." },
             ].map((item) => (
               <div key={item.title} className="rounded-[28px] border border-zinc-200 bg-white shadow-sm p-6 lg:p-8">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF5A1F]/10">
@@ -86,18 +83,23 @@ export default function AboutPage() {
                 <span className="text-[#FF5A1F]">Pour les commissaires.</span>
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-                TrackMarshal est né de la frustration d'un commissaire FFSA confronté à la réalité du terrain : événements impossibles à trouver, inscriptions par email, licences vérifiées à la main, groupes WhatsApp… Le projet a été lancé avec une conviction simple — le bénévolat motorsport mérite des outils modernes.
+                TrackMarshal est né de l'expérience d'un commissaire confronté à la réalité du
+                terrain : des connaissances essentielles, mais éparpillées et intimidantes pour
+                qui débute. L'idée est simple — regrouper l'essentiel du métier dans un espace
+                pédagogique clair, moderne et accessible à tous.
               </p>
               <p className="mt-4 text-lg leading-relaxed text-zinc-600">
-                La plateforme est entièrement <strong className="text-zinc-900">gratuite</strong>, conçue pour aider les ASA et les organisateurs à recruter plus facilement, et pour rendre la communauté des commissaires plus visible et plus accessible.
+                Le contenu est entièrement <strong className="text-zinc-900">gratuit</strong> et
+                ouvert, pensé pour aider chacun à apprendre, réviser et progresser, du premier
+                drapeau jusqu'aux procédures les plus techniques.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {[
                 { value: "Auto", label: "Rallye, circuit, karting, côte, endurance, drift, slalom…" },
                 { value: "Moto", label: "Motocross, enduro, trial, road racing, supermoto, rallye moto…" },
-                { value: "FFSA", label: "Les commissaires peuvent renseigner et faire vérifier leur licence FFSA" },
-                { value: "FFM", label: "Les commissaires moto renseignent leur licence FFM sur leur profil" },
+                { value: "Fiches", label: "Drapeaux, procédures, rôles, équipement et lexique du sport auto" },
+                { value: "IA", label: "Quiz adaptatif et assistant pour un entraînement personnalisé" },
               ].map((item) => (
                 <div key={item.value} className="rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm">
                   <p className="text-3xl font-black text-[#FF5A1F]">{item.value}</p>
@@ -109,28 +111,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Carte du vivier */}
-      <section className="border-t border-zinc-200 bg-zinc-50 py-20 lg:py-32">
-        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
-          <div className="mb-10">
-            <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#FF5A1F] sm:text-sm">France</p>
-            <h2 className="mt-4 text-4xl font-black lg:text-6xl">Le vivier commissaires</h2>
-            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-zinc-600">
-              Des commissaires TrackMarshal présents dans toutes les régions de France, toutes disciplines confondues.
-            </p>
-          </div>
-          <FranceMap />
-        </div>
-      </section>
-
-      {/* Pour les institutions */}
+      {/* Projet indépendant */}
       <section className="border-t border-zinc-200 bg-white py-20 lg:py-28">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-xs uppercase tracking-[0.35em] text-[#FF5A1F]">Ligues & Institutions</p>
-            <h2 className="mt-6 text-4xl font-black lg:text-5xl">Vous représentez une ligue ou une ASA&nbsp;?</h2>
+            <p className="text-xs uppercase tracking-[0.35em] text-[#FF5A1F]">Projet indépendant</p>
+            <h2 className="mt-6 text-4xl font-black lg:text-5xl">Un projet libre, au service de la communauté.</h2>
             <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-              TrackMarshal est un projet indépendant, créé sans lien officiel avec la FFSA ou la FFM. Si vous représentez une ligue régionale, une ASA ou une fédération et souhaitez explorer comment la plateforme peut aider vos clubs à recruter leurs commissaires, nous serions ravis d'échanger.
+              TrackMarshal est un projet <strong className="text-zinc-900">indépendant</strong>,
+              créé <strong className="text-zinc-900">sans lien officiel avec la FFSA ou la FFM</strong>.
+              Le contenu est fourni à titre pédagogique : pour toute démarche officielle (licence,
+              formation homologuée), rapprochez-vous de votre club, de votre ASA ou de la fédération concernée.
+            </p>
+            <p className="mt-4 text-lg leading-relaxed text-zinc-600">
+              Vous représentez une ligue, une ASA, un club ou une école et souhaitez utiliser cet
+              espace pour former vos commissaires ? Écrivez-nous, nous serions ravis d'échanger.
             </p>
             <Link
               href="/contact"
@@ -142,18 +137,19 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* CTA final */}
       <section className="border-t border-zinc-200 bg-zinc-50 py-20 lg:py-28">
         <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="text-xs uppercase tracking-[0.35em] text-[#FF5A1F]">Rejoignez-nous</p>
-            <h2 className="mt-6 text-4xl font-black lg:text-6xl">Prêt à rejoindre la communauté ?</h2>
-            <p className="mt-6 text-xl text-zinc-600">Commissaire ou organisateur, TrackMarshal est fait pour vous.</p>
+            <p className="text-xs uppercase tracking-[0.35em] text-[#FF5A1F]">Commence maintenant</p>
+            <h2 className="mt-6 text-4xl font-black lg:text-6xl">Prêt à apprendre le métier ?</h2>
+            <p className="mt-6 text-xl text-zinc-600">Gratuit, sans inscription, à ton rythme.</p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Link href="/register" className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-black transition hover:scale-[1.02] lg:h-16 lg:text-lg">
-                Créer un compte
+              <Link href="/devenir-commissaire" className="flex h-14 items-center justify-center rounded-2xl bg-[#FF5A1F] px-8 font-black text-white transition hover:scale-[1.02] lg:h-16 lg:text-lg">
+                Commencer à me former
               </Link>
-              <Link href="/events" className="flex h-14 items-center justify-center rounded-2xl border border-zinc-300 bg-white text-zinc-700 px-8 font-black transition hover:border-[#FF5A1F]/40 lg:h-16 lg:text-lg">
-                Voir les événements
+              <Link href="/devenir-commissaire/quiz" className="flex h-14 items-center justify-center rounded-2xl border border-zinc-300 bg-white text-zinc-700 px-8 font-black transition hover:border-[#FF5A1F]/40 lg:h-16 lg:text-lg">
+                Faire un quiz
               </Link>
             </div>
           </div>

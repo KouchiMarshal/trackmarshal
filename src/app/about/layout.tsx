@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "À propos",
+  title: "À propos — la mission de TrackMarshal",
   description:
-    "TrackMarshal est la plateforme qui connecte commissaires de piste et organisateurs d'événements motorsport en France. Découvrez notre mission.",
-  openGraph: {
-    title: "À propos de TrackMarshal",
-    description:
-      "Découvrez la plateforme qui simplifie le recrutement de commissaires de piste pour le motorsport français.",
-    url: "https://www.trackmarshal.app/about",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "À propos de TrackMarshal" }],
-  },
+    "TrackMarshal rend l'apprentissage du métier de commissaire de piste accessible à tous : fiches, quiz et assistant IA, gratuitement. Projet indépendant, sans lien officiel avec la FFSA ou la FFM.",
   alternates: { canonical: "/about" },
+  openGraph: {
+    title: "À propos — la mission de TrackMarshal",
+    description:
+      "Un espace pédagogique gratuit pour apprendre le commissariat de piste. Projet indépendant au service de la communauté motorsport.",
+    url: "https://www.trackmarshal.app/about",
+  },
 };
 
 export default function AboutLayout({ children }: { children: React.ReactNode }) {
