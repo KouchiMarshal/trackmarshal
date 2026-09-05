@@ -12,6 +12,8 @@ const links = [
   { href: "/", label: "Accueil" },
   { href: "/devenir-commissaire", label: "Se former" },
   { href: "/calendrier", label: "Calendrier" },
+  { href: "/devenir-commissaire/clubs", label: "Où s'inscrire" },
+  { href: "/grands-prix-f1", label: "Formule 1" },
   { href: "/actualites", label: "Actualités" },
   { href: "/about", label: "À propos" },
   { href: "/contact", label: "Contact" },
@@ -42,7 +44,7 @@ export default function PublicNavbar() {
             </h1>
           </Link>
 
-          <nav className="hidden items-center gap-8 lg:flex">
+          <nav className="hidden items-center gap-5 lg:flex xl:gap-7">
             {links.map((link) => (
               <Link
                 key={link.href}
