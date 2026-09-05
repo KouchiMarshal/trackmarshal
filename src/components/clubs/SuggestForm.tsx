@@ -72,9 +72,8 @@ export default function SuggestForm({ kind, onDone }: { kind: Kind; onDone?: () 
         <>
           <select value={form.category} onChange={(e) => set("category", e.target.value)} className={`${input} font-bold text-zinc-700`}>
             <option value="">Type…</option>
-            <option value="club">Club / ASA</option>
-            <option value="circuit">Circuit</option>
-            <option value="evenement">Événement / Grand Prix</option>
+            <option value="club">Club / ASA (pour débuter)</option>
+            <option value="circuit">Où officier (circuit, organisateur, épreuve)</option>
           </select>
           <input value={form.region} onChange={(e) => set("region", e.target.value)} placeholder="Région / pays" className={input} />
           <input value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ville" className={input} />

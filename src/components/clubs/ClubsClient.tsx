@@ -19,27 +19,27 @@ type Club = {
   phone: string | null;
 };
 
-type Cat = "club" | "circuit" | "evenement";
+// Deux groupes clairs : "club" (débuter / se licencier) et "officier"
+// (circuits, organisateurs, épreuves — tout ce où l'on va officier).
+type Cat = "club" | "officier";
 const SECTIONS: { key: Cat; label: string; emoji: string }[] = [
-  { key: "club", label: "Débuter — clubs & ASA", emoji: "🎓" },
-  { key: "circuit", label: "Officier sur un circuit", emoji: "🏁" },
-  { key: "evenement", label: "Grands événements", emoji: "🏆" },
+  { key: "club", label: "Clubs & ASA — pour débuter", emoji: "🎓" },
+  { key: "officier", label: "Où officier — circuits, organisateurs, épreuves", emoji: "🏁" },
 ];
 
-// Categorie effective : utilise le champ, sinon deduit du type (retrocompat).
+// Categorie effective : "club" pour les ASA/clubs, "officier" pour tout le reste.
 function catOf(c: Club): Cat {
-  if (c.category === "club" || c.category === "circuit" || c.category === "evenement") return c.category;
+  if (c.category === "club") return "club";
+  if (c.category === "circuit" || c.category === "evenement") return "officier";
   const t = (c.type ?? "").toLowerCase();
-  if (t.includes("grand prix") || t.includes("événement") || t.includes("evenement") || t.includes("organisateur")) return "evenement";
-  if (t.includes("circuit")) return "circuit";
-  return "club";
+  if (t.includes("asa") || t.includes("club") || t.includes("ligue")) return "club";
+  return "officier";
 }
 
 // Différenciation visuelle par catégorie : couleur de badge + liseré.
 const CAT_UI: Record<Cat, { badge: string; bar: string }> = {
   club: { badge: "bg-blue-100 text-blue-700", bar: "border-l-blue-400" },
-  circuit: { badge: "bg-emerald-100 text-emerald-700", bar: "border-l-emerald-400" },
-  evenement: { badge: "bg-[#FF5A1F]/15 text-[#FF5A1F]", bar: "border-l-[#FF5A1F]" },
+  officier: { badge: "bg-emerald-100 text-emerald-700", bar: "border-l-emerald-400" },
 };
 
 // Drapeau du pays (les régions françaises -> 🇫🇷 par défaut).
@@ -96,10 +96,9 @@ export default function ClubsClient({ clubs }: { clubs: Club[] }) {
             <h3 className="text-lg font-black text-zinc-900">{c.name}</h3>
             {place && <p className="mt-0.5 text-sm text-zinc-500">{flagOf(c.region)} {place}</p>}
           </div>
-          <div className="flex shrink-0 flex-col items-end gap-1">
-            {c.type && <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${ui.badge}`}>{c.type}</span>}
-            {c.license_required && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-800">🎫 {c.license_required}</span>}
-          </div>
+          {c.license_required && (
+            <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-800">🎫 {c.license_required}</span>
+          )}
         </div>
 
         {c.description && <p className="mt-3 leading-relaxed text-zinc-600">{c.description}</p>}
@@ -152,9 +151,9 @@ export default function ClubsClient({ clubs }: { clubs: Club[] }) {
           />
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <div className="flex flex-wrap gap-1 rounded-xl border border-zinc-300 bg-white p-1">
-              {(["all", "club", "circuit", "evenement"] as const).map((t) => (
+              {(["all", "club", "officier"] as const).map((t) => (
                 <button key={t} onClick={() => setTab(t)} className={`rounded-lg px-3 py-1.5 text-sm font-bold transition ${tab === t ? "bg-[#FF5A1F] text-white" : "text-zinc-600 hover:bg-zinc-100"}`}>
-                  {t === "all" ? "Tout" : t === "club" ? "Clubs & ASA" : t === "circuit" ? "Circuits" : "Grands événements"}
+                  {t === "all" ? "Tout" : t === "club" ? "Clubs & ASA" : "Où officier"}
                 </button>
               ))}
             </div>

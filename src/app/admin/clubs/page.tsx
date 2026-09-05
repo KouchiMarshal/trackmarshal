@@ -34,9 +34,8 @@ const FIELDS: { key: keyof Club; ph: string }[] = [
 
 const CATS = [
   { v: "", l: "Catégorie…" },
-  { v: "club", l: "Club / ASA (débuter)" },
-  { v: "circuit", l: "Circuit" },
-  { v: "evenement", l: "Événement / Grand Prix" },
+  { v: "club", l: "Club / ASA — pour débuter" },
+  { v: "circuit", l: "Où officier — circuit, organisateur, épreuve" },
 ];
 
 export default function AdminClubsPage() {
