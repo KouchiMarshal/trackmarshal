@@ -38,6 +38,20 @@ const CATS = [
   { v: "circuit", l: "Où officier — circuit, organisateur, épreuve" },
 ];
 
+// Regroupement de la liste admin pour s'y retrouver.
+type Bucket = "gp" | "club" | "officier";
+const BUCKETS: { key: Bucket; emoji: string; label: string; bar: string }[] = [
+  { key: "gp", emoji: "🏆", label: "Grands Prix (page F1)", bar: "border-l-[#FF5A1F]" },
+  { key: "club", emoji: "🎓", label: "Clubs & ASA", bar: "border-l-blue-400" },
+  { key: "officier", emoji: "🏁", label: "Où officier — circuits, organisateurs, épreuves", bar: "border-l-emerald-400" },
+];
+function bucketOf(c: SavedClub): Bucket {
+  const t = (c.type ?? "").toLowerCase();
+  if (t.includes("grand prix")) return "gp";
+  if (c.category === "club" || t.includes("asa") || t.includes("club") || t.includes("ligue")) return "club";
+  return "officier";
+}
+
 export default function AdminClubsPage() {
   const [text, setText] = useState("");
   const [parsing, setParsing] = useState(false);
@@ -48,6 +62,7 @@ export default function AdminClubsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<SavedClub>>({});
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [q, setQ] = useState("");
 
   useEffect(() => { load(); loadSuggestions(); }, []);
 
@@ -177,36 +192,67 @@ export default function AdminClubsPage() {
 
       <div className="mt-10">
         <h2 className="text-xl font-black text-zinc-900">Clubs en ligne ({existing.length})</h2>
-        <div className="mt-3 space-y-2">
-          {existing.length === 0 && <p className="text-sm text-zinc-500">Aucun club pour le moment.</p>}
-          {existing.map((c) => (
-            <div key={c.id} className="rounded-xl border border-zinc-200 bg-white p-3">
-              <div className="flex items-center gap-3">
-                <span className="min-w-0 flex-1 truncate text-sm font-bold text-zinc-900">{c.name}</span>
-                <span className="hidden shrink-0 text-xs text-zinc-500 sm:inline">{[c.city, c.region].filter(Boolean).join(", ")}</span>
-                <button onClick={() => (editingId === c.id ? setEditingId(null) : (setEditingId(c.id), setEditForm({ ...c })))} className="shrink-0 text-xs font-bold text-zinc-600 hover:underline">
-                  {editingId === c.id ? "Fermer" : "Éditer"}
-                </button>
-                <button onClick={() => remove(c.id)} className="shrink-0 text-xs font-bold text-red-600 hover:underline">Suppr.</button>
-              </div>
-              {editingId === c.id && (
-                <div className="mt-3 border-t border-zinc-100 pt-3">
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {FIELDS.map((f) => (
-                      <input key={f.key} value={(editForm[f.key] as string) ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, [f.key]: e.target.value }))} placeholder={f.ph} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
-                    ))}
-                    <select value={editForm.category ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, category: e.target.value }))} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-bold text-zinc-700 sm:col-span-2">
-                      {CATS.map((k) => <option key={k.v} value={k.v}>{k.l}</option>)}
-                    </select>
-                    <input value={editForm.description ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))} placeholder="Courte description" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
-                    <textarea value={editForm.registration_steps ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, registration_steps: e.target.value }))} placeholder="Démarches d'inscription" rows={4} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Rechercher un nom, une ville, une région…"
+          className="mt-3 h-11 w-full rounded-xl border border-zinc-300 bg-white px-4 text-sm outline-none focus:border-[#FF5A1F]"
+        />
+
+        {(() => {
+          const ql = q.toLowerCase().trim();
+          const filtered = existing.filter(
+            (c) => !ql || [c.name, c.city, c.region, c.department, c.type].some((v) => (v ?? "").toLowerCase().includes(ql)),
+          );
+          if (existing.length === 0) return <p className="mt-3 text-sm text-zinc-500">Aucun club pour le moment.</p>;
+          if (filtered.length === 0) return <p className="mt-3 text-sm text-zinc-500">Aucun résultat.</p>;
+
+          return (
+            <div className="mt-4 space-y-8">
+              {BUCKETS.map((b) => {
+                const items = filtered.filter((c) => bucketOf(c) === b.key).sort((a, z) => (a.region ?? "").localeCompare(z.region ?? "") || a.name.localeCompare(z.name));
+                if (items.length === 0) return null;
+                return (
+                  <div key={b.key}>
+                    <p className="mb-2 text-xs font-black uppercase tracking-[0.15em] text-zinc-500">{b.emoji} {b.label} · {items.length}</p>
+                    <div className="space-y-2">
+                      {items.map((c) => (
+                        <div key={c.id} className={`rounded-xl border border-l-4 border-zinc-200 bg-white p-3 ${b.bar}`}>
+                          <div className="flex items-center gap-3">
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-bold text-zinc-900">{c.name}</p>
+                              <p className="truncate text-xs text-zinc-500">{[c.city, c.region].filter(Boolean).join(" · ") || "—"}</p>
+                            </div>
+                            <button onClick={() => (editingId === c.id ? setEditingId(null) : (setEditingId(c.id), setEditForm({ ...c })))} className="shrink-0 text-xs font-bold text-zinc-600 hover:underline">
+                              {editingId === c.id ? "Fermer" : "Éditer"}
+                            </button>
+                            <button onClick={() => remove(c.id)} className="shrink-0 text-xs font-bold text-red-600 hover:underline">Suppr.</button>
+                          </div>
+                          {editingId === c.id && (
+                            <div className="mt-3 border-t border-zinc-100 pt-3">
+                              <div className="grid gap-2 sm:grid-cols-2">
+                                {FIELDS.map((f) => (
+                                  <input key={f.key} value={(editForm[f.key] as string) ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, [f.key]: e.target.value }))} placeholder={f.ph} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
+                                ))}
+                                <select value={editForm.category ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, category: e.target.value }))} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-bold text-zinc-700 sm:col-span-2">
+                                  {CATS.map((k) => <option key={k.v} value={k.v}>{k.l}</option>)}
+                                </select>
+                                <input value={editForm.description ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))} placeholder="Courte description" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+                                <textarea value={editForm.registration_steps ?? ""} onChange={(e) => setEditForm((prev) => ({ ...prev, registration_steps: e.target.value }))} placeholder="Démarches d'inscription" rows={4} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+                              </div>
+                              <button onClick={saveEdit} className="mt-2 rounded-lg bg-[#FF5A1F] px-4 py-2 text-sm font-bold text-white transition hover:opacity-90">Enregistrer</button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <button onClick={saveEdit} className="mt-2 rounded-lg bg-[#FF5A1F] px-4 py-2 text-sm font-bold text-white transition hover:opacity-90">Enregistrer</button>
-                </div>
-              )}
+                );
+              })}
             </div>
-          ))}
-        </div>
+          );
+        })()}
       </div>
     </div>
   );
