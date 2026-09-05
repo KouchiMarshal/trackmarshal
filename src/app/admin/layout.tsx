@@ -5,13 +5,19 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { BarChart3, BookOpen, Building2, FileBadge2, Home, LogOut, MapPin, Megaphone, MessageSquare, ShoppingBag, Users } from "lucide-react";
+import { BarChart3, BookOpen, Building2, FileBadge2, Home, LogOut, Mail, MapPin, Megaphone, MessageSquare, ShoppingBag, Users } from "lucide-react";
 
+// Navigation principale : le cœur actuel du site (formation + annuaire).
 const navItems = [
   { icon: Home, label: "Tableau de bord", href: "/admin" },
   { icon: MapPin, label: "Annuaire clubs", href: "/admin/clubs" },
   { icon: ShoppingBag, label: "Équipement", href: "/admin/equipement" },
+  { icon: Mail, label: "Abonnés", href: "/admin/abonnes" },
   { icon: BarChart3, label: "Analytiques", href: "/admin/analytics" },
+];
+
+// Espace historique : vestiges de l'ancienne marketplace, conservés mais rangés.
+const legacyItems = [
   { icon: FileBadge2, label: "Licences à valider", href: "/admin/licenses" },
   { icon: Users, label: "Tous les commissaires", href: "/admin/commissaires" },
   { icon: BookOpen, label: "CV Lab", href: "/admin/cv-lab" },
@@ -103,6 +109,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               );
             })}
           </nav>
+
+          {/* Espace historique — ancienne marketplace, rangée à part */}
+          <div className="mt-8 border-t border-zinc-200 pt-6">
+            <p className="px-5 pb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">Historique · marketplace</p>
+            <nav className="space-y-1">
+              {legacyItems.map((item) => {
+                const active = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex h-11 w-full items-center gap-3 rounded-xl px-5 text-sm transition ${
+                      active ? "bg-zinc-200 text-zinc-900" : "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700"
+                    }`}
+                  >
+                    <item.icon size={17} />
+                    <span className="font-medium">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
         </div>
 
         <div className="border-t border-zinc-200 p-6">

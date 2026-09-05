@@ -5,6 +5,7 @@ import Image from "next/image";
 import PublicNavbar from "@/components/layout/public-navbar";
 import PublicFooter from "@/components/layout/public-footer";
 import { BookOpen, MessageSquare, Sparkles, Target } from "lucide-react";
+import NewsletterForm from "@/components/marketing/NewsletterForm";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -247,6 +248,25 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Guide gratuit — capture d'email */}
+      <section className="border-t border-zinc-200 bg-gradient-to-b from-orange-50 to-zinc-50 py-20 lg:py-28">
+        <div className="mx-auto max-w-[900px] px-4 text-center sm:px-6 lg:px-8">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#FF5A1F]/30 bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#FF5A1F]">
+            📘 Guide gratuit
+          </span>
+          <h2 className="mt-6 text-3xl font-black leading-tight text-zinc-900 lg:text-5xl">
+            Reçois le guide du débutant commissaire de piste
+          </h2>
+          <p className="mt-4 mx-auto max-w-2xl text-lg leading-relaxed text-zinc-600">
+            L&apos;essentiel pour bien démarrer — le rôle, les drapeaux clés, comment s&apos;inscrire,
+            l&apos;équipement à prévoir. Laisse ton email, on t&apos;envoie le PDF tout de suite.
+          </p>
+          <div className="mt-10">
+            <NewsletterForm source="home" />
           </div>
         </div>
       </section>
