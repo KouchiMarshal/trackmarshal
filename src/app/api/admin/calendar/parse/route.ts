@@ -42,7 +42,8 @@ export async function POST(req: NextRequest) {
       "region": "région française si déductible, sinon null",
       "start_date": "AAAA-MM-JJ",
       "end_date": "AAAA-MM-JJ ou null si un seul jour",
-      "official_url": "URL du site officiel si présente dans le texte, sinon null"
+      "official_url": "URL du site officiel si présente dans le texte, sinon null",
+      "summary": "une phrase factuelle de présentation si déductible, sinon null"
     }
   ]
 }
@@ -70,6 +71,8 @@ ${text}`;
         start_date: e.start_date,
         end_date: typeof e.end_date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(e.end_date) ? e.end_date : null,
         official_url: typeof e.official_url === "string" && /^https?:\/\//.test(e.official_url) ? e.official_url : null,
+        summary: typeof e.summary === "string" ? e.summary.slice(0, 500) : null,
+        registration_steps: null,
       }));
 
     if (events.length === 0) {

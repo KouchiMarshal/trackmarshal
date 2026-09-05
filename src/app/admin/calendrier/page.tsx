@@ -11,6 +11,8 @@ type ParsedEvent = {
   start_date: string;
   end_date: string | null;
   official_url: string | null;
+  summary: string | null;
+  registration_steps: string | null;
 };
 
 type SavedEvent = ParsedEvent & { id: string };
@@ -23,6 +25,8 @@ export default function AdminCalendrierPage() {
   const [review, setReview] = useState<ParsedEvent[]>([]);
   const [existing, setExisting] = useState<SavedEvent[]>([]);
   const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<Partial<SavedEvent>>({});
 
   useEffect(() => { loadExisting(); }, []);
 
@@ -95,6 +99,30 @@ export default function AdminCalendrierPage() {
     if (res.ok) setExisting((prev) => prev.filter((e) => e.id !== id));
   }
 
+  function startEdit(e: SavedEvent) {
+    setEditingId(e.id);
+    setEditForm({ ...e });
+  }
+  function setEdit(key: keyof SavedEvent, value: string) {
+    setEditForm((f) => ({ ...f, [key]: value }));
+  }
+  async function saveEdit() {
+    if (!editingId) return;
+    const res = await fetch("/api/admin/calendar/update", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...(await authHeaders()) },
+      body: JSON.stringify({ id: editingId, fields: editForm }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setEditingId(null);
+      setMsg({ text: "Épreuve mise à jour.", ok: true });
+      loadExisting();
+    } else {
+      setMsg({ text: data.error || "Mise à jour impossible.", ok: false });
+    }
+  }
+
   return (
     <div className="mx-auto max-w-4xl p-6 lg:p-10">
       <h1 className="text-3xl font-black text-zinc-900">Calendrier — import</h1>
@@ -151,6 +179,8 @@ export default function AdminCalendrierPage() {
                   <input value={e.location ?? ""} onChange={(ev) => editRow(i, "location", ev.target.value)} placeholder="Lieu" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
                   <input value={e.region ?? ""} onChange={(ev) => editRow(i, "region", ev.target.value)} placeholder="Région" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
                   <input value={e.official_url ?? ""} onChange={(ev) => editRow(i, "official_url", ev.target.value)} placeholder="https://site-officiel…" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+                  <input value={e.summary ?? ""} onChange={(ev) => editRow(i, "summary", ev.target.value)} placeholder="Résumé (1 phrase)" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+                  <textarea value={e.registration_steps ?? ""} onChange={(ev) => editRow(i, "registration_steps", ev.target.value)} placeholder="Démarches d'inscription (optionnel, une étape par ligne)" rows={3} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
                 </div>
                 <button onClick={() => removeRow(i)} className="mt-2 text-xs font-bold text-red-600 hover:underline">Retirer</button>
               </div>
@@ -165,11 +195,35 @@ export default function AdminCalendrierPage() {
         <div className="mt-3 space-y-2">
           {existing.length === 0 && <p className="text-sm text-zinc-500">Aucune épreuve pour le moment.</p>}
           {existing.map((e) => (
-            <div key={e.id} className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-white p-3">
-              <span className="w-24 shrink-0 text-sm font-bold text-zinc-500">{e.start_date}</span>
-              <span className="min-w-0 flex-1 truncate text-sm font-bold text-zinc-900">{e.title}</span>
-              {e.discipline && <span className="hidden shrink-0 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-bold text-orange-700 sm:inline">{e.discipline}</span>}
-              <button onClick={() => remove(e.id)} className="shrink-0 text-xs font-bold text-red-600 hover:underline">Suppr.</button>
+            <div key={e.id} className="rounded-xl border border-zinc-200 bg-white p-3">
+              <div className="flex items-center gap-3">
+                <span className="w-24 shrink-0 text-sm font-bold text-zinc-500">{e.start_date}</span>
+                <span className="min-w-0 flex-1 truncate text-sm font-bold text-zinc-900">{e.title}</span>
+                {e.discipline && <span className="hidden shrink-0 rounded-full bg-orange-100 px-2 py-0.5 text-xs font-bold text-orange-700 sm:inline">{e.discipline}</span>}
+                <button onClick={() => (editingId === e.id ? setEditingId(null) : startEdit(e))} className="shrink-0 text-xs font-bold text-zinc-600 hover:underline">
+                  {editingId === e.id ? "Fermer" : "Éditer"}
+                </button>
+                <button onClick={() => remove(e.id)} className="shrink-0 text-xs font-bold text-red-600 hover:underline">Suppr.</button>
+              </div>
+
+              {editingId === e.id && (
+                <div className="mt-3 border-t border-zinc-100 pt-3">
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <input value={editForm.title ?? ""} onChange={(ev) => setEdit("title", ev.target.value)} placeholder="Titre" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm font-bold" />
+                    <input value={editForm.discipline ?? ""} onChange={(ev) => setEdit("discipline", ev.target.value)} placeholder="Discipline" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
+                    <input value={editForm.start_date ?? ""} onChange={(ev) => setEdit("start_date", ev.target.value)} placeholder="AAAA-MM-JJ" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
+                    <input value={editForm.end_date ?? ""} onChange={(ev) => setEdit("end_date", ev.target.value)} placeholder="Fin (AAAA-MM-JJ)" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
+                    <input value={editForm.location ?? ""} onChange={(ev) => setEdit("location", ev.target.value)} placeholder="Lieu" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
+                    <input value={editForm.region ?? ""} onChange={(ev) => setEdit("region", ev.target.value)} placeholder="Région" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm" />
+                    <input value={editForm.official_url ?? ""} onChange={(ev) => setEdit("official_url", ev.target.value)} placeholder="https://site-officiel…" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+                    <input value={editForm.summary ?? ""} onChange={(ev) => setEdit("summary", ev.target.value)} placeholder="Résumé (1 phrase)" className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+                    <textarea value={editForm.registration_steps ?? ""} onChange={(ev) => setEdit("registration_steps", ev.target.value)} placeholder="Démarches d'inscription (une étape par ligne)" rows={4} className="rounded-lg border border-zinc-300 px-3 py-2 text-sm sm:col-span-2" />
+                  </div>
+                  <button onClick={saveEdit} className="mt-2 rounded-lg bg-[#FF5A1F] px-4 py-2 text-sm font-bold text-white transition hover:opacity-90">
+                    Enregistrer
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>

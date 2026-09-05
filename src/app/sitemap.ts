@@ -27,10 +27,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/cgu`, priority: 0.2, changeFrequency: "yearly" },
   ];
 
-  const [{ data: events }, { data: marshals }] = await Promise.all([
+  const [{ data: events }, { data: marshals }, calendarRes] = await Promise.all([
     supabaseAdmin.from("events").select("slug, updated_at"),
     supabaseAdmin.from("profiles").select("slug, id, updated_at").eq("role", "marshal"),
+    supabaseAdmin.from("calendar_events").select("slug, start_date").not("slug", "is", null),
   ]);
+
+  const calendarPages: MetadataRoute.Sitemap = ((calendarRes?.data as { slug: string }[] | null) || [])
+    .filter((c) => c.slug)
+    .map((c) => ({
+      url: `${BASE}/calendrier/${c.slug}`,
+      priority: 0.7,
+      changeFrequency: "weekly" as const,
+    }));
 
   const eventPages: MetadataRoute.Sitemap = (events || []).map((e) => ({
     url: `${BASE}/events/${e.slug}`,
@@ -46,5 +55,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly",
   }));
 
-  return [...staticPages, ...eventPages, ...marshalPages];
+  return [...staticPages, ...calendarPages, ...eventPages, ...marshalPages];
 }

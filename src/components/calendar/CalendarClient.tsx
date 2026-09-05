@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 type CalEvent = {
   id: string;
+  slug: string | null;
   title: string;
   discipline: string | null;
   location: string | null;
@@ -96,7 +98,10 @@ export default function CalendarClient({ events }: { events: CalEvent[] }) {
                       {monthLabel(e.start_date)}
                     </p>
                   )}
-                  <div className="flex flex-col gap-4 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center">
+                  <Link
+                    href={e.slug ? `/calendrier/${e.slug}` : "#"}
+                    className="flex flex-col gap-4 rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm transition hover:border-[#FF5A1F]/40 hover:shadow-md sm:flex-row sm:items-center"
+                  >
                     <div className="flex w-full shrink-0 items-center gap-3 sm:w-32 sm:flex-col sm:items-start sm:gap-0">
                       <p className="text-lg font-black text-zinc-900">{fmtDay(e.start_date)}</p>
                       {e.end_date && e.end_date !== e.start_date && (
@@ -112,17 +117,8 @@ export default function CalendarClient({ events }: { events: CalEvent[] }) {
                         {e.location && <span>📍 {e.location}{e.region ? `, ${e.region}` : ""}</span>}
                       </div>
                     </div>
-                    {e.official_url && (
-                      <a
-                        href={e.official_url}
-                        target="_blank"
-                        rel="noopener nofollow"
-                        className="shrink-0 rounded-xl bg-[#FF5A1F] px-4 py-2.5 text-center text-sm font-bold text-white transition hover:opacity-90"
-                      >
-                        Site officiel →
-                      </a>
-                    )}
-                  </div>
+                    <span className="shrink-0 text-sm font-bold text-[#FF5A1F]">Infos & inscription →</span>
+                  </Link>
                 </div>
               );
             })}
