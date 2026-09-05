@@ -26,6 +26,16 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+const FLAGS: Record<string, string> = {
+  belgique: "🇧🇪", monaco: "🇲🇨", "royaume-uni": "🇬🇧", "grande-bretagne": "🇬🇧",
+  angleterre: "🇬🇧", canada: "🇨🇦", italie: "🇮🇹", espagne: "🇪🇸", suisse: "🇨🇭",
+  allemagne: "🇩🇪", "pays-bas": "🇳🇱", autriche: "🇦🇹", "états-unis": "🇺🇸", usa: "🇺🇸",
+};
+function flagOf(region?: string | null): string {
+  if (!region) return "🏁";
+  return FLAGS[region.toLowerCase().trim()] ?? "🇫🇷";
+}
+
 const steps = [
   { n: "01", t: "Deviens commissaire dans ton pays", d: "On ne commence jamais en F1. En France, rejoins une ASA (auto) via ta ligue FFSA, suis la formation et obtiens ta licence de commissaire." },
   { n: "02", t: "Prends de l'expérience et monte en grade", d: "Officie régulièrement sur des épreuves nationales, puis vise un grade supérieur. Un Grand Prix exige généralement une licence de niveau international." },
@@ -114,7 +124,7 @@ export default async function GrandsPrixF1Page() {
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
                       <h3 className="text-lg font-black text-zinc-900">{c.name}</h3>
-                      {(c.city || c.region) && <p className="mt-0.5 text-sm text-zinc-500">{[c.city, c.region].filter(Boolean).join(" · ")}</p>}
+                      {(c.city || c.region) && <p className="mt-0.5 text-sm text-zinc-500">{flagOf(c.region)} {[c.city, c.region].filter(Boolean).join(" · ")}</p>}
                     </div>
                     {c.license_required && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-800">🎫 {c.license_required}</span>}
                   </div>

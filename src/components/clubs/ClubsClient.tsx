@@ -35,6 +35,24 @@ function catOf(c: Club): Cat {
   return "club";
 }
 
+// Différenciation visuelle par catégorie : couleur de badge + liseré.
+const CAT_UI: Record<Cat, { badge: string; bar: string }> = {
+  club: { badge: "bg-blue-100 text-blue-700", bar: "border-l-blue-400" },
+  circuit: { badge: "bg-emerald-100 text-emerald-700", bar: "border-l-emerald-400" },
+  evenement: { badge: "bg-[#FF5A1F]/15 text-[#FF5A1F]", bar: "border-l-[#FF5A1F]" },
+};
+
+// Drapeau du pays (les régions françaises -> 🇫🇷 par défaut).
+const FLAGS: Record<string, string> = {
+  belgique: "🇧🇪", monaco: "🇲🇨", "royaume-uni": "🇬🇧", "grande-bretagne": "🇬🇧",
+  angleterre: "🇬🇧", canada: "🇨🇦", italie: "🇮🇹", espagne: "🇪🇸", suisse: "🇨🇭",
+  allemagne: "🇩🇪", "pays-bas": "🇳🇱", autriche: "🇦🇹", luxembourg: "🇱🇺",
+};
+function flagOf(region: string | null): string {
+  if (!region) return "🇫🇷";
+  return FLAGS[region.toLowerCase().trim()] ?? "🇫🇷";
+}
+
 export default function ClubsClient({ clubs }: { clubs: Club[] }) {
   const [search, setSearch] = useState("");
   const [region, setRegion] = useState("Toutes");
@@ -60,15 +78,17 @@ export default function ClubsClient({ clubs }: { clubs: Club[] }) {
   function card(c: Club) {
     const place = [c.city, c.department, c.region].filter(Boolean).join(" · ");
     const isOpen = open === c.id;
+    const cat = catOf(c);
+    const ui = CAT_UI[cat];
     return (
-      <div key={c.id} className="rounded-[24px] border border-zinc-200 bg-white p-5 shadow-sm">
+      <div key={c.id} className={`rounded-[24px] border border-l-[5px] border-zinc-200 bg-white p-5 shadow-sm ${ui.bar}`}>
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h3 className="text-lg font-black text-zinc-900">{c.name}</h3>
-            {place && <p className="mt-0.5 text-sm text-zinc-500">{place}</p>}
+            {place && <p className="mt-0.5 text-sm text-zinc-500">{flagOf(c.region)} {place}</p>}
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
-            {c.type && <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-bold text-orange-700">{c.type}</span>}
+            {c.type && <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${ui.badge}`}>{c.type}</span>}
             {c.license_required && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-800">🎫 {c.license_required}</span>}
           </div>
         </div>
