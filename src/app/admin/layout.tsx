@@ -28,10 +28,10 @@ const legacyItems = [
 
 const mobileNavItems = [
   { icon: Home, label: "Accueil", href: "/admin" },
-  { icon: FileBadge2, label: "Licences", href: "/admin/licenses" },
-  { icon: BookOpen, label: "CV Lab", href: "/admin/cv-lab" },
-  { icon: MessageSquare, label: "Messages", href: "/admin/messages" },
-  { icon: Users, label: "Commissaires", href: "/admin/commissaires" },
+  { icon: MapPin, label: "Annuaire", href: "/admin/clubs" },
+  { icon: ShoppingBag, label: "Équip.", href: "/admin/equipement" },
+  { icon: Mail, label: "Abonnés", href: "/admin/abonnes" },
+  { icon: BarChart3, label: "Stats", href: "/admin/analytics" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
