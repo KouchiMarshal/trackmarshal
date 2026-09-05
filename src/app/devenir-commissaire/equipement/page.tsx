@@ -133,7 +133,7 @@ const shopItems: { title: string; tip: string; url: string }[] = [
   { title: "Coupe-sangle & sifflet", tip: "Pour dégager rapidement un pilote et se signaler.", url: "#" },
   { title: "Radio & oreillette", tip: "Souvent fournie, mais une oreillette perso améliore le confort en poste.", url: "#" },
   { title: "Lampe frontale", tip: "Indispensable pour les épreuves de nuit et les liaisons.", url: "#" },
-  { title: "Sac commissaire", tip: "Pour tout emporter, prêt dès la veille de l'épreuve.", url: "#" },
+  { title: "Sac commissaire", tip: "Pour tout emporter, prêt dès la veille de l'épreuve.", url: "https://amzn.to/4hbiDi9" },
 ];
 
 export default function EquipementPage() {
