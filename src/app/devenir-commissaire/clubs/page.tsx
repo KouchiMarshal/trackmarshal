@@ -29,6 +29,27 @@ export const dynamic = "force-dynamic";
 // procédure d'inscription (HowTo) et les questions fréquentes (FAQPage).
 const PAGE_URL = "https://www.trackmarshal.app/devenir-commissaire/clubs";
 
+// Source unique : sert à la fois à l'affichage (section visible) et au balisage
+// FAQPage. Les deux DOIVENT rester synchronisés (exigence Google/IA).
+const clubsFaqs = [
+  {
+    q: "Comment devenir commissaire de piste en France ?",
+    a: "Il faut se rapprocher d'une ASA (Association Sportive Automobile) en auto ou d'un club FFM en moto, suivre une formation initiale de commissaire, obtenir une licence de commissaire, puis officier sur des épreuves. L'activité est bénévole et ouverte à tous, sans expérience préalable.",
+  },
+  {
+    q: "Faut-il une licence pour être commissaire de piste ?",
+    a: "Oui. Une licence de commissaire est nécessaire : licence FFSA pour le sport automobile, licence FFM pour la moto. Elle est généralement délivrée après la formation initiale, via la ligue régionale ou l'ASA / le club.",
+  },
+  {
+    q: "Être commissaire de piste, est-ce payant ?",
+    a: "L'activité est bénévole. La licence peut avoir un coût modéré selon la fédération et la ligue ; de nombreux clubs la prennent en charge et défraient les commissaires (repas, parfois déplacement).",
+  },
+  {
+    q: "Où trouver une ASA ou un club pour s'inscrire ?",
+    a: "Le répertoire ci-dessus recense les ASA, clubs, circuits et organisateurs par région, avec les démarches et les contacts officiels lorsqu'ils sont publics. Filtre par région pour trouver l'interlocuteur le plus proche.",
+  },
+];
+
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
@@ -57,28 +78,11 @@ const structuredData = {
     },
     {
       "@type": "FAQPage",
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: "Comment devenir commissaire de piste en France ?",
-          acceptedAnswer: { "@type": "Answer", text: "Il faut se rapprocher d'une ASA (Association Sportive Automobile) en auto ou d'un club FFM en moto, suivre une formation initiale de commissaire, obtenir une licence de commissaire, puis officier sur des épreuves. L'activité est bénévole et ouverte à tous, sans expérience préalable." },
-        },
-        {
-          "@type": "Question",
-          name: "Faut-il une licence pour être commissaire de piste ?",
-          acceptedAnswer: { "@type": "Answer", text: "Oui. Une licence de commissaire est nécessaire : licence FFSA pour le sport automobile, licence FFM pour la moto. Elle est généralement délivrée après la formation initiale, via la ligue régionale ou l'ASA/le club." },
-        },
-        {
-          "@type": "Question",
-          name: "Être commissaire de piste, est-ce payant ?",
-          acceptedAnswer: { "@type": "Answer", text: "L'activité est bénévole. La licence peut avoir un coût modéré selon la fédération et la ligue ; de nombreux clubs la prennent en charge et défraient les commissaires (repas, parfois déplacement)." },
-        },
-        {
-          "@type": "Question",
-          name: "Où trouver une ASA ou un club pour s'inscrire ?",
-          acceptedAnswer: { "@type": "Answer", text: "Le répertoire « Où s'inscrire » de TrackMarshal recense les ASA, clubs, circuits et organisateurs par région, avec les démarches et les contacts officiels lorsqu'ils sont publics." },
-        },
-      ],
+      mainEntity: clubsFaqs.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
     },
   ],
 };
@@ -115,6 +119,31 @@ export default async function ClubsPage() {
       </section>
 
       <ClubsClient clubs={clubs} />
+
+      {/* FAQ visible — synchronisée avec le balisage FAQPage ci-dessus */}
+      <section className="border-t border-zinc-200 bg-white py-16 lg:py-24">
+        <div className="mx-auto max-w-[900px] px-4 sm:px-6 lg:px-8">
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF5A1F]">Questions fréquentes</p>
+          <h2 className="mt-4 text-3xl font-black text-zinc-900 lg:text-4xl">S&apos;inscrire comme commissaire</h2>
+          <div className="mt-8 space-y-3">
+            {clubsFaqs.map((faq) => (
+              <details key={faq.q} className="group rounded-2xl border border-zinc-200 bg-zinc-50 p-5 open:bg-white">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-black text-zinc-900">
+                  {faq.q}
+                  <span className="shrink-0 text-[#FF5A1F] transition group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-3 leading-relaxed text-zinc-600">{faq.a}</p>
+              </details>
+            ))}
+          </div>
+          <p className="mt-6 text-sm text-zinc-500">
+            Tu débutes ?{" "}
+            <a href="/devenir-commissaire/devenir-commissaire" className="font-bold text-[#FF5A1F] hover:underline">
+              Vois le guide complet « Comment devenir commissaire de piste » →
+            </a>
+          </p>
+        </div>
+      </section>
 
       <PublicFooter />
     </main>
