@@ -112,9 +112,6 @@ export default async function ClubsPage() {
             Circuits, organisateurs, ASA (auto) et clubs FFM (moto) : retrouve <strong className="text-zinc-900">où et comment
             t'inscrire</strong> pour officier, avec les démarches et les liens officiels. Filtre par région et trouve le tien.
           </p>
-          <a href="/grands-prix-f1" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#FF5A1F] hover:underline">
-            🏎️ Tu vises la Formule 1 ? Vois le guide « Commissaire en F1 » →
-          </a>
         </div>
       </section>
 

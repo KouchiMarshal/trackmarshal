@@ -84,7 +84,7 @@ export default function AdminDashboard() {
           {[
             { label: "Espace pédagogique", href: "/devenir-commissaire" },
             { label: "Où s'inscrire", href: "/devenir-commissaire/clubs" },
-            { label: "Commissaire F1", href: "/grands-prix-f1" },
+            { label: "Commissaire F1 (masqué)", href: "/grands-prix-f1" },
           ].map((l) => (
             <Link key={l.href} href={l.href} target="_blank" className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-bold text-zinc-700 transition hover:border-[#FF5A1F]/40 hover:text-[#FF5A1F]">
               {l.label} <ExternalLink size={13} />

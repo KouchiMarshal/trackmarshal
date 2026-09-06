@@ -22,7 +22,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/devenir-commissaire/quiz`, priority: 0.6, changeFrequency: "monthly" },
     // Annuaire
     { url: `${BASE}/devenir-commissaire/clubs`, priority: 0.9, changeFrequency: "weekly" },
-    { url: `${BASE}/grands-prix-f1`, priority: 0.8, changeFrequency: "weekly" },
     // Autres
     { url: `${BASE}/about`, priority: 0.5, changeFrequency: "monthly" },
     { url: `${BASE}/partenaires`, priority: 0.5, changeFrequency: "monthly" },

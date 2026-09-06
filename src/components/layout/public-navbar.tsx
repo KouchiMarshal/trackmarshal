@@ -12,7 +12,6 @@ const links = [
   { href: "/", label: "Accueil" },
   { href: "/devenir-commissaire", label: "Se former" },
   { href: "/devenir-commissaire/clubs", label: "Où s'inscrire" },
-  { href: "/grands-prix-f1", label: "Formule 1" },
   { href: "/actualites", label: "Actualités" },
   { href: "/about", label: "À propos" },
   { href: "/contact", label: "Contact" },
