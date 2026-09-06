@@ -39,6 +39,57 @@ type GP = {
   registration_steps?: string | null; website?: string | null; email?: string | null;
 };
 
+// Calendrier F1 de référence pour le suivi de complétion (ajuste-le selon
+// l'année). `match` = mots-clés cherchés dans le nom / pays / ville d'une
+// entrée en base pour la relier au GP correspondant.
+const F1_CALENDAR: { gp: string; flag: string; match: string[] }[] = [
+  { gp: "Australie", flag: "🇦🇺", match: ["australie", "melbourne"] },
+  { gp: "Chine", flag: "🇨🇳", match: ["chine", "shanghai"] },
+  { gp: "Japon", flag: "🇯🇵", match: ["japon", "suzuka"] },
+  { gp: "Bahreïn", flag: "🇧🇭", match: ["bahre", "sakhir"] },
+  { gp: "Arabie Saoudite", flag: "🇸🇦", match: ["arabie", "jeddah", "djeddah"] },
+  { gp: "Miami (USA)", flag: "🇺🇸", match: ["miami"] },
+  { gp: "Canada", flag: "🇨🇦", match: ["canada", "montr"] },
+  { gp: "Monaco", flag: "🇲🇨", match: ["monaco"] },
+  { gp: "Espagne (Barcelone)", flag: "🇪🇸", match: ["barcelone", "catalogne"] },
+  { gp: "Madrid (Espagne)", flag: "🇪🇸", match: ["madrid"] },
+  { gp: "Autriche", flag: "🇦🇹", match: ["autriche", "spielberg", "red bull ring"] },
+  { gp: "Grande-Bretagne", flag: "🇬🇧", match: ["grande-bretagne", "angleterre", "silverstone", "britannique", "royaume"] },
+  { gp: "Belgique", flag: "🇧🇪", match: ["belgique", "spa"] },
+  { gp: "Hongrie", flag: "🇭🇺", match: ["hongrie", "hungaro", "budapest"] },
+  { gp: "Pays-Bas", flag: "🇳🇱", match: ["pays-bas", "pays bas", "zandvoort", "hollande", "erlandais"] },
+  { gp: "Italie (Monza)", flag: "🇮🇹", match: ["monza", "italie"] },
+  { gp: "Azerbaïdjan", flag: "🇦🇿", match: ["azerba", "bakou", "baku"] },
+  { gp: "Singapour", flag: "🇸🇬", match: ["singapour"] },
+  { gp: "États-Unis (Austin)", flag: "🇺🇸", match: ["austin", "cota", "texas"] },
+  { gp: "Mexique", flag: "🇲🇽", match: ["mexique", "mexico"] },
+  { gp: "Brésil", flag: "🇧🇷", match: ["brésil", "bresil", "sao paulo", "são paulo", "interlagos"] },
+  { gp: "Las Vegas (USA)", flag: "🇺🇸", match: ["vegas"] },
+  { gp: "Qatar", flag: "🇶🇦", match: ["qatar", "lusail", "losail"] },
+  { gp: "Abu Dhabi", flag: "🇦🇪", match: ["abu dhabi", "yas marina", "émirats", "emirats"] },
+];
+
+function hasRegInfo(c: GP): boolean {
+  return Boolean((c.registration_steps && c.registration_steps.trim()) || c.website || c.email);
+}
+
+// Compare le calendrier de référence aux entrées en base.
+function analyzeCalendar(gps: GP[]) {
+  const missing: { gp: string; flag: string }[] = []; // en base mais sans démarche
+  const toAdd: { gp: string; flag: string }[] = []; // pas encore en base
+  let done = 0;
+  for (const cal of F1_CALENDAR) {
+    const entry = gps.find((c) => {
+      const hay = `${c.name ?? ""} ${c.region ?? ""} ${c.city ?? ""}`.toLowerCase();
+      return cal.match.some((k) => hay.includes(k));
+    });
+    if (!entry) toAdd.push({ gp: cal.gp, flag: cal.flag });
+    else if (!hasRegInfo(entry)) missing.push({ gp: cal.gp, flag: cal.flag });
+    else done++;
+  }
+  return { missing, toAdd, done };
+}
+
 export default function F1AdminGate() {
   const [status, setStatus] = useState<"checking" | "denied" | "allowed">("checking");
   const [gps, setGps] = useState<GP[]>([]);
@@ -89,6 +140,60 @@ export default function F1AdminGate() {
       <div className="bg-amber-500 px-4 py-2 text-center text-sm font-bold text-white">
         👁️ Aperçu admin — cette page est masquée au public pour l&apos;instant.
       </div>
+
+      {/* Suivi de complétion (admin) : GP à renseigner */}
+      {(() => {
+        const { missing, toAdd, done } = analyzeCalendar(gps);
+        return (
+          <section className="border-b border-zinc-200 bg-white">
+            <div className="mx-auto max-w-[1000px] px-4 py-8 sm:px-6 lg:px-8">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <h2 className="text-lg font-black text-zinc-900">🗒️ Suivi — GP à renseigner</h2>
+                <p className="text-sm font-bold text-zinc-500">
+                  {done}/{F1_CALENDAR.length} complet{done > 1 ? "s" : ""}
+                </p>
+              </div>
+              <p className="mt-1 text-sm text-zinc-500">
+                Basé sur le calendrier F1 de référence. « Renseigné » = au moins des démarches, un site ou un email d&apos;inscription.
+              </p>
+
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                {/* Pas encore ajoutés */}
+                <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                  <p className="text-sm font-black text-zinc-800">⬜ Pas encore ajoutés <span className="text-zinc-400">({toAdd.length})</span></p>
+                  {toAdd.length === 0 ? (
+                    <p className="mt-2 text-sm text-zinc-500">Tous les GP du calendrier sont en base. 🎉</p>
+                  ) : (
+                    <ul className="mt-2 space-y-1">
+                      {toAdd.map((g) => (
+                        <li key={g.gp} className="text-sm text-zinc-700">{g.flag} {g.gp}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                {/* En base mais sans démarche d'inscription */}
+                <div className="rounded-2xl border border-red-200 bg-red-50 p-4">
+                  <p className="text-sm font-black text-red-800">⚠️ Ajoutés mais sans « comment s&apos;inscrire » <span className="text-red-400">({missing.length})</span></p>
+                  {missing.length === 0 ? (
+                    <p className="mt-2 text-sm text-red-600/80">Aucun — tous les GP présents ont une info d&apos;inscription.</p>
+                  ) : (
+                    <ul className="mt-2 space-y-1">
+                      {missing.map((g) => (
+                        <li key={g.gp} className="text-sm text-red-900">{g.flag} {g.gp}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              <p className="mt-4 text-xs text-zinc-400">
+                Complète les infos depuis <a href="/admin/clubs" className="font-bold text-[#FF5A1F] hover:underline">Admin → Annuaire</a> (les GP y sont gérés). Ce calendrier de référence est modifiable dans le code si la saison change.
+              </p>
+            </div>
+          </section>
+        );
+      })()}
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-zinc-50 pt-16 lg:pt-24">
