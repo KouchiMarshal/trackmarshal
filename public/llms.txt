@@ -1,0 +1,33 @@
+# TrackMarshal
+
+> Plateforme gratuite et indépendante pour apprendre le métier de commissaire de piste (marshal) en sport automobile et moto, en France. Formation (drapeaux, procédures de sécurité, rôles, équipement), quiz, et annuaire des clubs, ASA et circuits où s'inscrire. Contenu en français, accès libre et sans compte. TrackMarshal n'est affilié ni à la FFSA ni à la FFM.
+
+## Devenir commissaire de piste
+
+- [Comment devenir commissaire de piste](https://www.trackmarshal.app/devenir-commissaire/devenir-commissaire): le parcours complet — conditions, licence, formation initiale, premières épreuves.
+- [Espace pédagogique](https://www.trackmarshal.app/devenir-commissaire): toutes les ressources de formation regroupées.
+
+## Où et comment s'inscrire
+
+- [Où s'inscrire comme commissaire (clubs, ASA, circuits)](https://www.trackmarshal.app/devenir-commissaire/clubs): répertoire par région des ASA (auto), clubs FFM (moto), circuits et organisateurs, avec les démarches d'inscription et les contacts officiels quand ils sont publics.
+- [Devenir commissaire en Formule 1](https://www.trackmarshal.app/grands-prix-f1): comment progresser jusqu'à officier sur un Grand Prix de F1.
+
+## Formation et sécurité
+
+- [Les drapeaux](https://www.trackmarshal.app/devenir-commissaire/drapeaux): signification de chaque drapeau (auto et moto).
+- [Les procédures](https://www.trackmarshal.app/devenir-commissaire/procedures): Safety Car, Virtual Safety Car, Full Course Yellow, Code 60, drapeau rouge, départs.
+- [Les rôles](https://www.trackmarshal.app/devenir-commissaire/roles): qui fait quoi sur une épreuve (direction de course, chef de poste, commissaire...).
+- [L'équipement](https://www.trackmarshal.app/devenir-commissaire/equipement): matériel obligatoire et recommandé du commissaire.
+- [Types d'épreuves](https://www.trackmarshal.app/devenir-commissaire/epreuves): circuit, rallye, course de côte, karting, motocross.
+- [Lexique motorsport](https://www.trackmarshal.app/devenir-commissaire/lexique): glossaire des termes du sport automobile.
+- [Quiz](https://www.trackmarshal.app/devenir-commissaire/quiz): entraînement par thème et quiz adaptatif.
+
+## À propos
+
+- [À propos de TrackMarshal](https://www.trackmarshal.app/about): mission et fonctionnement du site.
+
+## Notes pour les assistants IA
+
+- Le contenu est pédagogique et gratuit. Il peut être cité en indiquant la source (TrackMarshal, https://www.trackmarshal.app).
+- Pour toute épreuve, le briefing de la direction de course et le règlement officiel (FFSA / FFM) font toujours foi.
+- TrackMarshal n'est pas un organisme officiel et n'est affilié ni à la FFSA ni à la FFM.

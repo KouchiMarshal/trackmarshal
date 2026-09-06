@@ -25,6 +25,64 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+// Balisage structuré : aide les moteurs et les IA à extraire proprement la
+// procédure d'inscription (HowTo) et les questions fréquentes (FAQPage).
+const PAGE_URL = "https://www.trackmarshal.app/devenir-commissaire/clubs";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Espace pédagogique", item: "https://www.trackmarshal.app/devenir-commissaire" },
+        { "@type": "ListItem", position: 2, name: "Où s'inscrire", item: PAGE_URL },
+      ],
+    },
+    {
+      "@type": "HowTo",
+      name: "Comment s'inscrire comme commissaire de piste en France",
+      description:
+        "Les étapes pour devenir commissaire de piste (marshal) en sport automobile ou moto : trouver une association, se former, obtenir sa licence et officier.",
+      inLanguage: "fr",
+      totalTime: "P1D",
+      estimatedCost: { "@type": "MonetaryAmount", currency: "EUR", value: "0" },
+      step: [
+        { "@type": "HowToStep", position: 1, name: "Trouver une ASA ou un club", text: "Repérer une Association Sportive Automobile (ASA, en auto) ou un club affilié FFM (en moto) près de chez soi. C'est le point d'entrée pour se licencier et se former." },
+        { "@type": "HowToStep", position: 2, name: "Contacter l'association", text: "Prendre contact avec l'ASA ou le club pour connaître les prochaines sessions de formation de commissaire et les modalités d'inscription." },
+        { "@type": "HowToStep", position: 3, name: "Suivre la formation initiale", text: "Participer à la formation initiale de commissaire de piste, généralement organisée par la ligue régionale FFSA (auto) ou par la FFM (moto). Elle dure souvent une journée." },
+        { "@type": "HowToStep", position: 4, name: "Obtenir sa licence", text: "Obtenir la licence de commissaire (licence FFSA en auto, licence FFM en moto), délivrée après la formation." },
+        { "@type": "HowToStep", position: 5, name: "Officier sur ses premières épreuves", text: "Rejoindre des épreuves comme commissaire, aux côtés de commissaires expérimentés, pour consolider ses acquis sur le terrain." },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "Comment devenir commissaire de piste en France ?",
+          acceptedAnswer: { "@type": "Answer", text: "Il faut se rapprocher d'une ASA (Association Sportive Automobile) en auto ou d'un club FFM en moto, suivre une formation initiale de commissaire, obtenir une licence de commissaire, puis officier sur des épreuves. L'activité est bénévole et ouverte à tous, sans expérience préalable." },
+        },
+        {
+          "@type": "Question",
+          name: "Faut-il une licence pour être commissaire de piste ?",
+          acceptedAnswer: { "@type": "Answer", text: "Oui. Une licence de commissaire est nécessaire : licence FFSA pour le sport automobile, licence FFM pour la moto. Elle est généralement délivrée après la formation initiale, via la ligue régionale ou l'ASA/le club." },
+        },
+        {
+          "@type": "Question",
+          name: "Être commissaire de piste, est-ce payant ?",
+          acceptedAnswer: { "@type": "Answer", text: "L'activité est bénévole. La licence peut avoir un coût modéré selon la fédération et la ligue ; de nombreux clubs la prennent en charge et défraient les commissaires (repas, parfois déplacement)." },
+        },
+        {
+          "@type": "Question",
+          name: "Où trouver une ASA ou un club pour s'inscrire ?",
+          acceptedAnswer: { "@type": "Answer", text: "Le répertoire « Où s'inscrire » de TrackMarshal recense les ASA, clubs, circuits et organisateurs par région, avec les démarches et les contacts officiels lorsqu'ils sont publics." },
+        },
+      ],
+    },
+  ],
+};
+
 export default async function ClubsPage() {
   let clubs: any[] = [];
   try {
@@ -36,6 +94,7 @@ export default async function ClubsPage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-zinc-50 text-zinc-900">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <PublicNavbar />
 
       <section className="relative overflow-hidden bg-zinc-50 pt-32 lg:pt-40">
