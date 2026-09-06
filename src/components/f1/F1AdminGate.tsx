@@ -73,6 +73,20 @@ function hasRegInfo(c: GP): boolean {
   return Boolean((c.registration_steps && c.registration_steps.trim()) || c.website || c.email);
 }
 
+// Dates 2027 UNIQUEMENT si officiellement fixées (vérifié en sept. 2026).
+// Le calendrier F1 2027 complet n'est pas encore officiel (annonce à l'automne
+// 2026) : on n'ajoute ici QUE les GP dont la date est déjà confirmée par
+// contrat. À compléter au fil des confirmations officielles.
+const OFFICIAL_2027_DATES: { match: string[]; label: string }[] = [
+  { match: ["monaco"], label: "4–6 juin 2027" },
+  { match: ["grande-bretagne", "silverstone", "angleterre", "britannique", "royaume"], label: "2–4 juillet 2027" },
+];
+function official2027Date(c: GP): string | null {
+  const hay = `${c.name ?? ""} ${c.region ?? ""} ${c.city ?? ""}`.toLowerCase();
+  const hit = OFFICIAL_2027_DATES.find((d) => d.match.some((k) => hay.includes(k)));
+  return hit ? hit.label : null;
+}
+
 // Compare le calendrier de référence aux entrées en base.
 function analyzeCalendar(gps: GP[]) {
   const missing: { gp: string; flag: string }[] = []; // en base mais sans démarche
@@ -249,6 +263,10 @@ export default function F1AdminGate() {
       <section className="border-t border-zinc-200 bg-zinc-50 py-16 lg:py-24">
         <div className="mx-auto max-w-[1000px] px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Où s&apos;inscrire — Grands Prix &amp; grands événements</h2>
+          <p className="mt-2 text-sm text-zinc-500">
+            📅 Les dates 2027 ne sont affichées que lorsqu&apos;elles sont <strong className="text-zinc-700">officiellement confirmées</strong>.
+            À ce jour, seules Monaco et Silverstone le sont ; le calendrier F1 2027 complet est annoncé à l&apos;automne 2026.
+          </p>
 
           {gps.length === 0 ? (
             <div className="mt-8 rounded-[28px] border border-dashed border-zinc-300 bg-white p-10 text-center">
@@ -264,6 +282,11 @@ export default function F1AdminGate() {
                     <div className="min-w-0">
                       <h3 className="text-lg font-black text-zinc-900">{c.name}</h3>
                       {(c.city || c.region) && <p className="mt-0.5 text-sm text-zinc-500">{flagOf(c.region)} {[c.city, c.region].filter(Boolean).join(" · ")}</p>}
+                      {official2027Date(c) && (
+                        <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
+                          📅 {official2027Date(c)} <span className="font-medium text-green-600">· date 2027 confirmée</span>
+                        </p>
+                      )}
                     </div>
                     {c.license_required && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-800">🎫 {c.license_required}</span>}
                   </div>
