@@ -27,13 +27,24 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const FLAGS: Record<string, string> = {
-  belgique: "🇧🇪", monaco: "🇲🇨", "royaume-uni": "🇬🇧", "grande-bretagne": "🇬🇧",
-  angleterre: "🇬🇧", canada: "🇨🇦", italie: "🇮🇹", espagne: "🇪🇸", suisse: "🇨🇭",
-  allemagne: "🇩🇪", "pays-bas": "🇳🇱", autriche: "🇦🇹", "états-unis": "🇺🇸", usa: "🇺🇸",
+  // Europe
+  france: "🇫🇷", belgique: "🇧🇪", monaco: "🇲🇨", "royaume-uni": "🇬🇧", "grande-bretagne": "🇬🇧",
+  angleterre: "🇬🇧", italie: "🇮🇹", espagne: "🇪🇸", suisse: "🇨🇭", allemagne: "🇩🇪",
+  "pays-bas": "🇳🇱", "pays bas": "🇳🇱", autriche: "🇦🇹", hongrie: "🇭🇺", portugal: "🇵🇹",
+  // Amériques
+  canada: "🇨🇦", "états-unis": "🇺🇸", "etats-unis": "🇺🇸", usa: "🇺🇸", mexique: "🇲🇽",
+  brésil: "🇧🇷", bresil: "🇧🇷",
+  // Asie / Océanie
+  australie: "🇦🇺", japon: "🇯🇵", chine: "🇨🇳", singapour: "🇸🇬",
+  // Moyen-Orient
+  bahreïn: "🇧🇭", bahrein: "🇧🇭", "arabie saoudite": "🇸🇦", qatar: "🇶🇦",
+  azerbaïdjan: "🇦🇿", azerbaidjan: "🇦🇿",
+  "émirats arabes unis": "🇦🇪", "emirats arabes unis": "🇦🇪", "abu dhabi": "🇦🇪",
 };
 function flagOf(region?: string | null): string {
   if (!region) return "🏁";
-  return FLAGS[region.toLowerCase().trim()] ?? "🇫🇷";
+  // Défaut neutre (damier) plutôt qu'un mauvais drapeau pour un pays non listé.
+  return FLAGS[region.toLowerCase().trim()] ?? "🏁";
 }
 
 const steps = [
