@@ -39,52 +39,47 @@ type GP = {
   registration_steps?: string | null; website?: string | null; email?: string | null;
 };
 
-// Calendrier F1 de référence pour le suivi de complétion (ajuste-le selon
-// l'année). `match` = mots-clés cherchés dans le nom / pays / ville d'une
-// entrée en base pour la relier au GP correspondant.
-const F1_CALENDAR: { gp: string; flag: string; match: string[] }[] = [
-  { gp: "Australie", flag: "🇦🇺", match: ["australie", "melbourne"] },
-  { gp: "Chine", flag: "🇨🇳", match: ["chine", "shanghai"] },
-  { gp: "Japon", flag: "🇯🇵", match: ["japon", "suzuka"] },
-  { gp: "Bahreïn", flag: "🇧🇭", match: ["bahre", "sakhir"] },
-  { gp: "Arabie Saoudite", flag: "🇸🇦", match: ["arabie", "jeddah", "djeddah"] },
-  { gp: "Miami (USA)", flag: "🇺🇸", match: ["miami"] },
-  { gp: "Canada", flag: "🇨🇦", match: ["canada", "montr"] },
-  { gp: "Monaco", flag: "🇲🇨", match: ["monaco"] },
-  { gp: "Espagne (Barcelone)", flag: "🇪🇸", match: ["barcelone", "catalogne"] },
-  { gp: "Madrid (Espagne)", flag: "🇪🇸", match: ["madrid"] },
-  { gp: "Autriche", flag: "🇦🇹", match: ["autriche", "spielberg", "red bull ring"] },
-  { gp: "Grande-Bretagne", flag: "🇬🇧", match: ["grande-bretagne", "angleterre", "silverstone", "britannique", "royaume"] },
-  { gp: "Belgique", flag: "🇧🇪", match: ["belgique", "spa"] },
-  { gp: "Hongrie", flag: "🇭🇺", match: ["hongrie", "hungaro", "budapest"] },
-  { gp: "Pays-Bas", flag: "🇳🇱", match: ["pays-bas", "pays bas", "zandvoort", "hollande", "erlandais"] },
-  { gp: "Italie (Monza)", flag: "🇮🇹", match: ["monza", "italie"] },
-  { gp: "Azerbaïdjan", flag: "🇦🇿", match: ["azerba", "bakou", "baku"] },
-  { gp: "Singapour", flag: "🇸🇬", match: ["singapour"] },
-  { gp: "États-Unis (Austin)", flag: "🇺🇸", match: ["austin", "cota", "texas"] },
-  { gp: "Mexique", flag: "🇲🇽", match: ["mexique", "mexico"] },
-  { gp: "Brésil", flag: "🇧🇷", match: ["brésil", "bresil", "sao paulo", "são paulo", "interlagos"] },
-  { gp: "Las Vegas (USA)", flag: "🇺🇸", match: ["vegas"] },
-  { gp: "Qatar", flag: "🇶🇦", match: ["qatar", "lusail", "losail"] },
-  { gp: "Abu Dhabi", flag: "🇦🇪", match: ["abu dhabi", "yas marina", "émirats", "emirats"] },
+// Calendrier officiel FIA F1 2027 (24 manches, publié par la FIA — sous réserve
+// d'homologation des circuits). `match` = mots-clés cherchés dans le nom / pays
+// / ville d'une entrée en base pour la relier au GP. `date2027` = date officielle.
+// NB : pour les 3 GP américains (Miami, Austin, Las Vegas) on n'utilise QUE des
+// mots-clés de ville (jamais "états-unis") pour éviter les confusions de date.
+const F1_CALENDAR: { gp: string; flag: string; match: string[]; date2027: string }[] = [
+  { gp: "Bahreïn", flag: "🇧🇭", match: ["bahre", "sakhir"], date2027: "12–14 mars 2027" },
+  { gp: "Arabie Saoudite", flag: "🇸🇦", match: ["arabie", "saoudite", "jeddah", "djeddah"], date2027: "19–21 mars 2027" },
+  { gp: "Australie", flag: "🇦🇺", match: ["australie", "melbourne"], date2027: "2–4 avril 2027" },
+  { gp: "Japon", flag: "🇯🇵", match: ["japon", "suzuka"], date2027: "9–11 avril 2027" },
+  { gp: "Chine", flag: "🇨🇳", match: ["chine", "shanghai", "shanghaï"], date2027: "16–18 avril 2027" },
+  { gp: "Miami (USA)", flag: "🇺🇸", match: ["miami"], date2027: "30 avril–2 mai 2027" },
+  { gp: "Canada", flag: "🇨🇦", match: ["canada", "montr"], date2027: "21–23 mai 2027" },
+  { gp: "Monaco", flag: "🇲🇨", match: ["monaco"], date2027: "4–6 juin 2027" },
+  { gp: "Portugal", flag: "🇵🇹", match: ["portugal", "portim", "algarve"], date2027: "18–20 juin 2027" },
+  { gp: "Grande-Bretagne", flag: "🇬🇧", match: ["grande-bretagne", "angleterre", "silverstone", "britannique", "royaume"], date2027: "2–4 juillet 2027" },
+  { gp: "Autriche", flag: "🇦🇹", match: ["autriche", "spielberg", "red bull ring"], date2027: "9–11 juillet 2027" },
+  { gp: "Belgique", flag: "🇧🇪", match: ["belgique", "spa", "francorchamps"], date2027: "23–25 juillet 2027" },
+  { gp: "Hongrie", flag: "🇭🇺", match: ["hongrie", "hungaro", "budapest"], date2027: "30 juillet–1er août 2027" },
+  { gp: "Italie (Monza)", flag: "🇮🇹", match: ["monza", "italie"], date2027: "3–5 septembre 2027" },
+  { gp: "Espagne (Madrid)", flag: "🇪🇸", match: ["madrid", "espagne"], date2027: "10–12 septembre 2027" },
+  { gp: "Azerbaïdjan", flag: "🇦🇿", match: ["azerba", "bakou", "baku"], date2027: "24–26 septembre 2027" },
+  { gp: "Türkiye (Istanbul)", flag: "🇹🇷", match: ["turquie", "türkiye", "turkiye", "istanbul", "stamboul"], date2027: "1er–3 octobre 2027" },
+  { gp: "Singapour", flag: "🇸🇬", match: ["singapour", "singapore"], date2027: "8–10 octobre 2027" },
+  { gp: "États-Unis (Austin)", flag: "🇺🇸", match: ["austin", "cota", "texas"], date2027: "22–24 octobre 2027" },
+  { gp: "Mexique", flag: "🇲🇽", match: ["mexique", "mexico"], date2027: "29–31 octobre 2027" },
+  { gp: "Brésil (São Paulo)", flag: "🇧🇷", match: ["brésil", "bresil", "sao paulo", "são paulo", "interlagos"], date2027: "5–7 novembre 2027" },
+  { gp: "Las Vegas (USA)", flag: "🇺🇸", match: ["vegas"], date2027: "18–20 novembre 2027" },
+  { gp: "Qatar", flag: "🇶🇦", match: ["qatar", "lusail", "losail"], date2027: "3–5 décembre 2027" },
+  { gp: "Abu Dhabi", flag: "🇦🇪", match: ["abu dhabi", "yas marina", "émirats", "emirats"], date2027: "10–12 décembre 2027" },
 ];
 
 function hasRegInfo(c: GP): boolean {
   return Boolean((c.registration_steps && c.registration_steps.trim()) || c.website || c.email);
 }
 
-// Dates 2027 UNIQUEMENT si officiellement fixées (vérifié en sept. 2026).
-// Le calendrier F1 2027 complet n'est pas encore officiel (annonce à l'automne
-// 2026) : on n'ajoute ici QUE les GP dont la date est déjà confirmée par
-// contrat. À compléter au fil des confirmations officielles.
-const OFFICIAL_2027_DATES: { match: string[]; label: string }[] = [
-  { match: ["monaco"], label: "4–6 juin 2027" },
-  { match: ["grande-bretagne", "silverstone", "angleterre", "britannique", "royaume"], label: "2–4 juillet 2027" },
-];
+// Date officielle FIA 2027 pour une fiche GP (via les mots-clés du calendrier).
 function official2027Date(c: GP): string | null {
   const hay = `${c.name ?? ""} ${c.region ?? ""} ${c.city ?? ""}`.toLowerCase();
-  const hit = OFFICIAL_2027_DATES.find((d) => d.match.some((k) => hay.includes(k)));
-  return hit ? hit.label : null;
+  const hit = F1_CALENDAR.find((d) => d.match.some((k) => hay.includes(k)));
+  return hit ? hit.date2027 : null;
 }
 
 // Compare le calendrier de référence aux entrées en base.
@@ -264,8 +259,8 @@ export default function F1AdminGate() {
         <div className="mx-auto max-w-[1000px] px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-black text-zinc-900 lg:text-3xl">Où s&apos;inscrire — Grands Prix &amp; grands événements</h2>
           <p className="mt-2 text-sm text-zinc-500">
-            📅 Les dates 2027 ne sont affichées que lorsqu&apos;elles sont <strong className="text-zinc-700">officiellement confirmées</strong>.
-            À ce jour, seules Monaco et Silverstone le sont ; le calendrier F1 2027 complet est annoncé à l&apos;automne 2026.
+            📅 Dates du <strong className="text-zinc-700">calendrier officiel FIA F1 2027</strong> (24 manches), affichées automatiquement
+            sur chaque GP reconnu. Sous réserve d&apos;homologation des circuits par la FIA.
           </p>
 
           {gps.length === 0 ? (
