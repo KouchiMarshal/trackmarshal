@@ -75,8 +75,31 @@ export default function AdminClubsPage() {
     if (res.ok) { const d = await res.json(); setSuggestions(d.suggestions ?? []); }
   }
   async function deleteSuggestion(id: string) {
+    if (!confirm("Ignorer et supprimer définitivement cette proposition ?\n\nElle ne sera PAS ajoutée au répertoire — utilise d'abord « Utiliser » si tu veux la publier.")) return;
     const res = await fetch("/api/admin/clubs/suggestions", { method: "POST", headers: await headers(), body: JSON.stringify({ id }) });
     if (res.ok) setSuggestions((prev) => prev.filter((s) => s.id !== id));
+  }
+  // Verse une proposition dans le brouillon d'ajout (sans rien supprimer) :
+  // l'admin complète puis clique « Enregistrer », et « Ignore » ensuite.
+  function useSuggestion(s: Suggestion) {
+    const cat = s.category === "club" ? "club" : s.category === "circuit" || s.category === "evenement" ? "circuit" : null;
+    const draft: Club = {
+      name: s.name,
+      type: null,
+      category: cat,
+      license_required: null,
+      region: s.region,
+      department: null,
+      city: s.city,
+      description: s.message,
+      registration_steps: s.contact && !s.contact.includes("@") ? `Contact proposé : ${s.contact}` : null,
+      website: null,
+      email: s.contact && s.contact.includes("@") ? s.contact.trim() : null,
+      phone: null,
+    };
+    setReview((prev) => [...prev, draft]);
+    setMsg({ text: "Proposition ajoutée au brouillon « À valider » en haut. Complète-la, clique « Enregistrer », puis « Ignorer » sur la proposition.", ok: true });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
   async function headers(): Promise<Record<string, string>> {
     const { data: { session } } = await supabase.auth.getSession();
@@ -166,7 +189,10 @@ export default function AdminClubsPage() {
       {suggestions.length > 0 && (
         <div className="mt-10">
           <h2 className="text-xl font-black text-zinc-900">💡 Suggestions reçues ({suggestions.length})</h2>
-          <p className="mt-1 text-sm text-zinc-500">Propositions des visiteurs — vérifie puis ajoute-les via l&apos;import ci-dessus.</p>
+          <p className="mt-1 text-sm text-zinc-500">
+            Clique <strong className="text-zinc-700">« Utiliser »</strong> pour verser la proposition dans le brouillon d&apos;ajout en haut, complète-la puis enregistre.
+            <strong className="text-red-600"> « Ignorer »</strong> supprime la proposition sans l&apos;ajouter.
+          </p>
           <div className="mt-3 space-y-2">
             {suggestions.map((s) => (
               <div key={s.id} className="rounded-xl border border-amber-200 bg-amber-50 p-3">
@@ -182,7 +208,10 @@ export default function AdminClubsPage() {
                     {s.contact && <p className="mt-1 text-xs text-zinc-700">Contact : {s.contact}</p>}
                     {s.message && <p className="mt-1 text-xs text-zinc-600">{s.message}</p>}
                   </div>
-                  <button onClick={() => deleteSuggestion(s.id)} className="shrink-0 text-xs font-bold text-red-600 hover:underline">Traité</button>
+                  <div className="flex shrink-0 flex-col items-end gap-2">
+                    <button onClick={() => useSuggestion(s)} className="rounded-lg bg-[#FF5A1F] px-3 py-1.5 text-xs font-bold text-white transition hover:opacity-90">➕ Utiliser</button>
+                    <button onClick={() => deleteSuggestion(s.id)} className="text-xs font-bold text-red-600 hover:underline">🗑 Ignorer</button>
+                  </div>
                 </div>
               </div>
             ))}
