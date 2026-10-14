@@ -77,6 +77,7 @@ export default function CoachingGate() {
             <a href="#methode" className="hover:text-zinc-900">Méthode</a>
             <a href="#apropos" className="hover:text-zinc-900">À propos</a>
             <a href="#tarifs" className="hover:text-zinc-900">Tarifs</a>
+            <a href="#credit-impot" className="hover:text-zinc-900">Crédit d&apos;impôt</a>
           </nav>
           <a href="#contact" className="rounded-full px-5 py-2 text-sm font-black text-white transition hover:opacity-90" style={{ backgroundColor: O }}>
             Réserver
@@ -234,14 +235,59 @@ export default function CoachingGate() {
             ))}
           </div>
           <p className="mt-6 text-xs text-zinc-400">[Déplacement inclus ? Zone couverte ? Précisez-le ici.]</p>
-          <div className="mt-6 rounded-2xl border p-5" style={{ borderColor: `${O}55`, backgroundColor: `${O}14` }}>
-            <p className="font-black" style={{ color: "#9a5a14" }}>💶 50% de crédit d&apos;impôt</p>
-            <p className="mt-1 text-sm leading-relaxed text-zinc-700">
-              K-Coaching est une activité agréée <strong>Service à la personne</strong> : mes prestations à domicile
-              ouvrent droit à un <strong>crédit d&apos;impôt de 50%</strong>. Une séance à [__ €] ne vous revient
-              réellement qu&apos;à <strong>[__ €]</strong>, que vous soyez imposable ou non (dans la limite des plafonds légaux).
-            </p>
+          <p className="mt-6 text-sm font-black" style={{ color: "#9a5a14" }}>
+            💶 Grâce au crédit d&apos;impôt, ces montants sont réduits de 50% — voir le détail juste en dessous.
+          </p>
+        </div>
+      </section>
+
+      {/* Crédit d'impôt */}
+      <section id="credit-impot" className="border-t border-zinc-100 bg-zinc-50 py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>Avantage fiscal</p>
+          <h2 className="mt-4 text-3xl font-black lg:text-4xl">Le crédit d&apos;impôt, comment ça marche&nbsp;?</h2>
+          <p className="mt-3 max-w-2xl text-zinc-600">
+            Mes prestations à domicile relèvent du <strong>Service à la personne</strong>. Concrètement, une bonne
+            partie de ce que vous payez vous est rendue — que vous soyez imposable ou non.
+          </p>
+
+          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            {/* Particuliers */}
+            <div className="rounded-3xl border bg-white p-7 shadow-sm" style={{ borderColor: O }}>
+              <span className="inline-block rounded-full px-3 py-1 text-xs font-black text-white" style={{ backgroundColor: O }}>Particuliers</span>
+              <p className="mt-4 text-5xl font-black" style={{ color: O }}>−50%</p>
+              <p className="mt-1 font-bold text-zinc-800">de crédit d&apos;impôt sur vos séances</p>
+              <div className="mt-5 rounded-2xl bg-zinc-50 p-4 text-sm leading-relaxed text-zinc-700">
+                <strong>Exemple :</strong> une prestation facturée <strong>500 € TTC</strong> vous ouvre
+                <strong> 250 € de crédit d&apos;impôt</strong> — elle ne vous coûte donc réellement que <strong>250 €</strong>.
+              </div>
+              <div className="mt-4 flex items-start gap-2 text-sm leading-relaxed text-zinc-700">
+                <span className="text-lg">⚡</span>
+                <p><strong>Avance immédiate :</strong> grâce au dispositif URSSAF, vous ne réglez que la <strong>moitié</strong> de la somme sur le moment — sans attendre votre déclaration d&apos;impôt.</p>
+              </div>
+            </div>
+
+            {/* Professionnels */}
+            <div className="rounded-3xl border border-zinc-200 bg-white p-7 shadow-sm">
+              <span className="inline-block rounded-full bg-zinc-900 px-3 py-1 text-xs font-black text-white">Professionnels</span>
+              <p className="mt-4 text-5xl font-black text-zinc-900">−25%</p>
+              <p className="mt-1 font-bold text-zinc-800">pour les professions libérales &amp; chefs d&apos;entreprise</p>
+              <p className="mt-5 text-sm leading-relaxed text-zinc-600">
+                Vous pouvez intégrer <strong>légalement</strong> vos séances à domicile dans vos <strong>frais
+                professionnels</strong>, tout en bénéficiant d&apos;un <strong>crédit d&apos;impôt de 25%</strong>.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-500">
+                Un double avantage encore peu connu, idéal pour les médecins, avocats, indépendants et dirigeants
+                qui veulent prendre soin de leur forme sans alourdir leur budget.
+              </p>
+            </div>
           </div>
+
+          <p className="mt-6 text-xs leading-relaxed text-zinc-400">
+            Dispositif Service à la personne. Le montant et l&apos;éligibilité dépendent de votre situation
+            personnelle ou professionnelle, dans la limite des plafonds légaux. N&apos;hésitez pas à m&apos;en parler
+            pour votre cas précis.
+          </p>
         </div>
       </section>
 
