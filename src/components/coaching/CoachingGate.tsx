@@ -36,6 +36,14 @@ const POURQUI = [
   { e: "🎯", t: "Besoin d'être suivi", d: "De la régularité et un vrai suivi : c'est souvent ce qui manque pour tenir dans la durée et voir des résultats." },
 ];
 
+// Ma philosophie — ton bienveillant, accessible (pas "salle de muscu").
+const VALEURS = [
+  { e: "🤝", t: "Bienveillance", d: "Zéro jugement, zéro pression. On s'adapte à vous, pas l'inverse." },
+  { e: "📈", t: "Progressivité", d: "On commence en douceur et on augmente petit à petit, en sécurité." },
+  { e: "😊", t: "Plaisir", d: "Bouger doit rester un plaisir : des séances variées, jamais punitives." },
+  { e: "👂", t: "À l'écoute", d: "Un programme construit autour de vos envies, votre corps et votre vie." },
+];
+
 export default function CoachingGate() {
   const [status, setStatus] = useState<"checking" | "denied" | "allowed">("checking");
 
@@ -89,7 +97,7 @@ export default function CoachingGate() {
       <section className="relative overflow-hidden">
         <div className="absolute -right-24 -top-10 h-[460px] w-[460px] rounded-full blur-[120px]" style={{ backgroundColor: `${O}22` }} />
         <div className="relative mx-auto max-w-6xl px-6 py-20 lg:py-28">
-          <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>Coaching sportif à domicile</p>
+          <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>Coaching sportif à domicile · accessible à tous</p>
           <h1 className="mt-6 max-w-3xl text-5xl font-black leading-[0.95] tracking-tight text-zinc-900 lg:text-7xl">
             Ensemble,<br />vous irez <span style={{ color: O }}>plus loin</span>.
           </h1>
@@ -110,10 +118,41 @@ export default function CoachingGate() {
           <div className="mt-6 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-black" style={{ borderColor: `${O}55`, backgroundColor: `${O}14`, color: "#9a5a14" }}>
             💶 Éligible au crédit d&apos;impôt de 50% — Service à la personne
           </div>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {["Tous niveaux", "Tous âges", "Débutants bienvenus", "À votre rythme", "Sans jugement"].map((c) => (
+              <span key={c} className="rounded-full border border-zinc-200 bg-white px-3.5 py-1.5 text-xs font-bold text-zinc-600">{c}</span>
+            ))}
+          </div>
           <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4 text-sm font-semibold text-zinc-500">
             <span>📍 {BRAND.zone}</span>
             <span>🏠 À domicile ou en extérieur</span>
             <span>🎯 Programme sur-mesure</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Ma philosophie */}
+      <section className="py-20" style={{ backgroundColor: `${O}0d` }}>
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="max-w-2xl">
+            <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>Ma philosophie</p>
+            <h2 className="mt-4 text-3xl font-black lg:text-4xl">Un sport accessible, pour se sentir bien</h2>
+            <p className="mt-4 leading-relaxed text-zinc-600">
+              Ici, pas de culture du « toujours plus » ni de corps parfait. Juste l&apos;envie de vous aider à
+              bouger, à vous sentir mieux dans votre corps et à prendre soin de votre santé — quel que soit
+              votre point de départ.
+            </p>
+          </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {VALEURS.map((v) => (
+              <div key={v.t} className="flex gap-4">
+                <span className="text-2xl">{v.e}</span>
+                <div>
+                  <h3 className="font-black text-zinc-900">{v.t}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-zinc-600">{v.d}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -291,15 +330,15 @@ export default function CoachingGate() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="border-t border-zinc-100 py-24" style={{ backgroundColor: "#18181b" }}>
+      <section id="contact" className="py-24" style={{ background: `linear-gradient(135deg, ${O}, #e07a18)` }}>
         <div className="mx-auto max-w-2xl px-6 text-center text-white">
-          <h2 className="text-3xl font-black lg:text-5xl">Prêt à vous y mettre ?</h2>
-          <p className="mt-4 text-lg text-zinc-300">Réservez votre séance découverte — on fait le bilan ensemble, sans engagement.</p>
+          <h2 className="text-3xl font-black lg:text-5xl">On commence quand vous voulez</h2>
+          <p className="mt-4 text-lg text-white/90">Réservez votre séance découverte — on fait le bilan ensemble, en toute simplicité et sans engagement.</p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a href={`mailto:${BRAND.email}`} className="flex h-14 items-center justify-center rounded-full px-8 font-black text-white transition hover:opacity-90" style={{ backgroundColor: O }}>
+            <a href={`mailto:${BRAND.email}`} className="flex h-14 items-center justify-center rounded-full bg-white px-8 font-black transition hover:bg-white/90" style={{ color: "#c2650f" }}>
               ✉️ {BRAND.email}
             </a>
-            <a href={`tel:${BRAND.phone.replace(/\s/g, "")}`} className="flex h-14 items-center justify-center rounded-full border border-white/25 px-8 font-black text-white transition hover:bg-white/10">
+            <a href={`tel:${BRAND.phone.replace(/\s/g, "")}`} className="flex h-14 items-center justify-center rounded-full border-2 border-white/70 px-8 font-black text-white transition hover:bg-white/10">
               📞 {BRAND.phone}
             </a>
           </div>
