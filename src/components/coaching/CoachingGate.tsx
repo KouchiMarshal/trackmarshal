@@ -19,6 +19,15 @@ const BRAND = {
 
 const O = "#F18A2B"; // orange K-Coaching
 
+// Formations & certifications (fournies par le coach).
+const CERTIFS = [
+  "Coach diplômé depuis 2017",
+  "TRX Suspension Training (TRX-STC)",
+  "Kettlebell — StrongFirst",
+  "Pilates Matwork",
+  "Nutrition",
+];
+
 export default function CoachingGate() {
   const [status, setStatus] = useState<"checking" | "denied" | "allowed">("checking");
 
@@ -151,13 +160,23 @@ export default function CoachingGate() {
             <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>À propos</p>
             <h2 className="mt-4 text-3xl font-black lg:text-4xl">Moi, c&apos;est {BRAND.coach}</h2>
             <p className="mt-6 leading-relaxed text-zinc-700">
-              [Présentez-vous : votre parcours, vos diplômes/certifications de coach, votre philosophie, ce qui
-              vous différencie. Quelques phrases suffisent — c&apos;est ce qui crée la confiance.]
+              Coach sportif <strong>diplômé depuis 2017</strong>, je vous accompagne à domicile avec des séances
+              efficaces et motivantes, construites autour de vos objectifs — quel que soit votre point de départ.
             </p>
             <p className="mt-4 leading-relaxed text-zinc-500">
-              [Ex. « Coach sportif certifié depuis X ans, je me déplace chez vous pour des séances efficaces et
-              motivantes, quel que soit votre point de départ. »]
+              Je me forme en continu pour varier les approches et vous proposer un entraînement complet :
+              suspension, kettlebell, renforcement, mobilité et nutrition.
             </p>
+            <div className="mt-6">
+              <p className="text-xs font-black uppercase tracking-wider text-zinc-400">Formations &amp; certifications</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {CERTIFS.map((c) => (
+                  <span key={c} className="rounded-full border px-3 py-1.5 text-xs font-bold" style={{ borderColor: `${O}55`, backgroundColor: `${O}14`, color: "#9a5a14" }}>
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
