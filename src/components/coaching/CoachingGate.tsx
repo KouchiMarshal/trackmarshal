@@ -142,12 +142,11 @@ export default function CoachingGate() {
       <section id="offres" className="border-t border-zinc-100 bg-zinc-50 py-24">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-3xl font-black lg:text-4xl">Mes offres</h2>
-          <p className="mt-3 max-w-xl text-zinc-600">Trois formules pour avancer à votre rythme. Chaque programme est adapté après un premier bilan.</p>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <p className="mt-3 max-w-xl text-zinc-600">Deux formules simples pour avancer à votre rythme. Chaque programme est adapté après un premier bilan.</p>
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
             {[
               { t: "Séance à l'unité", d: "Idéal pour tester ou pour un accompagnement ponctuel. Bilan, séance personnalisée, conseils.", f: ["1 séance à domicile", "Programme adapté", "Suivi des progrès"] },
               { t: "Pack 10 séances", d: "Le plus choisi. Un vrai suivi dans la durée pour installer des résultats concrets.", f: ["10 séances à domicile", "Plan nutrition de base", "Suivi entre les séances"], featured: true },
-              { t: "Coaching mensuel", d: "Un accompagnement complet et un suivi illimité en messagerie, pour garder la régularité et progresser sur la durée.", f: ["Séances hebdomadaires", "Programme + nutrition", "Suivi illimité"] },
             ].map((o) => (
               <div key={o.t} className="rounded-3xl border bg-white p-7 shadow-sm" style={o.featured ? { borderColor: O, boxShadow: `0 0 0 1px ${O}` } : { borderColor: "#e4e4e7" }}>
                 {o.featured && <span className="mb-3 inline-block rounded-full px-3 py-1 text-xs font-black text-white" style={{ backgroundColor: O }}>Le plus populaire</span>}
@@ -220,12 +219,11 @@ export default function CoachingGate() {
       <section id="tarifs" className="border-t border-zinc-100 py-24">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-3xl font-black lg:text-4xl">Tarifs</h2>
-          <p className="mt-3 text-zinc-600">[À compléter avec vos vrais prix. Exemples ci-dessous.]</p>
-          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+          <p className="mt-3 text-zinc-600">Des tarifs simples et transparents, sans engagement.</p>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2">
             {[
-              { t: "Séance à l'unité", p: "[__ €]", u: "/ séance" },
-              { t: "Pack 10 séances", p: "[__ €]", u: "soit [__ €]/séance" },
-              { t: "Coaching mensuel", p: "[__ €]", u: "/ mois" },
+              { t: "Séance à l'unité", p: "65 €", u: "/ séance" },
+              { t: "Pack 10 séances", p: "600 €", u: "soit 60 €/séance" },
             ].map((t) => (
               <div key={t.t} className="rounded-3xl border border-zinc-200 p-7 text-center">
                 <p className="text-sm text-zinc-500">{t.t}</p>
@@ -258,8 +256,9 @@ export default function CoachingGate() {
               <p className="mt-4 text-5xl font-black" style={{ color: O }}>−50%</p>
               <p className="mt-1 font-bold text-zinc-800">de crédit d&apos;impôt sur vos séances</p>
               <div className="mt-5 rounded-2xl bg-zinc-50 p-4 text-sm leading-relaxed text-zinc-700">
-                <strong>Exemple :</strong> une prestation facturée <strong>500 € TTC</strong> vous ouvre
-                <strong> 250 € de crédit d&apos;impôt</strong> — elle ne vous coûte donc réellement que <strong>250 €</strong>.
+                <strong>Concrètement :</strong> une séance à <strong>65 €</strong> ne vous revient qu&apos;à
+                <strong> 32,50 €</strong>, et le pack 10 séances à <strong>600 €</strong> qu&apos;à <strong>300 €</strong>
+                après crédit d&apos;impôt.
               </div>
               <div className="mt-4 flex items-start gap-2 text-sm leading-relaxed text-zinc-700">
                 <span className="text-lg">⚡</span>
