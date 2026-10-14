@@ -225,8 +225,9 @@ export default function CoachingGate() {
       {/* À propos */}
       <section id="apropos" className="border-t border-zinc-100 bg-zinc-50 py-24">
         <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
-          <div className="aspect-[4/5] overflow-hidden rounded-3xl border border-zinc-200 bg-white">
-            <div className="flex h-full items-center justify-center text-sm text-zinc-400">[ Ta photo ici ]</div>
+          <div className="aspect-[4/5] overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-100">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/kevin-coach.jpg" alt="Kevin Foussard, coach sportif à domicile" className="h-full w-full object-cover object-center" />
           </div>
           <div>
             <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>À propos</p>
