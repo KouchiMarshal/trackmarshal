@@ -3,20 +3,21 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-// Page privée (admin uniquement) : brouillon du futur site de coaching à
-// domicile. Volontairement SANS le menu/logo TrackMarshal pour préfigurer le
-// site final — tout le contenu est ici, dans un seul composant facile à
-// exporter plus tard vers un nom de domaine dédié.
+// Page privée (admin uniquement) : site K-Coaching (coaching sportif à domicile).
+// Volontairement SANS le menu/logo TrackMarshal — tout le contenu est ici, dans
+// un seul composant facile à exporter plus tard vers le nom de domaine K-Coaching.
 //
-// ⚙️ À PERSONNALISER : remplace les champs de BRAND ci-dessous et les tarifs.
+// ⚙️ À COMPLÉTER : les champs [entre crochets] (ton nom, zone, contact, tarifs).
 const BRAND = {
-  name: "[Nom de ta marque]",
+  name: "K-Coaching",
   coach: "[Ton nom]",
-  tagline: "Coaching sportif à domicile",
-  zone: "[Ta zone — ex. Paris & proche banlieue]",
+  tagline: "Ensemble, vous irez plus loin",
+  zone: "[Ta zone — ex. Rouen & alentours]",
   email: "[ton@email.fr]",
   phone: "[06 00 00 00 00]",
 };
+
+const O = "#F18A2B"; // orange K-Coaching
 
 export default function CoachingGate() {
   const [status, setStatus] = useState<"checking" | "denied" | "allowed">("checking");
@@ -43,23 +44,24 @@ export default function CoachingGate() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100">
+    <main className="min-h-screen bg-white text-zinc-900">
       {/* Bandeau privé (admin) — n'apparaîtra pas sur le site final */}
-      <div className="bg-amber-500 px-4 py-2 text-center text-sm font-bold text-zinc-900">
-        🔒 Brouillon privé (toi seul) — ton futur site de coaching. On le transférera sur ton nom de domaine une fois prêt.
+      <div className="px-4 py-2 text-center text-sm font-bold text-white" style={{ backgroundColor: O }}>
+        🔒 Brouillon privé (toi seul) — ton futur site K-Coaching. On le transférera sur ton nom de domaine une fois prêt.
       </div>
 
       {/* En-tête */}
-      <header className="sticky top-0 z-20 border-b border-white/10 bg-zinc-950/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <p className="text-xl font-black tracking-tight">{BRAND.name}</p>
-          <nav className="hidden gap-7 text-sm font-semibold text-zinc-300 sm:flex">
-            <a href="#offres" className="hover:text-white">Offres</a>
-            <a href="#methode" className="hover:text-white">Méthode</a>
-            <a href="#apropos" className="hover:text-white">À propos</a>
-            <a href="#tarifs" className="hover:text-white">Tarifs</a>
+      <header className="sticky top-0 z-20 border-b border-zinc-100 bg-white/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/k-coaching-logo.png" alt="K-Coaching" className="h-12 w-auto" />
+          <nav className="hidden gap-7 text-sm font-bold text-zinc-600 sm:flex">
+            <a href="#offres" className="hover:text-zinc-900">Offres</a>
+            <a href="#methode" className="hover:text-zinc-900">Méthode</a>
+            <a href="#apropos" className="hover:text-zinc-900">À propos</a>
+            <a href="#tarifs" className="hover:text-zinc-900">Tarifs</a>
           </nav>
-          <a href="#contact" className="rounded-full bg-lime-400 px-5 py-2 text-sm font-black text-zinc-900 transition hover:bg-lime-300">
+          <a href="#contact" className="rounded-full px-5 py-2 text-sm font-black text-white transition hover:opacity-90" style={{ backgroundColor: O }}>
             Réserver
           </a>
         </div>
@@ -67,25 +69,25 @@ export default function CoachingGate() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute -right-20 top-0 h-[460px] w-[460px] rounded-full bg-lime-400/10 blur-[120px]" />
-        <div className="relative mx-auto max-w-6xl px-6 py-24 lg:py-32">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-lime-400">{BRAND.tagline}</p>
-          <h1 className="mt-6 max-w-3xl text-5xl font-black leading-[0.95] tracking-tight lg:text-7xl">
-            Ton coach sportif.<br />Chez toi. <span className="text-lime-400">Résultats réels.</span>
+        <div className="absolute -right-24 -top-10 h-[460px] w-[460px] rounded-full blur-[120px]" style={{ backgroundColor: `${O}22` }} />
+        <div className="relative mx-auto max-w-6xl px-6 py-20 lg:py-28">
+          <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>Coaching sportif à domicile</p>
+          <h1 className="mt-6 max-w-3xl text-5xl font-black leading-[0.95] tracking-tight text-zinc-900 lg:text-7xl">
+            Ensemble,<br />vous irez <span style={{ color: O }}>plus loin</span>.
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-300">
-            Des séances personnalisées à domicile, adaptées à ton niveau et à tes objectifs —
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-600">
+            Des séances personnalisées, chez vous, adaptées à votre niveau et à vos objectifs —
             remise en forme, perte de poids, renforcement, préparation physique. Sans salle, sans excuse.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <a href="#contact" className="flex h-14 items-center justify-center rounded-full bg-lime-400 px-8 text-base font-black text-zinc-900 transition hover:bg-lime-300">
+            <a href="#contact" className="flex h-14 items-center justify-center rounded-full px-8 text-base font-black text-white transition hover:opacity-90" style={{ backgroundColor: O }}>
               Réserver une séance découverte
             </a>
-            <a href="#offres" className="flex h-14 items-center justify-center rounded-full border border-white/20 px-8 text-base font-black text-white transition hover:bg-white/5">
+            <a href="#offres" className="flex h-14 items-center justify-center rounded-full border-2 border-zinc-200 px-8 text-base font-black text-zinc-900 transition hover:border-zinc-300">
               Voir les offres
             </a>
           </div>
-          <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm text-zinc-400">
+          <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm font-semibold text-zinc-500">
             <span>📍 {BRAND.zone}</span>
             <span>🏠 À domicile ou en extérieur</span>
             <span>🎯 Programme sur-mesure</span>
@@ -94,24 +96,24 @@ export default function CoachingGate() {
       </section>
 
       {/* Offres */}
-      <section id="offres" className="border-t border-white/10 py-24">
+      <section id="offres" className="border-t border-zinc-100 bg-zinc-50 py-24">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-3xl font-black lg:text-4xl">Mes offres</h2>
-          <p className="mt-3 max-w-xl text-zinc-400">Trois formules pour avancer à ton rythme. Chaque programme est adapté après un premier bilan.</p>
+          <p className="mt-3 max-w-xl text-zinc-600">Trois formules pour avancer à votre rythme. Chaque programme est adapté après un premier bilan.</p>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {[
               { t: "Séance à l'unité", d: "Idéal pour tester ou pour un accompagnement ponctuel. Bilan, séance personnalisée, conseils.", f: ["1 séance à domicile", "Programme adapté", "Suivi des progrès"] },
               { t: "Pack 10 séances", d: "Le plus choisi. Un vrai suivi dans la durée pour installer des résultats concrets.", f: ["10 séances à domicile", "Plan nutrition de base", "Suivi entre les séances"], featured: true },
               { t: "Coaching mensuel", d: "Accompagnement complet et illimité en messagerie, pour une transformation durable.", f: ["Séances hebdomadaires", "Programme + nutrition", "Suivi illimité"] },
             ].map((o) => (
-              <div key={o.t} className={`rounded-3xl border p-7 ${o.featured ? "border-lime-400 bg-lime-400/5" : "border-white/10 bg-white/[0.02]"}`}>
-                {o.featured && <span className="mb-3 inline-block rounded-full bg-lime-400 px-3 py-1 text-xs font-black text-zinc-900">Le plus populaire</span>}
+              <div key={o.t} className="rounded-3xl border bg-white p-7 shadow-sm" style={o.featured ? { borderColor: O, boxShadow: `0 0 0 1px ${O}` } : { borderColor: "#e4e4e7" }}>
+                {o.featured && <span className="mb-3 inline-block rounded-full px-3 py-1 text-xs font-black text-white" style={{ backgroundColor: O }}>Le plus populaire</span>}
                 <h3 className="text-xl font-black">{o.t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">{o.d}</p>
-                <ul className="mt-5 space-y-2 text-sm text-zinc-300">
-                  {o.f.map((x) => <li key={x} className="flex items-center gap-2"><span className="text-lime-400">✓</span> {x}</li>)}
+                <p className="mt-2 text-sm leading-relaxed text-zinc-500">{o.d}</p>
+                <ul className="mt-5 space-y-2 text-sm text-zinc-700">
+                  {o.f.map((x) => <li key={x} className="flex items-center gap-2"><span style={{ color: O }}>✓</span> {x}</li>)}
                 </ul>
-                <a href="#contact" className="mt-7 block rounded-full bg-white/10 py-3 text-center text-sm font-bold transition hover:bg-white/20">En savoir plus</a>
+                <a href="#contact" className="mt-7 block rounded-full py-3 text-center text-sm font-bold text-white transition hover:opacity-90" style={{ backgroundColor: o.featured ? O : "#18181b" }}>En savoir plus</a>
               </div>
             ))}
           </div>
@@ -119,20 +121,20 @@ export default function CoachingGate() {
       </section>
 
       {/* Méthode */}
-      <section id="methode" className="border-t border-white/10 bg-white/[0.02] py-24">
+      <section id="methode" className="border-t border-zinc-100 py-24">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-3xl font-black lg:text-4xl">Comment ça marche</h2>
           <div className="mt-12 grid gap-8 md:grid-cols-4">
             {[
-              { n: "01", t: "Bilan gratuit", d: "On fait le point sur tes objectifs, ton niveau et tes contraintes." },
-              { n: "02", t: "Programme sur-mesure", d: "Je conçois un plan adapté à toi, chez toi, avec le matériel dispo." },
+              { n: "01", t: "Bilan gratuit", d: "On fait le point sur vos objectifs, votre niveau et vos contraintes." },
+              { n: "02", t: "Programme sur-mesure", d: "Je conçois un plan adapté à vous, chez vous, avec le matériel dispo." },
               { n: "03", t: "Séances à domicile", d: "On s'entraîne ensemble, en sécurité, avec la bonne technique." },
               { n: "04", t: "Suivi & progrès", d: "On mesure, on ajuste, on garde le cap jusqu'aux résultats." },
             ].map((s) => (
               <div key={s.n}>
-                <p className="text-4xl font-black text-lime-400/40">{s.n}</p>
+                <p className="text-4xl font-black" style={{ color: `${O}66` }}>{s.n}</p>
                 <h3 className="mt-3 text-lg font-black">{s.t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">{s.d}</p>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-500">{s.d}</p>
               </div>
             ))}
           </div>
@@ -140,66 +142,68 @@ export default function CoachingGate() {
       </section>
 
       {/* À propos */}
-      <section id="apropos" className="border-t border-white/10 py-24">
+      <section id="apropos" className="border-t border-zinc-100 bg-zinc-50 py-24">
         <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
-          <div className="aspect-[4/5] rounded-3xl border border-white/10 bg-gradient-to-br from-lime-400/10 to-transparent" >
-            <div className="flex h-full items-center justify-center text-sm text-zinc-500">[ Ta photo ici ]</div>
+          <div className="aspect-[4/5] overflow-hidden rounded-3xl border border-zinc-200 bg-white">
+            <div className="flex h-full items-center justify-center text-sm text-zinc-400">[ Ta photo ici ]</div>
           </div>
           <div>
-            <p className="text-sm font-bold uppercase tracking-[0.3em] text-lime-400">À propos</p>
+            <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>À propos</p>
             <h2 className="mt-4 text-3xl font-black lg:text-4xl">Moi, c&apos;est {BRAND.coach}</h2>
-            <p className="mt-6 leading-relaxed text-zinc-300">
-              [Présente-toi : ton parcours, tes diplômes/certifications de coach, ta philosophie, ce qui te
-              différencie. Quelques phrases suffisent — c&apos;est ce qui crée la confiance.]
+            <p className="mt-6 leading-relaxed text-zinc-700">
+              [Présentez-vous : votre parcours, vos diplômes/certifications de coach, votre philosophie, ce qui
+              vous différencie. Quelques phrases suffisent — c&apos;est ce qui crée la confiance.]
             </p>
-            <p className="mt-4 leading-relaxed text-zinc-400">
-              [Ex. « Coach sportif certifié depuis X ans, je me déplace chez toi pour des séances efficaces et
-              motivantes, quel que soit ton point de départ. »]
+            <p className="mt-4 leading-relaxed text-zinc-500">
+              [Ex. « Coach sportif certifié depuis X ans, je me déplace chez vous pour des séances efficaces et
+              motivantes, quel que soit votre point de départ. »]
             </p>
           </div>
         </div>
       </section>
 
       {/* Tarifs */}
-      <section id="tarifs" className="border-t border-white/10 bg-white/[0.02] py-24">
+      <section id="tarifs" className="border-t border-zinc-100 py-24">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-3xl font-black lg:text-4xl">Tarifs</h2>
-          <p className="mt-3 text-zinc-400">[À compléter avec tes vrais prix. Exemples ci-dessous.]</p>
+          <p className="mt-3 text-zinc-600">[À compléter avec vos vrais prix. Exemples ci-dessous.]</p>
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {[
               { t: "Séance à l'unité", p: "[__ €]", u: "/ séance" },
               { t: "Pack 10 séances", p: "[__ €]", u: "soit [__ €]/séance" },
               { t: "Coaching mensuel", p: "[__ €]", u: "/ mois" },
             ].map((t) => (
-              <div key={t.t} className="rounded-3xl border border-white/10 p-7 text-center">
-                <p className="text-sm text-zinc-400">{t.t}</p>
-                <p className="mt-3 text-4xl font-black text-lime-400">{t.p}</p>
-                <p className="mt-1 text-xs text-zinc-500">{t.u}</p>
+              <div key={t.t} className="rounded-3xl border border-zinc-200 p-7 text-center">
+                <p className="text-sm text-zinc-500">{t.t}</p>
+                <p className="mt-3 text-4xl font-black" style={{ color: O }}>{t.p}</p>
+                <p className="mt-1 text-xs text-zinc-400">{t.u}</p>
               </div>
             ))}
           </div>
-          <p className="mt-6 text-xs text-zinc-500">[Pense à mentionner : crédit d&apos;impôt service à la personne, déplacement inclus, zone couverte…]</p>
+          <p className="mt-6 text-xs text-zinc-400">[Pensez à mentionner : crédit d&apos;impôt service à la personne, déplacement inclus, zone couverte…]</p>
         </div>
       </section>
 
       {/* Contact */}
-      <section id="contact" className="border-t border-white/10 py-24">
-        <div className="mx-auto max-w-2xl px-6 text-center">
-          <h2 className="text-3xl font-black lg:text-5xl">Prêt à t&apos;y mettre ?</h2>
-          <p className="mt-4 text-lg text-zinc-300">Réserve ta séance découverte — on fait le bilan ensemble, sans engagement.</p>
+      <section id="contact" className="border-t border-zinc-100 py-24" style={{ backgroundColor: "#18181b" }}>
+        <div className="mx-auto max-w-2xl px-6 text-center text-white">
+          <h2 className="text-3xl font-black lg:text-5xl">Prêt à vous y mettre ?</h2>
+          <p className="mt-4 text-lg text-zinc-300">Réservez votre séance découverte — on fait le bilan ensemble, sans engagement.</p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a href={`mailto:${BRAND.email}`} className="flex h-14 items-center justify-center rounded-full bg-lime-400 px-8 font-black text-zinc-900 transition hover:bg-lime-300">
+            <a href={`mailto:${BRAND.email}`} className="flex h-14 items-center justify-center rounded-full px-8 font-black text-white transition hover:opacity-90" style={{ backgroundColor: O }}>
               ✉️ {BRAND.email}
             </a>
-            <a href={`tel:${BRAND.phone.replace(/\s/g, "")}`} className="flex h-14 items-center justify-center rounded-full border border-white/20 px-8 font-black text-white transition hover:bg-white/5">
+            <a href={`tel:${BRAND.phone.replace(/\s/g, "")}`} className="flex h-14 items-center justify-center rounded-full border border-white/25 px-8 font-black text-white transition hover:bg-white/10">
               📞 {BRAND.phone}
             </a>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-white/10 py-10 text-center text-sm text-zinc-500">
-        © {new Date().getFullYear()} {BRAND.name} — {BRAND.tagline}. Tous droits réservés.
+      <footer className="bg-zinc-950 py-10 text-center text-sm text-zinc-500">
+        <p className="font-black text-zinc-300">{BRAND.name}</p>
+        <p className="mt-1" style={{ color: O }}>{BRAND.tagline}</p>
+        <p className="mt-3">© {new Date().getFullYear()} {BRAND.name}. Tous droits réservés.</p>
       </footer>
     </main>
   );
