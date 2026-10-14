@@ -28,6 +28,14 @@ const CERTIFS = [
   "Nutrition",
 ];
 
+// Pour qui — lève les freins, sans survendre.
+const POURQUI = [
+  { e: "🌱", t: "Reprise en douceur", d: "Après une longue pause, une grossesse ou un souci de santé ? On démarre progressivement et en sécurité, à votre rythme." },
+  { e: "🏠", t: "Sans salle, sans gêne", d: "Pas à l'aise à l'idée d'aller en salle ? On s'entraîne chez vous, sans regard et sans jugement." },
+  { e: "⏱️", t: "Peu de temps", d: "Je me déplace, les séances sont efficaces et calées sur votre emploi du temps. Zéro trajet pour vous." },
+  { e: "🎯", t: "Besoin d'être suivi", d: "De la régularité et un vrai suivi : c'est souvent ce qui manque pour tenir dans la durée et voir des résultats." },
+];
+
 export default function CoachingGate() {
   const [status, setStatus] = useState<"checking" | "denied" | "allowed">("checking");
 
@@ -85,8 +93,10 @@ export default function CoachingGate() {
             Ensemble,<br />vous irez <span style={{ color: O }}>plus loin</span>.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-600">
-            Des séances personnalisées, chez vous, adaptées à votre niveau et à vos objectifs —
-            remise en forme, perte de poids, renforcement, préparation physique. Sans salle, sans excuse.
+            Remise en forme, perte de poids, renforcement, retour au sport en douceur : je conçois chaque
+            séance selon votre niveau, vos objectifs et votre emploi du temps, directement chez vous.
+            Pas de promesses miracles — un accompagnement sérieux, régulier et motivant, pour des
+            résultats qui durent.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <a href="#contact" className="flex h-14 items-center justify-center rounded-full px-8 text-base font-black text-white transition hover:opacity-90" style={{ backgroundColor: O }}>
@@ -107,6 +117,26 @@ export default function CoachingGate() {
         </div>
       </section>
 
+      {/* Pour qui */}
+      <section className="border-t border-zinc-100 py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-3xl font-black lg:text-4xl">Pour qui ?</h2>
+          <p className="mt-3 max-w-2xl text-zinc-600">
+            Pas besoin d&apos;être sportif pour commencer. On part de là où vous en êtes réellement —
+            quel que soit votre âge ou votre niveau — et on construit ensemble, étape par étape.
+          </p>
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {POURQUI.map((p) => (
+              <div key={p.t} className="rounded-3xl border border-zinc-200 bg-white p-6">
+                <span className="text-3xl">{p.e}</span>
+                <h3 className="mt-4 text-lg font-black">{p.t}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-500">{p.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Offres */}
       <section id="offres" className="border-t border-zinc-100 bg-zinc-50 py-24">
         <div className="mx-auto max-w-6xl px-6">
@@ -116,7 +146,7 @@ export default function CoachingGate() {
             {[
               { t: "Séance à l'unité", d: "Idéal pour tester ou pour un accompagnement ponctuel. Bilan, séance personnalisée, conseils.", f: ["1 séance à domicile", "Programme adapté", "Suivi des progrès"] },
               { t: "Pack 10 séances", d: "Le plus choisi. Un vrai suivi dans la durée pour installer des résultats concrets.", f: ["10 séances à domicile", "Plan nutrition de base", "Suivi entre les séances"], featured: true },
-              { t: "Coaching mensuel", d: "Accompagnement complet et illimité en messagerie, pour une transformation durable.", f: ["Séances hebdomadaires", "Programme + nutrition", "Suivi illimité"] },
+              { t: "Coaching mensuel", d: "Un accompagnement complet et un suivi illimité en messagerie, pour garder la régularité et progresser sur la durée.", f: ["Séances hebdomadaires", "Programme + nutrition", "Suivi illimité"] },
             ].map((o) => (
               <div key={o.t} className="rounded-3xl border bg-white p-7 shadow-sm" style={o.featured ? { borderColor: O, boxShadow: `0 0 0 1px ${O}` } : { borderColor: "#e4e4e7" }}>
                 {o.featured && <span className="mb-3 inline-block rounded-full px-3 py-1 text-xs font-black text-white" style={{ backgroundColor: O }}>Le plus populaire</span>}
