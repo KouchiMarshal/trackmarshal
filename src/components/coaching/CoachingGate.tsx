@@ -96,7 +96,10 @@ export default function CoachingGate() {
               Voir les offres
             </a>
           </div>
-          <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm font-semibold text-zinc-500">
+          <div className="mt-6 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-black" style={{ borderColor: `${O}55`, backgroundColor: `${O}14`, color: "#9a5a14" }}>
+            💶 Éligible au crédit d&apos;impôt de 50% — Service à la personne
+          </div>
+          <div className="mt-8 flex flex-wrap gap-x-10 gap-y-4 text-sm font-semibold text-zinc-500">
             <span>📍 {BRAND.zone}</span>
             <span>🏠 À domicile ou en extérieur</span>
             <span>🎯 Programme sur-mesure</span>
@@ -200,7 +203,15 @@ export default function CoachingGate() {
               </div>
             ))}
           </div>
-          <p className="mt-6 text-xs text-zinc-400">[Pensez à mentionner : crédit d&apos;impôt service à la personne, déplacement inclus, zone couverte…]</p>
+          <p className="mt-6 text-xs text-zinc-400">[Déplacement inclus ? Zone couverte ? Précisez-le ici.]</p>
+          <div className="mt-6 rounded-2xl border p-5" style={{ borderColor: `${O}55`, backgroundColor: `${O}14` }}>
+            <p className="font-black" style={{ color: "#9a5a14" }}>💶 50% de crédit d&apos;impôt</p>
+            <p className="mt-1 text-sm leading-relaxed text-zinc-700">
+              K-Coaching est une activité agréée <strong>Service à la personne</strong> : mes prestations à domicile
+              ouvrent droit à un <strong>crédit d&apos;impôt de 50%</strong>. Une séance à [__ €] ne vous revient
+              réellement qu&apos;à <strong>[__ €]</strong>, que vous soyez imposable ou non (dans la limite des plafonds légaux).
+            </p>
+          </div>
         </div>
       </section>
 
