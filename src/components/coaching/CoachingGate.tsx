@@ -13,7 +13,7 @@ const BRAND = {
   coach: "Kevin Foussard",
   tagline: "Ensemble, vous irez plus loin",
   zone: "Alençon, Sées, Mortagne-au-Perche, L'Aigle et leurs environs",
-  email: "[ton@email.fr]",
+  email: "foussardk@gmail.com",
   phone: "[06 00 00 00 00]",
 };
 
