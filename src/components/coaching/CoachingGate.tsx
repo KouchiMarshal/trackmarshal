@@ -10,7 +10,7 @@ import { supabase } from "@/lib/supabase";
 // ⚙️ À COMPLÉTER : les champs [entre crochets] (ton nom, zone, contact, tarifs).
 const BRAND = {
   name: "K-Coaching",
-  coach: "[Ton nom]",
+  coach: "Kevin Foussard",
   tagline: "Ensemble, vous irez plus loin",
   zone: "[Ta zone — ex. Rouen & alentours]",
   email: "[ton@email.fr]",
@@ -24,7 +24,7 @@ const CERTIFS = [
   "Coach diplômé depuis 2017",
   "TRX Suspension Training (TRX-STC)",
   "Kettlebell — StrongFirst",
-  "Pilates Matwork",
+  "Pilates Matwork — niveau 1",
   "Nutrition",
 ];
 
@@ -160,8 +160,9 @@ export default function CoachingGate() {
             <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>À propos</p>
             <h2 className="mt-4 text-3xl font-black lg:text-4xl">Moi, c&apos;est {BRAND.coach}</h2>
             <p className="mt-6 leading-relaxed text-zinc-700">
-              Coach sportif <strong>diplômé depuis 2017</strong>, je vous accompagne à domicile avec des séances
-              efficaces et motivantes, construites autour de vos objectifs — quel que soit votre point de départ.
+              Coach sportif <strong>diplômé depuis 2017</strong> et fort d&apos;une expérience en salle de sport,
+              je vous accompagne désormais à domicile avec des séances efficaces et motivantes, construites
+              autour de vos objectifs — quel que soit votre point de départ.
             </p>
             <p className="mt-4 leading-relaxed text-zinc-500">
               Je me forme en continu pour varier les approches et vous proposer un entraînement complet :
