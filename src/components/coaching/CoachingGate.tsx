@@ -96,9 +96,11 @@ export default function CoachingGate() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute -right-24 -top-10 h-[460px] w-[460px] rounded-full blur-[120px]" style={{ backgroundColor: `${O}22` }} />
-        <div className="relative mx-auto max-w-6xl px-6 py-20 lg:py-28">
+        <div className="relative mx-auto max-w-6xl px-6 py-16 lg:py-24">
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div>
           <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>Coaching sportif à domicile · accessible à tous</p>
-          <h1 className="mt-6 max-w-3xl text-5xl font-black leading-[0.95] tracking-tight text-zinc-900 lg:text-7xl">
+          <h1 className="mt-6 max-w-3xl text-5xl font-black leading-[0.95] tracking-tight text-zinc-900 lg:text-6xl">
             Ensemble,<br />vous irez <span style={{ color: O }}>plus loin</span>.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-600">
@@ -127,6 +129,12 @@ export default function CoachingGate() {
             <span>📍 {BRAND.zone}</span>
             <span>🏠 À domicile ou en extérieur</span>
             <span>🎯 Programme sur-mesure</span>
+          </div>
+          </div>
+            <div className="relative h-80 overflow-hidden rounded-[32px] shadow-xl lg:h-[560px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/coaching-domicile.jpg" alt="Séance de coaching sportif à domicile, en extérieur" className="h-full w-full object-cover object-center" />
+            </div>
           </div>
         </div>
       </section>
@@ -222,12 +230,41 @@ export default function CoachingGate() {
         </div>
       </section>
 
+      {/* En séance */}
+      <section className="border-t border-zinc-100 py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="grid items-center gap-10 lg:grid-cols-5">
+            <div className="lg:col-span-2">
+              <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>En séance</p>
+              <h2 className="mt-4 text-3xl font-black lg:text-4xl">Du sport qui vous ressemble</h2>
+              <p className="mt-4 leading-relaxed text-zinc-600">
+                En solo chez vous, en extérieur ou en petit groupe entre amis : on bouge dans la bonne
+                humeur, avec du matériel varié et des exercices adaptés à chacun. L&apos;important, c&apos;est
+                que vous y preniez goût.
+              </p>
+            </div>
+            <div className="lg:col-span-3">
+              <div className="overflow-hidden rounded-[32px] shadow-xl">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/coaching-groupe.jpg" alt="Séance de coaching sportif en groupe, en plein air" className="aspect-[16/10] w-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* À propos */}
       <section id="apropos" className="border-t border-zinc-100 bg-zinc-50 py-24">
         <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
-          <div className="aspect-[4/5] overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-100">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/kevin-coach.jpg" alt="Kevin, coach sportif à domicile" className="h-full w-full object-cover object-center" />
+          <div className="space-y-4">
+            <div className="aspect-[4/5] overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-100">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/kevin-coach.jpg" alt="Kevin, coach sportif à domicile" className="h-full w-full object-cover object-center" />
+            </div>
+            <div className="aspect-[16/9] overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-100">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/kevin-action.jpg" alt="Kevin à l'entraînement" className="h-full w-full object-cover object-center" />
+            </div>
           </div>
           <div>
             <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>À propos</p>
