@@ -12,7 +12,7 @@ const BRAND = {
   name: "K-Coaching",
   coach: "Kevin Foussard",
   tagline: "Ensemble, vous irez plus loin",
-  zone: "[Ta zone — ex. Rouen & alentours]",
+  zone: "Alençon, Mortagne-au-Perche, L'Aigle et leurs environs",
   email: "[ton@email.fr]",
   phone: "[06 00 00 00 00]",
 };
