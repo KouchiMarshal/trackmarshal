@@ -10,7 +10,7 @@ import { supabase } from "@/lib/supabase";
 // ⚙️ À COMPLÉTER : les champs [entre crochets] (ton nom, zone, contact, tarifs).
 const BRAND = {
   name: "K-Coaching",
-  coach: "Kevin Foussard",
+  coach: "Kevin",
   tagline: "Ensemble, vous irez plus loin",
   zone: "Alençon, Sées, Mortagne-au-Perche, L'Aigle et leurs environs",
   email: "foussardk@gmail.com",
@@ -227,7 +227,7 @@ export default function CoachingGate() {
         <div className="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
           <div className="aspect-[4/5] overflow-hidden rounded-3xl border border-zinc-200 bg-zinc-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/kevin-coach.jpg" alt="Kevin Foussard, coach sportif à domicile" className="h-full w-full object-cover object-center" />
+            <img src="/kevin-coach.jpg" alt="Kevin, coach sportif à domicile" className="h-full w-full object-cover object-center" />
           </div>
           <div>
             <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>À propos</p>
