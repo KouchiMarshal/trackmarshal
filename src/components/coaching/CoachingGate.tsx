@@ -308,8 +308,8 @@ export default function CoachingGate() {
       <section id="tarifs" className="border-t border-zinc-100 py-24">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl font-black lg:text-4xl">Tarifs</h2>
-          <p className="mt-4 leading-relaxed text-zinc-600">Chaque accompagnement est personnalisé. Les tarifs dépendent de vos objectifs, de la formule et du nombre de séances — je vous établis un <strong>devis gratuit et sans engagement</strong>.</p>
-          <a href="#contact" className="mt-8 inline-flex h-14 items-center justify-center rounded-full px-8 font-black text-white transition hover:opacity-90" style={{ backgroundColor: O }}>Demander un devis</a>
+          <p className="mt-4 leading-relaxed text-zinc-600">Les tarifs dépendent du <strong>nombre de séances</strong> que vous choisissez : plus vous en prenez, plus le tarif à la séance est <strong>avantageux</strong>. N&apos;hésitez pas à me contacter pour toute demande — je vous réponds rapidement et sans engagement.</p>
+          <a href="#contact" className="mt-8 inline-flex h-14 items-center justify-center rounded-full px-8 font-black text-white transition hover:opacity-90" style={{ backgroundColor: O }}>Me contacter</a>
           <p className="mt-6 text-sm font-black" style={{ color: "#9a5a14" }}>
             💶 Prestations éligibles au crédit d&apos;impôt de 50% — voir le détail juste en dessous.
           </p>
