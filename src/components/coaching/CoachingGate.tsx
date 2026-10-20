@@ -15,6 +15,7 @@ const BRAND = {
   zone: "Alençon, Sées, Mortagne-au-Perche, L'Aigle et leurs environs",
   email: "foussardk@gmail.com",
   phone: "[06 00 00 00 00]",
+  siret: "843 186 529 00023",
 };
 
 const O = "#F18A2B"; // orange K-Coaching
@@ -387,6 +388,7 @@ export default function CoachingGate() {
         <p className="font-black text-zinc-300">{BRAND.name}</p>
         <p className="mt-1" style={{ color: O }}>{BRAND.tagline}</p>
         <p className="mt-3">© {new Date().getFullYear()} {BRAND.name}. Tous droits réservés.</p>
+        <p className="mt-1 text-xs text-zinc-600">SIRET {BRAND.siret}</p>
       </footer>
     </main>
   );
