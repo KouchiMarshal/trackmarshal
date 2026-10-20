@@ -14,7 +14,7 @@ const BRAND = {
   tagline: "Ensemble, vous irez plus loin",
   zone: "Alençon, Sées, Mortagne-au-Perche, L'Aigle et leurs environs",
   email: "foussardk@gmail.com",
-  phone: "[06 00 00 00 00]",
+  phone: "07 68 57 84 06",
   siret: "843 186 529 00023",
 };
 
