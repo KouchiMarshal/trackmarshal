@@ -1,0 +1,34 @@
+name: Deploy K-Coaching to OVH
+
+# Deploie le site statique du dossier coaching-k/ vers l'hebergement OVH
+# (dossier www) par FTP, a chaque modification de ce dossier sur master.
+# Necessite 3 secrets de depot : FTP_SERVER, FTP_USERNAME, FTP_PASSWORD.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'coaching-k/**'
+      - '.github/workflows/deploy-coaching-k.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP(S) vers OVH
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./coaching-k/
+          server-dir: ./www/
+          exclude: |
+            **/README.md
+            **/.git*
