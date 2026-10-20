@@ -190,11 +190,12 @@ export default function CoachingGate() {
       <section id="offres" className="border-t border-zinc-100 bg-zinc-50 py-24">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-3xl font-black lg:text-4xl">Mes offres</h2>
-          <p className="mt-3 max-w-xl text-zinc-600">Deux formules simples pour avancer à votre rythme. Chaque programme est adapté après un premier bilan.</p>
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <p className="mt-3 max-w-xl text-zinc-600">Des formules adaptées à chacun — du suivi individuel aux interventions en entreprise. Chaque programme est construit après un premier bilan.</p>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
             {[
               { t: "Séance à l'unité", d: "Idéal pour tester ou pour un accompagnement ponctuel. Bilan, séance personnalisée, conseils.", f: ["1 séance à domicile", "Programme adapté", "Suivi des progrès"] },
-              { t: "Pack 10 séances", d: "Le plus choisi. Un vrai suivi dans la durée pour installer des résultats concrets.", f: ["10 séances à domicile", "Plan nutrition de base", "Suivi entre les séances"], featured: true },
+              { t: "Pack de séances", d: "Le plus choisi. Un vrai suivi dans la durée pour installer des résultats concrets.", f: ["Plusieurs séances à domicile", "Plan nutrition de base", "Suivi entre les séances"], featured: true },
+              { t: "Entreprise & événements", d: "Séances collectives, team building et animations sportives pour vos salariés ou vos événements. Un moment convivial qui renforce la cohésion et le bien-être des équipes.", f: ["Séances collectives sur site", "Team building & bien-être", "Animations d'événements"] },
             ].map((o) => (
               <div key={o.t} className="rounded-3xl border bg-white p-7 shadow-sm" style={o.featured ? { borderColor: O, boxShadow: `0 0 0 1px ${O}` } : { borderColor: "#e4e4e7" }}>
                 {o.featured && <span className="mb-3 inline-block rounded-full px-3 py-1 text-xs font-black text-white" style={{ backgroundColor: O }}>Le plus populaire</span>}
@@ -295,24 +296,12 @@ export default function CoachingGate() {
 
       {/* Tarifs */}
       <section id="tarifs" className="border-t border-zinc-100 py-24">
-        <div className="mx-auto max-w-6xl px-6">
+        <div className="mx-auto max-w-3xl px-6 text-center">
           <h2 className="text-3xl font-black lg:text-4xl">Tarifs</h2>
-          <p className="mt-3 text-zinc-600">Des tarifs simples et transparents, sans engagement.</p>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
-            {[
-              { t: "Séance à l'unité", p: "65 €", u: "/ séance" },
-              { t: "Pack 10 séances", p: "600 €", u: "soit 60 €/séance" },
-            ].map((t) => (
-              <div key={t.t} className="rounded-3xl border border-zinc-200 p-7 text-center">
-                <p className="text-sm text-zinc-500">{t.t}</p>
-                <p className="mt-3 text-4xl font-black" style={{ color: O }}>{t.p}</p>
-                <p className="mt-1 text-xs text-zinc-400">{t.u}</p>
-              </div>
-            ))}
-          </div>
-          <p className="mt-6 text-xs text-zinc-400">[Déplacement inclus ? Zone couverte ? Précisez-le ici.]</p>
+          <p className="mt-4 leading-relaxed text-zinc-600">Chaque accompagnement est personnalisé. Les tarifs dépendent de vos objectifs, de la formule et du nombre de séances — je vous établis un <strong>devis gratuit et sans engagement</strong>.</p>
+          <a href="#contact" className="mt-8 inline-flex h-14 items-center justify-center rounded-full px-8 font-black text-white transition hover:opacity-90" style={{ backgroundColor: O }}>Demander un devis</a>
           <p className="mt-6 text-sm font-black" style={{ color: "#9a5a14" }}>
-            💶 Grâce au crédit d&apos;impôt, ces montants sont réduits de 50% — voir le détail juste en dessous.
+            💶 Prestations éligibles au crédit d&apos;impôt de 50% — voir le détail juste en dessous.
           </p>
         </div>
       </section>
@@ -334,9 +323,8 @@ export default function CoachingGate() {
               <p className="mt-4 text-5xl font-black" style={{ color: O }}>−50%</p>
               <p className="mt-1 font-bold text-zinc-800">de crédit d&apos;impôt sur vos séances</p>
               <div className="mt-5 rounded-2xl bg-zinc-50 p-4 text-sm leading-relaxed text-zinc-700">
-                <strong>Concrètement :</strong> une séance à <strong>65 €</strong> ne vous revient qu&apos;à
-                <strong> 32,50 €</strong>, et le pack 10 séances à <strong>600 €</strong> qu&apos;à <strong>300 €</strong>
-                après crédit d&apos;impôt.
+                <strong>Concrètement :</strong> une prestation de <strong>100 €</strong> ne vous revient
+                réellement qu&apos;à <strong>50 €</strong> après le crédit d&apos;impôt.
               </div>
               <div className="mt-4 flex items-start gap-2 text-sm leading-relaxed text-zinc-700">
                 <span className="text-lg">⚡</span>
