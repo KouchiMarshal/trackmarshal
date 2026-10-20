@@ -305,22 +305,31 @@ export default function CoachingGate() {
       </section>
 
       {/* Carte professionnelle */}
-      <section className="border-t border-zinc-100 py-16">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm sm:flex sm:items-center sm:gap-8 lg:p-8">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/qr-carte-pro.png" alt="QR code de vérification de la carte professionnelle d'éducateur sportif" className="mx-auto h-36 w-36 shrink-0 rounded-xl border border-zinc-200 bg-white p-2" />
-            <div className="mt-5 text-center sm:mt-0 sm:text-left">
-              <p className="text-xs font-black uppercase tracking-[0.2em]" style={{ color: O }}>Éducateur sportif déclaré</p>
-              <h2 className="mt-2 text-xl font-black text-zinc-900">Carte professionnelle</h2>
-              <p className="mt-1 text-sm text-zinc-500">Une garantie : mon activité est déclarée et contrôlée par l&apos;État. Scannez le QR code pour le vérifier.</p>
-              <div className="mt-3 space-y-1 text-sm text-zinc-700">
-                <p><span className="font-bold text-zinc-900">N° de carte :</span> 03519ED0003</p>
-                <p><span className="font-bold text-zinc-900">Délivrée par :</span> Préfecture d&apos;Ille-et-Vilaine · Ministère chargé des sports</p>
-                <p><span className="font-bold text-zinc-900">Valide jusqu&apos;au :</span> 01/02/2029</p>
-              </div>
-              <a href="https://recherche-educateur.sports.gouv.fr" target="_blank" rel="noopener" className="mt-3 inline-block text-sm font-black hover:underline" style={{ color: O }}>Vérifier sur le registre officiel →</a>
+      <section className="border-t border-zinc-100 bg-zinc-50 py-16">
+        <div className="mx-auto max-w-xl px-6">
+          <div className="rounded-3xl border border-zinc-200 bg-white p-7 text-center shadow-sm lg:p-8">
+            <p className="text-xs font-black uppercase tracking-[0.25em]" style={{ color: O }}>Éducateur sportif déclaré</p>
+            <h2 className="mt-2 text-2xl font-black text-zinc-900">Carte professionnelle</h2>
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-zinc-500">Mon activité est déclarée et contrôlée par l&apos;État. Scannez le QR code pour la vérifier.</p>
+            <div className="mt-7 flex flex-col items-center gap-7 sm:flex-row sm:justify-center sm:gap-8 sm:text-left">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/qr-carte-pro.png" alt="QR code de vérification de la carte professionnelle d'éducateur sportif" className="h-40 w-40 shrink-0 rounded-2xl border border-zinc-200 p-2" />
+              <dl className="space-y-3 text-sm">
+                <div>
+                  <dt className="text-xs uppercase tracking-wide text-zinc-400">N° de carte</dt>
+                  <dd className="font-black text-zinc-900">03519ED0003</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-wide text-zinc-400">Délivrée par</dt>
+                  <dd className="font-bold text-zinc-800">Préfecture d&apos;Ille-et-Vilaine<br />Ministère chargé des sports</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-wide text-zinc-400">Valable jusqu&apos;au</dt>
+                  <dd className="font-black text-zinc-900">01/02/2029</dd>
+                </div>
+              </dl>
             </div>
+            <a href="https://recherche-educateur.sports.gouv.fr" target="_blank" rel="noopener" className="mt-7 inline-block rounded-full border-2 border-zinc-200 px-6 py-2.5 text-sm font-black text-zinc-800 transition hover:border-zinc-300">Vérifier sur le registre officiel →</a>
           </div>
         </div>
       </section>
