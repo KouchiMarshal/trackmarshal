@@ -45,6 +45,16 @@ const VALEURS = [
   { e: "👂", t: "À l'écoute", d: "Un programme construit autour de vos envies, votre corps et votre vie." },
 ];
 
+// FAQ — contenu visible + bon pour le référencement (données FAQPage).
+const FAQS = [
+  { q: "Comment se passe une séance de coaching sportif à domicile ?", a: "Je me déplace chez vous ou en extérieur, avec le petit matériel nécessaire. Après un premier bilan, chaque séance est adaptée à votre niveau, vos objectifs et l'espace disponible." },
+  { q: "Faut-il du matériel ou beaucoup de place ?", a: "Non. On s'adapte à votre intérieur, votre jardin ou un parc à proximité. J'apporte le matériel utile, et de nombreux exercices se font au poids du corps." },
+  { q: "Dans quelles villes intervenez-vous ?", a: "À Alençon, Sées, Mortagne-au-Perche, L'Aigle et leurs environs, dans l'Orne (61)." },
+  { q: "Faut-il déjà être sportif pour commencer ?", a: "Pas du tout. Tous les niveaux sont les bienvenus, débutants compris. On part de là où vous en êtes et on progresse à votre rythme, sans jugement." },
+  { q: "Comment fonctionne le crédit d'impôt de 50 % ?", a: "Mes prestations à domicile relèvent du Service à la personne : vous bénéficiez d'un crédit d'impôt de 50 %, avec l'avance immédiate (vous ne réglez que la moitié sur le moment)." },
+  { q: "Comment prendre rendez-vous ?", a: "Par téléphone au 07 68 57 84 06 ou par email. La première séance découverte se fait sans engagement." },
+];
+
 export default function CoachingGate() {
   const [status, setStatus] = useState<"checking" | "denied" | "allowed">("checking");
 
@@ -353,6 +363,25 @@ export default function CoachingGate() {
             personnelle ou professionnelle, dans la limite des plafonds légaux. N&apos;hésitez pas à m&apos;en parler
             pour votre cas précis.
           </p>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="border-t border-zinc-100 bg-zinc-50 py-24">
+        <div className="mx-auto max-w-3xl px-6">
+          <p className="text-sm font-black uppercase tracking-[0.3em]" style={{ color: O }}>Questions fréquentes</p>
+          <h2 className="mt-4 text-3xl font-black lg:text-4xl">Vous vous demandez&nbsp;?</h2>
+          <div className="mt-10 space-y-3">
+            {FAQS.map((f) => (
+              <details key={f.q} className="group rounded-2xl border border-zinc-200 bg-white p-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-black text-zinc-900">
+                  {f.q}
+                  <span className="shrink-0 transition group-open:rotate-45" style={{ color: O }}>+</span>
+                </summary>
+                <p className="mt-3 leading-relaxed text-zinc-600">{f.a}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 
