@@ -2579,6 +2579,10 @@
     --tw-leading: 0.95;
     line-height: 0.95;
   }
+  .leading-\[1\.02\] {
+    --tw-leading: 1.02;
+    line-height: 1.02;
+  }
   .leading-none {
     --tw-leading: 1;
     line-height: 1;
@@ -4639,6 +4643,11 @@
   .lg\:h-\[420px\] {
     @media (width >= 64rem) {
       height: 420px;
+    }
+  }
+  .lg\:h-\[520px\] {
+    @media (width >= 64rem) {
+      height: 520px;
     }
   }
   .lg\:h-\[560px\] {
