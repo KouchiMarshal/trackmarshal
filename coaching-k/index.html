@@ -334,6 +334,7 @@
         <input type="hidden" name="_subject" value="Nouvelle demande de créneau — K-Coaching">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://www.coaching-k.fr/merci/">
         <input type="text" name="_honey" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
@@ -376,7 +377,6 @@
           <textarea name="Message" rows="3" class="w-full rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 focus:ring-2 focus:ring-zinc-900/10"></textarea>
         </div>
         <button type="submit" class="h-14 w-full rounded-full px-8 text-base font-black text-white transition hover:opacity-90" style="background:#F18A2B">Envoyer ma demande</button>
-        <p id="booking-msg" class="text-sm"></p>
         <p class="text-xs leading-relaxed text-zinc-400">Vos informations servent uniquement à vous recontacter. Elles ne sont ni revendues ni partagées.</p>
       </form>
     </div>
@@ -400,28 +400,6 @@
     <p class="mt-3">© 2026 K-Coaching. Tous droits réservés.</p>
     <p class="mt-1 text-xs text-zinc-600">SIRET 843 186 529 00023</p>
   </footer>
-
-  <script>
-  (function(){
-    var f=document.getElementById('booking-form'), msg=document.getElementById('booking-msg');
-    if(!f) return;
-    f.addEventListener('submit', function(e){
-      e.preventDefault();
-      msg.textContent='Envoi en cours…'; msg.className='text-sm text-zinc-500';
-      fetch('https://formsubmit.co/ajax/foussardk@gmail.com',{method:'POST',headers:{'Accept':'application/json'},body:new FormData(f)})
-        .then(function(r){return r.json();})
-        .then(function(d){
-          f.reset();
-          msg.textContent='Merci ! Votre demande est envoyée — je vous recontacte très vite pour confirmer votre créneau.';
-          msg.className='rounded-xl bg-green-100 px-4 py-3 text-sm font-medium text-green-700';
-        })
-        .catch(function(){
-          msg.textContent="L'envoi a échoué. Réessayez, ou appelez-moi directement au 07 68 57 84 06.";
-          msg.className='rounded-xl bg-red-100 px-4 py-3 text-sm font-medium text-red-700';
-        });
-    });
-  })();
-  </script>
 
 </body>
 <!-- K-Coaching · deploy 1 -->
